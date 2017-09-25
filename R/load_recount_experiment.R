@@ -1,0 +1,136 @@
+#' @title Load one count table from ReCount and optionally merge the counts per sample.
+#' @author: Jacques van Helden
+#' @description Load one count table from Recount for a given experiment ID, and optionally 
+#' merge the counts in order to avoid redundancy between multipl runs per sample. 
+#' @param recountID identifier of one study in ReCount database
+#' @param studyPath=file.path("~/recount_test/data/", recountID) Path of the folder in which the counts downlaoded from ReCount will be stored. 
+#' @param mergeRuns=TRUE if TRUE, read counts will be merged for each sample
+#' @param verbose=TRUE if TRUE, write messages to indicate the progressing of the tasks
+#' @param forceDownload=FALSE by default, the data is downloaded only if it is not found in the studyPath folder. 
+#' If forceDownload is TRUE, the data will be downloaded irrespective of existing files. 
+#' @param sampleIdColumn="geo_accession"  name of the column of the pheno table which contains the sample IDs. 
+#' This information is passed to MergeCounts().
+#'   
+#' @examples 
+#' 
+#' ## Load counts for a Leukemia dataset
+#' recountID <- "SRP048759"
+#' recountData <- loadRecountExperiment(recountID)
+#' 
+#' ## Check the dimension of the table with counts per run
+#' dim(recountData$runCounts)
+#' 
+#' ## Check the number of runs per sample
+#' table(recountData$runPheno$geo_accession)
+#' 
+#' ## Count the number of unique sample IDs in the run-wise description table (runPheno)
+#' message("Number of runs = ", length(recountData$runPheno$geo_accession))
+#' message("Number unique geo_accession values: ", length(unique(sort(recountData$runPheno$geo_accession))))
+#' 
+#' ## Check the dimension of the table with counts per sample
+#' dim(recountData$merged$sampleCounts)
+#' 
+#' ## Test correlation between technical replicates (runs for the same sample)
+#' cor(log(recountData$runCounts[, recountData$runPheno$geo_accession == "GSM1521620"]+1))
+#' 
+#' ## Test correlation between 8 randomly selected biological replicates (distinct samples)
+#' cor(log(recountData$merged$sampleCounts[, sample(1:ncol(recountData$merged$sampleCounts), size=8)]+1))
+#' 
+#' 
+#' @return
+#' A list containing: the count table, the pheno table, and some additional parameters (study ID, ...). 
+loadRecountExperiment <- function(recountID, 
+                                  studyPath = file.path("~/recount_test/data/", recountID),
+                                  mergeRuns = TRUE,
+                                  verbose = TRUE,
+                                  forceDownload = FALSE,
+                                  sampleIdColumn = "geo_accession", ...) {
+  result <- list()
+  library(recount)
+  
+  source("~/thesis_mustafa_abuelqumsan/RNA-seq_multivariate_analyis/R_code/merge_runs.R")
+  source( "~/thesis_mustafa_abuelqumsan/RNA-seq_multivariate_analyis/R_code/load_recount_experiment.R" )
+  
+  ## Create studyPath directory
+  dir.create(studyPath, recursive = TRUE, showWarnings = FALSE)
+  
+  ## Define the file where the downloaded counts will be stored
+  rseFile <- file.path(studyPath, "rse_gene.Rdata")
+  
+  ## Add parameters to the result
+  result$param <- 
+    c("recountID" = recountID,
+      "studyPath" = studyPath,
+      "mergeRuns" = mergeRuns,
+      "rseFile" = rseFile)
+
+  ## Download the counts if required
+  if ((forceDownload == TRUE) || (!file.exists(rseFile))) {
+    if (verbose) {
+      message("Dowloading counts from ReCount for study ", recountID)
+    }
+    url <- download_study(recountID, outdir = studyPath)
+    result$param["url"] <- url
+  }
+  
+  
+  ## Load in memory data from the recount database
+  if (verbose) {
+    message("Loading counts from local file ", rseFile)
+  }
+  load(rseFile)
+  
+  # Scale counts by mapped reads, in order to to get read counts per gene.      
+  if (verbose) {
+    message("Scaling counts")
+  }
+  rse <- scale_counts(rse_gene, by="mapped_reads")
+  result$rse <- rse
+  
+  # Extract a matrix with the counts per feature for each run
+  if (verbose) {
+    message("Extracing table of counts per run")
+  }
+  runCounts <- assay(rse)
+  # View(runCounts)
+  result$runCounts <- runCounts
+  
+  ## Table with information about the columns of the RangedSeummaryExperiment. 
+  if (verbose) {
+    message("Building pheno table")
+  }
+  coldata <- colData(rse)
+  runPheno <- coldata
+
+  ## Extract the conditions from the "characteristics" column of the coldata. 
+  ## This is a bit tricky: we have to parse a string describing several attributes. 
+  geochar <- lapply(split(
+    colData(rse), 
+    seq_len(nrow(colData(rse)))), 
+    geo_characteristics)
+  geochar <- do.call(rbind, lapply(geochar, function(x) {
+    if('cells' %in% colnames(x)) {
+      colnames(x)[colnames(x) == 'cells'] <- 'cell.line'
+      return(x)
+    } else {
+      return(x)
+    }
+  }))
+  # head(geochar)
+  
+  ## Build a pheno table with selected columns from coldata + the geodata we just extracted
+  runPheno <- cbind(
+    coldata[, grep(pattern="(characteristics|sharq)", x=names(coldata), invert=TRUE)], 
+    geochar)
+  result$runPheno <- runPheno
+  # View(runPheno)
+  
+  if (mergeRuns) {
+    if (verbose) { message("Merging run-wise counts by sample") }
+    result$merged <- MergeRuns(runCounts,
+                               runPheno,
+                               sampleIdColumn = sampleIdColumn, verbose=FALSE) 
+  }  
+  
+  return(result)
+}
