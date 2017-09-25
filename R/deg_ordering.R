@@ -1,0 +1,139 @@
+#' ###################################################
+#' @title Variable ordering according to the p-values returned by differential expression. 
+#' @author Mustafa AbuElQumsan and Jacques van Helden
+#' @description Order the variables (columns) of a count table in preparation for supervised
+#' classification, by running differential expression analysis with either DESeq2 or edgeR.
+#'
+#' @param countTable matrix or data frame with raw counts (reads per gene), one column per gene and one row per sample. 
+#' @param classes a vector of class labels (conditions, tissues, genotypes, treatment, ...) associated to each sample. 
+#' @param method="DESeq2"  choice of method for differential expression analysis. Supported: "DESeq2" , "edgeR".
+#' @param edgeRDispEst="tagwise" method used by edgeR to estimate the dispersion. Supported: common, trended, tagwise.
+#' @param ... all additional parmeters are passed to the differentail expression method (DEseq2 or edgeR).
+#'
+#' @return a list with 2 tables:
+#' 1) result$geneOrder: a vector of gene names ordered by increasing p-value.
+#' 2) result$orderedCountTable ordered count table where columns (genes) have been ordered by increasing p-value.
+#' 3) result$DEGtable a table with one row per gene, and one column per DEG statistics (mean, log-ratio, nominal and adjusted p-values, ...)
+#' 
+#' Note that genes are ordered according to nominal p-value (pvalue) rather than 
+#' adjusted p-value (padj) because DESeq2 produces NA values for the padj.
+#' 
+#' @examples 
+#'
+#' ###################################################
+#' ## loading required packages 
+#' RequiredBioconductorPackages(packages = c("DESeq2","edgeR"))
+#'
+#' recountID <- "SRP048759"
+#' loaded <- loadCounts(recountID = recountID, mergeRuns = T, classColumn = "tissue")
+#' degOrderdPValues <- DEGordering(countTable = loaded$countTable, classes =  loaded$classes, method = "edgeR")
+#' ## degPValues<- degPValues[order(degPValues$padj) ,]
+#'
+#' choose the method of differential expression analysis
+#'
+#' @export 
+DEGordering <- function( countTable,
+                       classes,
+                       method = "DESeq2",
+                       edgeRDispEst="tagwise"){
+  
+  result <- list()
+  
+  # loading required libraries
+  dir.main <- c("~/thesis_mustafa_abuelqumsan/RNA-seq_multivariate_analyis/R_code")
+  source(file.path(dir.main,"required_libraries.R"))
+  requiredBioconductor <- c("DESeq2", "edgeR")
+  RequiredBioconductorPackages(requiredBioconductor)
+
+  if (method == "DESeq2") {  
+    
+    ## Create a DESeqDataset object from the count table
+    dds <- DESeqDataSetFromMatrix(t(countTable), as.data.frame(classes), ~ classes  )
+
+    ## Run  differential expression analysis with DESeq2
+    dds <- DESeq(dds)
+    
+    # Cast the results from DESeq differential expression analysis
+    DEGtable <- results(dds, independentFiltering = F )
+    
+    ## Report the number of NA values for adjusted p-values
+    na.padj <- sum(is.na(DEGtable$padj))
+    if (na.padj > 0) {
+      message("Beware: DESeq2 reported ", na.padj, " NA for the adjusted p-value.")  
+    }
+    
+    ## Notes: we have some NA values for p adjusted so that we will choise the p Value for ordering 
+    geneOrderIndex <- order(DEGtable$padj, decreasing = FALSE)
+    result$geneOrder <- colnames(countTable)[geneOrderIndex]
+
+    ## Sort the genes (columns) of the count table by increasing p-value
+    result$orderedCountTable <- countTable[ ,result$geneOrder]
+    result$DEGtable <- DEGtable[result$geneOrder,]
+    names(result$DEGtable) <- c(
+      "baseMean",
+      "log2FC",
+      "lfcSE",
+      "stat",
+      "pvalue",
+      "padj" )
+    
+    
+  } else if (method == "edgeR") {
+    
+    ## Build a "model matrix" from the class labels
+    designMat <- model.matrix(~ classes)
+    #dim(designMat)  
+    #dim(countTable)
+    
+    ## Build dgList object which is required to run edgeR DE analysis
+    dgList <- DGEList(counts = t(countTable))
+    #dim(dgList)
+    
+    ## Estimate the dispersion parameter for our model. The edgeR method uses 
+    ## empirical Bayes methods to 'shrink' the genewise dispersion estimates 
+    ## towards the common dispersion (tagwise dispersion).
+    ##
+    # Note that either the common or trended dispersion needs to be estimated 
+    ## before we can estimate the tagwise dispersion.
+#    if (edgeRDispEst == "common") {
+      message("Estimating common dispersion")
+      dgList <- estimateGLMCommonDisp(dgList, design = designMat)
+#    } else if (edgeRDispEst == "trended") {
+      message("Estimating trended dispersion")
+      dgList <- estimateGLMTrendedDisp( dgList, design = na.omit(designMat))
+#    } else if (edgeRDispEst == "tagwise") {
+      message("Estimating tagwise dispersion")
+      dgList <- estimateGLMTagwiseDisp(dgList, design = designMat)
+#    } else {
+#      stop(edgedDisp, " is not a valid method for edgeR dispersion estimate. Supported: common, trended, tagwise.")
+#    }
+    
+    ## Fit edgeR model for differential expression analysis
+    message("edgeR model fitting")
+    fit <- glmFit(dgList, designMat)
+    lrt <- glmLRT(fit)
+    
+    #View(lrt$table)
+    
+    ## we can explore the results from topTags function
+    ## which give us top DE tags in data frame for a given pair of groups was ranked by p-value or
+    ## absolute log-fold change.
+    ## edgeRresult<- topTags(lrt)
+    ## we ordering the result with the most significance regarding P-Value
+    result <- list()
+    geneOrderIndex <- order(lrt$table$PValue)
+    result$geneOrder <- as.vector(colnames(countTable)[geneOrderIndex])
+    
+    result$DEGtable <- lrt$table[result$geneOrder,]
+    names(result$DEGtable) <- c("log2FC", "logCPM", "LR", "padj")
+    
+    result$orderedCountTable <- countTable[, result$geneOrder]
+  
+    ## end of the if edgeR
+  } else {
+    stop(method, " is not a valid method for DEGordering. Supported: edgeR, DESeq2")
+  }
+  
+  return(result)
+  
+}
