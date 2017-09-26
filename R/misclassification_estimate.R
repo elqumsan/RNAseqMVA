@@ -1,14 +1,14 @@
 ################################################################
 #'@title  RNA-Seq classifier evaluation to assesse the performance of the classifier
-#'@author Jacques van Helden and Mustafa ABUELQUMSAN
-#'@description  this script to evaluate and assesse the performance of the RNA-Seq calssifier by
+#'@author Mustafa ABUELQUMSAN and Jacques van Helden
+#'@description  this script to evaluate and assesse the performance of the RNA-Seq classifier by
 #'# Random sampling (random partitioning) estimation of the misclassification rate.
 #'
 #'@param countTable  this data frame for RNA-Seq data which contains one row for indiviual and one column for variable
-#'@param classes  such is vector for our case for classes,
+#'@param classes  such is vector for our cases for classes,
 #'@param k is number of neighbours passed to classifier
-#'@param trainingproportion is the ratio of the training suset from the whole data set
-#'@param calssfier is specie of the classifier
+#'@param trainingproportion is the ratio of the training subset from the whole data set
+#'@param classifier is a type of the classifier
 #'@example
 #' oneTest <- MisclassificationEstimate(countTable, classes, trainingProportion = 2/3, classifier = "rf")
 #'
@@ -46,7 +46,7 @@ MisclassificationEstimate <- function(countTable, classes,
     testing.error.nb <- sum(testing.errors)
 
     testing.error.rate  <- testing.error.nb / length(testing.errors)
-    #    message("knn, k=", k, "; testing error = ", signif(digits=3, testing.error.rate ))
+
 
     ## Compute training error ( = learning error)
     train.fit <- knn(train = countTable[trainIndex, ],
@@ -168,7 +168,7 @@ MisclassificationEstimate <- function(countTable, classes,
 
     ## Computing testing error for Suuport Vector Machine
     if (is.null(parameters$svm$kernel)) {
-      parameters$svm$kernel <- "radial"
+      parameters$svm$kernel <- "linear"
     }
 
 
