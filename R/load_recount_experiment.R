@@ -47,6 +47,7 @@ loadRecountExperiment <- function(recountID,
                                   sampleIdColumn = "geo_accession", ...) {
   result <- list()
   library(recount)
+  #source('https://github.com/elqumsan/RNAseqMVA/blob/master/R/merge_runs.R')
 
   source("~/RNAseqMVA/R/merge_runs.R")
   source( "~/RNAseqMVA/R/load_recount_experiment.R" )
