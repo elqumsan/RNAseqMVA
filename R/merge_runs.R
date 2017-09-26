@@ -1,6 +1,8 @@
 #' @title Merge read counts from different runs by sample.
 #' @author Jacques van Helden
-#' @description In ReCount data, some samples are sequenced over several runs, which increases the coverage but creates problems because technical replicates come from the same sample and are thus not independent. We thus merge the runs per sample, in order to obtain a single vector of read counts per sample. 
+#' @description In ReCount data, some samples are sequenced over several runs, which increases the coverage but creates problems
+#' # because technical replicates come from the same sample and are thus not independent.
+#' # We thus merge the runs per sample, in order to obtain a single vector of read counts per sample.
 #' @param countsPerRun a data frame containing read counts, one column per run and one row per gene
 #' @param pheno.table a data frame containing the description of each run. This must include a column with the sample ID associated to each run
 #' @param sampleIdColumn
@@ -10,10 +12,10 @@ MergeRuns <- function(countsPerRun,
                       phenoTable,
                       sampleIdColumn = "geo_accession",
                       verbose=FALSE) {
-  
+
   unique.samples <- unique(unlist(phenoTable[sampleIdColumn]))
   sample.nb <- length(unique.samples)
-  sample.counts <- data.frame(matrix(nrow=nrow(countsPerRun), 
+  sample.counts <- data.frame(matrix(nrow=nrow(countsPerRun),
                                      ncol=length(unique.samples)))
   names(sample.counts) <- unique.samples
   rownames(sample.counts) <- rownames(countsPerRun)
@@ -29,7 +31,7 @@ MergeRuns <- function(countsPerRun,
       sample.counts[,sample] <- countsPerRun[,runs]
     }
   }
-  
+
   ## Prepare a phenotable with all fields that are identical between runs
   ## This is tricky.
   sample.rows <- pmatch(unique.samples, unlist(phenoTable[sampleIdColumn]))
@@ -44,14 +46,14 @@ MergeRuns <- function(countsPerRun,
   samplePheno <- phenoTable[sample.rows, sampleFields]
   rownames(samplePheno) <- samplePheno[,sampleIdColumn]
   # View(samplePheno)
-  sample.nb <- ncol(sample.counts)  
-  gene.nb <- nrow(sample.counts)  
-  
+  sample.nb <- ncol(sample.counts)
+  gene.nb <- nrow(sample.counts)
+
   message("Count table contains ", sample.nb, " samples (columns) and ", gene.nb, " genes (rows). ")
   result <- list(sampleCounts = sample.counts,
                  samplePheno = samplePheno,
                  sampleFields = sampleFields,
                  sampleIdColumn = sampleIdColumn)
-  
+
   return(result)
 }
