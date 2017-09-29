@@ -7,26 +7,37 @@
 #'
 #'
 
-if (!exists(DEGordering ,  mode = "function")){
+if (exists( "DEGordering" ,  mode="function")){
  source("~/RNAseqMVA/R/deg_ordering.R")
-} else if(!exists(ErrorRateBoxPlot , mode = "function")){
   source("~/RNAseqMVA/R/ErrorRateBoxPlot.R")
-} else if (!exists(loadCounts , mode = "function")){
   source("~/RNAseqMVA/R/load_counts.R")
-}else if(!exists(loadRecountExperiment, mode = "function")){
-    source("~/RNAseqMVA/R/load_recount_experiment.R")
-}else if (!exists(MergeRuns , mode = "function")){
-    source("~/RNAseqMVA/R/merge_runs.R")
-}else if (!exists(MisclassificationEstimate, mode = "function")){
-    source("~/RNAseqMVA/R/misclassification_estimate.R")
-}else if( !exists(NormalizeCounts ,mode = "function")){
-    source("~/RNAseqMVA/R/normalize_count_table.R")
-}else if( !exists(one.experiment , mode = "function")){
-    source("~/RNAseqMVA/R/one_experiment.R")
-}else if(!exists(RequiredCRANPackages, mode = "function")){
-    source("~/RNAseqMVA/R/required_libraries.R")
-} else if (!exists(RequiredBioconductorPackages , mode = "function")){
-    source("~/RNAseqMVA/R/required_libraries.R")
+  source("~/RNAseqMVA/R/merge_runs.R")
+  source("~/RNAseqMVA/R/misclassification_estimate.R")
+  source("~/RNAseqMVA/R/normalize_count_table.R")
+  source("~/RNAseqMVA/R/normalize_count_table.R")
+  source("~/RNAseqMVA/R/one_experiment.R")
+  source("~/RNAseqMVA/R/required_libraries.R")
+  source("~/RNAseqMVA/R/required_libraries.R")
+
+#
+# } else if(exists("ErrorRateBoxPlot" , mode = "function")){
+#   source("~/RNAseqMVA/R/ErrorRateBoxPlot.R")
+# } else if (exists("loadCounts" , mode = "function")){
+#   source("~/RNAseqMVA/R/load_counts.R")
+# }else if( exists("loadRecountExperiment", mode = "function")){
+#     source("~/RNAseqMVA/R/load_recount_experiment.R")
+# }else if ( exists("MergeRuns" , mode = "function")){
+#     source("~/RNAseqMVA/R/merge_runs.R")
+# }else if ( exists("MisclassificationEstimate", mode = "function")){
+#     source("~/RNAseqMVA/R/misclassification_estimate.R")
+# }else if( exists("NormalizeCounts" ,mode = "function")){
+#     source("~/RNAseqMVA/R/normalize_count_table.R")
+# }else if( exists("one.experiment" , mode = "function")){
+#     source("~/RNAseqMVA/R/one_experiment.R")
+# }else if(exists("RequiredCRANPackages", mode = "function")){
+#     source("~/RNAseqMVA/R/required_libraries.R")
+# } else if (exists("RequiredBioconductorPackages" , mode = "function")){
+#     source("~/RNAseqMVA/R/required_libraries.R")
 }else {
     message("such function are not provided in the RNAseqMVA package,!!!")
   }
