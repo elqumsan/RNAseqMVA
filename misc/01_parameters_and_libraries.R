@@ -30,18 +30,18 @@ parameters <- list(
   deg.methods = c("DESeq2", "edgeR", "randomized"),
   ## Note: for the number of variables I choose a regular spacing around the total number of samples in order to detect overfitting effects
   nb.variables = c( 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 300, 400, 500, 1000, 2000, 5000, 10000), ## Number of variables for variable ordering test
-  trainingProportion = 2/3, # ratio of spliting the data set to training and testing sets 
+  trainingProportion = 2/3, # ratio of spliting the data set to training and testing sets
   permute = c(FALSE, TRUE),
   verbose = TRUE
 )
 
 
 ## Parameters for knn
-parameters$knn = list(k=10) # the number of neighbours considered 
+parameters$knn = list(k=10) # the number of neighbours considered
 
 ## Parameters for svm
 parameters$svm = list(
-  kernel="linear", 
+  kernel="linear",
   scale=FALSE,
   type="C-classification" ,
   gamma = 1,
@@ -51,14 +51,14 @@ parameters$svm = list(
 if (parameters$recountID == "SRP042620") {
   ## Psoriasis dataset
   parameters$classColumn <- "tissue"
-  
+
 } else if (parameters$recountID == "SRP057196") {
   ## Running parameters for SRP057196
   ## NOTE FOR MUSTAFA: For this dataset, the groups are defined
   ## based on a combination of two columns of the pheno table:
-  ## "tissue" and "cell.type". 
+  ## "tissue" and "cell.type".
   ## I improved filterCountTable() in order to support combinations of columns.
-  ## If several columns are specified in classColumn, the classes 
+  ## If several columns are specified in classColumn, the classes
   ## are built by pasting the specified columns.
   parameters$classColumn <- c("tissue", "cell.type")
 } else if (parameters$recountID == "SRP035988") {
@@ -66,7 +66,7 @@ if (parameters$recountID == "SRP042620") {
 }
 
 
-## Prefix for experiments with permuted class labels 
+## Prefix for experiments with permuted class labels
 ## (negative controls to estimate random expectation)
 perm.prefix <- "permLabels"
 
@@ -84,16 +84,16 @@ message.with.time <- function(...) {
 ## Define directories
 
 ## Main directory should be adapted to the user's configuration
-dir.main <- "~/thesis_mustafa_abuelqumsan/RNA-seq_multivariate_analyis"
+dir.main <- "~/RNAseqMVA"
 
-#classifier <- "knn" 
+#classifier <- "knn"
 ## All other directories should be defined relative to dir.main
-dir.scripts <- file.path(dir.main, "R_code")
+dir.scripts <- file.path(dir.main, "R")
 dir.results <- file.path(dir.main, "results", parameters$recountID)
 classifiers <- c("knn","rf", "svm")
 dir.classifier <- file.path(dir.results, classifiers)
 
-## Define the directories where tables and figures will be stored. 
+## Define the directories where tables and figures will be stored.
 ## one directory per classifer, with separate subdirectories for tables and figures.
 classifier.dirs <- vector()
 table.dirs <- vector()
@@ -118,7 +118,7 @@ if (parameters$reload == TRUE) {
   load(file = image.file)
   parameters <- parameters.current ## Reload current parameters (they might have been saved different in the memory image)
   rm(parameters.current)
-} 
+}
 
 ## Load custom librarires
 source(file.path(dir.scripts, "misclassification_estimate.R") )
@@ -128,6 +128,7 @@ source(file.path(dir.scripts, "normalize_count_table.R"))
 source(file.path(dir.scripts, "deg_ordering.R"))
 source(file.path(dir.scripts, "one_experiment.R"))
 source(file.path(dir.scripts, "ErrorRateBoxPlot.R"))
+source(file.path(dir.scripts,"filterCountTable.R"))
 
 # loading required libraries
 requiredCRAN <- c('class', "randomForest","broom", "devtools")
