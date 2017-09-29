@@ -150,5 +150,5 @@ dir.log2Impact <- file.path(dir.results , paste(parameters$recountID, "_impacte_
 dir.create(dir.log2Impact, showWarnings = F, recursive = T)
 
 ## END OF SCRIPT
-################################################################
+#################################################################
 
