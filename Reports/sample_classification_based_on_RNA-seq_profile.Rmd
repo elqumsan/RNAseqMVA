@@ -1,0 +1,139 @@
+---
+title: "Sample classification based on RNA-seq profiles"
+author: "Mustafa AbuElqumsan and Jacques van Helden"
+date: '`r Sys.Date()`'
+output:
+  beamer_presentation:
+    colortheme: dolphin
+    fig_caption: yes
+    fig_height: 6
+    fig_width: 7
+    fonttheme: structurebold
+    highlight: tango
+    incremental: no
+    keep_tex: no
+    slide_level: 2
+    theme: Montpellier
+    toc: yes
+  html_document:
+    fig_caption: yes
+    highlight: zenburn
+    theme: cerulean
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+  ioslides_presentation:
+    colortheme: dolphin
+    fig_caption: yes
+    fig_height: 6
+    fig_width: 7
+    fonttheme: structurebold
+    highlight: tango
+    incremental: yes
+    keep_md: yes
+    smaller: yes
+    theme: cerulean
+    toc: yes
+    widescreen: yes
+  pdf_document:
+    fig_caption: yes
+    highlight: zenburn
+    toc: yes
+    toc_depth: 3
+  slidy_presentation:
+    fig_caption: yes
+    fig_height: 6
+    fig_width: 7
+    highlight: tango
+    incremental: yes
+    keep_md: yes
+    smaller: yes
+    theme: cerulean
+    toc: yes
+    widescreen: yes
+  word_document:
+    toc: yes
+    toc_depth: '3'
+font-import: http://fonts.googleapis.com/css?family=Risque
+font-family: Garamond
+transition: linear
+---
+
+```{r include=FALSE, echo=FALSE, eval=TRUE}
+options(width=300)
+knitr::opts_chunk$set(
+  fig.width = 7, fig.height = 5, 
+  fig.path='figures',
+  fig.align = "center", 
+  size = "tiny", 
+  echo = TRUE, eval=TRUE, 
+  warning = FALSE, message = FALSE, 
+  results = TRUE, comment = "")
+```
+
+# Abstract 
+
+# Introduction
+
+RNA Sequqncing is a method relying on the next generation Sequencing (NGS) technologies to chracterize and quantify RNA from the Biological samples
+
+# Motivation
+## Biological motivation 
+  predicte cancer class for the new individuals based on thier transcriptom profile.
+
+## Methodological objectives
+ - Evalute the accuracy of different classifier methods.
+ - Generalize the power of the classifier (ability to correctly classify new individuals).
+ - Robustness to sampling and variables variations.
+  
+
+# Materials and methods
+ Train supervisied classifiers to assign individuals to predifined class labels relied on thier trascriptom profile.
+ Supervised methods have scale invariant, quite rapid, low complexity may be parallelized and no normality assumption with RNA-Seq count data.
+ 
+## pre-processing read counts 
+Normalizing and Trasforming read counts to eliminate systematic effects that are not associates with the biological difference of interests.
+
+## Quantifying the of reads per gene
+## Raw count table
+## Filtering Raw count from Zero Variance and near Zero Variance 
+## dificulties with RNA-Seq counts
+
+## Ordaring the genes in Raw count table according to differential Expression Analysis with respect to adj. P-values.
+
+## computing miscalssification error rate for the supervised classification methods.
+
+# Results and discussion
+## Procedures to evaluate a classifier 
+### K-nearest Neighbours classifier 
+we began with the k-nearst Neighbour method for testing it with high dimentionality data wherein that is nonparametric lazy learning method which does not make any assumption about the data distribution. what is the lazy learning mean? it doesn't need clear learning phase for generalisation.
+- How it works..
+  knn train all samples and then classifies new instances based on similarity (distance) measure, where the similarity measure can be formulated as follows:
+  Euclidian distance is  $\sqrt {\sum\_{i=1}(x_{i}- y_{i})^2  $
+  Manhattan distance is  $\sum \left\lvert  x_{i} - y_{i} \right\rvert$
+## Evaluation method by utlizing contingency table
+
+
+## KNN: Impact of the number of variables
+
+## KNN: Impact of the number of neighbours (K)
+
+## Multidimensional scaling with PCA
+
+## DEG-based variable (gene) ordering
+
+
+
+# Conclusion
+
+# Acknowledgements
+
+# References
+
+
+
+
+
+
+
+
