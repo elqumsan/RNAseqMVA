@@ -19,8 +19,8 @@ log2norm.prcomp.centred$x[1:10, 1:5] ## x corresponds to the "scores", or coordi
 ## The number of dimension has automatically been restricted to the number of samples
 
 
-## We explored the princomp method but actually it is not appropriate because 
-## it does not accept data with more variables than individuals, which which 
+## We explored the princomp method but actually it is not appropriate because
+## it does not accept data with more variables than individuals, which which
 ## always ou case.
 # log2norm.princomp <- princomp(t(log2normCounts) , cor=FALSE)
 # names(log2norm.princomp)
@@ -31,8 +31,8 @@ log2norm.prcomp.centred$x[1:10, 1:5] ## x corresponds to the "scores", or coordi
 # log2norm.princomp$loadings[1:10, 1:5]
 
 ## Stadard deviation plot
-barplot(log2norm.prcomp.centred$sdev, 
-        main="centred PCs (no scaling)",
+barplot(log2norm.prcomp.centred$sdev,
+        main= paste0("centred PCs (no scaling) with experiment no.", parameters$recountID),
         las=1, ylab="Standard dev per coponent", xlab="Component number")
 
 ## Variance plot: compare scaled and unscaled
@@ -51,22 +51,22 @@ par(mfrow=c(2,2))
 ymin <- PC2.min <- min(log2norm.prcomp.centred$x[,2])
 PC2.max <- max(log2norm.prcomp.centred$x[,2])
 ymax <- PC2.max + 0.4*(PC2.max - PC2.min)
-plot(log2norm.prcomp.centred$x[,c(1,2)], 
-     col=sampleColors, 
+plot(log2norm.prcomp.centred$x[,c(1,2)],
+     col=sampleColors,
      main="PC plot", las=1, panel.first=grid(),
      ylim=c(ymin, ymax))
 legend("topright", legend=names(classColors), col=classColors, cex=1, pch=1)
 
-plot(log2norm.prcomp.centred$x[,c(3,4)], 
-     col=sampleColors, 
+plot(log2norm.prcomp.centred$x[,c(3,4)],
+     col=sampleColors,
      main="PC plot", las=1, panel.first=grid())
 
-plot(log2norm.prcomp.centred$x[,c(1,3)], 
-     col=sampleColors, 
+plot(log2norm.prcomp.centred$x[,c(1,3)],
+     col=sampleColors,
      main="PC plot", las=1, panel.first=grid())
 
-plot(log2norm.prcomp.centred$x[,c(1,4)], 
-     col=sampleColors, 
+plot(log2norm.prcomp.centred$x[,c(1,4)],
+     col=sampleColors,
      main="PC plot", las=1, panel.first=grid())
 
 par(mfrow=c(1,1))
@@ -79,8 +79,8 @@ library(scatterplot3d)
 scatterplot3d.file <- file.path(dir.pca, "PCA_scatterplot3d_PC3-PC4-PC1.pdf")
 message("3D scatter plot: ", scatterplot3d.file)
 pdf(file = scatterplot3d.file, width=7, height=7)
-scatterplot3d(x = log2norm.prcomp.centred$x[,3], 
-              y = log2norm.prcomp.centred$x[,4], 
+scatterplot3d(x = log2norm.prcomp.centred$x[,3],
+              y = log2norm.prcomp.centred$x[,4],
               z = log2norm.prcomp.centred$x[,1], color=sampleColors,
               xlab="PC3", ylab="PC4", zlab="PC1", las=1, angle=45)
 silence <- dev.off()
@@ -89,8 +89,8 @@ silence <- dev.off()
 ## Another package
 # install.packages("rgl", dependencies = TRUE)
 # library(rgl)
-# plot3d(x = log2norm.prcomp.centred$x[,1], 
-#               y = log2norm.prcomp.centred$x[,2], 
+# plot3d(x = log2norm.prcomp.centred$x[,1],
+#               y = log2norm.prcomp.centred$x[,2],
 #               z = log2norm.prcomp.centred$x[,3], col = sampleColors,
 #               xlab="PC1", ylab="PC2", zlab="PC3", las=1)
 
