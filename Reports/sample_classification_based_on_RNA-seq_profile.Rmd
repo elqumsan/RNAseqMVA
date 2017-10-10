@@ -105,14 +105,26 @@ Normalizing and Trasforming read counts to eliminate systematic effects that are
 
 # Results and discussion
 ## Procedures to evaluate a classifier 
+  There are three main algorithm for classification as in the following 
+   - tree-based algorithm as in consequent the decision tree model.
+   - The K-nearest neghbour algorithm that need to claculate the distance between observations
+   - the hyperpalne algorithm that need to create the hyperplane separation between class of individuals
+ 
 ### K-nearest Neighbours classifier 
 we began with the k-nearst Neighbour method for testing it with high dimentionality data wherein that is nonparametric lazy learning method which does not make any assumption about the data distribution. what is the lazy learning mean? it doesn't need clear learning phase for generalisation.
 - How it works..
-  knn train all samples and then classifies new instances based on similarity (distance) measure, where the similarity measure can be formulated as follows:
+  knn train all samples and then classifies new individuals based on similarity (distance) measure, where the similarity measure can be formulated as follows:
   Euclidian distance is  $\sqrt {\sum\_{i=1}(x_{i}- y_{i})^2  $
   Manhattan distance is  $\sum \left\lvert  x_{i} - y_{i} \right\rvert$
-## Evaluation method by utlizing contingency table
 
+In knn a new individual is classified to a label (class) that is common among the k-nearest neighbours. if k = 1, then the new individual is assigned to the class where its nearest neighbour belongs. the only required input for the algorithm is k. if we give a small k input, it would lead to over-fitting. if we give a large K input, it may result in under-fitting. we chosen a proper k-value eqaul 3 due to we perform $2/3$ proportion for training set and $1/3$ proportion for testing set.
+
+- The advanteges of knn:
+- The disadvantages of knn:
+
+
+## Evaluation method by utlizing contingency table
+ After we performing the classification process, we generated classification table "contengency Table" by using predicted classes 
 
 ## KNN: Impact of the number of variables
 
