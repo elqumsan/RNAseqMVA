@@ -124,7 +124,7 @@ In knn a new individual is classified to a label (class) that is common among th
 
 
 ## Evaluation method by utlizing contingency table
- After we performing the classification process, we generated classification table "contengency Table" by using predicted classes 
+ After we performing the classification process, we generated classification table "contengency Table" by using predicted classes in the row and the actual classes in the column 
 
 ## KNN: Impact of the number of variables
 
