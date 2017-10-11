@@ -42,8 +42,8 @@ barplot((log2norm.prcomp.uncentred$sdev^2)[1:50], las=1, ylab="Variance per copo
 par(mfrow = c(1,1))
 
 ## Plot pairs of principal components
-PC.pair.file <- file.path(dir.pca, "PCA_plot_first_compontent_pairs.pdf")
-message("Plotting pairs of principal components ", PC.pair.file)
+PC.pair.file <- file.path(dir.pca, paste0("PCA_plot_first_compontent_pairs_",parameters$recountID,".pdf"))
+message("Plotting pairs of principal components for the experiment no.", parameters$recountID," file path", PC.pair.file)
 pdf(file = PC.pair.file, width=12, height=12)
 par(mfrow=c(2,2))
 ## Plot each sample on the 2 first components
@@ -53,21 +53,21 @@ PC2.max <- max(log2norm.prcomp.centred$x[,2])
 ymax <- PC2.max + 0.4*(PC2.max - PC2.min)
 plot(log2norm.prcomp.centred$x[,c(1,2)],
      col=sampleColors,
-     main="PC plot", las=1, panel.first=grid(),
+     main= paste0("PC plot for the experiment no._",parameters$recountID), las=1, panel.first=grid(),
      ylim=c(ymin, ymax))
 legend("topright", legend=names(classColors), col=classColors, cex=1, pch=1)
 
 plot(log2norm.prcomp.centred$x[,c(3,4)],
      col=sampleColors,
-     main="PC plot", las=1, panel.first=grid())
+     main=paste0("PC plot for the experiment no._", parameters$recountID), las=1, panel.first=grid())
 
 plot(log2norm.prcomp.centred$x[,c(1,3)],
      col=sampleColors,
-     main="PC plot", las=1, panel.first=grid())
+     main=paste0("PC plot for the experiment no._", parameters$recountID), las=1, panel.first=grid())
 
 plot(log2norm.prcomp.centred$x[,c(1,4)],
      col=sampleColors,
-     main="PC plot", las=1, panel.first=grid())
+     main= paste0("PC plot for the experiment no._", parameters$recountID), las=1, panel.first=grid())
 
 par(mfrow=c(1,1))
 silence <- dev.off()
@@ -76,8 +76,8 @@ silence <- dev.off()
 ## Drax a 3D plot with the 3 first components
 # install.packages("scatterplot3d", dependencies = TRUE)
 library(scatterplot3d)
-scatterplot3d.file <- file.path(dir.pca, "PCA_scatterplot3d_PC3-PC4-PC1.pdf")
-message("3D scatter plot: ", scatterplot3d.file)
+scatterplot3d.file <- file.path(dir.pca, paste0("PCA_scatterplot3d_PC3-PC4-PC1_",parameters$recountID,".pdf"))
+message("3D scatter plot: for the experiment no.",parameters$recountID," path file :", scatterplot3d.file)
 pdf(file = scatterplot3d.file, width=7, height=7)
 scatterplot3d(x = log2norm.prcomp.centred$x[,3],
               y = log2norm.prcomp.centred$x[,4],

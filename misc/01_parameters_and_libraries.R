@@ -10,7 +10,7 @@ recountIDs <- c("SRP042620", ## Multi-group breast cancer
 
 
 
-recountID <- "SRP042620" ## Multi-group breast cancer
+recountID <- "SRP056295" ## Multi-group breast cancer
 
 
 ## Running parameters
