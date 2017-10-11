@@ -4,13 +4,14 @@ recountIDs <- c("SRP042620", ## Multi-group breast cancer
                 "SRP056295", ## 525 runs, human leukemia
                 # crash                "SRP042161", ## 875 runs, 430 single glioblastoma cells isolated from 5 individual tumors and 102 single cells from gliomasphere cells lines generated using SMART-seq
                 "SRP041736", # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
-                "SRP035988"  ## Psoriasis
+                "SRP035988",  ## Psoriasis
+                "ERP003613" # Tissue samples from 95 human individuals
 )
 
 
 
 
-recountID <- "SRP056295" ## Multi-group breast cancer
+recountID <- "SRP055513" ## Multi-group breast cancer
 
 
 ## Running parameters

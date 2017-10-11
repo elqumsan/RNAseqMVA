@@ -1,14 +1,14 @@
 
 ################################################################
-## Load a count Table from recount-experiment, merge counts per sample 
+## Load a count Table from recount-experiment, merge counts per sample
 ## and apply some pre-filtering (remove zero-variance and near-zero-variance genes).
 if (parameters$compute) {
   message.with.time("Loading count table from recount", "; recountID = ", parameters$recountID)
-  loaded <- loadCounts(recountID = parameters$recountID, mergeRuns = T, 
+  loaded <- loadCounts(recountID = parameters$recountID, mergeRuns = TRUE ,
                        classColumn = parameters$classColumn,
                        minSamplesPerClass = parameters$minSamplesPerClass)
   rawCounts <- loaded$countTable ## Note: one row per sample, one column per gene
-  
+
   ################################################################
   ## Assign a specific color to each sammple according to its class
   pheno <- loaded$phenoTable
@@ -24,19 +24,19 @@ dim(rawCounts)
 ## Number of samples per class
 print(loaded$samples.per.class)
 
-## I start by assigning one systematic color(number) to each class, 
-## To make sure that each class has a color even with different datasets analsed in the efuture. 
-classColors <- 1:length(distinct.classes) 
+## I start by assigning one systematic color(number) to each class,
+## To make sure that each class has a color even with different datasets analsed in the efuture.
+classColors <- 1:length(distinct.classes)
 names(classColors) <- distinct.classes
 
-##JvH: Mustafa, these colors are specific for one dataset. 
-## In a future phase we will discuss about how to manage dataset-specific parameters, 
-## but not before your seminar Let us just keep this in mind for later. 
+##JvH: Mustafa, these colors are specific for one dataset.
+## In a future phase we will discuss about how to manage dataset-specific parameters,
+## but not before your seminar Let us just keep this in mind for later.
 
 ## Then Assign some specific colors which evoke particular sampletypes
 if (parameters$recountID == "SRP048759") {
   classColors["Heparinised.blood"] <- "#BB0000"
-  classColors["Bone.marrow"] <- "#4488FF" 
+  classColors["Bone.marrow"] <- "#4488FF"
 } else if (parameters$recountID == "SRP042620") {
   ## TO DO : define colors for the multi-group breast cancer dataset
   classColors["Breast.Cancer.Cell.Line"] <- "red"
@@ -54,7 +54,7 @@ names(sampleColors) <- rownames(loaded$phenoTable)
 ################################################################
 ## Normalize the counts without log2 transformation (first test)
 ##
-## Note: this method takes a table with one column per sample and one 
+## Note: this method takes a table with one column per sample and one
 ## row per gene, we thus have to transpose the raw count table.
 if (parameters$compute) {
   message.with.time("Normalizing counts based on 75th percentile")
@@ -70,8 +70,8 @@ dir.create(dir.NormImpact, recursive = TRUE, showWarnings = FALSE)
 list.files(dir.NormImpact)
 normCounts.file <- file.path(dir.NormImpact, paste(sep="", parameters$recountID, "_normalized_counts.tsv"))
 if (parameters$save.tables) {
-  write.table(sep="\t", quote=FALSE, row.names = TRUE, col.names=NA, 
-              x = round(t(normCounts), digits=2), 
+  write.table(sep="\t", quote=FALSE, row.names = TRUE, col.names=NA,
+              x = round(t(normCounts), digits=2),
               file = normCounts.file)
 } else {
   message.with.time("Skipping saving of normalized counts table")
@@ -80,11 +80,11 @@ if (parameters$save.tables) {
 ################################################################
 ## Normalize counts with log2 transformation (second test)
 ##
-## Note: this method takes a table with one column per sample and one 
+## Note: this method takes a table with one column per sample and one
 ## row per gene, we thus have to transpose the raw count table.
 if (parameters$compute) {
   message.with.time("Normalizing counts based on 75th percentile + log2 transformation")
-  log2norm <- NormalizeCounts(t(loaded$countTable), method = "quantile", quantile=0.75, 
+  log2norm <- NormalizeCounts(t(loaded$countTable), method = "quantile", quantile=0.75,
                               log2 = TRUE, epsilon=0.1)
   log2normCounts <- t(log2norm$normCounts)
   dim(log2normCounts)
@@ -97,7 +97,7 @@ dir.create(dir.log2Impact, recursive = TRUE, showWarnings = FALSE)
 log2normCounts.file <- file.path(dir.log2Impact, paste(sep="", parameters$recountID, "_log2_normalized_counts.tsv"))
 if (parameters$save.tables) {
   write.table(sep="\t", quote=FALSE, row.names = TRUE, col.names=NA,
-              x = round(digits=3, t(log2normCounts)), 
+              x = round(digits=3, t(log2normCounts)),
               file = log2normCounts.file)
 }
 
