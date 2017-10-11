@@ -133,5 +133,6 @@ loadRecountExperiment <- function(recountID,
                                sampleIdColumn = sampleIdColumn, verbose=FALSE)
   }
 
+  message.with.time("Finishing from the Load recount experiment no.", parameters$recountID)
   return(result)
 }

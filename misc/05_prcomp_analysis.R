@@ -44,6 +44,7 @@ par(mfrow = c(1,1))
 ## Plot pairs of principal components
 PC.pair.file <- file.path(dir.pca, paste0("PCA_plot_first_compontent_pairs_",parameters$recountID,".pdf"))
 message("Plotting pairs of principal components for the experiment no.", parameters$recountID," file path", PC.pair.file)
+
 pdf(file = PC.pair.file, width=12, height=12)
 par(mfrow=c(2,2))
 ## Plot each sample on the 2 first components

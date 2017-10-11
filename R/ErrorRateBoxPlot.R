@@ -99,7 +99,7 @@ ErrorRateBoxPlot <- function(experimentList,
     abline(h= mean(meanPermlabels), col="red", lwd=3 , lty= 3)
 
     ## Plot legend
-    legend("bottomright", lwd = 4,
+    legend("topright", lwd = 4,
            bty="o", bg = "white",
            legend = c("Actual data", "Permuted Labels"),
            col = c(expColor, permColor),

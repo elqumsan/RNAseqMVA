@@ -24,7 +24,7 @@
 #'
 #' @export
 loadCounts <- function( recountID,
-                        mergeRuns = T,
+                        mergeRuns = TRUE,
                         classColumn = "tissue",
                         minSamplesPerClass = 10, ... ) {
   # defineing directories for required libraries
@@ -51,11 +51,17 @@ loadCounts <- function( recountID,
   ## Tanspose the count tabe in oredr to use it with classifier methods
   ## which expect a table with one raw per observation (biological samples)
   ## and one column per variable (gene).
+  message("Traspose the count table to use it with classifier methods ")
   countTable <-as.data.frame(t(countdata$merged$sampleCounts))
+  #countTable <-as.data.frame(t(countdata$runCounts))
+
 
   ################################################################
   # Extract pheno table for the sample-wised merged count
+  message("Extracting pheno Table from sample-wised merged count")
   phenoTable <- countdata$merged$samplePheno
+  #phenoTable <- countdata$runPheno$characteristics
+
   #dim(PhenoTable)
 
   ################################################
