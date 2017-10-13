@@ -22,6 +22,7 @@ parameters <- list(
   classColumn = "tissue",
   mergeRuns = TRUE, ## Whether or not to merge runs per sample
   sampleIdColumn = "geo_accession",
+  dir.workspace = "~/RNAseqMVA_workspace",
   minSamplesPerClass = 10,
   #  iterations = 50, ## Number of iterations for the classiifers
   iterations = 10, ## Number of iterations for the classiifers
