@@ -6,7 +6,11 @@
 #' @param studyPath=file.path("~/recount_test/data/", recountID) Path of the folder in which the counts downlaoded from ReCount will be stored.
 #' @param mergeRuns=TRUE if TRUE, read counts will be merged for each sample
 #' @param sampleIdColumn="geo_accession"  name of the column of the pheno table which contains the sample IDs.
+<<<<<<< HEAD
 #' This information is passed to MergeRuns().
+=======
+#' This information is passed to MergeCounts().
+>>>>>>> d6fbb934375b59a3650676b9cd3147bf2c5119e0
 #' @param verbose=TRUE if TRUE, write messages to indicate the progressing of the tasks
 #' @param forceDownload=FALSE by default, the data is downloaded only if it is not found in the studyPath folder.
 #' If forceDownload is TRUE, the data will be downloaded irrespective of existing files.
