@@ -11,10 +11,7 @@ recountIDs <- c("SRP042620", ## Multi-group breast cancer
 
 
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 4844e8ee3aa7a7a2d992cf050f0fd9ceed036911
 recountID <- "SRP042620" ## Multi-group breast cancer
 #recountID <- "SRP041736" # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
 
