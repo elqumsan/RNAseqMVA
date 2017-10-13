@@ -12,6 +12,8 @@ MergeRuns(countsPerRun, phenoTable, sampleIdColumn = "geo_accession",
 
 \item{pheno.table}{a data frame containing the description of each run. This must include a column with the sample ID associated to each run}
 
+\item{sampleIdColumn="geo_accession"}{name of the column of the pheno table which contains the sample IDs. GEO accession is preferred because it is widely used, but it is sometimes not defined. In such case, the "sample" column should be used.}
+
 \item{verbose=FALSE}{if TRUE, write messages to indicate the progressing of the tasks}
 }
 \description{

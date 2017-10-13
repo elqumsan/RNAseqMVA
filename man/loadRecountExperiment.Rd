@@ -4,9 +4,9 @@
 \alias{loadRecountExperiment}
 \title{Load one count table from ReCount and optionally merge the counts per sample.}
 \usage{
-loadRecountExperiment(recountID, studyPath = file.path("~/recount_test/data/",
-  recountID), mergeRuns = TRUE, verbose = TRUE, forceDownload = FALSE,
-  sampleIdColumn = "geo_accession", ...)
+loadRecountExperiment(recountID, dir.workspace = "~/RNAseqMVA_workspace",
+  mergeRuns = TRUE, sampleIdColumn = "geo_accession",
+  forceDownload = FALSE, verbose = TRUE, ...)
 }
 \arguments{
 \item{recountID}{identifier of one study in ReCount database}
@@ -15,13 +15,13 @@ loadRecountExperiment(recountID, studyPath = file.path("~/recount_test/data/",
 
 \item{mergeRuns=TRUE}{if TRUE, read counts will be merged for each sample}
 
+\item{sampleIdColumn="geo_accession"}{name of the column of the pheno table which contains the sample IDs.
+This information is passed to MergeRuns().}
+
 \item{verbose=TRUE}{if TRUE, write messages to indicate the progressing of the tasks}
 
 \item{forceDownload=FALSE}{by default, the data is downloaded only if it is not found in the studyPath folder.
 If forceDownload is TRUE, the data will be downloaded irrespective of existing files.}
-
-\item{sampleIdColumn="geo_accession"}{name of the column of the pheno table which contains the sample IDs.
-This information is passed to MergeCounts().}
 }
 \value{
 A list containing: the count table, the pheno table, and some additional parameters (study ID, ...).
