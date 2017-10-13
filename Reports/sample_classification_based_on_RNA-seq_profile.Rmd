@@ -128,7 +128,7 @@ In knn a new individual is classified to a label (class) that is common among th
  It is the famouse one from the ensemble learning method that is rely on arise multiple decision trees during the training process. Each decision tree will output its own prediction results corresponding to the input. and then the forest will use the voting mechanism to select the most voted class as the prediction result. 
  
  - mechanism random forest in classification process
- The objective of the random forest is to ensemble weak learners into a strong learner. wherein random forest firstly performs bootstrap sampling as the training dataset of each single decision tree. next in each node, the process first randomly select subset variables, then finds the predictor variable that provides the best split among subset variables. next, the process arise the full tree without pruning. in the end, we can obtain the predicted result of subset  from each single tree. as a result we get the prediction result by taking majority vote.
+ The objective of the random forest is to ensemble weak learners into a strong learner. wherein random forest firstly performs bootstrap sampling as the training individuals (samples) of each single decision tree. next in each node, the process first randomly select subset individauls, then finds the predictor individuals that provides the best split among subset individuals. next, the process arise the full tree without pruning. in the end, we can obtain the predicted result of subset from each single tree. as a result we get the prediction result by taking majority vote.
 
 - The advanteges of random forest. it is easy to compute and can efficiently process data.
 - The disadvantege is prone to over-fitting niosy data.
@@ -150,11 +150,12 @@ In knn a new individual is classified to a label (class) that is common among th
 as we can note from the next plot which explain how the classifier works with the number of variables (genes) are sotred according to the most significant by two tools for that are DESseq2 and edgeR which we used it of doing differential expresion analysis between the individual class and then we ordered all variables increasingly with the most significat consequntly we passing it to the each classifier to analysis the effect of number of variable into the qaulity of  performance of the classifiers   
 
 ## Study comparing between of all variables and all Principal component.
-our main is to explian if the classifier will work in the same efficiany with all variable or with all principal component, where here we would exemplify the classifier efficieny will be better achive with individuals which is redueced thier dimensionality by the principal component tools for that purposes or it's better to work with individual in their nature. yo might find the misscalssification error rate for each classifier with two types from the data.
+our main is to explian if the classifier will work in the same efficiany with all variable or with all principal components, where here we would exemplify the classifier efficieny will be better achive with individuals which is redueced thier dimensionality by the principal component tools for that purposes or it's better to work with individual in their nature. you might find the misscalssification error rate for each classifier with two types from the data.
 
 ## Multidimensional scaling with PCA
 
-## DEG-based variable (gene) ordering
+## study impact of number of variables into the efficiancy of each classifiers
+Now that 
 
 
 
