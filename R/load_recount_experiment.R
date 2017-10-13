@@ -5,11 +5,11 @@
 #' @param recountID identifier of one study in ReCount database
 #' @param studyPath=file.path("~/recount_test/data/", recountID) Path of the folder in which the counts downlaoded from ReCount will be stored.
 #' @param mergeRuns=TRUE if TRUE, read counts will be merged for each sample
+#' @param sampleIdColumn="geo_accession"  name of the column of the pheno table which contains the sample IDs.
+#' This information is passed to MergeRuns().
 #' @param verbose=TRUE if TRUE, write messages to indicate the progressing of the tasks
 #' @param forceDownload=FALSE by default, the data is downloaded only if it is not found in the studyPath folder.
 #' If forceDownload is TRUE, the data will be downloaded irrespective of existing files.
-#' @param sampleIdColumn="geo_accession"  name of the column of the pheno table which contains the sample IDs.
-#' This information is passed to MergeCounts().
 #'
 #' @examples
 #'
@@ -40,20 +40,25 @@
 #' @return
 #' A list containing: the count table, the pheno table, and some additional parameters (study ID, ...).
 loadRecountExperiment <- function(recountID,
-                                  studyPath = file.path("~/recount_test/data/", recountID),
+                                  dir.workspace = "~/RNAseqMVA_workspace",
+                                  #                                  studyPath = file.path("~/recount_test/data/", recountID),
                                   mergeRuns = TRUE,
-                                  verbose = TRUE,
+                                  sampleIdColumn = "geo_accession", ## Alternative: use "sample"
                                   forceDownload = FALSE,
-                                  sampleIdColumn = "geo_accession", ...) {
+                                  verbose = TRUE,
+                                  ...) {
   result <- list()
   library(recount)
-  #source('https://github.com/elqumsan/RNAseqMVA/blob/master/R/merge_runs.R')
+  studyPath <- file.path(dir.workspace, "data", recountID)
 
-  source("~/RNAseqMVA/R/merge_runs.R")
-  source( "~/RNAseqMVA/R/load_recount_experiment.R" )
+  # source("~/RNAseqMVA/R/merge_runs.R")
+  # source( "~/RNAseqMVA/R/load_recount_experiment.R" )
 
   ## Create studyPath directory
-  dir.create(studyPath, recursive = TRUE, showWarnings = FALSE)
+  if (!file.exists(studyPath)) {
+    message("Creating directory to store Recount dataset ", recountID," in ", studyPath)
+    dir.create(studyPath, recursive = TRUE, showWarnings = FALSE)
+  }
 
   ## Define the file where the downloaded counts will be stored
   rseFile <- file.path(studyPath, "rse_gene.Rdata")
@@ -95,6 +100,9 @@ loadRecountExperiment <- function(recountID,
   runCounts <- assay(rse)
   # View(runCounts)
   result$runCounts <- runCounts
+  if (verbose) {
+    message("Loaded counts per run: ", nrow(runCounts), " features x ", ncol(runCounts), " counts.")
+  }
 
   ## Table with information about the columns of the RangedSeummaryExperiment.
   if (verbose) {
@@ -130,7 +138,8 @@ loadRecountExperiment <- function(recountID,
     if (verbose) { message("Merging run-wise counts by sample") }
     result$merged <- MergeRuns(runCounts,
                                runPheno,
-                               sampleIdColumn = sampleIdColumn, verbose=FALSE)
+                               sampleIdColumn = sampleIdColumn,
+                               verbose=FALSE)
   }
 
   message.with.time("Finishing from the Load recount experiment no.", parameters$recountID)
