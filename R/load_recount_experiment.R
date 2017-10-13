@@ -101,7 +101,7 @@ loadRecountExperiment <- function(recountID,
   # View(runCounts)
   result$runCounts <- runCounts
   if (verbose) {
-    message("Loaded counts per run: ", nrow(runCounts), " features x ", ncol(runCounts), " counts.")
+    message("Loaded counts per run: ", nrow(runCounts), " features x ", ncol(runCounts), " runs.")
   }
 
   ## Table with information about the columns of the RangedSeummaryExperiment.
@@ -139,9 +139,10 @@ loadRecountExperiment <- function(recountID,
     result$merged <- MergeRuns(runCounts,
                                runPheno,
                                sampleIdColumn = sampleIdColumn,
-                               verbose=FALSE)
+                               verbose = verbose)
   }
 
   message.with.time("Finishing from the Load recount experiment no.", parameters$recountID)
   return(result)
 }
+

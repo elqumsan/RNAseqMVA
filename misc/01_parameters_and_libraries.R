@@ -11,10 +11,6 @@ recountIDs <- c("SRP042620", ## Multi-group breast cancer
 
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 78b4dbb65c61735789ecc021a414a85aadfbbfa6
 recountID <- "SRP042620" ## Multi-group breast cancer
 #recountID <- "SRP041736" # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
 
@@ -25,6 +21,7 @@ parameters <- list(
   classColumn = "tissue",
   mergeRuns = TRUE, ## Whether or not to merge runs per sample
   sampleIdColumn = "geo_accession",
+  dir.workspace = "~/RNAseqMVA_workspace",
   minSamplesPerClass = 10,
   #  iterations = 50, ## Number of iterations for the classiifers
   iterations = 10, ## Number of iterations for the classiifers

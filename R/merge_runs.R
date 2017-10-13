@@ -14,6 +14,9 @@ MergeRuns <- function(countsPerRun,
                       verbose=FALSE) {
 
   unique.samples <- unique(unlist(phenoTable[sampleIdColumn]))
+  message("Merging runs from count table (", nrow(countsPerRun), " features, ",
+          ncol(countsPerRun), " runs), ",
+          length(unique.samples), " unique samples. ")
   sample.nb <- length(unique.samples)
   sample.counts <- data.frame(matrix(nrow=nrow(countsPerRun),
                                      ncol=length(unique.samples)))
@@ -23,7 +26,7 @@ MergeRuns <- function(countsPerRun,
   s <- 0
   for (sample in unique.samples) {
     s <- s + 1
-    if (verbose) { message("merging counts for sample ", s, "/", sample.nb, " ", sample) }
+    # if (verbose) { message("merging counts for sample ", s, "/", sample.nb, " ", sample) }
     runs <- grep(pattern = sample, x = phenoTable[, sampleIdColumn])
     if (length(runs ) > 1) {
       sample.counts[,sample] <- apply(countsPerRun[,runs],1,sum)
@@ -39,7 +42,7 @@ MergeRuns <- function(countsPerRun,
   for (field in names(phenoTable)) {
     nb.val <- length(unique(unlist(phenoTable[,field])))
     if (nb.val  <= sample.nb) {
-      if (verbose) { message("Sample field ", field, "; values: ",  nb.val) }
+      # if (verbose) { message("Sample field ", field, "; values: ",  nb.val) }
       sampleFields <- append(sampleFields, field)
     }
   }

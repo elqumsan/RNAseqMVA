@@ -8,7 +8,8 @@ if (parameters$compute) {
                        mergeRuns = parameters$mergeRuns,
                        classColumn = parameters$classColumn,
                        sampleIdColumn= parameters$sampleIdColumn,
-                       minSamplesPerClass = parameters$minSamplesPerClass)
+                       minSamplesPerClass = parameters$minSamplesPerClass,
+                       dir.workspace = parameters$dir.workspace)
   rawCounts <- loaded$countTable ## Note: one row per sample, one column per gene
   ## View(rawCounts)
 
