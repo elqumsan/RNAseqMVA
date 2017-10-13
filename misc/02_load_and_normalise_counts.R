@@ -4,10 +4,13 @@
 ## and apply some pre-filtering (remove zero-variance and near-zero-variance genes).
 if (parameters$compute) {
   message.with.time("Loading count table from recount", "; recountID = ", parameters$recountID)
-  loaded <- loadCounts(recountID = parameters$recountID, mergeRuns = TRUE ,
+  loaded <- loadCounts(recountID = parameters$recountID,
+                       mergeRuns = parameters$mergeRuns,
                        classColumn = parameters$classColumn,
+                       sampleIdColumn= parameters$sampleIdColumn,
                        minSamplesPerClass = parameters$minSamplesPerClass)
   rawCounts <- loaded$countTable ## Note: one row per sample, one column per gene
+  ## View(rawCounts)
 
   ################################################################
   ## Assign a specific color to each sammple according to its class
