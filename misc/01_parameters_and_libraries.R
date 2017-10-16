@@ -1,3 +1,5 @@
+library(RNAseqMVA)
+
 ## Load the parameters and libraries that will be used for the different other scripts.
 recountIDs <- c("SRP042620", ## Multi-group breast cancer
                 "SRP057196",
@@ -141,7 +143,7 @@ source(file.path(dir.scripts, "ErrorRateBoxPlot.R"))
 source(file.path(dir.scripts,"filterCountTable.R"))
 
 # loading required libraries
-requiredCRAN <- c('class', "randomForest","broom", "devtools")
+requiredCRAN <- c('devtools', 'class', "randomForest","broom", "devtools")
 RequiredCRANPackages(requiredCRAN)
 
 ## JvH: Mustafa, please add the other required packages, in particular recount
