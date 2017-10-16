@@ -9,11 +9,11 @@
 #' @param verbose=FALSE if TRUE, write messages to indicate the progressing of the tasks
 #' @export
 MergeRuns <- function(countsPerRun,
-                      phenoTable,
+                      runPhenoTable,
                       sampleIdColumn = "geo_accession",
                       verbose=FALSE) {
 
-  unique.samples <- unique(unlist(phenoTable[sampleIdColumn]))
+  unique.samples <- as.vector(unique(unlist(runPhenoTable[, sampleIdColumn])))
   message("Merging runs from count table (", nrow(countsPerRun), " features, ",
           ncol(countsPerRun), " runs), ",
           length(unique.samples), " unique samples. ")
@@ -23,11 +23,15 @@ MergeRuns <- function(countsPerRun,
   names(sample.counts) <- unique.samples
   rownames(sample.counts) <- rownames(countsPerRun)
   # View(sample.counts)
+
+
+  ## TO DO: see if we can use some apply or do.call() function
+  ## to replace this loop, since "for" is an heresy in R
   s <- 0
   for (sample in unique.samples) {
     s <- s + 1
     # if (verbose) { message("merging counts for sample ", s, "/", sample.nb, " ", sample) }
-    runs <- grep(pattern = sample, x = phenoTable[, sampleIdColumn])
+    runs <- grep(pattern = sample, x = runPhenoTable[, sampleIdColumn])
     if (length(runs ) > 1) {
       sample.counts[,sample] <- apply(countsPerRun[,runs],1,sum)
     } else {
@@ -37,16 +41,16 @@ MergeRuns <- function(countsPerRun,
 
   ## Prepare a phenotable with all fields that are identical between runs
   ## This is tricky.
-  sample.rows <- pmatch(unique.samples, unlist(phenoTable[sampleIdColumn]))
+  sample.rows <- pmatch(unique.samples, unlist(runPhenoTable[sampleIdColumn]))
   sampleFields <- vector()
-  for (field in names(phenoTable)) {
-    nb.val <- length(unique(unlist(phenoTable[,field])))
+  for (field in names(runPhenoTable)) {
+    nb.val <- length(unique(unlist(runPhenoTable[,field])))
     if (nb.val  <= sample.nb) {
       # if (verbose) { message("Sample field ", field, "; values: ",  nb.val) }
       sampleFields <- append(sampleFields, field)
     }
   }
-  samplePheno <- phenoTable[sample.rows, sampleFields]
+  samplePheno <- runPhenoTable[sample.rows, sampleFields]
   rownames(samplePheno) <- samplePheno[,sampleIdColumn]
   # View(samplePheno)
   sample.nb <- ncol(sample.counts)
