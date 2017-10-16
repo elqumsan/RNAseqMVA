@@ -50,13 +50,13 @@ loadCounts <- function(recountID,
   # loading count Data from recount_experiment, Via our wrapper which will Automatically merge the runs by
   # sample in order to obtain sample-wise count rather than run-wise counts.
 
-  countdata <-loadRecountExperiment(recountID=recountID, mergeRuns=mergeRuns, sampleIdColumn=sampleIdColumn, dir.workspace = dir.workspace, ...)
+  countdata <- loadRecountExperiment(recountID=recountID, mergeRuns=mergeRuns, sampleIdColumn=sampleIdColumn, dir.workspace = dir.workspace, ...)
 
   ################################################################
   ## Tanspose the count tabe in oredr to use it with classifier methods
   ## which expect a table with one raw per observation (biological samples)
   ## and one column per variable (gene).
-  message("Traspose the count table to use it with classifier methods ")
+  message("Transpose the count table to use it with classifier methods ")
   countTable <-as.data.frame(t(countdata$merged$sampleCounts))
   #countTable <-as.data.frame(t(countdata$runCounts))
 
