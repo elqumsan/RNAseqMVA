@@ -45,7 +45,7 @@ loadRecountExperiment <- function(recountID,
                                   mergeRuns = TRUE,
                                   sampleIdColumn = "geo_accession", ## Alternative: use "sample"
                                   forceDownload = FALSE,
-                                  verbose = TRUE,
+                                  verbose = parameters$verbose,
                                   ...) {
   result <- list()
   library(recount)
@@ -142,7 +142,7 @@ loadRecountExperiment <- function(recountID,
                                verbose = verbose)
   }
 
-  message.with.time("Finishing from the Load recount experiment no.", parameters$recountID)
+  message.with.time("Finished loading Recount experiment ID ", parameters$recountID)
   return(result)
 }
 
