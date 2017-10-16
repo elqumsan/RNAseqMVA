@@ -1,4 +1,4 @@
-
+library(RNAseqMVA)
 ################################################################
 ## Load a count Table from recount-experiment, merge counts per sample
 ## and apply some pre-filtering (remove zero-variance and near-zero-variance genes).
