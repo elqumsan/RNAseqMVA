@@ -108,28 +108,31 @@ loadRecountExperiment <- function(recountID,
   if (verbose) {
     message("Building pheno table")
   }
-  coldata <- colData(rse)
-  runPheno <- coldata
+  runPheno <- colData(rse) ## phenotype per run
+  View(runPheno)
 
   ## Extract the conditions from the "characteristics" column of the coldata.
   ## This is a bit tricky: we have to parse a string describing several attributes.
-  # geochar <- lapply(split(
-  #   colData(rse),
-  #   seq_len(nrow(colData(rse)))),
-  #   geo_characteristics)
-  # geochar <- do.call(rbind, lapply(geochar, function(x) {
-  #   if('cells' %in% colnames(x)) {
-  #     colnames(x)[colnames(x) == 'cells'] <- 'cell.line'
-  #     return(x)
-  #   } else {
-  #     return(x)
-  #   }
-  # }))
+  geochar <- lapply(split(
+    runPheno,
+    seq_len(nrow(runPheno))),
+    geo_characteristics)
+  # View(geochar)
+
+  geochar <- do.call(rbind, lapply(geochar, function(x) {
+    if('cells' %in% colnames(x)) {
+      colnames(x)[colnames(x) == 'cells'] <- 'cell.line'
+      return(x)
+    } else {
+      return(x)
+    }
+  }))
+
   # head(geochar)
 
   ## Build a pheno table with selected columns from coldata + the geodata we just extracted
   runPheno <- cbind(
-    coldata[, grep(pattern="(characteristics|sharq)", x=names(coldata), invert=TRUE)],
+    runPheno[, grep(pattern="(characteristics|sharq)", x=names(runPheno), invert=TRUE)],
     geochar)
   result$runPheno <- runPheno
   # View(runPheno)
