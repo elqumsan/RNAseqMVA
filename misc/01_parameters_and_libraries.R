@@ -1,3 +1,6 @@
+require("roxygen2")
+require("devtools")
+
 library(RNAseqMVA)
 
 ## Load the parameters and libraries that will be used for the different other scripts.
@@ -10,12 +13,8 @@ recountIDs <- c("SRP042620", ## Multi-group breast cancer
                 "ERP003613" # Tissue samples from 95 human individuals
 )
 
-
-
-
-
-#recountID <- "SRP042620" ## Multi-group breast cancer
-recountID <- "SRP041736" # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
+recountID <- "SRP042620" ## Multi-group breast cancer
+#recountID <- "SRP041736" # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
 
 
 ## Running parameters
