@@ -113,18 +113,18 @@ loadRecountExperiment <- function(recountID,
 
   ## Extract the conditions from the "characteristics" column of the coldata.
   ## This is a bit tricky: we have to parse a string describing several attributes.
-  geochar <- lapply(split(
-    colData(rse),
-    seq_len(nrow(colData(rse)))),
-    geo_characteristics)
-  geochar <- do.call(rbind, lapply(geochar, function(x) {
-    if('cells' %in% colnames(x)) {
-      colnames(x)[colnames(x) == 'cells'] <- 'cell.line'
-      return(x)
-    } else {
-      return(x)
-    }
-  }))
+  # geochar <- lapply(split(
+  #   colData(rse),
+  #   seq_len(nrow(colData(rse)))),
+  #   geo_characteristics)
+  # geochar <- do.call(rbind, lapply(geochar, function(x) {
+  #   if('cells' %in% colnames(x)) {
+  #     colnames(x)[colnames(x) == 'cells'] <- 'cell.line'
+  #     return(x)
+  #   } else {
+  #     return(x)
+  #   }
+  # }))
   # head(geochar)
 
   ## Build a pheno table with selected columns from coldata + the geodata we just extracted
