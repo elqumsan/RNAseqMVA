@@ -6,7 +6,7 @@
 \usage{
 loadRecountExperiment(recountID, dir.workspace = "~/RNAseqMVA_workspace",
   mergeRuns = TRUE, sampleIdColumn = "geo_accession",
-  forceDownload = FALSE, verbose = TRUE, ...)
+  forceDownload = FALSE, verbose = parameters$verbose, ...)
 }
 \arguments{
 \item{recountID}{identifier of one study in ReCount database}
