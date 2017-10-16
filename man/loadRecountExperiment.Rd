@@ -37,7 +37,7 @@ recountID <- "SRP048759"
 recountData <- loadRecountExperiment(recountID)
 
 ## Check the dimension of the table with counts per run
-dim(recountData$runCounts)
+dim(recountData$countsPerRun)
 
 ## Check the number of runs per sample
 table(recountData$runPheno$geo_accession)
@@ -49,8 +49,7 @@ message("Number unique geo_accession values: ", length(unique(sort(recountData$r
 ## Check the dimension of the table with counts per sample
 dim(recountData$merged$sampleCounts)
 
-## Test correlation between technical replicates (runs for the same sample)
-cor(log(recountData$runCounts[, recountData$runPheno$geo_accession == "GSM1521620"]+1))
+cor(log(recountData$countsPerRun[, recountData$runPheno$geo_accession == "GSM1521620"]+1))
 
 ## Test correlation between 8 randomly selected biological replicates (distinct samples)
 cor(log(recountData$merged$sampleCounts[, sample(1:ncol(recountData$merged$sampleCounts), size=8)]+1))

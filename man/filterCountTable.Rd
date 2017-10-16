@@ -2,7 +2,7 @@
 % Please edit documentation in R/filterCountTable.R
 \name{filterCountTable}
 \alias{filterCountTable}
-\title{Apply various filters on the observations and variables of 
+\title{Apply various filters on the observations and variables of
 a count table in order to prepare it for classification.}
 \usage{
 filterCountTable(countTable, phenoTable, classColumn = "tissue",
@@ -13,15 +13,15 @@ filterCountTable(countTable, phenoTable, classColumn = "tissue",
 
 \item{phenoTable}{a data.frame with one row per observation and one column per attribute}
 
-\item{classColumn="tissue"}{name of a column of the pheno table which contains the class labels (default: "tissue"). 
-In som cases classes must be built by concatenating several columns of the pheno table (e.g. "tissue" and "cell.type" for dataset SRP057196), 
+\item{classColumn="tissue"}{name of a column of the pheno table which contains the class labels (default: "tissue").
+In som cases classes must be built by concatenating several columns of the pheno table (e.g. "tissue" and "cell.type" for dataset SRP057196),
 This can be achieved by providing a vector of column names from the pheno table. In this case, class names are built by}
 
 \item{minSamplesPerClass=10}{minimum nuimber of samples per class to keep}
 }
 \description{
-Apply various filters on the observations (e.g. biological samples) 
-and variables (e.g. genes) of 
+Apply various filters on the observations (e.g. biological samples)
+and variables (e.g. genes) of
 a count table in order to prepare it for classification.
 }
 \examples{

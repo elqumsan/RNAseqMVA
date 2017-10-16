@@ -4,7 +4,7 @@
 \alias{MergeRuns}
 \title{Merge read counts from different runs by sample.}
 \usage{
-MergeRuns(countsPerRun, phenoTable, sampleIdColumn = "geo_accession",
+MergeRuns(countsPerRun, runPhenoTable, sampleIdColumn = "geo_accession",
   verbose = FALSE)
 }
 \arguments{
