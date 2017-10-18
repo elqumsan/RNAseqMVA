@@ -24,6 +24,7 @@
 #' x <- loadCounts( recountID = "SRP057196", mergeRuns=T,
 #'     classColumn = c("tissue", "cell.type"), minSamplesPerClass=5)
 #'
+#' @import recount
 #' @export
 loadCounts <- function(recountID,
                       classColumn,
