@@ -1,1 +1,10 @@
-exportPattern("^[[:alpha:]]+")
+#exportPattern("^[[:alpha:]]+")
+## all the function that will be available for the users
+export("loadCounts","loadRecountExperiment", "filterCountTable")
+# import all the plot functions
+
+# all that classes that will be created by the user
+exportClasses("loadedRecount", "result")
+
+# the listed methods would be applied to loadedRecount/ result
+exportMethods("file.path","scale_counts","assay"," colData","lapply"," do.call")
