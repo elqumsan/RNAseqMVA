@@ -2,7 +2,7 @@ require("roxygen2")
 require("devtools")
 
 library(RNAseqMVA)
-
+# package.skeleton(name = "RNAseqMVA")
 ## Load the parameters and libraries that will be used for the different other scripts.
 recountIDs <- c("SRP042620", ## Multi-group breast cancer
                 "SRP057196",
