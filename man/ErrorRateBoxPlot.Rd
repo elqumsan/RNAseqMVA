@@ -3,7 +3,6 @@
 \name{ErrorRateBoxPlot}
 \alias{ErrorRateBoxPlot}
 \title{Function for boxplot the error rate}
-\title
 \usage{
 ErrorRateBoxPlot(experimentList, classifier,
   main = paste("Misclassification rates", "\\n", parameters$iterations,

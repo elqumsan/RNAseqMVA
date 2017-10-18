@@ -3,7 +3,6 @@
 \name{MisclassificationEstimate}
 \alias{MisclassificationEstimate}
 \title{RNA-Seq classifier evaluation to assesse the performance of the classifier}
-\title
 \usage{
 MisclassificationEstimate(countTable, classes, trainingProportion = 2/3,
   classifier = "knn", verbose = FALSE, k = 3)

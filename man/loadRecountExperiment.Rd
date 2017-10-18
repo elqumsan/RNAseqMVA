@@ -3,7 +3,6 @@
 \name{loadRecountExperiment}
 \alias{loadRecountExperiment}
 \title{Load one count table from ReCount and optionally merge the counts per sample.}
-\title
 \usage{
 loadRecountExperiment(recountID, dir.workspace = "~/RNAseqMVA_workspace",
   mergeRuns = TRUE, sampleIdColumn = "geo_accession",

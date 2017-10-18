@@ -1,7 +1,6 @@
 \name{hello}
 \alias{hello}
 \title{Hello, World!}
-\title
 \usage{
 hello()
 }
