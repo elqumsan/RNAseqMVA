@@ -3,6 +3,7 @@
 \name{NormalizeCounts}
 \alias{NormalizeCounts}
 \title{Normalize RNA-seq count table}
+\title
 \usage{
 NormalizeCounts(rawCounts, method = "quantile", quantile = 0.75,
   log2 = TRUE, epsilon = 0.1)

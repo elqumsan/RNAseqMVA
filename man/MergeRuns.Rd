@@ -3,6 +3,7 @@
 \name{MergeRuns}
 \alias{MergeRuns}
 \title{Merge read counts from different runs by sample.}
+\title
 \usage{
 MergeRuns(countsPerRun, runPhenoTable, sampleIdColumn = "geo_accession",
   verbose = FALSE)

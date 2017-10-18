@@ -3,6 +3,7 @@
 \name{one.experiment}
 \alias{one.experiment}
 \title{repeating the classifier with particular data type}
+\title
 \usage{
 one.experiment(countTable, classes, classifier, data.type,
   iterations = parameters$iterations, variable.type = "all",

@@ -3,6 +3,7 @@
 \name{DEGordering}
 \alias{DEGordering}
 \title{Variable ordering according to the p-values returned by differential expression analysis.}
+\title
 \usage{
 DEGordering(countTable, classes, method = "DESeq2",
   edgeRDispEst = "tagwise")

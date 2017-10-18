@@ -3,6 +3,7 @@
 \name{loadCounts}
 \alias{loadCounts}
 \title{Loading the count table, the Pheno table and vector of classes}
+\title
 \usage{
 loadCounts(recountID, classColumn, mergeRuns,
   sampleIdColumn = "geo_accession", minSamplesPerClass = 10,

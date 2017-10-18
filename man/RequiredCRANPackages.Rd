@@ -3,6 +3,7 @@
 \name{RequiredCRANPackages}
 \alias{RequiredCRANPackages}
 \title{Load required packages from CRAN, and install them if necessary.}
+\title
 \usage{
 RequiredCRANPackages(packages)
 }
@@ -10,7 +11,7 @@ RequiredCRANPackages(packages)
 \item{packages}{a vector containing a list of required CRAN packages.}
 }
 \description{
-Load a list of required RCRAN packages. For each specified package, 
+Load a list of required RCRAN packages. For each specified package,
 first check  if it is available on this R instance. If not, automatically install it.
 }
 \author{

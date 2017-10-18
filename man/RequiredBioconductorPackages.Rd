@@ -3,6 +3,7 @@
 \name{RequiredBioconductorPackages}
 \alias{RequiredBioconductorPackages}
 \title{Load required packages from BioConductor, and install them if necessary.}
+\title
 \usage{
 RequiredBioconductorPackages(packages)
 }
@@ -10,7 +11,7 @@ RequiredBioconductorPackages(packages)
 \item{packages}{a vector containing a list of required BioConductor packages.}
 }
 \description{
-Load a list of required BioConductor packages. For each specified package, 
+Load a list of required BioConductor packages. For each specified package,
 first check  if it is available on this R instance. If not, automatically install it.
 }
 \author{
