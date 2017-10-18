@@ -8,3 +8,5 @@ exportClasses("loadedRecount", "result", "colData")
 
 # the listed methods would be applied to loadedRecount/ result
 exportMethods("file.path","scale_counts","assay"," colData","lapply"," do.call")
+
+importFrom("recount", "colData","assay","scale_counts","download_study")
