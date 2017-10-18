@@ -1,6 +1,6 @@
 #exportPattern("^[[:alpha:]]+")
 ## all the function that will be available for the users
-export("loadCounts","loadRecountExperiment", "filterCountTable")
+export("loadCounts","loadRecountExperiment", "filterCountTable","RequiredCRANPackages")
 # import all the plot functions
 
 # all that classes that will be created by the user
