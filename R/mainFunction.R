@@ -8,16 +8,18 @@
 #'
 
 if (exists( "DEGordering" ,  mode="function")){
- source("~/RNAseqMVA/R/deg_ordering.R")
-  source("~/RNAseqMVA/R/ErrorRateBoxPlot.R")
-  source("~/RNAseqMVA/R/load_counts.R")
-  source("~/RNAseqMVA/R/merge_runs.R")
-  source("~/RNAseqMVA/R/misclassification_estimate.R")
-  source("~/RNAseqMVA/R/normalize_count_table.R")
-  source("~/RNAseqMVA/R/normalize_count_table.R")
-  source("~/RNAseqMVA/R/one_experiment.R")
-  source("~/RNAseqMVA/R/required_libraries.R")
-  source("~/RNAseqMVA/R/required_libraries.R")
+
+  ## This is no required anymore since functions are loaded via the R package
+  # source("~/RNAseqMVA/R/deg_ordering.R")
+  # source("~/RNAseqMVA/R/ErrorRateBoxPlot.R")
+  # source("~/RNAseqMVA/R/load_counts.R")
+  # source("~/RNAseqMVA/R/merge_runs.R")
+  # source("~/RNAseqMVA/R/misclassification_estimate.R")
+  # source("~/RNAseqMVA/R/normalize_count_table.R")
+  # source("~/RNAseqMVA/R/normalize_count_table.R")
+  # source("~/RNAseqMVA/R/one_experiment.R")
+  # source("~/RNAseqMVA/R/required_libraries.R")
+  # source("~/RNAseqMVA/R/required_libraries.R")
 
 #
 # } else if(exists("ErrorRateBoxPlot" , mode = "function")){
