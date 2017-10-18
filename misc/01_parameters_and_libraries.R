@@ -1,7 +1,7 @@
 require("roxygen2")
 require("devtools")
+require("RNAseqMVA")
 
-library(RNAseqMVA)
 # package.skeleton(name = "man")
 ## Load the parameters and libraries that will be used for the different other scripts.
 recountIDs <- c("SRP042620", ## Multi-group breast cancer
@@ -142,7 +142,7 @@ if (parameters$reload == TRUE) {
 # source(file.path(dir.scripts,"filterCountTable.R"))
 
 # loading required libraries
-requiredCRAN <- c('devtools', 'class', "randomForest","broom", "devtools")
+requiredCRAN <- c('devtools', 'class', "randomForest","broom", "roxygen2")
 RequiredCRANPackages(requiredCRAN)
 
 ## JvH: Mustafa, please add the other required packages, in particular recount
