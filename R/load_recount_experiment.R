@@ -38,6 +38,10 @@
 #'
 #' @return
 #' A list containing: the count table, the pheno table, and some additional parameters (study ID, ...).
+#'
+#'
+#' @import recount
+#' @export
 loadRecountExperiment <- function(recountID,
                                   dir.workspace = "~/RNAseqMVA_workspace",
                                   #                                  studyPath = file.path("~/recount_test/data/", recountID),
@@ -47,7 +51,6 @@ loadRecountExperiment <- function(recountID,
                                   verbose = parameters$verbose,
                                   ...) {
   result <- list()
-  library(recount)
   studyPath <- file.path(dir.workspace, "data", recountID)
 
   # source("~/RNAseqMVA/R/merge_runs.R")
