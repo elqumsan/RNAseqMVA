@@ -94,7 +94,7 @@ message.with.time <- function(...) {
 ################################################################
 ## Define directories
 
-## Main directory should be adapted to the user's configuration
+# Main directory should be adapted to the user's configuration
 dir.main <- "~/RNAseqMVA"
 
 #classifier <- "knn"
@@ -132,14 +132,14 @@ if (parameters$reload == TRUE) {
 }
 
 ## Load custom librarires
-source(file.path(dir.scripts, "misclassification_estimate.R") )
-source(file.path(dir.scripts, "load_counts.R"))
-source(file.path(dir.scripts, "required_libraries.R"))
-source(file.path(dir.scripts, "normalize_count_table.R"))
-source(file.path(dir.scripts, "deg_ordering.R"))
-source(file.path(dir.scripts, "one_experiment.R"))
-source(file.path(dir.scripts, "ErrorRateBoxPlot.R"))
-source(file.path(dir.scripts,"filterCountTable.R"))
+# source(file.path(dir.scripts, "misclassification_estimate.R") )
+# source(file.path(dir.scripts, "load_counts.R"))
+# source(file.path(dir.scripts, "required_libraries.R"))
+# source(file.path(dir.scripts, "normalize_count_table.R"))
+# source(file.path(dir.scripts, "deg_ordering.R"))
+# source(file.path(dir.scripts, "one_experiment.R"))
+# source(file.path(dir.scripts, "ErrorRateBoxPlot.R"))
+# source(file.path(dir.scripts,"filterCountTable.R"))
 
 # loading required libraries
 requiredCRAN <- c('devtools', 'class', "randomForest","broom", "devtools")
