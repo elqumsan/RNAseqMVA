@@ -25,6 +25,7 @@ if (parameters$compute) {
 
 # Check the dimensions of the count table
 dim(rawCounts)
+
 ## Number of samples per class
 print(loaded$samples.per.class)
 
