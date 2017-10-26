@@ -5,11 +5,11 @@
 #' @param recountID identifier of one study in ReCount database
 #' @param studyPath=file.path("~/recount_test/data/", recountID) Path of the folder in which the counts downlaoded from ReCount will be stored.
 #' @param mergeRuns=TRUE if TRUE, read counts will be merged for each sample
+#' @param sampleIdColumn="geo_accession"  name of the column of the pheno table which contains the sample IDs.
+#' This information is passed to MergeRuns().
 #' @param verbose=TRUE if TRUE, write messages to indicate the progressing of the tasks
 #' @param forceDownload=FALSE by default, the data is downloaded only if it is not found in the studyPath folder.
 #' If forceDownload is TRUE, the data will be downloaded irrespective of existing files.
-#' @param sampleIdColumn="geo_accession"  name of the column of the pheno table which contains the sample IDs.
-#' This information is passed to MergeCounts().
 #'
 #' @examples
 #'
@@ -18,7 +18,7 @@
 #' recountData <- loadRecountExperiment(recountID)
 #'
 #' ## Check the dimension of the table with counts per run
-#' dim(recountData$runCounts)
+#' dim(recountData$countsPerRun)
 #'
 #' ## Check the number of runs per sample
 #' table(recountData$runPheno$geo_accession)
@@ -30,8 +30,7 @@
 #' ## Check the dimension of the table with counts per sample
 #' dim(recountData$merged$sampleCounts)
 #'
-#' ## Test correlation between technical replicates (runs for the same sample)
-#' cor(log(recountData$runCounts[, recountData$runPheno$geo_accession == "GSM1521620"]+1))
+#' cor(log(recountData$countsPerRun[, recountData$runPheno$geo_accession == "GSM1521620"]+1))
 #'
 #' ## Test correlation between 8 randomly selected biological replicates (distinct samples)
 #' cor(log(recountData$merged$sampleCounts[, sample(1:ncol(recountData$merged$sampleCounts), size=8)]+1))
@@ -39,21 +38,31 @@
 #'
 #' @return
 #' A list containing: the count table, the pheno table, and some additional parameters (study ID, ...).
+#'
+#'
+#' @import recount
+#' @import SummarizedExperiment
+#' @import S4Vectors
+#' @export
 loadRecountExperiment <- function(recountID,
-                                  studyPath = file.path("~/recount_test/data/", recountID),
+                                  dir.workspace = "~/RNAseqMVA_workspace",
+                                  #                                  studyPath = file.path("~/recount_test/data/", recountID),
                                   mergeRuns = TRUE,
-                                  verbose = TRUE,
+                                  sampleIdColumn = "geo_accession", ## Alternative: use "sample"
                                   forceDownload = FALSE,
-                                  sampleIdColumn = "geo_accession", ...) {
+                                  verbose = parameters$verbose,
+                                  ...) {
   result <- list()
-  library(recount)
-  #source('https://github.com/elqumsan/RNAseqMVA/blob/master/R/merge_runs.R')
+  studyPath <- file.path(dir.workspace, "data", recountID)
 
-  source("~/RNAseqMVA/R/merge_runs.R")
-  source( "~/RNAseqMVA/R/load_recount_experiment.R" )
+  # source("~/RNAseqMVA/R/merge_runs.R")
+  # source( "~/RNAseqMVA/R/load_recount_experiment.R" )
 
   ## Create studyPath directory
-  dir.create(studyPath, recursive = TRUE, showWarnings = FALSE)
+  if (!file.exists(studyPath)) {
+    message("Creating directory to store Recount dataset ", recountID," in ", studyPath)
+    dir.create(studyPath, recursive = TRUE, showWarnings = FALSE)
+  }
 
   ## Define the file where the downloaded counts will be stored
   rseFile <- file.path(studyPath, "rse_gene.Rdata")
@@ -92,23 +101,33 @@ loadRecountExperiment <- function(recountID,
   if (verbose) {
     message("Extracing table of counts per run")
   }
-  runCounts <- assay(rse)
-  # View(runCounts)
-  result$runCounts <- runCounts
+  countsPerRun <- assay(rse)
+  # View(countsPerRun)
+  result$countsPerRun <- countsPerRun
+  if (verbose) {
+    message("Loaded counts per run: ", nrow(countsPerRun), " features x ", ncol(countsPerRun), " runs.")
+  }
 
   ## Table with information about the columns of the RangedSeummaryExperiment.
   if (verbose) {
     message("Building pheno table")
   }
-  coldata <- colData(rse)
-  runPheno <- coldata
+  runPheno <- colData(rse) ## phenotype per run
+  # pheno <- runPheno ## A TRICK
+  # View(runPheno)
+  # names(runPheno)
+
 
   ## Extract the conditions from the "characteristics" column of the coldata.
   ## This is a bit tricky: we have to parse a string describing several attributes.
   geochar <- lapply(split(
-    colData(rse),
-    seq_len(nrow(colData(rse)))),
+    runPheno,
+    seq(from=1, to=nrow(runPheno))),
     geo_characteristics)
+  # View(geochar)
+  # names(geochar)
+  # head(geochar)
+
   geochar <- do.call(rbind, lapply(geochar, function(x) {
     if('cells' %in% colnames(x)) {
       colnames(x)[colnames(x) == 'cells'] <- 'cell.line'
@@ -117,22 +136,43 @@ loadRecountExperiment <- function(recountID,
       return(x)
     }
   }))
+
+  # View(geochar)
   # head(geochar)
 
   ## Build a pheno table with selected columns from coldata + the geodata we just extracted
-  runPheno <- cbind(
-    coldata[, grep(pattern="(characteristics|sharq)", x=names(coldata), invert=TRUE)],
+  runPhenoTable <- cbind(
+    runPheno[, grep(pattern="(characteristics|sharq)", x=names(runPheno), invert=TRUE)],
     geochar)
-  result$runPheno <- runPheno
-  # View(runPheno)
+  # View(phenoTable)
+  # class(phenoTable)
+
+  ## Extract a phenoTable with selected fields from the runPheno object
+  runPhenoTable2 <- data.frame(
+    project = runPheno$project,
+    sample = runPheno$sample,
+    experiment = runPheno$experiment,
+    run = runPheno$run,
+    geo_accession = runPheno$geo_accession,
+    characteristics = runPheno$characteristics@unlistData
+  )
+
+  ## Missing: parse sub-fields from the "characteristics" field (somehow tricky)
+
+  rownames(runPhenoTable2) <- runPhenoTable2$run
+  # View(runPhenoTable2)
+  # class(runPhenoTable2)
+  result$runPhenoTable2 <- runPhenoTable2
 
   if (mergeRuns) {
     if (verbose) { message("Merging run-wise counts by sample") }
-    result$merged <- MergeRuns(runCounts,
-                               runPheno,
-                               sampleIdColumn = sampleIdColumn, verbose=FALSE)
+    result$merged <- MergeRuns(countsPerRun,
+                               runPhenoTable,
+                               sampleIdColumn = sampleIdColumn,
+                               verbose = verbose)
   }
 
-  message.with.time("Finishing from the Load recount experiment no.", parameters$recountID)
+  message.with.time("Finished loading Recount experiment ID ", parameters$recountID)
   return(result)
 }
+
