@@ -4,7 +4,7 @@ library(RNAseqMVA)
 ## and apply some pre-filtering (remove zero-variance and near-zero-variance genes).
 if (parameters$compute) {
   message.with.time("Loading count table from recount", "; recountID = ", parameters$recountID)
-  loaded <- loadCounts(recountID = parameters$recountID,
+  loaded <-   loadCounts(recountID = parameters$recountID,
                        mergeRuns = parameters$mergeRuns,
                        classColumn = parameters$classColumn,
                        sampleIdColumn= parameters$sampleIdColumn,
