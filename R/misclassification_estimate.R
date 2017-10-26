@@ -1,18 +1,19 @@
 ################################################################
-#'@title  RNA-Seq classifier evaluation to assesse the performance of the classifier
-#'@author Mustafa ABUELQUMSAN and Jacques van Helden
-#'@description  this script to evaluate and assesse the performance of the RNA-Seq classifier by
-#'# Random sampling (random partitioning) estimation of the misclassification rate.
+#' @title  RNA-Seq classifier evaluation to assesse the performance of the classifier
+#' @author Mustafa ABUELQUMSAN and Jacques van Helden
+#' @description  this script to evaluate and assesse the performance of the RNA-Seq classifier by
+#' # Random sampling (random partitioning) estimation of the misclassification rate.
 #'
-#'@param countTable  this data frame for RNA-Seq data which contains one row for indiviual and one column for variable
-#'@param classes  such is vector for our cases for classes,
-#'@param k is number of neighbours passed to classifier
-#'@param trainingproportion is the ratio of the training subset from the whole data set
-#'@param classifier is a type of the classifier
-#'@example
+#' @param countTable  this data frame for RNA-Seq data which contains one row for indiviual and one column for variable
+#' @param classes  such is vector for our cases for classes,
+#' @param k is number of neighbours passed to classifier
+#' @param trainingproportion is the ratio of the training subset from the whole data set
+#' @param classifier is a type of the classifier
+#' @example
 #' oneTest <- MisclassificationEstimate(countTable, classes, trainingProportion = 2/3, classifier = "rf")
 #'
-#'
+#' @import doMC
+#' @export
 
 MisclassificationEstimate <- function(countTable, classes,
                                       trainingProportion = 2/3,
@@ -32,7 +33,7 @@ MisclassificationEstimate <- function(countTable, classes,
 
     ## we need to tune our predictive model by using multiple workers "cores", such step to run our code through parallel
     ##  rather than sequentially technologies
-        library(doMC)
+#        library(doMC)
         registerDoMC(cores = 5)
     ## Compute testing errors
     randsampling.fit <- knn(train = countTable[trainIndex, ],
