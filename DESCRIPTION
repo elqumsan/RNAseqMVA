@@ -1,11 +1,20 @@
 Package: RNAseqMVA
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Title: Application of Multivariate Analysis methods to RNA-seq Data
+Version: 0.1.2
+Date: 2017-10-26
+Author: Mustafa AbuElQumsan and Jacques van Helden
+Maintainer: Mustafa AbuElQumsan <mustafa.abuelqumsan@etu.univ-amu.fr>
+Depends:
+    R (>= 3.3.0),
+    SummarizedExperiment,
+    recount
+Imports:
+    S4Vectors
+Suggests:
+    DESeq2,
+    devtools (>= 1.6)
+Description: utilities to run multivariate analysis methods on RNA-seq data.
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true

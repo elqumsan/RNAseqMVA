@@ -4,19 +4,24 @@
 \alias{loadCounts}
 \title{Loading the count table, the Pheno table and vector of classes}
 \usage{
-loadCounts(recountID, mergeRuns = T, classColumn = "tissue",
-  minSamplesPerClass = 10, ...)
+loadCounts(recountID, classColumn, mergeRuns,
+  sampleIdColumn = "geo_accession", minSamplesPerClass = 10,
+  dir.workspace = "~/RNAseqMVA_workspace", ...)
 }
 \arguments{
 \item{recountID}{number of experiment}
 
-\item{classColumn}{= "tissue" ## Column(s) of the pheno table used to define class labels. Passed to filterCountTable()}
+\item{classColumn}{## Column(s) of the pheno table used to define class labels. Passed to filterCountTable()}
+
+\item{mergeRuns}{to wrapper the rus by sample}
 
 \item{...}{additional parameters are passed to loadRecountExperiment}
 
-\item{mergeRuns=T}{to wrapper the rus by sample}
+\item{sampleIdColumn="geo_accession"}{name of the column of the pheno table which contains the sample IDs.}
 
 \item{minSamplesPerClass=10}{min number of samples per class for the filtering.  Passed to filterCountTable()}
+
+\item{dir.workspace="~/RNAseqMVA_workspace"}{Directory in which the data and results will be stored.}
 }
 \description{
 Given a ReCount ID, load the count table, the pheno table

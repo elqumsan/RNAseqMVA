@@ -4,13 +4,15 @@
 \alias{MergeRuns}
 \title{Merge read counts from different runs by sample.}
 \usage{
-MergeRuns(countsPerRun, phenoTable, sampleIdColumn = "geo_accession",
+MergeRuns(countsPerRun, runPhenoTable, sampleIdColumn = "geo_accession",
   verbose = FALSE)
 }
 \arguments{
 \item{countsPerRun}{a data frame containing read counts, one column per run and one row per gene}
 
 \item{pheno.table}{a data frame containing the description of each run. This must include a column with the sample ID associated to each run}
+
+\item{sampleIdColumn="geo_accession"}{name of the column of the pheno table which contains the sample IDs. GEO accession is preferred because it is widely used, but it is sometimes not defined. In such case, the "sample" column should be used.}
 
 \item{verbose=FALSE}{if TRUE, write messages to indicate the progressing of the tasks}
 }

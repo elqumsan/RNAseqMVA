@@ -1,3 +1,8 @@
+require("roxygen2")
+require("devtools")
+require("RNAseqMVA")
+
+# package.skeleton(name = "man")
 ## Load the parameters and libraries that will be used for the different other scripts.
 recountIDs <- c("SRP042620", ## Multi-group breast cancer
                 "SRP057196",
@@ -8,16 +13,17 @@ recountIDs <- c("SRP042620", ## Multi-group breast cancer
                 "ERP003613" # Tissue samples from 95 human individuals
 )
 
-
-
-
-recountID <- "SRP055513" ## Multi-group breast cancer
+recountID <- "SRP042620" ## Multi-group breast cancer
+#recountID <- "SRP041736" # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
 
 
 ## Running parameters
 parameters <- list(
   recountID = recountID,
   classColumn = "tissue",
+  mergeRuns = TRUE, ## Whether or not to merge runs per sample
+  sampleIdColumn = "geo_accession",
+  dir.workspace = "~/RNAseqMVA_workspace",
   minSamplesPerClass = 10,
   #  iterations = 50, ## Number of iterations for the classiifers
   iterations = 10, ## Number of iterations for the classiifers
@@ -52,6 +58,10 @@ parameters$svm = list(
 if (parameters$recountID == "SRP042620") {
   ## Psoriasis dataset
   parameters$classColumn <- "tissue"
+} else if (parameters$recountID == "SRP041736") {
+  parameters$sampleIdColumn <- "sample"
+  parameters$classColumn <- NA
+  stop("We cannot analyse this dataset because the pheno table does not contain any info about the sample classes")
 
 } else if (parameters$recountID == "SRP057196") {
   ## Running parameters for SRP057196
@@ -84,7 +94,7 @@ message.with.time <- function(...) {
 ################################################################
 ## Define directories
 
-## Main directory should be adapted to the user's configuration
+# Main directory should be adapted to the user's configuration
 dir.main <- "~/RNAseqMVA"
 
 #classifier <- "knn"
@@ -122,17 +132,17 @@ if (parameters$reload == TRUE) {
 }
 
 ## Load custom librarires
-source(file.path(dir.scripts, "misclassification_estimate.R") )
-source(file.path(dir.scripts, "load_counts.R"))
-source(file.path(dir.scripts, "required_libraries.R"))
-source(file.path(dir.scripts, "normalize_count_table.R"))
-source(file.path(dir.scripts, "deg_ordering.R"))
-source(file.path(dir.scripts, "one_experiment.R"))
-source(file.path(dir.scripts, "ErrorRateBoxPlot.R"))
-source(file.path(dir.scripts,"filterCountTable.R"))
+# source(file.path(dir.scripts, "misclassification_estimate.R") )
+# source(file.path(dir.scripts, "load_counts.R"))
+# source(file.path(dir.scripts, "required_libraries.R"))
+# source(file.path(dir.scripts, "normalize_count_table.R"))
+# source(file.path(dir.scripts, "deg_ordering.R"))
+# source(file.path(dir.scripts, "one_experiment.R"))
+# source(file.path(dir.scripts, "ErrorRateBoxPlot.R"))
+# source(file.path(dir.scripts,"filterCountTable.R"))
 
 # loading required libraries
-requiredCRAN <- c('class', "randomForest","broom", "devtools")
+requiredCRAN <- c('devtools', 'class', "randomForest","broom", "roxygen2")
 RequiredCRANPackages(requiredCRAN)
 
 ## JvH: Mustafa, please add the other required packages, in particular recount
