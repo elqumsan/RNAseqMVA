@@ -4,9 +4,11 @@
 #' and the vector of classes, prepares and filters the count table, via
 #' wrapper runs by sample.
 #' @param recountID  number of experiment
-#' @param mergeRuns=T to wrapper the rus by sample
-#' @param classColumn = "tissue" ## Column(s) of the pheno table used to define class labels. Passed to filterCountTable()
+#' @param mergeRuns to wrapper the rus by sample
+#' @param sampleIdColumn="geo_accession"  name of the column of the pheno table which contains the sample IDs.
+#' @param classColumn ## Column(s) of the pheno table used to define class labels. Passed to filterCountTable()
 #' @param minSamplesPerClass=10 min number of samples per class for the filtering.  Passed to filterCountTable()
+#' @param dir.workspace="~/RNAseqMVA_workspace" Directory in which the data and results will be stored.
 #' @param ...  additional parameters are passed to loadRecountExperiment
 #'
 #' @return
@@ -22,22 +24,28 @@
 #' x <- loadCounts( recountID = "SRP057196", mergeRuns=T,
 #'     classColumn = c("tissue", "cell.type"), minSamplesPerClass=5)
 #'
+#' @import recount
+#' @import SummarizedExperiment
+#' @import S4Vectors
 #' @export
-loadCounts <- function( recountID,
-                        mergeRuns = TRUE,
-                        classColumn = "tissue",
-                        minSamplesPerClass = 10, ... ) {
+loadCounts <- function(recountID,
+                      classColumn,
+                      mergeRuns,
+                      sampleIdColumn = "geo_accession", ## Alternative: use "sample"
+                      minSamplesPerClass = 10,
+                      dir.workspace = "~/RNAseqMVA_workspace",
+                      ... ) {
   # defineing directories for required libraries
-  dir.main <- "~/RNAseqMVA"
-  dir.scripts <- file.path(dir.main , "R")
-  # loading the required functions
-  source(file.path(dir.scripts ,"load_recount_experiment.R" ))
-  source(file.path(dir.scripts,"merge_runs.R"))
-  source(file.path(dir.scripts,"filterCountTable.R"))
+#  dir.main <- "~/RNAseqMVA"
+  # dir.scripts <- file.path(dir.main , "R")
+  # # loading the required functions
+  # source(file.path(dir.scripts ,"load_recount_experiment.R" ))
+  # source(file.path(dir.scripts,"merge_runs.R"))
+  # source(file.path(dir.scripts,"filterCountTable.R"))
 
   ################################################
   # loading required libraries and install them if required
-  source(file.path(dir.scripts,"required_libraries.R"))
+  # source(file.path(dir.scripts,"required_libraries.R"))
   requiredpackage <- c("caret")
   RequiredCRANPackages(requiredpackage)
 
@@ -45,13 +53,13 @@ loadCounts <- function( recountID,
   # loading count Data from recount_experiment, Via our wrapper which will Automatically merge the runs by
   # sample in order to obtain sample-wise count rather than run-wise counts.
 
-  countdata <-loadRecountExperiment(recountID=recountID, mergeRuns=mergeRuns, ...)
+  countdata <- loadRecountExperiment(recountID=recountID, mergeRuns=mergeRuns, sampleIdColumn=sampleIdColumn, dir.workspace = dir.workspace, ...)
 
   ################################################################
   ## Tanspose the count tabe in oredr to use it with classifier methods
   ## which expect a table with one raw per observation (biological samples)
   ## and one column per variable (gene).
-  message("Traspose the count table to use it with classifier methods ")
+  message("Transpose the count table to use it with classifier methods ")
   countTable <-as.data.frame(t(countdata$merged$sampleCounts))
   #countTable <-as.data.frame(t(countdata$runCounts))
 
