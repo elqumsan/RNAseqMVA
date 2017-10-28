@@ -12,7 +12,7 @@
 #' @example
 #' oneTest <- MisclassificationEstimate(countTable, classes, trainingProportion = 2/3, classifier = "rf")
 #'
-#' @import doMC
+#'
 #' @export
 
 MisclassificationEstimate <- function(countTable, classes,
@@ -67,7 +67,7 @@ MisclassificationEstimate <- function(countTable, classes,
     ## we need to tune our predictive model by using multiple workers "cores", such step to run our code through parallel
     ##  rather than sequentially technologies
 
-    library(doMC)
+    #library(doMC)
     registerDoMC(cores = 5)
 
     ## Computing Testing errors for Random Forest
