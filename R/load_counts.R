@@ -25,6 +25,8 @@
 #'     classColumn = c("tissue", "cell.type"), minSamplesPerClass=5)
 #'
 #' @import recount
+#' @import SummarizedExperiment
+#' @import S4Vectors
 #' @export
 loadCounts <- function(recountID,
                       classColumn,
