@@ -41,6 +41,7 @@
 #'
 #'
 #' @import recount
+#' @import SummarizedExperiment
 #' @export
 loadRecountExperiment <- function(recountID,
                                   dir.workspace = "~/RNAseqMVA_workspace",
