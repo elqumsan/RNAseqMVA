@@ -14,6 +14,7 @@
 #'
 #'
 #' @export
+#' @import doMC
 
 MisclassificationEstimate <- function(countTable, classes,
                                       trainingProportion = 2/3,
