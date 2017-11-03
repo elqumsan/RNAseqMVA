@@ -35,6 +35,8 @@
 #' filteredData <- filterCountTable(countTable, phenoTable, classColumn=c("tissue", "cell.type"), minSamplesPerClass=5)
 #' table(filteredData$classes)
 #'
+#' @import recount
+#' @import SummarizedExperiment
 #' @export
 filterCountTable <- function(countTable, phenoTable,
                              classColumn="tissue",

@@ -1,17 +1,13 @@
-library(RNAseqMVA)
+
 ################################################################
 ## Load a count Table from recount-experiment, merge counts per sample
 ## and apply some pre-filtering (remove zero-variance and near-zero-variance genes).
 if (parameters$compute) {
   message.with.time("Loading count table from recount", "; recountID = ", parameters$recountID)
-  loaded <- loadCounts(recountID = parameters$recountID,
-                       mergeRuns = parameters$mergeRuns,
+  loaded <- loadCounts(recountID = parameters$recountID, mergeRuns = TRUE ,
                        classColumn = parameters$classColumn,
-                       sampleIdColumn= parameters$sampleIdColumn,
-                       minSamplesPerClass = parameters$minSamplesPerClass,
-                       dir.workspace = parameters$dir.workspace)
+                       minSamplesPerClass = parameters$minSamplesPerClass)
   rawCounts <- loaded$countTable ## Note: one row per sample, one column per gene
-  ## View(rawCounts)
 
   ################################################################
   ## Assign a specific color to each sammple according to its class
@@ -25,7 +21,6 @@ if (parameters$compute) {
 
 # Check the dimensions of the count table
 dim(rawCounts)
-
 ## Number of samples per class
 print(loaded$samples.per.class)
 
