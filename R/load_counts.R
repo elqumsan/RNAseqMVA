@@ -35,17 +35,9 @@ loadCounts <- function(recountID,
                       minSamplesPerClass = 10,
                       dir.workspace = "~/RNAseqMVA_workspace",
                       ... ) {
-  # defineing directories for required libraries
-#  dir.main <- "~/RNAseqMVA"
-  # dir.scripts <- file.path(dir.main , "R")
-  # # loading the required functions
-  # source(file.path(dir.scripts ,"load_recount_experiment.R" ))
-  # source(file.path(dir.scripts,"merge_runs.R"))
-  # source(file.path(dir.scripts,"filterCountTable.R"))
 
   ################################################
   # loading required libraries and install them if required
-  # source(file.path(dir.scripts,"required_libraries.R"))
   requiredpackage <- c("caret")
   RequiredCRANPackages(requiredpackage)
 

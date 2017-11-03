@@ -1,0 +1,91 @@
+---
+title: "Recount exploration"
+author: "Mustafa AbuElQumsan and Jacques van Helden"
+output:
+  html_document:
+    code_folding: hide
+    fig_caption: yes
+    highlight: zenburn
+    self_contained: yes
+    theme: cerulean
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+  pdf_document:
+    fig_caption: yes
+    highlight: zenburn
+    toc: yes
+    toc_depth: 3
+  word_document: default
+date: '`r Sys.Date()`'
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r knitr_setup, include=FALSE,  eval=TRUE, echo=FALSE, warning=FALSE}
+library(knitr)
+knitr::opts_chunk$set(
+  fig.path="figures/",
+  echo=FALSE, 
+  eval=TRUE, 
+  cache=FALSE, 
+  message=FALSE, 
+  warning=FALSE)
+library(recount)
+```
+
+
+## 
+
+```{r}
+recount.subsets <- c("sra", "gtex", "tgca") ## Supported values for recount subset attribute
+recount.subset <- "sra" ## For the time being we work with SRA (Short Read Archive database)
+
+recount.metadata <- all_metadata(subset=recount.subset)
+# View(as.data.frame(recount.metadata))
+# names(recount.medatada)
+
+summary.per.col <- data.frame()
+for (column in names(recount.medatada)) {
+  
+  col.stats <- data.frame(
+    "column" = column,
+    "unique.values" = length(unique(recount.metadata[, column]))
+    )
+
+    summary.per.col <- 
+    rbind(summary.per.col, col.stats)
+                            
+}
+summary.per.col
+
+kable(summary.per.col)
+```
+
+
+
+## Exporation of a problematic dataset (with NA values in the characteristics column)
+
+
+## Select a Recount ID
+
+```{r}
+studyPath <- "~/test_recount"
+dir.create(studyPath, recursive = TRUE, showWarnings = FALSE)
+
+recount.id <- "SRP041736"
+
+## Download data from Recount
+url <- download_study(recountID, outdir = studyPath)
+
+## Load data
+rseFile <- file.path(studyPath, "rse_gene.Rdata")
+load(rseFile)
+
+
+## put the code to extract the pheno table from this dataset, and explore it!Are there several interesting columns tere ? 
+
+
+```
+
+
