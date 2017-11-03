@@ -32,21 +32,29 @@ knitr::opts_chunk$set(
   message=FALSE, 
   warning=FALSE)
 library(recount)
+library(SummarizedExperiment)
 ```
 
 
-## 
+## General exploration of the metadata table
 
 ```{r}
-recount.subsets <- c("sra", "gtex", "tgca") ## Supported values for recount subset attribute
+min.samples.per.class <- 10
+
+
+recount.subsets <- c("sra", "gtex", "tcga") ## Supported values for recount subset attribute
 recount.subset <- "sra" ## For the time being we work with SRA (Short Read Archive database)
 
-recount.metadata <- all_metadata(subset=recount.subset)
+recount.metadata.sra <- all_metadata(subset='sra')
+recount.metadata.gtex <- all_metadata(subset='gtex')
+recount.metadata.tgca <- all_metadata(subset='tcga')
+
+recount.metadata <- recount.metadata.sra
 # View(as.data.frame(recount.metadata))
 # names(recount.medatada)
 
 summary.per.col <- data.frame()
-for (column in names(recount.medatada)) {
+for (column in names(recount.metadata)) {
   
   col.stats <- data.frame(
     "column" = column,
@@ -60,20 +68,47 @@ for (column in names(recount.medatada)) {
 summary.per.col
 
 kable(summary.per.col)
+
 ```
 
+
+## Filtering out the NA values
+
+```{r}
+metadata.nona <- na.omit(recount.metadata)
+dim(metadata.nona)
+
+## count the number of projects with no NA value
+nona.projects <- unique(metadata.nona$project)
+message("Great, there are ", length (nona.projects), " projects with no NA value. ")
+
+## Count th number of distinct classes (characteristics) for each project
+
+
+## Select projects with at least 3 classes
+
+## Select projects with precisely 2 classes
+
+## Select projects where there are at least 2 classes with the user-specified min number of samples (parameter previously defined)
+
+
+View(as.data.frame(metadata.nona))
+
+```
 
 
 ## Exporation of a problematic dataset (with NA values in the characteristics column)
 
 
-## Select a Recount ID
 
 ```{r}
-studyPath <- "~/test_recount"
+## Select a Recount ID
+recountID <- "SRP041736"
+studyPath <- paste0("~/test_recount/",recountID)
 dir.create(studyPath, recursive = TRUE, showWarnings = FALSE)
 
-recount.id <- "SRP041736"
+abstract_search("SRP041736")
+project_info <- abstract_search('GSE32465')
 
 ## Download data from Recount
 url <- download_study(recountID, outdir = studyPath)
@@ -81,10 +116,47 @@ url <- download_study(recountID, outdir = studyPath)
 ## Load data
 rseFile <- file.path(studyPath, "rse_gene.Rdata")
 load(rseFile)
+colData(rse_gene)
+
+
+# to retrieve the raw count Table
+# View(assay(rse_gene))
+
+
+# explore the pheno Table
+rse_gene[, rse_gene$characteristics@elementMetadata]
+rse_gene$characteristics@metadata
+rse_gene$characteristics@partitioning
+rse_gene$characteristics@unlistData
+rse_gene$characteristics@elementType
+
+
+names(colData(rse_gene))
+unique( colData(rse_gene)$project)
+unique(colData(rse_gene)$experiment)
+table( unique( colData(rse_gene)$characteristics))
+Na.characteristics <- sum( is.na(colData(rse_gene)$characteristics))
+
+# To explor which regions we are interest 
+rowData(rse_gene)
+rowRanges(rse_gene)
+
+# Experiment-wide metadata
+metadata(rse_gene)
+
+# How to subsetting the SE
+rse_gene[1:5 , 1:4]
+rse_gene[, rse_gene$characteristics != "NA"]
 
 
 ## put the code to extract the pheno table from this dataset, and explore it!Are there several interesting columns tere ? 
 
+## Count samples for this project
+selected.project.metadata <- subset(recount.metadata, project == recountID)
+dim(selected.project.metadata)
+sample.nb <- length(unique(selected.project.metadata$sample))
+geo.acc.nb <- length(unique(na.omit(selected.project.metadata$geo_accession)))
+message(sample.nb, " samples, ", geo.acc.nb, " non-NA geo accession numbers")
 
 ```
 
