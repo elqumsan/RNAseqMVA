@@ -128,13 +128,25 @@ View(as.data.frame(metadata.nona))
 
 
 ```{r}
+
+## In the future, we wold like to understand why some GSE do work andother ones not
+# abstract_search(recountID)
+project_info <- abstract_search('GSE32465') ## This one works
+# project_info <- abstract_search('GSE58135') ## Supposedly breast cancer
+recountID <- project_info$project
+
 ## Select a Recount ID
-recountID <- "SRP041736"
+recountID <- "SRP042620"
 studyPath <- paste0("~/test_recount/",recountID)
 dir.create(studyPath, recursive = TRUE, showWarnings = FALSE)
+# dir.exists(studyPath)
+# list.files(studyPath)
 
-abstract_search("SRP041736")
-project_info <- abstract_search('GSE32465')
+
+## TO DO for Mustaa: adapt the 2 lines bore in order to ensure that you get the right GSE for the recountID
+selectedGSMs <- as.vector(unlist(subset(recount.metadata, project == recountID, select="geo_accession")))
+
+## project_info <- abstract_search(selectedGSMs[1]) ## Does not work with GSM instead of GSE
 
 ## Download data from Recount
 url <- download_study(recountID, outdir = studyPath)
