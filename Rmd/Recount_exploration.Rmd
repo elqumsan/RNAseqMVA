@@ -51,7 +51,7 @@ recount.metadata.tgca <- all_metadata(subset='tcga')
 
 recount.metadata <- recount.metadata.sra
 # View(as.data.frame(recount.metadata))
-# names(recount.medatada)
+# names(recount.metadata)
 
 summary.per.col <- data.frame()
 for (column in names(recount.metadata)) {
@@ -75,7 +75,8 @@ kable(summary.per.col)
 ## Filtering out the NA values
 
 ```{r}
-metadata.nona <- na.omit(recount.metadata)
+metadata.nona <-  na.omit(recount.metadata)
+##metadata.nona$project <-as.list(metadata.nona$project)
 dim(metadata.nona)
 
 ## count the number of projects with no NA value
@@ -85,7 +86,32 @@ message("Great, there are ", length (nona.projects), " projects with no NA value
 ## Count th number of distinct classes (characteristics) for each project
 
 
+new.selected.project <- data.frame()
+metadata.names <-names(metadata.nona)
+if (is.null(nona.projects) || length(nona.projects) < 1) {
+  message("There are no meta data for such project")
+} else  {
+  pro <- 1
+  
+  for (pro in 1:length(nona.projects)) {
+     selected.project  <- metadata.nona$project[pro]
+     new.project <- subset(metadata.nona, project == selected.project)
+     new.project$sample.nb <- length(unique(new.project$sample))
+     new.project$geo.acc.nb <- length(unique(na.omit(new.project$geo_accession)))
+     new.project$characteristic.nb <- length(unique(new.project$characteristics))
+     if( pro ==1 ){
+       new.selected.project <- data.frame(new.project)
+     } else {
+       new.selected.project <- rbind(new.selected.project, new.project )
+     } # end else 
+  } # end for
+}
+
+
+
+
 ## Select projects with at least 3 classes
+x <- subset(new.selected.project, characteristic.nb >= 3)
 
 ## Select projects with precisely 2 classes
 
@@ -156,7 +182,8 @@ selected.project.metadata <- subset(recount.metadata, project == recountID)
 dim(selected.project.metadata)
 sample.nb <- length(unique(selected.project.metadata$sample))
 geo.acc.nb <- length(unique(na.omit(selected.project.metadata$geo_accession)))
-message(sample.nb, " samples, ", geo.acc.nb, " non-NA geo accession numbers")
+characteristic.nb <- length(unique(selected.project.metadata$characteristics))
+message(sample.nb, " samples, ", geo.acc.nb, " non-NA geo accession numbers, ", "classes Number:", characteristic.nb  )
 
 ```
 
