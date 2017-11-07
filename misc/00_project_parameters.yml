@@ -25,6 +25,7 @@ default:
 
 ## Project-specific parameters for the analysis of Recount RNA-seq datasets
 SRP042620:
+  geo_series: "GSE58135"
   description: "Multi-group breast cancer"
   classColumn: "tissue"
 #      description:  "Multi-group breast cancer"
