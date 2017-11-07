@@ -1,46 +1,59 @@
 require("roxygen2")
 require("devtools")
 require("RNAseqMVA")
+require("yaml")
 
-# package.skeleton(name = "man")
-## Load the parameters and libraries that will be used for the different other scripts.
-recountIDs <- c("SRP042620", ## Multi-group breast cancer
-                "SRP057196",
-                "SRP056295", ## 525 runs, human leukemia
-                # crash                "SRP042161", ## 875 runs, 430 single glioblastoma cells isolated from 5 individual tumors and 102 single cells from gliomasphere cells lines generated using SMART-seq
-                "SRP041736", # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
-                "SRP035988",  ## Psoriasis
-                "ERP003613" # Tissue samples from 95 human individuals
-)
+## Read project-specific parameters from a yaml-formatted file.
+## These parameters will then be used to overwrite the default parameters.
+project.parameters <- yaml.load_file("misc/00_project_parameters.yml")
+# # package.skeleton(name = "man")
+# ## Load the parameters and libraries that will be used for the different other scripts.
+# recountIDs <- c("SRP042620", ## Multi-group breast cancer
+#                 "SRP057196",
+#                 "SRP056295", ## 525 runs, human leukemia
+#                 # crash                "SRP042161", ## 875 runs, 430 single glioblastoma cells isolated from 5 individual tumors and 102 single cells from gliomasphere cells lines generated using SMART-seq
+#                 "SRP041736", # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
+#                 "SRP035988",  ## Psoriasis
+#                 "ERP003613" # Tissue samples from 95 human individuals
+# )
 
-recountID <- "SRP042620" ## Multi-group breast cancer
-#recountID <- "SRP041736" # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
+## Lad default parameters (must have been defined n the parameter field)
+parameters <- project.parameters$default
+
+# recountID <- "SRP042620" ## Multi-group breast cancer
+recountID <- "SRP041736" # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
+parameters$recountID <- recountID
+
+## Overwrite default parameters wih project-specific parameters
+parameters[names(project.parameters[[recountID]])] <- project.parameters[[recountID]]
 
 
-## Running parameters
-parameters <- list(
-  recountID = recountID,
-  classColumn = "tissue",
-  mergeRuns = TRUE, ## Whether or not to merge runs per sample
-  sampleIdColumn = "geo_accession",
-  dir.workspace = "~/RNAseqMVA_workspace",
-  minSamplesPerClass = 10,
-  #  iterations = 50, ## Number of iterations for the classiifers
-  iterations = 10, ## Number of iterations for the classiifers
-  reload = FALSE,
-  compute = TRUE, ## If FALSE, do not run the heavy computations, just generate the pictures and save tables
-  save.tables = TRUE, ## If TRUE, save tab-delimited files with the results
-  save.image = TRUE,
-  #  classifiers = c("lda"),
-  classifiers = c("knn", "rf", "lda","svm"),
-  data.types = c("raw", "norm", "log2"),
-  deg.methods = c("DESeq2", "edgeR", "randomized"),
-  ## Note: for the number of variables I choose a regular spacing around the total number of samples in order to detect overfitting effects
-  nb.variables = c( 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 300, 400, 500, 1000, 2000, 5000, 10000), ## Number of variables for variable ordering test
-  trainingProportion = 2/3, # ratio of spliting the data set to training and testing sets
-  permute = c(FALSE, TRUE),
-  verbose = TRUE
-)
+View(parameters)
+
+## Define Default Parameters
+# parameters <- list(
+#   recountID = recountID,
+#   classColumn = "tissue",
+#   mergeRuns = TRUE, ## Whether or not to merge runs per sample
+#   sampleIdColumn = "geo_accession",
+#   dir.workspace = "~/RNAseqMVA_workspace",
+#   minSamplesPerClass = 10,
+#   #  iterations = 50, ## Number of iterations for the classiifers
+#   iterations = 10, ## Number of iterations for the classiifers
+#   reload = FALSE,
+#   compute = TRUE, ## If FALSE, do not run the heavy computations, just generate the pictures and save tables
+#   save.tables = TRUE, ## If TRUE, save tab-delimited files with the results
+#   save.image = TRUE,
+#   #  classifiers = c("lda"),
+#   classifiers = c("knn", "rf", "lda","svm"),
+#   data.types = c("raw", "norm", "log2"),
+#   deg.methods = c("DESeq2", "edgeR", "randomized"),
+#   ## Note: for the number of variables I choose a regular spacing around the total number of samples in order to detect overfitting effects
+#   nb.variables = c( 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 300, 400, 500, 1000, 2000, 5000, 10000), ## Number of variables for variable ordering test
+#   trainingProportion = 2/3, # ratio of spliting the data set to training and testing sets
+#   permute = c(FALSE, TRUE),
+#   verbose = TRUE
+# )
 
 
 ## Parameters for knn
@@ -55,27 +68,28 @@ parameters$svm = list(
   cost = 100)
 
 
-if (parameters$recountID == "SRP042620") {
-  ## Psoriasis dataset
-  parameters$classColumn <- "tissue"
-} else if (parameters$recountID == "SRP041736") {
-  parameters$sampleIdColumn <- "sample"
-  parameters$classColumn <- NA
-  stop("We cannot analyse this dataset because the pheno table does not contain any info about the sample classes")
-
-} else if (parameters$recountID == "SRP057196") {
-  ## Running parameters for SRP057196
-  ## NOTE FOR MUSTAFA: For this dataset, the groups are defined
-  ## based on a combination of two columns of the pheno table:
-  ## "tissue" and "cell.type".
-  ## I improved filterCountTable() in order to support combinations of columns.
-  ## If several columns are specified in classColumn, the classes
-  ## are built by pasting the specified columns.
-  parameters$classColumn <- c("tissue", "cell.type")
-} else if (parameters$recountID == "SRP035988") {
-  parameters$classColumn <- "tissue.type"
-}
-
+# if (parameters$recountID == "SRP042620") {
+#   ## Psoriasis dataset
+#   parameters$classColumn <- "tissue"
+# } else if (parameters$recountID == "SRP041736") {
+#   parameters$sampleIdColumn <- "sample"
+#   parameters$classColumn <- NA
+#
+#   message("We cannot analyse this dataset because the pheno table does not contain any info about the sample classes")
+#
+# } else if (parameters$recountID == "SRP057196") {
+#   ## Running parameters for SRP057196
+#   ## NOTE FOR MUSTAFA: For this dataset, the groups are defined
+#   ## based on a combination of two columns of the pheno table:
+#   ## "tissue" and "cell.type".
+#   ## I improved filterCountTable() in order to support combinations of columns.
+#   ## If several columns are specified in classColumn, the classes
+#   ## are built by pasting the specified columns.
+#   parameters$classColumn <- c("tissue", "cell.type")
+# } else if (parameters$recountID == "SRP035988") {
+#   parameters$classColumn <- "tissue.type"
+# }
+#
 
 ## Prefix for experiments with permuted class labels
 ## (negative controls to estimate random expectation)
