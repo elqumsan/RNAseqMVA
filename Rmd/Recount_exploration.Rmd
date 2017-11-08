@@ -52,6 +52,7 @@ recount.metadata.tgca <- all_metadata(subset='tcga')
 recount.metadata <- recount.metadata.sra
 # View(as.data.frame(recount.metadata))
 # names(recount.metadata)
+dim(recount.metadata)
 
 summary.per.col <- data.frame()
 for (column in names(recount.metadata)) {
@@ -85,6 +86,9 @@ message("Great, there are ", length (nona.projects), " projects with no NA value
 
 ## Count th number of distinct classes (characteristics) for each project
 
+recount.metadata.nona <- recount.metadata[project == nona.projects ,]
+dim(recount.metadata.nona)
+View(as.data.frame(recount.metadata.nona))
 
 new.selected.project <- data.frame()
 metadata.names <-names(metadata.nona)
