@@ -75,7 +75,7 @@ kable(summary.per.col)
 ## Filtering out the NA values
 
 ```{r}
-metadata.nona <-  na.omit(recount.metadata)
+metadata.nona <-  asS4(na.omit(recount.metadata))
 ##metadata.nona$project <-as.list(metadata.nona$project)
 dim(metadata.nona)
 
@@ -107,11 +107,11 @@ if (is.null(nona.projects) || length(nona.projects) < 1) {
   } # end for
 }
 
-
+new.selected.project<- asS4(new.selected.project)
 
 
 ## Select projects with at least 3 classes
-x <- subset(new.selected.project, characteristic.nb >= 3)
+x <- subset(new.selected.project,  new.selected.project$characteristic.nb > 3)
 
 ## Select projects with precisely 2 classes
 
