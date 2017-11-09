@@ -78,15 +78,22 @@ kable(summary.per.col)
 ```{r}
 metadata.nona <-  asS4(na.omit(recount.metadata))
 ##metadata.nona$project <-as.list(metadata.nona$project)
+message("the dimension of the metadata.nona is :"  )
 dim(metadata.nona)
+message("a dimension of the Recount metadata is:")
+dim(recount.metadata)
 
 ## count the number of projects with no NA value
 nona.projects <- unique(metadata.nona$project)
 message("Great, there are ", length (nona.projects), " projects with no NA value. ")
 
 ## Count th number of distinct classes (characteristics) for each project
+length(nona.projects)
 
-recount.metadata.nona <- recount.metadata[project == nona.projects ,]
+x <- metadata.nona[project == nona.projects, ]
+dim(x)
+View(as.data.frame(x))
+recount.metadata.nona <- recount.metadata[ ,]
 dim(recount.metadata.nona)
 View(as.data.frame(recount.metadata.nona))
 
@@ -132,7 +139,7 @@ View(as.data.frame(metadata.nona))
 
 
 ```{r}
-
+library("IRanges")
 ## In the future, we wold like to understand why some GSE do work andother ones not
 # abstract_search(recountID)
 project_info <- abstract_search('GSE32465') ## This one works
@@ -140,7 +147,7 @@ project_info <- abstract_search('GSE32465') ## This one works
 recountID <- project_info$project
 
 ## Select a Recount ID
-recountID <- "SRP042620"
+recountID <- "SRP003611"
 studyPath <- paste0("~/test_recount/",recountID)
 dir.create(studyPath, recursive = TRUE, showWarnings = FALSE)
 # dir.exists(studyPath)
@@ -159,7 +166,12 @@ url <- download_study(recountID, outdir = studyPath)
 rseFile <- file.path(studyPath, "rse_gene.Rdata")
 load(rseFile)
 colData(rse_gene)
-
+## hereafter are just the classes for each project
+View(as.data.frame(rse_gene@colData@listData$characteristics@unlistData))
+length(rse_gene@colData@listData$characteristics@unlistData)
+row.names(unique(rse_gene@colData))
+colnames(rse_gene)
+View(as.data.frame(rse_gene))
 
 # to retrieve the raw count Table
 # View(assay(rse_gene))
@@ -174,8 +186,12 @@ rse_gene$characteristics@elementType
 
 
 names(colData(rse_gene))
-unique( colData(rse_gene)$project)
-unique(colData(rse_gene)$experiment)
+find_geo()
+x <-sapply(colData(rse_gene)$run[1:2], find_geo)
+View(as.data.frame(x))
+length(unique( colData(rse_gene)$project))
+length(unique(colData(rse_gene)$experiment))
+length( unique(colData(rse_gene)$run))
 table( unique( colData(rse_gene)$characteristics))
 Na.characteristics <- sum( is.na(colData(rse_gene)$characteristics))
 
