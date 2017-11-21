@@ -50,6 +50,7 @@ recount.metadata.gtex <- all_metadata(subset='gtex')
 recount.metadata.tgca <- all_metadata(subset='tcga')
 
 recount.metadata <- recount.metadata.sra
+# View(recount.metadata)
 # View(as.data.frame(recount.metadata))
 # names(recount.metadata)
 dim(recount.metadata)
@@ -72,20 +73,64 @@ kable(summary.per.col)
 
 ```
 
+# Exploration of characteristics
+
+Each Recount entry (corresponding to a sequencing run for a given sample) can be described by one or more charcateristics (e.g. tissue, conditions, genotype, treatment, ...). This creates a problem when converting the metadata to a data frame with one column per field, since multi-value charcateristics cannot be automatically convereted to a value to be placed in a single column. 
+
+```{r nb_characteristics_per_entry}
+kable(as.data.frame.table(table(unlist(lapply(recount.metadata$characteristics, length)))), caption = "Number of values per entry for the characteristics attribute. ")
+
+```
+
+For the sake of summarization, we will concatenate the characteristics values in a single string per run, in order to view them in the metadata table (where there is a single row per run, and a single column for the field "characteristics"). 
+
+
+```{r concatenate_characteristics}
+## Concatenate characteristics in a single string per run
+characteristics.string <- unlist(lapply(recount.metadata$characteristics, paste, collapse="; "))
+
+## Back-conversion of "NA" strings (obtained from NA values) to NA values
+characteristics.string[characteristics.string == "NA"] <- NA
+
+## Count the number of NA or non-NA values for characteristics
+table(is.na(characteristics.string))
+
+## Cast metadata to a data frame with a single row per run
+recount.metadata.frame <- as.data.frame(recount.metadata)
+recount.metadata.frame$characteristics <- characteristics.string
+
+
+## An example of dataset with multi-valued characteristics
+
+
+## Return all projects havin a field named "disease status"
+kable(as.data.frame.table(sort(table(recount.metadata.frame[grep(recount.metadata.frame$characteristics, pattern = "disease status: "), "project"]), decreasing = TRUE)), caption="Recount projects having 'disease status' as field name for the characteristics. ")
+
+## select datasets with time in the characteristics (supposedly because the corresonding experiments are time series)
+time.series <- as.data.frame.table(sort(table(recount.metadata.frame[grep(characteristics.string, pattern = "time: "), "project"]), decreasing = TRUE))
+
+kable(time.series, caption="Recount projects corresponding to time series (the characteristics field contains 'time:'")
+
+```
+
+
+
+
+
+
 
 ## Filtering out the NA values
 
 ```{r}
-metadata.nona <-  asS4(na.omit(recount.metadata))
-##metadata.nona$project <-as.list(metadata.nona$project)
-message("the dimension of the metadata.nona is :"  )
+## Select the subset of metadata for which the field "characteristics" is defined
+metadata.nona <- recount.metadata[!is.na(recount.metadata.frame$characteristics), ]
 dim(metadata.nona)
-message("a dimension of the Recount metadata is:")
-dim(recount.metadata)
+message("Number of entries in recount.medatata is :", nrow(recount.metadata.frame))
+message("Number of entries in metadata.nona is :", nrow(metadata.nona))
 
 ## count the number of projects with no NA value
 nona.projects <- unique(metadata.nona$project)
-message("Great, there are ", length (nona.projects), " projects with no NA value. ")
+message("Recount contains ", length (unique(recount.metadata$project)), " among which ", length(nona.projects), " projects have defined characteristics. These are the ones we can work with ")
 
 ## Count th number of distinct classes (characteristics) for each project
 length(nona.projects)
@@ -132,6 +177,9 @@ x <- subset(new.selected.project,  new.selected.project$characteristic.nb > 3)
 View(as.data.frame(metadata.nona))
 
 ```
+
+
+Recount contains `r length (unique(recount.metadata$project))` among which `r length(nona.projects)` projects have defined characteristics. 
 
 
 ## Exporation of a problematic dataset (with NA values in the characteristics column)
