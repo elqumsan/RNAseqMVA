@@ -89,13 +89,11 @@ message("Great, there are ", length (nona.projects), " projects with no NA value
 
 ## Count th number of distinct classes (characteristics) for each project
 length(nona.projects)
-
+View((nona.projects))
+project <- "SRP008145"
 x <- metadata.nona[project == nona.projects, ]
 dim(x)
 View(as.data.frame(x))
-recount.metadata.nona <- recount.metadata[ ,]
-dim(recount.metadata.nona)
-View(as.data.frame(recount.metadata.nona))
 
 new.selected.project <- data.frame()
 metadata.names <-names(metadata.nona)
