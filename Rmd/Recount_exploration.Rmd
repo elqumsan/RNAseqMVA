@@ -38,7 +38,7 @@ library(SummarizedExperiment)
 
 ## General exploration of the metadata table
 
-```{r}
+```{r summary_statistics_per_each_column_in_Rcount.metedata}
 min.samples.per.class <- 10
 
 
