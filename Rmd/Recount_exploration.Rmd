@@ -105,6 +105,11 @@ recount.metadata.frame$characteristics <- characteristics.string
 
 ## Return all projects havin a field named "disease status"
 kable(as.data.frame.table(sort(table(recount.metadata.frame[grep(recount.metadata.frame$characteristics, pattern = "disease status: "), "project"]), decreasing = TRUE)), caption="Recount projects having 'disease status' as field name for the characteristics. ")
+recount.metadata.frame[,recount.metadata.frame$project == (recount.metadata.frame[grep(recount.metadata.frame$characteristics,pattern = "disease status: "), "project"])]
+
+## To select project with disease status containing at least 40 samples
+recount.metadata.frame.enough.sample<- recount.metadata.frame[grep(recount.metadata.frame$sample,pattern = "disease status: "), "sample" >= 40]
+dim(recount.metadata.frame.enough.sample)
 
 ## select datasets with time in the characteristics (supposedly because the corresonding experiments are time series)
 time.series <- as.data.frame.table(sort(table(recount.metadata.frame[grep(characteristics.string, pattern = "time: "), "project"]), decreasing = TRUE))
