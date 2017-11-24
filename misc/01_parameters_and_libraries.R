@@ -21,7 +21,8 @@ project.parameters <- yaml.load_file("misc/00_project_parameters.yml")
 parameters <- project.parameters$default
 
 # recountID <- "SRP042620" ## Multi-group breast cancer
-recountID <- "SRP003611" # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
+#recountID <- "SRP003611" # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
+recountID <- "SRP061240"
 parameters$recountID <- recountID
 
 ## Overwrite default parameters wih project-specific parameters
