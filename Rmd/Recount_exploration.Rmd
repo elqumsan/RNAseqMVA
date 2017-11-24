@@ -105,11 +105,9 @@ recount.metadata.frame$characteristics <- characteristics.string
 
 ## Return all projects havin a field named "disease status"
 kable(as.data.frame.table(sort(table(recount.metadata.frame[grep(recount.metadata.frame$characteristics, pattern = "disease status: "), "project"]), decreasing = TRUE)), caption="Recount projects having 'disease status' as field name for the characteristics. ")
-recount.metadata.frame[,recount.metadata.frame$project == (recount.metadata.frame[grep(recount.metadata.frame$characteristics,pattern = "disease status: "), "project"])]
+recount.metadata.frame.projects.disease.status<- unique(  sort(recount.metadata.frame[grep(recount.metadata.frame$characteristics, pattern = "disease status: "),"project"],decreasing = TRUE) )
+length(recount.metadata.frame.projects.disease.status)
 
-## To select project with disease status containing at least 40 samples
-recount.metadata.frame.enough.sample<- recount.metadata.frame[grep(recount.metadata.frame$sample,pattern = "disease status: "), "sample" >= 40]
-dim(recount.metadata.frame.enough.sample)
 
 ## select datasets with time in the characteristics (supposedly because the corresonding experiments are time series)
 time.series <- as.data.frame.table(sort(table(recount.metadata.frame[grep(characteristics.string, pattern = "time: "), "project"]), decreasing = TRUE))
@@ -119,6 +117,21 @@ kable(time.series, caption="Recount projects corresponding to time series (the c
 ```
 
 
+```{r counting_numbers_of_samples_for_each_disease_status_project} 
+
+summary.of.project.disease <- data.frame()
+for ( nb in 1:length(recount.metadata.frame.projects.disease.status)) {
+sample.stat.of.disease.project <- data.frame(
+  "project name" = recount.metadata.frame.projects.disease.status[nb],
+  "samples of disease status" = (as.vector(unlist(subset(recount.metadata.frame, project == recount.metadata.frame.projects.disease.status[nb], select = "sample")))),
+  "sample sums" = length((as.vector(unlist(subset(recount.metadata.frame, project == recount.metadata.frame.projects.disease.status[nb], select = "sample")))) )
+  
+) # end of data frame
+summary.of.project.disease <- rbind(summary.of.project.disease, sample.stat.of.disease.project)
+  }
+unique(summary.of.project.disease)
+
+```
 
 
 
