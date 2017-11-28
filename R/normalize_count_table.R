@@ -70,5 +70,7 @@ NormalizeCounts <- function(rawCounts,
     result$quantile <- quantile
   }
   result$sampleStats <- sampleStats
+  message.with.time("Finished Normalization Process for Recount experiment ID ", parameters$recountID)
+
   return(result)
 }
