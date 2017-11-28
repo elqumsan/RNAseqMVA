@@ -33,6 +33,7 @@ knitr::opts_chunk$set(
   warning=FALSE)
 library(recount)
 library(SummarizedExperiment)
+library(S4Vectors)
 ```
 
 
@@ -129,10 +130,29 @@ sample.stat.of.disease.project <- data.frame(
 ) # end of data frame
 summary.of.project.disease <- rbind(summary.of.project.disease, sample.stat.of.disease.project)
   }
-unique(summary.of.project.disease)
-
+unique.summary.of.project.disease <- lapply(summary.of.project.disease, unique) 
+summary.of.project.disease$sample.sums
 ```
 
+
+```{r exploring_duplicating_in_row.name_for_project.disease}
+
+recountID <- "SRP061240"
+studyPath <- paste0("~/test_recount/",recountID)
+dir.create(studyPath, recursive = TRUE, showWarnings = FALSE)
+download_study(recountID, outdir = studyPath)
+rse <- file.path(studyPath,"rse_gene.Rdata")
+load(rse)
+
+runPheno <- colData(rse_gene)
+length( row.names(runPheno))
+length(unique(row.names(runPheno)))
+View(as.data.frame(runPheno))
+row.names(runPheno) <- NULL
+
+
+
+```
 
 
 
