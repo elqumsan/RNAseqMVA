@@ -108,7 +108,6 @@ loadRecountExperiment <- function(recountID,
   if (verbose) {
     message("Loaded counts per run: ", nrow(countsPerRun), " features x ", ncol(countsPerRun), " runs.")
   }
-
   ## Table with information about the columns of the RangedSeummaryExperiment.
   if (verbose) {
     message("Building pheno table")
@@ -141,30 +140,33 @@ loadRecountExperiment <- function(recountID,
   # View(geochar)
   # head(geochar)
 
-  ## Build a pheno table with selected columns from coldata + the geodata we just extracted
+  # Build a pheno table with selected columns from coldata + the geodata we just extracted
   runPhenoTable <- cbind(
     runPheno[, grep(pattern="(characteristics|sharq)", x=names(runPheno), invert=TRUE)],
     geochar)
   # View(phenoTable)
   # class(phenoTable)
 
-  ## Extract a phenoTable with selected fields from the runPheno object
-  runPhenoTable2 <- data.frame(
-    project = runPheno$project,
-    sample = runPheno$sample,
-    experiment = runPheno$experiment,
-    run = runPheno$run,
-    geo_accession = runPheno$geo_accession,
-    characteristics = runPheno$characteristics@unlistData
-  )
+  # ## MUSTAFA STOPE THE TWO FOLLOWING PARTS DUE TO THE error duplicate in row.mane
 
-  ## Missing: parse sub-fields from the "characteristics" field (somehow tricky)
+  # ## Extract a phenoTable with selected fields from the runPheno object
+  # runPhenoTable2 <- data.frame(
+  #   project = runPheno$project,
+  #   sample = runPheno$sample,
+  #   experiment = runPheno$experiment,
+  #   run = runPheno$run,
+  #   geo_accession = runPheno$geo_accession,
+  #   characteristics = runPheno$characteristics@unlistData
+  # )
+  #
+  # ## Missing: parse sub-fields from the "characteristics" field (somehow tricky)
+  #
+  # rownames(runPhenoTable2) <- runPhenoTable2$run
+  # # View(runPhenoTable2)
+  # # class(runPhenoTable2)
+  # result$runPhenoTable2 <- runPhenoTable2
 
-  rownames(runPhenoTable2) <- runPhenoTable2$run
-  # View(runPhenoTable2)
-  # class(runPhenoTable2)
-  result$runPhenoTable2 <- runPhenoTable2
-
+  # STOP Mustafa
   if (mergeRuns) {
     if (verbose) { message("Merging run-wise counts by sample") }
     result$merged <- MergeRuns(countsPerRun,
