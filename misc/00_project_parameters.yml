@@ -60,4 +60,6 @@ SRP035988:  ## Psoriasis
 ERP003613: # Tissue samples from 95 human individuals
     description: "Tissue samples from 95 human individuals"
 
-
+SRP061240:
+  description: "disease status"
+  classColumn: "disease status:"
