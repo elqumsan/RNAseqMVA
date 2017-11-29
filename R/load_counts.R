@@ -89,5 +89,8 @@ loadCounts <- function(recountID,
   loadedRecount$phenoTable <- phenoTable
   loadedRecount$classes <- classes
   loadedRecount$samples.per.class <- as.data.frame.table(table(classes), row.names=1)
+
+  message.with.time("Finished Load Count Table process for Recount experiment ID ", parameters$recountID)
+
   return(loadedRecount )
 }
