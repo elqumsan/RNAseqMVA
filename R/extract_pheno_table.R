@@ -1,6 +1,11 @@
-## Mustafa will adda  proper roxygen2 description
-
-
+##################################################################
+#' @title Fuction for extracting Pheno Table from specified recount project
+#' @author Mustafa ABUELQUMSAN and Jacques van Helden
+#' @description Once we have the pheno table from assigned project through recount data set.
+#'
+#' @param rse this is Range summaraised Experiment object which is in the Rdata file
+#' @param verbose for testing
+#' @export
 ExtractPhenoTable <- function(rse,
                               verbose = FALSE) {
 
