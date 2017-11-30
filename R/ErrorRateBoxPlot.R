@@ -19,6 +19,7 @@
 ## Gather error rates for each K Value in the experiments
 # and draw a box plot
 ##################################################################################
+#' @export
 ErrorRateBoxPlot <- function(experimentList,
                              classifier,
                              main = paste("Misclassification rates", "\n", parameters$iterations, "iterations"),
