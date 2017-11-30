@@ -83,7 +83,7 @@ filterCountTable <- function(countTable, phenoTable,
 
   # Specify sample classes by extracting information about specified class columns
   if (length(classColumn) == 1) {
-    classes <-  phenoTable[, classColumn]
+    classes <-  as.vector(phenoTable[, classColumn])
   } else if (length(classColumn) > 1) {
     ## Combine several columns to establis the classes
     classes <- apply(phenoTable[, classColumn], 1, paste, collapse="_")
