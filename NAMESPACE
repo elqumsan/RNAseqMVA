@@ -2,6 +2,8 @@
 
 export()
 export(DEGordering)
+export(ErrorRateBoxPlot)
+export(ExtractPhenoTable)
 export(MergeRuns)
 export(MisclassificationEstimate)
 export(NormalizeCounts)
