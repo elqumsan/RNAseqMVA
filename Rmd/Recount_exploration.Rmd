@@ -131,23 +131,26 @@ sample.stat.of.disease.project <- data.frame(
 summary.of.project.disease <- rbind(summary.of.project.disease, sample.stat.of.disease.project)
   }
 unique.summary.of.project.disease <- lapply(summary.of.project.disease, unique) 
+kable(unique.summary.of.project.disease)
 summary.of.project.disease$sample.sums
 ```
 
 
 ```{r exploring_duplicating_in_row.name_for_project.disease}
 
-recountID <- "SRP061240"
+recountID <- "SRP062966"
 studyPath <- paste0("~/test_recount/",recountID)
 dir.create(studyPath, recursive = TRUE, showWarnings = FALSE)
 download_study(recountID, outdir = studyPath)
 rse <- file.path(studyPath,"rse_gene.Rdata")
 load(rse)
-
+countTable <- assay(rse_gene)
 runPheno <- colData(rse_gene)
 length( row.names(runPheno))
 length(unique(row.names(runPheno)))
 View(as.data.frame(runPheno))
+dim(countTable)
+dim(runPheno)
 row.names(runPheno) <- NULL
 
 
