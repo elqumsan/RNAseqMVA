@@ -60,6 +60,6 @@ SRP035988:  ## Psoriasis
 ERP003613: # Tissue samples from 95 human individuals
     description: "Tissue samples from 95 human individuals"
 
-SRP061240:
-  description: "disease status"
+SRP061240: ## Cancer disease types ("Pancreatic", " colorectal", "prostat Cancer", "Healthy control")
+  description: "disease status for 192 human individuals"
   classColumn: "disease.type"
