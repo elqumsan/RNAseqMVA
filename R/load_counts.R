@@ -62,7 +62,7 @@ loadCounts <- function(recountID,
   phenoTable <- countdata$merged$samplePheno
   #phenoTable <- countdata$runPheno$characteristics
 
-  #dim(PhenoTable)
+  #dim(phenoTable)
 
   ################################################
   ## Filter zero-variance and near-zero variance variables from the count table
