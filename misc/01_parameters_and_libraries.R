@@ -28,7 +28,12 @@ recountID <-   "SRP062966" # this project Boold disease
 parameters$recountID <- recountID
 
 ## Overwrite default parameters wih project-specific parameters
-parameters[names(project.parameters[[recountID]])] <- project.parameters[[recountID]]
+selected.parameters <- project.parameters[[recountID]]
+if (is.null(selected.parameters)) {
+  message("No specific parameters specfied in yaml file for recount ID ", recountID)
+} else {
+  parameters[names(selected.parameters)] <- project.parameters[[recountID]]
+}
 
 
 #View(parameters)
