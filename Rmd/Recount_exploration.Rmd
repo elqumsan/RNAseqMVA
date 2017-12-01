@@ -78,8 +78,19 @@ kable(summary.per.col)
 
 Each Recount entry (corresponding to a sequencing run for a given sample) can be described by one or more charcateristics (e.g. tissue, conditions, genotype, treatment, ...). This creates a problem when converting the metadata to a data frame with one column per field, since multi-value charcateristics cannot be automatically convereted to a value to be placed in a single column. 
 
-```{r nb_characteristics_per_entry}
-kable(as.data.frame.table(table(unlist(lapply(recount.metadata$characteristics, length)))), caption = "Number of values per entry for the characteristics attribute. ")
+```{r nb_characteristics_per_run_barplot, fig.cap="Number of characteristics per run in ReCount2 metadata. ", fig.width=7, fig.height=5}
+characteristics.per.run <- as.data.frame.table(table(unlist(lapply(recount.metadata$characteristics, length))))
+names(characteristics.per.run) <- c("Characteristics", "Runs")
+
+barplot(as.numeric(unlist(characteristics.per.run[, "Runs"])), 
+        main = "Number of characteristics per sample ", 
+        names.arg = unlist(characteristics.per.run[, "Characteristics"]), 
+        col = "#DDBBFF", 
+        ylab = "Number of runs", 
+        xlab = "Number of characteristics",
+        horiz = FALSE, las=2, cex.names = 0.8)
+
+# kable(characteristics.per.run, caption = "Number of characteristics per run. ")
 
 ```
 
@@ -87,27 +98,58 @@ For the sake of summarization, we will concatenate the characteristics values in
 
 
 ```{r concatenate_characteristics}
-## Concatenate characteristics in a single string per run
-characteristics.string <- unlist(lapply(recount.metadata$characteristics, paste, collapse="; "))
+# ## Concatenate characteristics in a single string per run
+# characteristics.string <- unlist(lapply(recount.metadata$characteristics, paste, collapse="; "))
+# 
+# ## Back-conversion of "NA" strings (obtained from NA values) to NA values
+# characteristics.string[characteristics.string == "NA"] <- NA
+# 
+# ## Count the number of NA or non-NA values for characteristics
+# charact.defined <- as.data.frame.table(table(!is.na(characteristics.string)))
+# names(charact.defined) <- c("Characteristics defined", "Number of runs")
+# kable(charact.defined, caption = "Number of runs with defined or undefined characteristics in Recount2 metadata. ")
+# #table(is.na(unlist(recount.metadata$characteristics)))
+# 
+# ## Cast metadata to a data frame with a single row per run
+# ## Use the concatenated chacteristics to fill the column "characteristics"
+# recount.metadata.frame <- as.data.frame(recount.metadata)
+# recount.metadata.frame$characteristics <- characteristics.string
+# # table(is.na(recount.metadata.frame$characteristics))
+# 
+# ## An example of dataset with multi-valued characteristics
 
-## Back-conversion of "NA" strings (obtained from NA values) to NA values
-characteristics.string[characteristics.string == "NA"] <- NA
 
-## Count the number of NA or non-NA values for characteristics
-table(is.na(characteristics.string))
+# ## Return all projects havin a field named "disease status"
+# query.charact <- "disease status" ## Query for a field to be found in "characteristics"
+# matching.runs <- grep(recount.metadata.frame$characteristics, pattern = query.charact)
+# matching.runs.project.id <- recount.metadata.frame[matching.runs, "project"]
+# matching.project.ids1 <- unique(sort(matching.runs.project.id))
+# 
+# 
+# ## Count the number of runs per matching project
+# matching.projects.Nruns <- as.data.frame.table(sort(table(matching.runs.project.id), decreasing=TRUE), row.names = 1)
+# names(matching.projects.Nruns) <- "Nruns"
+# 
+# if (run.kable) {
+#   kable(matching.projects.Nruns, caption=paste("Recount projects having", query.charact, "as field name for the characteristics. "))
+# }
+# 
+# if (run.barplot) {
+#   par.ori <- par(no.readonly = TRUE)
+#   par(mar=c(4,10,5,1))
+#   barplot(as.vector(as.matrix(matching.projects.Nruns)), 
+#           names.arg = rownames(matching.projects.Nruns), 
+#           main=query.charact,
+#           horiz = TRUE, las = 1, cex.names = 0.7, xlab="Runs per project", col="#88FFDD")
+#   par(par.ori)
+# } 
 
-## Cast metadata to a data frame with a single row per run
-recount.metadata.frame <- as.data.frame(recount.metadata)
-recount.metadata.frame$characteristics <- characteristics.string
+projects.disease.status <- selectProjectsByCharacteristics(recount.metadata, query.charact = "disease status", run.kable = FALSE, run.barplot = TRUE)
 
+projects.time <- selectProjectsByCharacteristics(recount.metadata, query.charact = "time", run.kable = FALSE, run.barplot = TRUE)
 
-## An example of dataset with multi-valued characteristics
-
-
-## Return all projects havin a field named "disease status"
-kable(as.data.frame.table(sort(table(recount.metadata.frame[grep(recount.metadata.frame$characteristics, pattern = "disease status: "), "project"]), decreasing = TRUE)), caption="Recount projects having 'disease status' as field name for the characteristics. ")
-recount.metadata.frame.projects.disease.status<- unique(  sort(recount.metadata.frame[grep(recount.metadata.frame$characteristics, pattern = "disease status: "),"project"],decreasing = TRUE) )
-length(recount.metadata.frame.projects.disease.status)
+## A lot of projects have "tissue" in the characteristcs
+projects.tissue <- selectProjectsByCharacteristics(recount.metadata, query.charact = "tissue", run.kable = TRUE, run.barplot = FALSE)
 
 
 ## select datasets with time in the characteristics (supposedly because the corresonding experiments are time series)
@@ -117,22 +159,22 @@ kable(time.series, caption="Recount projects corresponding to time series (the c
 
 ```
 
+We selected all the projects having "disease status" field in the characteristics of the samples^[more precisely, the characteristics is associated to a run, but we can assume that, when there are several runs for a same sample, they all bear the same characteristics since they are technical replicates]. In total there are `r length(matching.project.ids)` projects characterized by a disease status. 
 
-```{r counting_numbers_of_samples_for_each_disease_status_project} 
-
-summary.of.project.disease <- data.frame()
-for ( nb in 1:length(recount.metadata.frame.projects.disease.status)) {
+```{r number_samples_per_disease_status_project} 
+project.disease.summary <- data.frame()
+for ( nb in 1:length(matching.project.ids)) {
 sample.stat.of.disease.project <- data.frame(
-  "project name" = recount.metadata.frame.projects.disease.status[nb],
-  "samples of disease status" = (as.vector(unlist(subset(recount.metadata.frame, project == recount.metadata.frame.projects.disease.status[nb], select = "sample")))),
-  "sample sums" = length((as.vector(unlist(subset(recount.metadata.frame, project == recount.metadata.frame.projects.disease.status[nb], select = "sample")))) )
+  "project name" = matching.project.ids[nb],
+  "samples of disease status" = (as.vector(unlist(subset(recount.metadata.frame, project == matching.project.ids[nb], select = "sample")))),
+  "sample sums" = length((as.vector(unlist(subset(recount.metadata.frame, project == matching.project.ids[nb], select = "sample")))) )
   
 ) # end of data frame
-summary.of.project.disease <- rbind(summary.of.project.disease, sample.stat.of.disease.project)
+project.disease.summary <- rbind(project.disease.summary, sample.stat.of.disease.project)
   }
-unique.summary.of.project.disease <- lapply(summary.of.project.disease, unique) 
-kable(unique.summary.of.project.disease)
-summary.of.project.disease$sample.sums
+unique.project.disease.summary <- lapply(project.disease.summary, unique) 
+kable(unique.project.disease.summary)
+project.disease.summary$sample.sums
 ```
 
 
@@ -148,9 +190,10 @@ countTable <- assay(rse_gene)
 runPheno <- colData(rse_gene)
 length( row.names(runPheno))
 length(unique(row.names(runPheno)))
-View(as.data.frame(runPheno))
-dim(countTable)
-dim(runPheno)
+
+# View(as.data.frame(runPheno))
+# dim(countTable)
+# dim(runPheno)
 row.names(runPheno) <- NULL
 
 
@@ -175,11 +218,11 @@ message("Recount contains ", length (unique(recount.metadata$project)), " among 
 
 ## Count th number of distinct classes (characteristics) for each project
 length(nona.projects)
-View((nona.projects))
+# View((nona.projects))
 project <- "SRP008145"
 x <- metadata.nona[project == nona.projects, ]
-dim(x)
-View(as.data.frame(x))
+# dim(x)
+# View(as.data.frame(x))
 
 new.selected.project <- data.frame()
 metadata.names <-names(metadata.nona)
@@ -213,7 +256,7 @@ x <- subset(new.selected.project,  new.selected.project$characteristic.nb > 3)
 ## Select projects where there are at least 2 classes with the user-specified min number of samples (parameter previously defined)
 
 
-View(as.data.frame(metadata.nona))
+# View(as.data.frame(metadata.nona))
 
 ```
 
@@ -254,11 +297,11 @@ rseFile <- file.path(studyPath, "rse_gene.Rdata")
 load(rseFile)
 colData(rse_gene)
 ## hereafter are just the classes for each project
-View(as.data.frame(rse_gene@colData@listData$characteristics@unlistData))
+# View(as.data.frame(rse_gene@colData@listData$characteristics@unlistData))
 length(rse_gene@colData@listData$characteristics@unlistData)
 row.names(unique(rse_gene@colData))
 colnames(rse_gene)
-View(as.data.frame(rse_gene))
+# View(as.data.frame(rse_gene))
 
 # to retrieve the raw count Table
 # View(assay(rse_gene))
@@ -275,7 +318,7 @@ rse_gene$characteristics@elementType
 names(colData(rse_gene))
 find_geo()
 x <-sapply(colData(rse_gene)$run[1:2], find_geo)
-View(as.data.frame(x))
+# View(as.data.frame(x))
 length(unique( colData(rse_gene)$project))
 length(unique(colData(rse_gene)$experiment))
 length( unique(colData(rse_gene)$run))
