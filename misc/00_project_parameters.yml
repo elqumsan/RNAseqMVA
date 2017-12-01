@@ -63,3 +63,12 @@ ERP003613: # Tissue samples from 95 human individuals
 SRP061240: ## Cancer disease types ("Pancreatic", " colorectal", "prostat Cancer", "Healthy control")
   description: "disease status for 192 human individuals"
   classColumn: "disease.type"
+
+
+SRP062966:
+  descrition: "blood disease"
+  classColumn: "characteristics"
+
+SRP003611:
+  description: "transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)"
+  classColumn: ""
