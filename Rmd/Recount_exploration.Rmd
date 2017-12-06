@@ -153,9 +153,9 @@ projects.tissue <- selectProjectsByCharacteristics(recount.metadata, query.chara
 
 
 ## select datasets with time in the characteristics (supposedly because the corresonding experiments are time series)
-time.series <- as.data.frame.table(sort(table(recount.metadata.frame[grep(characteristics.string, pattern = "time: "), "project"]), decreasing = TRUE))
+# time.series <- as.data.frame.table(sort(table(recount.metadata.frame[grep(characteristics.string, pattern = "time: "), "project"]), decreasing = TRUE))
 
-kable(time.series, caption="Recount projects corresponding to time series (the characteristics field contains 'time:'")
+kable(projects.time$matching.projects.Nruns, caption="Recount projects corresponding to time series (the characteristics field contains 'time:'")
 
 ```
 
