@@ -180,7 +180,7 @@ project.disease.summary$sample.sums
 
 ```{r exploring_duplicating_in_row.name_for_project.disease}
 
-recountID <- "SRP039694"
+recountID <- "SRP008976"
 studyPath <- paste0("~/test_recount/",recountID)
 dir.create(studyPath, recursive = TRUE, showWarnings = FALSE)
 download_study(recountID, outdir = studyPath)
@@ -196,6 +196,25 @@ length(unique(row.names(runPheno)))
 names(runPheno)
 # dim(runPheno)
 row.names(runPheno) <- NULL
+
+########################################################
+### How to build data.frame from GEO's characteristics for a given sample
+
+## Load required library
+library('SummarizedExperiment')
+
+## Get the GEO accession ids
+
+geoids < sapply(runPheno$run[1:2], find_geo)
+## Get the data from GEO
+geodata <- do.call(rbind, sapply(geoids, geo_info))
+
+## Add characteristics in a way that we can access easily later on
+geodata <- cbind(geodata, geo_characteristics(geodata))
+
+## Explore the original characteristics and the result from 
+## geo_characteristics()
+geodata[, c('characteristics', 'cells', 'shrna.expression', 'treatment')]
 
 
 

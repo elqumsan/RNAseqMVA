@@ -26,7 +26,8 @@ parameters <- project.parameters$default
 # recountID <- "SRP006574"   # this Project will constitute the classes that have IRanges object and then it will not have the same length for count Table such leads for STOP
 # recountID <- "SRP062966"   # this project Boold disease
 # recountID <- "SRP066834"   # cerebral cancer type.
- recountID <-  "SRP039694"   # hepatocellular carcinoma
+# recountID <-  "SRP039694"   # hepatocellular carcinoma
+recountID <- "SRP008976"
 parameters$recountID <- recountID
 
 ## Overwrite default parameters wih project-specific parameters
