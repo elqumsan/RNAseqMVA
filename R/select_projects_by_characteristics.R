@@ -12,7 +12,7 @@
 #' library(recount)
 #' recount.metadata <- all_metadata(subset='sra')
 #'
-#' ## Select all the projects havinf "disease status" as a characteristics field
+#' ## Select all the projects having "disease status" as a characteristics field
 #' selectProjectsByCharacteristics(recount.metadata,
 #'    query.charact = "disease status",
 #'    run.barplot = TRUE)
@@ -78,7 +78,7 @@ selectProjectsByCharacteristics <- function(recount.metadata,
     par(mar=c(4,6,5,1))
     barplot(as.vector(as.matrix(matching.projects.Nruns)),
             names.arg = rownames(matching.projects.Nruns),
-            main=paste("Query field: query.charact"),
+            main=paste("Query field:", query.charact),
             horiz = TRUE, las = 1, cex.names = 0.7, cex.axis = 0.8,
             xlab="Runs per project", col="#88FFDD")
     legend("topright",

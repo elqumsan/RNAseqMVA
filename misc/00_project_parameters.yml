@@ -72,3 +72,11 @@ SRP062966:
 SRP003611:
   description: "transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)"
   classColumn: ""
+
+SRP066834:
+  description: "cerebral cancer type"
+  classColumn: "tissue"
+
+SRP039694:
+  description: "hepatocellular carcinoma"
+  classColumn: "disease status"

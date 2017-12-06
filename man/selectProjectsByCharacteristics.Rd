@@ -26,7 +26,7 @@ related to a given experimental setting (e.g. "time series"), or to a particular
 library(recount)
 recount.metadata <- all_metadata(subset='sra')
 
-## Select all the projects havinf "disease status" as a characteristics field
+## Select all the projects having "disease status" as a characteristics field
 selectProjectsByCharacteristics(recount.metadata,
    query.charact = "disease status",
    run.barplot = TRUE)
