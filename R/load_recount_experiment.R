@@ -128,14 +128,17 @@ loadRecountExperiment <- function(recountID,
   # names(geochar)
   # head(geochar)
 
-  geochar <- do.call(rbind, lapply(geochar, function(x) {
+  geochar <- do.call(rbind, lapply(geochar,
+                                   function(x) {
     if('cells' %in% colnames(x)) {
-      colnames(x)[colnames(x) == 'cells'] <- 'cell.line'
+      colnames(x)[colnames(x) == 'cells'] <- 'cell.line' ## Replace column header "cells" by "cell.line"
       return(x)
     } else {
       return(x)
     }
   }))
+
+  # View(as.data.frame(geochar))
 
   # View(geochar)
   # head(geochar)
