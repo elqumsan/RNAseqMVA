@@ -79,4 +79,4 @@ SRP066834:
 
 SRP039694:
   description: "hepatocellular carcinoma"
-  classColumn: "disease status"
+  classColumn: "disease.status"
