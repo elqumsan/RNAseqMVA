@@ -67,11 +67,11 @@ SRP061240: ## Cancer disease types ("Pancreatic", " colorectal", "prostat Cancer
 
 SRP062966:
   descrition: "blood disease"
-  classColumn: "characteristics"
+  classColumn: "disease.status"
 
 SRP003611:
   description: "transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)"
-  classColumn: ""
+  classColumn: "subtype"
 
 SRP066834:
   description: "cerebral cancer type"
