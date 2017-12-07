@@ -21,13 +21,13 @@ project.parameters <- yaml.load_file("misc/00_project_parameters.yml")
 parameters <- project.parameters$default
 
 # recountID <- "SRP042620"   ## Multi-group breast cancer
-# recountID <- "SRP003611"   # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
+ recountID <- "SRP003611"   # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
 # recountID <- "SRP061240"   # several types from cancer (pancreatic, colorectal, prostat cancer) against Healthy control
-# recountID <- "SRP006574"   # this Project will constitute the classes that have IRanges object and then it will not have the same length for count Table such leads for STOP
+# recountID <- "SRP006574"  # NOT working:  # this Project will constitute the classes that have IRanges object and then it will not have the same length for count Table such leads for STOP
 # recountID <- "SRP062966"   # this project Boold disease
 # recountID <- "SRP066834"   # cerebral cancer type.
-# recountID <-  "SRP039694"   # hepatocellular carcinoma
-recountID <- "SRP008976"
+# recountID <-  "SRP039694"  # hepatocellular carcinoma
+# recountID <- "SRP008976"   # NOT working properly
 parameters$recountID <- recountID
 
 ## Overwrite default parameters wih project-specific parameters

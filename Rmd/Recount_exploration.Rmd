@@ -180,7 +180,7 @@ project.disease.summary$sample.sums
 
 ```{r exploring_duplicating_in_row.name_for_project.disease}
 
-recountID <- "SRP008976"
+recountID <- "SRP003611"  
 studyPath <- paste0("~/test_recount/",recountID)
 dir.create(studyPath, recursive = TRUE, showWarnings = FALSE)
 download_study(recountID, outdir = studyPath)
@@ -192,6 +192,15 @@ length( row.names(runPheno))
 length(unique(row.names(runPheno)))
 
 # View(as.data.frame(runPheno))
+
+# Get the GEO accession ides
+geoids <- sapply(runPheno$run[1:2], find_geo) 
+# Get the data from GEO
+geodata <- do.call(rbind, sapply(geoids, geo_info))
+
+# Get characteristics from pheno table
+geo_characteristics(runPheno)
+
 # dim(countTable)
 names(runPheno)
 # dim(runPheno)
@@ -204,17 +213,16 @@ row.names(runPheno) <- NULL
 library('SummarizedExperiment')
 
 ## Get the GEO accession ids
-
-geoids < sapply(runPheno$run[1:2], find_geo)
+geoids < sapply(recount.metadata$run[1:2], find_geo)
 ## Get the data from GEO
 geodata <- do.call(rbind, sapply(geoids, geo_info))
 
 ## Add characteristics in a way that we can access easily later on
 geodata <- cbind(geodata, geo_characteristics(geodata))
-
+# View(as.data.frame(geodata))
 ## Explore the original characteristics and the result from 
 ## geo_characteristics()
-geodata[, c('characteristics', 'cells', 'shrna.expression', 'treatment')]
+geodata[, c('characteristics', 'cells',  'treatment')]
 
 
 
