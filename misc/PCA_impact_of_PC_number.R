@@ -4,11 +4,11 @@
 # which is the better to use a subsets of the first components or all the components ?
 
 ## Choice of the classifier
-classifier <- "svm"
+classifier <- "rf"
+data.type <- "log2norm.prcomp.centred.scaled"
 
 ## iterate over permutation status
-pc.numbers <- c(2, 3, 4, 5, 6, 7,
-                seq(from=10, to=ncol(counts)-1, by = 10), ncol(counts))
+pc.numbers <- c(2, 3, 4)
 pc.nb <- 4 ## Default or quick test
 
 
@@ -43,9 +43,7 @@ if (parameters$compute) {
   } # end else of other data.type
 
   ## iterate over permutation status
-  pc.numbers <- c(2, 3, 4, 5, 6, 7,
-                  seq(from=10, to=ncol(counts)-1, by = 10), ncol(counts))
-  pc.nb <- 4 ## Default or quick test
+  pc.numbers <- c(2, 3, 4)
 
 
 
