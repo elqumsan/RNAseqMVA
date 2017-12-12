@@ -5,10 +5,11 @@
 
 ## Choice of the classifier
 classifier <- "rf"
-data.type <- "log2norm.prcomp.centred.scaled"
+data.type <- "log2norm.prcomp.centred"
 
 ## iterate over permutation status
-pc.numbers <- c(2, 3, 4)
+pc.numbers <- c(2, 3, 4, 5, 6, 7,
+                seq(from=10, to=ncol(counts)-1, by = 10), ncol(counts))
 pc.nb <- 4 ## Default or quick test
 
 
@@ -43,7 +44,9 @@ if (parameters$compute) {
   } # end else of other data.type
 
   ## iterate over permutation status
-  pc.numbers <- c(2, 3, 4)
+  pc.numbers <- c(2, 3, 4, 5, 6, 7,
+                  seq(from=10, to=ncol(counts)-1, by = 10), ncol(counts))
+  pc.nb <- 4 ## Default or quick test
 
 
 
