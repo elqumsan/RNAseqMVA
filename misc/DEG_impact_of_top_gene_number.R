@@ -5,7 +5,7 @@
 ###################################################################################################
 
 ## Choice of the classifier
-classifier <- "rf"
+classifier <- "knn"
 
 
 ## Choice of the coutns
