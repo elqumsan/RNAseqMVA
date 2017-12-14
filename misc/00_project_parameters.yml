@@ -84,3 +84,7 @@ SRP039694:
 SRP008976:
   description: ""
   classColumn: "disease status:"
+
+#SRP006575:
+#  description: ""
+#  classColumn: "tissue"
