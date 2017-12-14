@@ -16,7 +16,7 @@ one.experiment(countTable, classes, classifier, data.type,
 
 \item{classifier}{is the type of classifier that is used with repeated process.}
 
-\item{data.type}{is data type that is used with iterative process, supported "raw","log2" and "log2norm"}
+\item{data.type}{is data type that is used with iterative process, supported "raw","log2", "log2norm" and "log2norm.prcomp.centred"}
 
 \item{variable.type}{this indicate for the number of variables that will used with iterative procedure.}
 
