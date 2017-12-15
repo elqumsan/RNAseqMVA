@@ -132,6 +132,11 @@ filterCountTable <- function(countTable, phenoTable,
   # View(countTable)
   # dim(countTable)
 
+
+  # classes <-na.omit(classes)
+  # countTable <-countTable[,classes]
+  # phenoTable <- phenoTable[classes,]
+
   result <- list()
   result$countTable <- countTable
   result$phenoTable <- phenoTable

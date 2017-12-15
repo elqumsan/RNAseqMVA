@@ -44,6 +44,7 @@ SRP057196:
 
 SRP056295: ## 525 runs, human leukemia
   description: "525 runs, human leukemia"
+  classColumn: "tissue"
 
 # crash                "SRP042161", ## 875 runs, 430 single glioblastoma cells isolated from 5 individual tumors and 102 single cells from gliomasphere cells lines generated using SMART-seq
 
@@ -84,7 +85,3 @@ SRP039694:
 SRP008976:
   description: ""
   classColumn: "disease status:"
-
-#SRP006575:
-#  description: ""
-#  classColumn: "tissue"

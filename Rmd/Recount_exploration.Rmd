@@ -180,7 +180,7 @@ project.disease.summary$sample.sums
 
 ```{r exploring_duplicating_in_row.name_for_project.disease}
 
-recountID <- "SRP006575"  
+recountID <- "SRP056295"  
 studyPath <- paste0("~/test_recount/",recountID)
 dir.create(studyPath, recursive = TRUE, showWarnings = FALSE)
 download_study(recountID, outdir = studyPath)
@@ -200,7 +200,7 @@ geodata <- do.call(rbind, sapply(geoids, geo_info))
 
 # Get characteristics from pheno table
 geo_characteristics(runPheno)
-
+unique(geo_characteristics(runPheno))
 # dim(countTable)
 names(runPheno)
 # dim(runPheno)

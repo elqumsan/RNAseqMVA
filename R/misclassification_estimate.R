@@ -22,6 +22,9 @@ MisclassificationEstimate <- function(countTable, classes,
                                       verbose = FALSE,
                                       k= 3) {
   result <- list()
+  # countTable <- t(countTable)
+  # classes <-na.omit(classes)
+  # countTable <-countTable[classes,]
   n <- nrow(countTable) ## Number of observations (samples)
   train.size <- round(n * trainingProportion)
 
