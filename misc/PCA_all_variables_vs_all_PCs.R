@@ -6,7 +6,7 @@
 ## For the time being we test this with only one classifier (KNN, default k)  but we will come back to it with other classifiers later.
 
 ## Choice of the classifier
-classifier <- "knn"
+classifier <- "svm"
 
 
 ## Choice of the coutns
