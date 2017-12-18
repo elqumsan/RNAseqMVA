@@ -23,7 +23,7 @@ parameters <- project.parameters$default
 # recountID <- "SRP042620"   ## Multi-group breast cancer. working excellent.
 # recountID <- "SRP061240"   # several types from cancer (pancreatic, colorectal, prostat cancer) against Healthy control
 # recountID <- "SRP062966"   # this project Blood disease. working excellent
-recountID <- "SRP056295"  # types of leukemia
+recountID <- "SRP056295"  # types of leukemia there is problem with random forest it say there is missing classes BUT actually there aren't any missing in the y class lable
 #######################################
 # recountID <- "SRP003611"   # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
 # recountID <- "SRP006574"   # NOT working:  # this Project will constitute the classes that have IRanges object and then it will not have the same length for count Table such leads for STOP
