@@ -4,7 +4,8 @@
 # which is the better to use a subsets of the first components or all the components ?
 
 ## Choice of the classifier
-classifier <- "svm"
+classifier <- "rf"
+data.type <- "log2norm.prcomp.centred"
 
 ## iterate over permutation status
 pc.numbers <- c(2, 3, 4, 5, 6, 7,
