@@ -22,6 +22,9 @@ MisclassificationEstimate <- function(countTable, classes,
                                       verbose = FALSE,
                                       k= 3) {
   result <- list()
+  # countTable <- t(countTable)
+  # classes <-na.omit(classes)
+  # countTable <-countTable[classes,]
   n <- nrow(countTable) ## Number of observations (samples)
   train.size <- round(n * trainingProportion)
 
@@ -76,7 +79,7 @@ MisclassificationEstimate <- function(countTable, classes,
     ## Train the classifier with the training subset
     rf.trained  <- randomForest(
       x = countTable[trainIndex, ],
-      y = as.factor( classes[trainIndex]),
+      y =  as.factor(droplevels( classes[trainIndex])),
       xtest = countTable[testIndex,], importance = T, keep.forest = T)
     ## MUSTAFA: I think you don't use the xtest result after this,
     ## since you use predict() to predict the class of the testinf set.
@@ -89,7 +92,7 @@ MisclassificationEstimate <- function(countTable, classes,
 
     ## Compute testing errors
     test.contingency <- table(classes[testIndex], rf.test.prediction)
-    testing.errors <- classes[testIndex] != rf.test.prediction
+    testing.errors <- droplevels(classes[testIndex]) != droplevels( rf.test.prediction)
     testing.error.nb <- sum(testing.errors)
     testing.error.rate <- testing.error.nb / length(testing.errors)
 
