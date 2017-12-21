@@ -6,7 +6,7 @@
 #' @param countTable is the passed count data for the iterative process.
 #' @param classes is the classes lable for the cout data.
 #' @param classifier is the type of classifier that is used with repeated process.
-#' @param data.type is data type that is used with iterative process, supported "raw","log2" and "log2norm"
+#' @param data.type is data type that is used with iterative process, supported "raw","log2", "log2norm" and "log2norm.prcomp.centred"
 #' @param iteration is the how much number it will be repeated the process.
 #' @param variable.type this indicate for the number of variables that will used with iterative procedure.
 #' @param trainingProportion is the ratio of trianing proportion.

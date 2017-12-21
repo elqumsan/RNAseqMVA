@@ -5,11 +5,12 @@
 ###################################################################################################
 
 ## Choice of the classifier
+
 classifier <- "svm"
 
 
 ## Choice of the coutns
-data.type <- "log2norm.prcomp.centred"
+#data.type <- "log2norm.prcomp.centred"
 
 # dim(counts)
 # View(counts)
