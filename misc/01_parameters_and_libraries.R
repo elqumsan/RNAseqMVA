@@ -41,7 +41,7 @@ recountID <- "SRP056295"  # types of leukemia there is problem with random fores
 # recountID <-  "SRP039694"  # Not working: hepatocellular carcinoma
 # recountID <- "SRP008976"   # NOT working properly
 # recountID <- "SRP006575"   # Not working
->>>>>>> eecab1b4f7e8e5a56e3deaf34ac7c5c9e6d1cedd
+
 parameters$recountID <- recountID
 
 ## Overwrite default parameters wih project-specific parameters
