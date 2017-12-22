@@ -7,7 +7,7 @@
 
 ## Choice of the classifier
 
-classifier <- "rf"
+classifier <- "svm"
 
 ## Choice of the coutns
 data.type <- "log2norm.prcomp.centred"

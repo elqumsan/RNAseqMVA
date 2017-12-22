@@ -6,7 +6,7 @@
 
 ## Choice of the classifier
 
-classifier <- "rf"
+classifier <- "svm"
 
 
 ## Choice of the coutns
@@ -84,7 +84,7 @@ names(train.test.results.DEG)
 ErrorRateBoxPlot(experimentList = train.test.results.DEG,
                  classifier=classifier,
                  variable.type = "ordered_variables_2",
-                 main = paste(  "imcapt of number of variables sorted according DEG", "\n",
+                 main = paste(  "impact of number of variables sorted according DEG", "\n",
                                 parameters$iterations,
                                 "iterations",
                                 "log2normcounts" ,
