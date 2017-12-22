@@ -6,7 +6,7 @@
 
 ## Choice of the classifier
 
-classifier <- "svm"
+classifier <- "rf"
 
 
 ## Choice of the coutns
