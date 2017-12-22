@@ -4,3 +4,4 @@ packrat/lib*/
 results
 data
 NAMESPACE.bk
+.DS_Store
