@@ -6,8 +6,8 @@
 ## For the time being we test this with only one classifier (KNN, default k)  but we will come back to it with other classifiers later.
 
 ## Choice of the classifier
-classifier <- "rf"
 
+classifier <- "rf"
 
 ## Choice of the coutns
 data.type <- "log2norm.prcomp.centred"

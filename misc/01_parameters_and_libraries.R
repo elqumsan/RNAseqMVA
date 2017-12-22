@@ -20,10 +20,20 @@ project.parameters <- yaml.load_file("misc/00_project_parameters.yml")
 ## Lad default parameters (must have been defined n the parameter field)
 parameters <- project.parameters$default
 
+
+# recountID <- "SRP042620"   ## Multi-group breast cancer
+# recountID <- "SRP003611"   # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
+# recountID <- "SRP061240"   # several types from cancer (pancreatic, colorectal, prostat cancer) against Healthy control
+# recountID <- "SRP006574"  # NOT working:  # this Project will constitute the classes that have IRanges object and then it will not have the same length for count Table such leads for STOP
+# recountID <- "SRP062966"   # this project Boold disease
+# recountID <- "SRP066834"   # cerebral cancer type.
+# recountID <-  "SRP039694"  # hepatocellular carcinoma
+# recountID <- "SRP008976"   # NOT working properly
+
 # recountID <- "SRP042620"   ## Multi-group breast cancer. working excellent.
 # recountID <- "SRP061240"   # several types from cancer (pancreatic, colorectal, prostat cancer) against Healthy control
 # recountID <- "SRP062966"   # this project Blood disease. working excellent
-recountID <- "SRP056295"  # types of leukemia
+recountID <- "SRP056295"  # types of leukemia there is problem with random forest it say there is missing classes BUT actually there aren't any missing in the y class lable
 #######################################
 # recountID <- "SRP003611"   # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
 # recountID <- "SRP006574"   # NOT working:  # this Project will constitute the classes that have IRanges object and then it will not have the same length for count Table such leads for STOP
@@ -31,6 +41,7 @@ recountID <- "SRP056295"  # types of leukemia
 # recountID <-  "SRP039694"  # Not working: hepatocellular carcinoma
 # recountID <- "SRP008976"   # NOT working properly
 # recountID <- "SRP006575"   # Not working
+
 parameters$recountID <- recountID
 
 ## Overwrite default parameters wih project-specific parameters
