@@ -4,18 +4,20 @@
 \alias{loadRecountExperiment}
 \title{Load one count table from ReCount and optionally merge the counts per sample.}
 \usage{
-loadRecountExperiment(recountID, dir.workspace = "~/RNAseqMVA_workspace",
-  mergeRuns = TRUE, sampleIdColumn = "geo_accession",
-  forceDownload = FALSE, verbose = parameters$verbose, ...)
+loadRecountExperiment(recountID = parameters$recountID,
+  dir.workspace = parameters$dir$workspace,
+  mergeRuns = parameters$mergeRuns,
+  sampleIdColumn = parameters$sampleIdColumn, forceDownload = FALSE,
+  verbose = parameters$verbose, ...)
 }
 \arguments{
-\item{recountID}{identifier of one study in ReCount database}
+\item{recountID=parameters$recountID}{identifier of one study in ReCount database}
 
-\item{studyPath=file.path("~/recount_test/data/", }{recountID) Path of the folder in which the counts downlaoded from ReCount will be stored.}
+\item{dir.workspace=parameters$dir$workspace}{path of the folder to store the results (in one separate sub-directory per recountID)}
 
-\item{mergeRuns=TRUE}{if TRUE, read counts will be merged for each sample}
+\item{mergeRuns=parameters$mergeRuns}{if TRUE, read counts will be merged for each sample}
 
-\item{sampleIdColumn="geo_accession"}{name of the column of the pheno table which contains the sample IDs.
+\item{sampleIdColumn=parameters$sampleIdColumn}{name of the column of the pheno table which contains the sample IDs.
 This information is passed to MergeRuns().}
 
 \item{verbose=TRUE}{if TRUE, write messages to indicate the progressing of the tasks}

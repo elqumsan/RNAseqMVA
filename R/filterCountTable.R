@@ -10,7 +10,7 @@
 #' In some cases classes must be built by concatenating several columns of the pheno table (e.g. "tissue" and "cell.type" for dataset SRP057196),
 #' This can be achieved by providing a vector of column names from the pheno table. In this case, class names
 ## are built by concantenating the values in the specified columns (separated by "_").
-#' @param minSamplesPerClass=10 minimum nuimber of samples per class to keep
+#' @param minSamplesPerClass=parameters$minSamplesPerClass minimum nuimber of samples per class to keep
 #'
 #' @examples
 #' ## Load a data set
@@ -40,7 +40,7 @@
 #' @export
 filterCountTable <- function(countTable, phenoTable,
                              classColumn="tissue",
-                             minSamplesPerClass = 10, ...) {
+                             minSamplesPerClass = parameters$minSamplesPerClass, ...) {
 
   ## Check if there are NA values, and discard all genes having at least one NA value
   if (sum(is.na(countTable)) > 0) {

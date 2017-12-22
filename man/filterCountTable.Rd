@@ -6,7 +6,7 @@
 a count table in order to prepare it for classification.}
 \usage{
 filterCountTable(countTable, phenoTable, classColumn = "tissue",
-  minSamplesPerClass = 10, ...)
+  minSamplesPerClass = parameters$minSamplesPerClass, ...)
 }
 \arguments{
 \item{countTable}{a data.frame with one row per observation and one column per variable}
@@ -17,7 +17,7 @@ filterCountTable(countTable, phenoTable, classColumn = "tissue",
 In some cases classes must be built by concatenating several columns of the pheno table (e.g. "tissue" and "cell.type" for dataset SRP057196),
 This can be achieved by providing a vector of column names from the pheno table. In this case, class names}
 
-\item{minSamplesPerClass=10}{minimum nuimber of samples per class to keep}
+\item{minSamplesPerClass=parameters$minSamplesPerClass}{minimum nuimber of samples per class to keep}
 }
 \description{
 Apply various filters on the observations (e.g. biological samples)

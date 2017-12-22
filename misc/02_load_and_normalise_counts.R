@@ -1,5 +1,4 @@
-
-################################################################
+################ Load counts and pheno ####################
 ## Load a count Table from recount-experiment, merge counts per sample
 ## and apply some pre-filtering (remove zero-variance and near-zero-variance genes).
 if (parameters$compute) {
@@ -8,13 +7,14 @@ if (parameters$compute) {
                        classColumn = parameters$classColumn,
                        minSamplesPerClass = parameters$minSamplesPerClass)
   rawCounts <- loaded$countTable ## Note: one row per sample, one column per gene
+  # dim(rawCounts)
 
-  ################################################################
   ## Assign a specific color to each sammple according to its class
   pheno <- loaded$phenoTable
   classes <- loaded$classes
-  distinct.classes <- as.vector(unique(loaded$classes))
   # table(classes)
+  # length(classes)
+  distinct.classes <- as.vector(unique(loaded$classes))
 } else {
   message.with.time("Skipping data loading")
 }

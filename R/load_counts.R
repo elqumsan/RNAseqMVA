@@ -7,8 +7,8 @@
 #' @param mergeRuns to wrapper the rus by sample
 #' @param sampleIdColumn="geo_accession"  name of the column of the pheno table which contains the sample IDs.
 #' @param classColumn ## Column(s) of the pheno table used to define class labels. Passed to filterCountTable()
-#' @param minSamplesPerClass=10 min number of samples per class for the filtering.  Passed to filterCountTable()
-#' @param dir.workspace="~/RNAseqMVA_workspace" Directory in which the data and results will be stored.
+#' @param minSamplesPerClass=parameters$minSamplesPerClass min number of samples per class for the filtering.  Passed to filterCountTable()
+#' @param dir.workspace=parameters$dir$workspace Directory in which the data and results will be stored.
 #' @param ...  additional parameters are passed to loadRecountExperiment
 #'
 #' @return
@@ -27,19 +27,20 @@
 #' @import recount
 #' @import SummarizedExperiment
 #' @import S4Vectors
+#' @import caret
 #' @export
-loadCounts <- function(recountID,
-                      classColumn,
-                      mergeRuns,
-                      sampleIdColumn = "geo_accession", ## Alternative: use "sample"
-                      minSamplesPerClass = 10,
-                      dir.workspace = "~/RNAseqMVA_workspace",
-                      ... ) {
+loadCounts <- function(recountID = parameters$recountID,
+                       classColumn = parameters$classColumn,
+                       mergeRuns = parameters$mergeRuns,
+                       sampleIdColumn = parameters$sampleIdColumn, ## Alternative: use "sample"
+                       minSamplesPerClass = parameters$minSamplesPerClass,
+                       dir.workspace = parameters$dir$workspace,
+                       ... ) {
 
   ################################################
   # loading required libraries and install them if required
-  requiredpackage <- c("caret")
-  RequiredCRANPackages(requiredpackage)
+  # requiredpackage <- c("caret")
+  # RequiredCRANPackages(requiredpackage)
 
   ################################################
   # loading count Data from recount_experiment, Via our wrapper which will Automatically merge the runs by
@@ -67,7 +68,8 @@ loadCounts <- function(recountID,
   ################################################
   ## Filter zero-variance and near-zero variance variables from the count table
   filteredData <- filterCountTable(countTable , phenoTable,
-                                   classColumn = classColumn, minSamplesPerClass = minSamplesPerClass)
+                                   classColumn = classColumn,
+                                   minSamplesPerClass = minSamplesPerClass)
 
   # replace unfiltered Data with filted data
   countTable <- filteredData$countTable
