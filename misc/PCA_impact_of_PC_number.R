@@ -5,6 +5,7 @@
 
 ## Choice of the classifier
 classifier <- "rf"
+
 data.type <- "log2norm.prcomp.centred"
 
 ## iterate over permutation status
