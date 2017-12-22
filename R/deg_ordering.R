@@ -64,6 +64,8 @@ DEGordering <- function( countTable,
     na.padj <- sum(is.na(DEGtable$padj))
     if (na.padj > 0) {
       message("Beware: DESeq2 reported ", na.padj, " NA for the adjusted p-value.")
+      message("we will revome all genes that heve NA values",na.padj,  "to avoid the some problimatics when we passing it for the classifiers")
+      DEGtable$padj <- na.omit(DEGtable$padj)
     }
 
     ## Notes: we have some NA values for p adjusted so that we will choise the p Value for ordering
@@ -101,13 +103,13 @@ DEGordering <- function( countTable,
     ## before we can estimate the tagwise dispersion.
 #    if (edgeRDispEst == "common") {
       message("Estimating common dispersion")
-      dgList <- estimateGLMCommonDisp(dgList, design = designMat)
+      dgList <- estimateGLMCommonDisp(dgList, design = na.omit(designMat))
 #    } else if (edgeRDispEst == "trended") {
       message("Estimating trended dispersion")
       dgList <- estimateGLMTrendedDisp( dgList, design = na.omit(designMat))
 #    } else if (edgeRDispEst == "tagwise") {
       message("Estimating tagwise dispersion")
-      dgList <- estimateGLMTagwiseDisp(dgList, design = designMat)
+      dgList <- estimateGLMTagwiseDisp(dgList, design = na.omit(designMat))
 #    } else {
 #      stop(edgedDisp, " is not a valid method for edgeR dispersion estimate. Supported: common, trended, tagwise.")
 #    }
@@ -125,6 +127,13 @@ DEGordering <- function( countTable,
     ## edgeRresult<- topTags(lrt)
     ## we ordering the result with the most significance regarding P-Value
     result <- list()
+    ## Report the number of NA values for adjusted p-values
+    na.padj <- sum(is.na(lrt$table$PValue))
+    if (na.padj > 0) {
+      message("Beware: edgR reported ", na.padj, " NA for the adjusted p-value.")
+      message("we will revome all genes that heve NA values",na.padj,  "to avoid the some problimatics when we passing it for the classifiers")
+      lrt$table$PValue <- na.omit(lrt$table$PValue)
+    }
     geneOrderIndex <- order(lrt$table$PValue)
     result$geneOrder <- as.vector(colnames(countTable)[geneOrderIndex])
 
