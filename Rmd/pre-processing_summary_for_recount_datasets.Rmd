@@ -1,0 +1,23 @@
+---
+title: "Pre-processing summary for recount datasets"
+author: "Mustafa AbuElQumsan and Jacques van Helden"
+output:
+  html_document:
+    code_folding: hide
+    fig_caption: yes
+    highlight: zenburn
+    self_contained: yes
+    theme: cerulean
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+  pdf_document:
+    fig_caption: yes
+    highlight: zenburn
+    toc: yes
+    toc_depth: 3
+  word_document: default
+date: '`r Sys.Date()`'
+editor_options: 
+  chunk_output_type: console
+---
