@@ -37,6 +37,9 @@
 #'
 #' @import recount
 #' @import SummarizedExperiment
+#' @import caret
+#' @import lattice
+#' @import ggplot2
 #' @export
 filterCountTable <- function(countTable, phenoTable,
                              classColumn="tissue",
@@ -45,6 +48,7 @@ filterCountTable <- function(countTable, phenoTable,
   ## Check if there are NA values, and discard all genes having at least one NA value
   if (sum(is.na(countTable)) > 0) {
     naGenes <- colnames(countTable)[apply(is.na(countTable), 2, sum) > 0]
+    result$naGenes <- naGenes
     message("Filtering out ", length(naGenes)," genes with NA values")
     if (naGenes > 0) {
       keptGenes <- setdiff(colnames(countTable), naGenes)
@@ -142,6 +146,10 @@ filterCountTable <- function(countTable, phenoTable,
   result$phenoTable <- phenoTable
   result$classes <- classes
   result$selectedClasses <- selectedClasses
+
+  result$zeroVarGenes <- zeroVarGenes
+  result$nearZeroVarGenes <- nearZeroVarGenes
+  result$keptGenes <- keptGenes
   message.with.time("Finished Filter Count Table process for Recount experiment ID ", parameters$recountID)
 
   return(result)
