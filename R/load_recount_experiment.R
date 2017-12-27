@@ -111,6 +111,7 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
     message("Building pheno table")
   }
   runPheno <- colData(rse) ## phenotype per run
+  result$runPheno <- runPheno
   # class(runPheno)
   # pheno <- runPheno ## A TRICK
   # View(runPheno)

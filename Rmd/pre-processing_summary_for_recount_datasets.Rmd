@@ -1,23 +1,38 @@
 ---
-title: "Pre-processing summary for recount datasets"
-author: "Mustafa AbuElQumsan and Jacques van Helden"
+title: "Interpretation for ALL dataset SRP056295 (Pabst, Blood, 2016)"
+author: "Mustafa AbuElqumsan and Jacques van Helden"
+date: '`r Sys.Date()`'
 output:
-  html_document:
-    code_folding: hide
-    fig_caption: yes
-    highlight: zenburn
-    self_contained: yes
-    theme: cerulean
-    toc: yes
-    toc_depth: 3
-    toc_float: yes
   pdf_document:
     fig_caption: yes
     highlight: zenburn
     toc: yes
     toc_depth: 3
+  html_document:
+    fig_caption: yes
+    highlight: zenburn
+    theme: cerulean
+    toc: yes
+    toc_depth: 3
+    toc_float: true
   word_document: default
-date: '`r Sys.Date()`'
-editor_options: 
-  chunk_output_type: console
+  bookdown::html_document2: default 
+# bibliography: Bibliography.bib
+biblio-style: "apalike"
+link-citations: yes
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, fig.path = "figures/")
+
+```
+
+We look forward to make the quantitative summary for some critical values and parameters, which are summaried as in the follwing table 
+
+```{r quantitative summary}
+qunt.sammay <- data.frame( "recountID" = parameters$recountID,
+                           "Description of dataset" = parameters$classColumn,
+                           "no. of runs" = parameters$)
+
+```
+

@@ -62,6 +62,7 @@ loadCounts <- function(recountID = parameters$recountID,
   message("Extracting pheno Table from sample-wised merged count")
   phenoTable <- countdata$merged$samplePheno
   #phenoTable <- countdata$runPheno$characteristics
+  countsPerRun <- countdata$countsPerRun
 
   #dim(phenoTable)
 
@@ -90,6 +91,8 @@ loadCounts <- function(recountID = parameters$recountID,
   loadedRecount$countTable<- countTable
   loadedRecount$phenoTable <- phenoTable
   loadedRecount$classes <- classes
+  loadedRecount$countsPerRuns <- countsPerRun
+  loadedRecount$runPheno <- countdata$runPheno
   loadedRecount$samples.per.class <- as.data.frame.table(table(classes), row.names=1)
 
   message.with.time("Finished Load Count Table process for Recount experiment ID ", parameters$recountID)
