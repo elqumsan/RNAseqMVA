@@ -42,7 +42,7 @@
 #' @import ggplot2
 #' @export
 filterCountTable <- function(countTable, phenoTable,
-                             classColumn="tissue",
+                             classColumn = parameters$classColumn,
                              minSamplesPerClass = parameters$minSamplesPerClass, ...) {
 
   ## Check if there are NA values, and discard all genes having at least one NA value
@@ -86,7 +86,9 @@ filterCountTable <- function(countTable, phenoTable,
 
 
   # Specify sample classes by extracting information about specified class columns
-  if (length(classColumn) == 1) {
+  if(!exists("classColumn")){
+  stop("classColumn is not exists")
+  } else  if (length(classColumn) == 1) {
     classes <-  as.vector(phenoTable[, classColumn])
   } else if (length(classColumn) > 1) {
     ## Combine several columns to establis the classes
