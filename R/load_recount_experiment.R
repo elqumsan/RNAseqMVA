@@ -111,7 +111,7 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
     message("Building pheno table")
   }
   runPheno <- colData(rse) ## phenotype per run
-  result$runPheno <- runPheno
+  # result$runPheno <- runPheno
   # class(runPheno)
   # pheno <- runPheno ## A TRICK
   # View(runPheno)
@@ -119,6 +119,7 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
 
   geochar <- geocharFromPheno(runPheno)
   runPhenoTable <- cbind(runPheno, geochar)
+  result$runPhenoTable <- runPhenoTable
 
   # View(as.data.frame(geochar))
 
