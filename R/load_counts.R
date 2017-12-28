@@ -53,14 +53,22 @@ loadCounts <- function(recountID = parameters$recountID,
   ## which expect a table with one raw per observation (biological samples)
   ## and one column per variable (gene).
   message("Transpose the count table to use it with classifier methods ")
+  if(mergeRuns == 1){
   countTable <-as.data.frame(t(countdata$merged$sampleCounts))
+  } else {
+    countTable <- as.data.frame(t(countdata$countsPerRun))
+  }
   #countTable <-as.data.frame(t(countdata$runCounts))
 
 
   ################################################################
   # Extract pheno table for the sample-wised merged count
   message("Extracting pheno Table from sample-wised merged count")
-  phenoTable <- countdata$merged$samplePheno
+  if(mergeRuns == 1){
+   phenoTable <- countdata$merged$samplePheno
+  } else {
+    phenoTable <- countdata$runPheno
+  }
   #phenoTable <- countdata$runPheno$characteristics
   countsPerRun <- countdata$countsPerRun
 
