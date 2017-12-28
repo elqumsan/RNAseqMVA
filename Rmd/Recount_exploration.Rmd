@@ -183,7 +183,7 @@ project.disease.summary$sample.sums
 
 recountID <- "SRP003611"  
 
-recountID <- "SRP056295"  
+recountID <- "SRP042620"
 studyPath <- paste0("~/test_recount/",recountID)
 dir.create(studyPath, recursive = TRUE, showWarnings = FALSE)
 download_study(recountID, outdir = studyPath)

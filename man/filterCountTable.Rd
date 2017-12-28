@@ -5,7 +5,7 @@
 \title{Apply various filters on the observations and variables of
 a count table in order to prepare it for classification.}
 \usage{
-filterCountTable(countTable, phenoTable, classColumn = "tissue",
+filterCountTable(countTable, phenoTable, classColumn = parameters$classColumn,
   minSamplesPerClass = parameters$minSamplesPerClass, ...)
 }
 \arguments{
