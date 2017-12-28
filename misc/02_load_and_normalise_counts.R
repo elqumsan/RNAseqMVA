@@ -4,7 +4,7 @@
 if (parameters$compute) {
   message.with.time("Loading count table from recount", "; recountID = ", parameters$recountID)
   loaded <- loadCounts(recountID = parameters$recountID, mergeRuns = TRUE ,
-                       classColumn = parameters$classColumn,
+                       classColumn = selected.parameters$classColumn,
                        minSamplesPerClass = parameters$minSamplesPerClass)
   rawCounts <- loaded$countTable ## Note: one row per sample, one column per gene
   # dim(rawCounts)
