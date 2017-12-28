@@ -68,7 +68,7 @@ loadCounts <- function(recountID = parameters$recountID,
   if(mergeRuns == 1){
    phenoTable <- countdata$merged$samplePheno
   } else {
-    phenoTable <- countdata$runPheno
+    phenoTable <- countdata$runPhenoTable
   }
   #phenoTable <- countdata$runPheno$characteristics
   countsPerRun <- countdata$countsPerRun
@@ -78,8 +78,8 @@ loadCounts <- function(recountID = parameters$recountID,
   ################################################
   ## Filter zero-variance and near-zero variance variables from the count table
   filteredData <- filterCountTable(countTable , phenoTable,
-                                   classColumn = classColumn,
-                                   minSamplesPerClass = minSamplesPerClass)
+                                   classColumn =parameters$classColumn,
+                                   minSamplesPerClass = parameters$minSamplesPerClass)
 
   # replace unfiltered Data with filted data
   countTable <- filteredData$countTable
