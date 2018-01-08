@@ -103,6 +103,7 @@ loadCounts <- function(recountID = parameters$recountID,
   loadedRecount$countsPerRuns <- countsPerRun
   loadedRecount$runPheno <- countdata$runPheno
   loadedRecount$samples.per.class <- as.data.frame.table(table(classes), row.names=1)
+  loadedRecount$filteredData <- filteredData
 
   message.with.time("Finished Load Count Table process for Recount experiment ID ", parameters$recountID)
 
