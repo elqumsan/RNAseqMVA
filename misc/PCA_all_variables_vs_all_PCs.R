@@ -10,7 +10,7 @@
 classifier <- "svm"
 
 ## Choice of the coutns
-data.type <- "log2norm.prcomp.centred"
+data.type <- "log2norm.prcomp.centred.scaled"
 
 # dim(counts)
 # View(counts)
