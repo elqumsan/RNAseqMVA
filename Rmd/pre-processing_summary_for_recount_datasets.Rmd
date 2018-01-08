@@ -31,8 +31,18 @@ We look forward to make the quantitative summary for some critical values and pa
 
 ```{r quantitative summary}
 qunt.sammay <- data.frame( "recountID" = parameters$recountID,
-                           "Description of dataset" = parameters$classColumn,
-                           "no. of runs" = parameters$)
+                           "Descrip.dataset" = parameters$classColumn,
+                           "no.runs" = length(loaded$runPheno$run),
+                           "No.samples before filtering" = length(loaded$runPheno$sample),
+                           "No.genes before filtering" = nrow(loaded$countsPerRuns),
+                           "No.genes NA vlues" = loaded$filteredData$naGenes,
+                           "No.genes zero.variance" = length(loaded$filteredData$zeroVarGenes),
+                           "No.genes kept filtering" = length(loaded$filteredData$keptGenes),
+                           "selected classes" = data.frame(loaded$filteredData$selectedClasses),
+                           "No.classes" = length(unique(loaded$filteredData$classes)),
+                            "Nosamp per.class"= table(loaded$samples.per.class)
+                           )
 
+kable(qunt.sammay)
 ```
 
