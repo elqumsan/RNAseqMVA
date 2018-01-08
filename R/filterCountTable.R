@@ -45,6 +45,7 @@ filterCountTable <- function(countTable, phenoTable,
                              classColumn = parameters$classColumn,
                              minSamplesPerClass = parameters$minSamplesPerClass, ...) {
 
+  result <- list()
   ## Check if there are NA values, and discard all genes having at least one NA value
   if (sum(is.na(countTable)) > 0) {
     naGenes <- colnames(countTable)[apply(is.na(countTable), 2, sum) > 0]
@@ -55,6 +56,15 @@ filterCountTable <- function(countTable, phenoTable,
       countTable <- countTable[, keptGenes]
       dim(countTable)
     }
+  }
+
+  if (!exists("naGenes")){
+    message(" this count Table don't have NA Genes")
+    result$naGenes <- c("No Na genes")
+
+  }else {
+    message(" such count Table contains some ",length(result$naGenes),"Na Genes")
+    result$naGenes
   }
 
   ## Count the number of genes with zero variance
@@ -143,7 +153,7 @@ filterCountTable <- function(countTable, phenoTable,
   # countTable <-countTable[,classes]
   # phenoTable <- phenoTable[classes,]
 
-  result <- list()
+
   result$countTable <- countTable
   result$phenoTable <- phenoTable
   result$classes <- classes
