@@ -22,8 +22,8 @@ parameters <- project.parameters$default
 # recountID <-  "SRP039694"  # hepatocellular carcinoma
 # recountID <- "SRP008976"   # NOT working properly
 ######################### such these projects have promptly working #####################
- recountID <- "SRP042620"   ## Multi-group breast cancer. working excellent.
-# recountID <- "SRP061240"   # several types from cancer (pancreatic, colorectal, prostat cancer) against Healthy control
+# recountID <- "SRP042620"   ## Multi-group breast cancer. working excellent.
+ recountID <- "SRP061240"   # several types from cancer (pancreatic, colorectal, prostat cancer) against Healthy control
 # recountID <- "SRP062966"   # this project Blood disease. working excellent
 
 # recountID <- "SRP056295"  # types of leukemia there is problem with random forest it say there is missing classes BUT actually there aren't any missing in the y class lable
