@@ -16,7 +16,11 @@ if (parameters$compute) {
   # length(classes)
   distinct.classes <- as.vector(unique(loaded$classes))
   write.table(rawCounts, file = paste(tsv.dir,"/rawCounts_",parameters$recountID,".tsv", sep = ""), row.names = FALSE, sep = "\t")
-  pheno.data.frame <- data.frame(pheno$sample, pheno$disease.type, pheno$characteristics)
+  characteristics.string <- unlist(lapply(pheno$characteristics, paste, collapse="; "))
+  pheno.data.frame <- data.frame(pheno$sample, pheno$disease.type, characteristics.string)
+
+  dim(pheno.data.frame)
+  # View(pheno.data.frame)
   write.table(pheno.data.frame, file = paste(tsv.dir, "/pheno_",parameters$recountID,".tsv",sep = ""), row.names = FALSE, sep = "\t")
 } else {
   message.with.time("Skipping data loading")
