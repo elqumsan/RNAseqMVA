@@ -15,6 +15,9 @@ if (parameters$compute) {
   # table(classes)
   # length(classes)
   distinct.classes <- as.vector(unique(loaded$classes))
+  write.table(rawCounts, file = paste(tsv.dir,"/rawCounts_",parameters$recountID,".tsv", sep = ""), row.names = FALSE, sep = "\t")
+  pheno.data.frame <- data.frame(pheno$sample, pheno$disease.type, pheno$characteristics)
+  write.table(pheno.data.frame, file = paste(tsv.dir, "/pheno_",parameters$recountID,".tsv",sep = ""), row.names = FALSE, sep = "\t")
 } else {
   message.with.time("Skipping data loading")
 }
@@ -61,6 +64,7 @@ if (parameters$compute) {
   norm <- NormalizeCounts(t(loaded$countTable), method = "quantile", quantile=0.75, log2 = FALSE)
   normCounts <- t(norm$normCounts) ## Transpose normalized counts for classifiers
   dim(normCounts)
+
 } else {
   message.with.time("Skipping normalisation")
 }
@@ -73,6 +77,8 @@ if (parameters$save.tables) {
   write.table(sep="\t", quote=FALSE, row.names = TRUE, col.names=NA,
               x = round(t(normCounts), digits=2),
               file = normCounts.file)
+  write.table(x = round(t(normCounts), digits = 3), file = paste(tsv.dir,"/NormCounts_",parameters$recountID,".tsv", sep = ""),
+              row.names = FALSE, sep = "\t")
 } else {
   message.with.time("Skipping saving of normalized counts table")
 }
