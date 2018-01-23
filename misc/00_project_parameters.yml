@@ -3,7 +3,10 @@ default:
   dir: ## Directories
     main: "~/RNAseqMVA"
     workspace: "~/RNAseqMVA_workspace"
+    TSV: "~/RNAseqMVA_workspace/data"
+
   perm_prefix: "permLabels"
+
 
   recountID: recountID ## ID of the selected dataset  in Recount
   classColumn: "tissue" ## Characteristics to be used as class label
