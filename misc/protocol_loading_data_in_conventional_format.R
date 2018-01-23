@@ -9,3 +9,6 @@
 
 
 # How to laod the raw count table
+rawCount.dataframe <-as.data.frame( read.delim(paste( tsv.dir,"/rawCounts_", parameters$recountID,".tsv", sep = "")))
+dim(rawCount.dataframe)
+View(rawCount.dataframe)
