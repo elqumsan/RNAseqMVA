@@ -81,6 +81,7 @@ message.with.time <- function(...) {
 
 # Main directory should be adapted to the user's configuration
 dir.main <- parameters$dir$main
+tsv.dir <- paste(sep = "" ,parameters$dir$TSV,"/",recountID)
 
 #classifier <- "knn"
 ## All other directories should be defined relative to dir.main
