@@ -17,7 +17,7 @@ if (parameters$compute) {
   distinct.classes <- as.vector(unique(loaded$classes))
   write.table(rawCounts, file = paste(tsv.dir,"/rawCounts_",parameters$recountID,".tsv", sep = ""), row.names = FALSE, sep = "\t")
   characteristics.string <- unlist(lapply(pheno$characteristics, paste, collapse="; "))
-  pheno.data.frame <- data.frame(pheno$sample, pheno$disease.type, characteristics.string)
+  pheno.data.frame <- data.frame(pheno$sample, characteristics.string)
 
   dim(pheno.data.frame)
   # View(pheno.data.frame)
