@@ -6,7 +6,8 @@
 ## Choice of the classifier
 classifier <- "svm"
 
-data.type <- "log2norm.prcomp.centred"
+#data.type <- "log2norm.prcomp.centred"
+data.type <- "log2norm"
 
 ## iterate over permutation status
 pc.numbers <- c(2, 3, 4, 5, 6, 7,
@@ -87,7 +88,7 @@ if (parameters$compute) {
 
       ## define experiment prefix
       exp.prefix <-
-        paste(sep = "_", classifier, data.type, "nb_of_PCs", pc.nb)
+        paste(sep = "_", classifier, parameters$recountID, data.type, "nb_of_PCs", pc.nb)
       if (permute) {
         exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
       }# end if permuted class

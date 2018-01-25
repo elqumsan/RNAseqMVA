@@ -51,7 +51,7 @@ if (parameters$compute) {
 
         ## Define experiment prefix
         variable.type <- paste(sep="_", "DEG", deg.method, "top", varnb)
-        exp.prefix <- paste(sep="_", classifier, data.type, variable.type)
+        exp.prefix <- paste(sep="_", classifier, parameters$recountID, data.type, variable.type)
         if (permute) {
           exp.prefix <- paste(sep="_", exp.prefix, perm.prefix)
         }
