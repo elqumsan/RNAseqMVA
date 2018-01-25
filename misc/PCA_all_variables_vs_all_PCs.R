@@ -11,7 +11,7 @@ classifier <- "rf"
 
 ## Choice of the coutns
 #data.type <- "log2norm.prcomp.centred"
-data.type <- "log2norm.prcomp.centred.scaled"
+data.type <- "log2norm"
 
 # dim(counts)
 # View(counts)
@@ -33,7 +33,7 @@ if (parameters$compute) {
     counts <- rawCounts
   } else if (data.type == "norm") {
     counts <- normCounts
-  } else if (data.type == "log2") {
+  } else if (data.type == "log2norm") {
     counts <- log2normCounts
   } else if (grepl("prc", data.type)) {
     ## If we are not in the cases above, we assume that the data type is a
@@ -50,9 +50,9 @@ if (parameters$compute) {
   ## Associate each analysis of real data with a permutation test
   for (permute in c(FALSE, TRUE)) {
 
-    ## Run classifier withb all variables (log2-transformed log counts)
+    ## Run classifier with all variables (log2-transformed log counts)
     exp.prefix <-
-      paste(sep = "_", classifier, "log2norm", "allvars")
+      paste(sep = "_", classifier, parameters$recountID, "log2norm", "allvars")
     if (permute) {
       exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
     }# end if permuted class
@@ -61,7 +61,7 @@ if (parameters$compute) {
       one.experiment (
         countTable = log2normCounts,
         classes = classes,
-        data.type = "log2normCounts",
+        data.type = data.type,
         classifier = classifier,
         #variable.type = variable.type,
         trainingProportion = parameters$trainingProportion,
@@ -103,7 +103,9 @@ if (parameters$compute) {
 ## What is better to using all PCs versus all variables with KNN classifier?
 ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
                  classifier = classifier,
-                 main = paste(classifier, ": all variables vs all PCs", "\n",
-                              parameters$iterations, "iterations,",
+                 main = paste(sep="",
+                              classifier, ": all variables vs all PCs", "\n",
+                              parameters$recountID, ", ",
+                              parameters$iterations, " iterations, ",
                               data.type = data.type))
 

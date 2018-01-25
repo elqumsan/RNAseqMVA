@@ -58,8 +58,7 @@ sampleColors <- classColors[loaded$classes]
 names(sampleColors) <- rownames(loaded$phenoTable)
 # print(sampleColors)
 
-################################################################
-## Normalize the counts without log2 transformation (first test)
+##### Normalize the counts without log2 transformation (first test) ####
 ##
 ## Note: this method takes a table with one column per sample and one
 ## row per gene, we thus have to transpose the raw count table.
@@ -73,10 +72,11 @@ if (parameters$compute) {
   message.with.time("Skipping normalisation")
 }
 
-## Export normalized counts
+#### Export normalized counts ####
 dir.create(dir.NormImpact, recursive = TRUE, showWarnings = FALSE)
 list.files(dir.NormImpact)
 normCounts.file <- file.path(dir.NormImpact, paste(sep="", parameters$recountID, "_normalized_counts.tsv"))
+message.with.time("Exporting normalised counts to file ", "\n", normCounts.file)
 if (parameters$save.tables) {
   write.table(sep="\t", quote=FALSE, row.names = TRUE, col.names=NA,
               x = round(t(normCounts), digits=2),
@@ -87,8 +87,7 @@ if (parameters$save.tables) {
   message.with.time("Skipping saving of normalized counts table")
 }
 
-################################################################
-## Normalize counts with log2 transformation (second test)
+##### Normalize counts with log2 transformation (second test) ####
 ##
 ## Note: this method takes a table with one column per sample and one
 ## row per gene, we thus have to transpose the raw count table.
@@ -102,9 +101,10 @@ if (parameters$compute) {
   message.with.time("Skipping normalisation with log2 transformation")
 }
 
-## Export log2-transformed normalized counts
+#### Export log2-transformed normalized counts ####
 dir.create(dir.log2Impact, recursive = TRUE, showWarnings = FALSE)
 log2normCounts.file <- file.path(dir.log2Impact, paste(sep="", parameters$recountID, "_log2_normalized_counts.tsv"))
+message.with.time("Exporting log2 normalised counts to file ", "\n", log2normCounts.file)
 if (parameters$save.tables) {
   write.table(sep="\t", quote=FALSE, row.names = TRUE, col.names=NA,
               x = round(digits=3, t(log2normCounts)),
@@ -129,8 +129,7 @@ if (parameters$compute) {
 message.with.time("finished executing 02_load_and_normalise_counts.R")
 
 
-################################################################
-## Compute principal components for normalized log2 counts
+#### Compute principal components for normalized log2 counts ####
 message.with.time("Pre-processing by Principal Component analysis (PCA)")
 log2norm.prcomp.centred <- prcomp( na.omit(log2normCounts), center = TRUE, scale. = FALSE)
 log2norm.prcomp.centred.scaled <- prcomp(na.omit(log2normCounts), center = TRUE, scale. = TRUE)

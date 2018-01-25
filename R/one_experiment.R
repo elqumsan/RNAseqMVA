@@ -42,7 +42,7 @@ one.experiment <- function (countTable, # count table (may be normalized or not,
 
   ## Define file prefix is not specified in paramters
   if (is.null(file.prefix)) {
-    file.prefix <- paste(sep="_", classifier, data.type, variable.type)
+    file.prefix <- paste(sep="_", classifier, parameters$recountID, data.type, variable.type)
     if (permute) {
       file.prefix <- paste(sep="_", file.prefix, "permLabels")
     }
