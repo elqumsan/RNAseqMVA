@@ -1,7 +1,7 @@
 
 ####################################################################################################
 ####################################################################################################
-## Second experiment: measure hit rates with increasing number of variables ordered by DEG p-value
+#### Second experiment: measure hit rates with increasing number of variables ordered by DEG p-value ####
 ###################################################################################################
 
 ## Choice of the classifier
@@ -11,6 +11,7 @@ classifier <- "rf"
 
 ## Choice of the coutns
 #data.type <- "log2norm.prcomp.centred"
+data.type <- "log2norm"
 
 # dim(counts)
 # View(counts)
@@ -36,7 +37,7 @@ if (parameters$compute) {
 
         ## For the time being we do this experiment only with log2 normalised counts
         ## since we saw that it improves the result with all variables
-        data.type <- "log2normCounts"
+        data.type <- "log2norm"
         data.table <- data.frame(get(data.type))
         selected.DEG.names <- DEG$geneOrder[1:varnb]
 
@@ -51,7 +52,7 @@ if (parameters$compute) {
 
         ## Define experiment prefix
         variable.type <- paste(sep="_", "DEG", deg.method, "top", varnb)
-        exp.prefix <- paste(sep="_", classifier, parameters$recountID, data.type, variable.type)
+        exp.prefix <- paste(sep="_", classifier,  data.type, variable.type)
         if (permute) {
           exp.prefix <- paste(sep="_", exp.prefix, perm.prefix)
         }
@@ -83,8 +84,10 @@ names(train.test.results.DEG)
 #################################################################################################################
 ErrorRateBoxPlot(experimentList = train.test.results.DEG,
                  classifier=classifier,
+
                  variable.type = "ordered_variables_2",
                  main = paste(  "impact of number of variables sorted according DEG", "\n",
+                                parameters$recountID,";",
                                 parameters$iterations,
                                 "iterations",
                                 "log2normcounts" ,
