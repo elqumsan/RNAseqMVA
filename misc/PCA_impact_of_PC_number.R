@@ -1,17 +1,19 @@
 
 ################################################################
-## QUESTION: What is imapct of number of PCAs-transformed data?,
+#### QUESTION: What is imapct of number of PCAs-transformed data?, ####
 # which is the better to use a subsets of the first components or all the components ?
 
 ## Choice of the classifier
-classifier <- "rf"
+classifier <- "svm"
 
 #data.type <- "log2norm.prcomp.centred"
-data.type <- "log2norm"
+#data.type <- "log2norm"
+#data.type <- parameters$data.types["prcomp"]
+data.type <- "log2norm.prcomp.centred.scaled"
 
 ## iterate over permutation status
 pc.numbers <- c(2, 3, 4, 5, 6, 7,
-                seq(from=10, to=ncol(counts)-1, by = 10), ncol(counts))
+                seq(from=10, to=ncol(log2norm.prcomp.centred.scaled$x)-1, by = 10), ncol(log2norm.prcomp.centred.scaled$x))
 pc.nb <- 4 ## Default or quick test
 
 
@@ -30,7 +32,7 @@ if (parameters$compute) {
     counts <- rawCounts
   } else if (data.type == "norm") {
     counts <- normCounts
-  } else if (data.type == "log2") {
+  } else if (data.type == "log2norm") {
     counts <- log2norm
   } else if (grepl("prc", data.type)) {
     ## If we are not in the cases above, we assume that the data type is a
@@ -88,7 +90,7 @@ if (parameters$compute) {
 
       ## define experiment prefix
       exp.prefix <-
-        paste(sep = "_", classifier, parameters$recountID, data.type, "nb_of_PCs", pc.nb)
+        paste(sep = "_", classifier,  data.type, "nb_of_PCs", pc.nb)
       if (permute) {
         exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
       }# end if permuted class
@@ -116,7 +118,7 @@ if (parameters$compute) {
 ErrorRateBoxPlot(experimentList = train.test.results.No.PCs,
                  classifier = classifier,
                  variable.type = "number_of_PCs",
-                 main = paste("Impact of the number of PCs on", classifier, "\n",
+                 main = paste("Impact of the number of PCs on,", classifier, "\n,",parameters$recountID,";",
                               parameters$iterations , "iterations,",
                               data.type))
 
