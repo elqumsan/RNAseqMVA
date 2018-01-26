@@ -7,11 +7,12 @@
 
 ## Choice of the classifier
 
-classifier <- "rf"
+classifier <- "svm"
 
-## Choice of the coutns
+## Choice of the Counts
 #data.type <- "log2norm.prcomp.centred"
 data.type <- "log2norm"
+
 
 # dim(counts)
 # View(counts)
@@ -34,7 +35,7 @@ if (parameters$compute) {
   } else if (data.type == "norm") {
     counts <- normCounts
   } else if (data.type == "log2norm") {
-    counts <- log2normCounts
+    counts <- log2norm
   } else if (grepl("prc", data.type)) {
     ## If we are not in the cases above, we assume that the data type is a
     ## PCA results, and we need to get the components.
@@ -42,6 +43,7 @@ if (parameters$compute) {
     ## Create a variable name "counts" with the content of the variable whose
     ## name is given in "data.type"
     counts <- get(data.type)[["x"]]
+
   } else {
     stop(data.type, " is not a valid type, Supported: raw, norm, log2, and *pcr*")
   } # end else of other data.type
@@ -59,7 +61,7 @@ if (parameters$compute) {
 
     train.test.results.all.variables[[exp.prefix]] <-
       one.experiment (
-        countTable = log2normCounts,
+        countTable = log2norm,
         classes = classes,
         data.type = data.type,
         classifier = classifier,
@@ -72,20 +74,20 @@ if (parameters$compute) {
       )
 
     ## take all the principal components, and cast them to a data.frame
-    first.pcs <- data.frame(counts)
-
+    #first.pcs <- data.frame(counts)
+     first.pcs <- get("log2norm.prcomp.centred.scaled")
     ## define experiment prefix
     exp.prefix <-
-      paste(sep = "_", classifier, data.type)
+      paste(sep = "_", classifier, parameters$data.types["prcomp"])
     if (permute) {
       exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
     }# end if permuted class
 
     train.test.results.all.variables[[exp.prefix]] <-
       one.experiment (
-        countTable = first.pcs,
+        countTable = first.pcs$x,
         classes = classes,
-        data.type = data.type,
+        data.type = parameters$data.types["prcomp"],
         classifier = classifier,
         variable.type = "all_PCs",
         trainingProportion = parameters$trainingProportion,
