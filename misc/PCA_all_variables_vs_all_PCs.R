@@ -54,7 +54,7 @@ if (parameters$compute) {
 
     ## Run classifier with all variables (log2-transformed log counts)
     exp.prefix <-
-      paste(sep = "_", classifier, parameters$recountID, "log2norm", "allvars")
+      paste(sep = "_", classifier, "log2norm", "allvars")
     if (permute) {
       exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
     }# end if permuted class
@@ -106,7 +106,7 @@ if (parameters$compute) {
 ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
                  classifier = classifier,
                  main = paste(sep="",
-                              classifier, ": all variables vs all PCs", "\n",
+                              classifier, ": all variables vs all PCs,", "\n",
                               parameters$recountID, ", ",
                               parameters$iterations, " iterations, ",
                               data.type = data.type))
