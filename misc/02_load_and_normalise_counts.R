@@ -1,4 +1,4 @@
-################ Load counts and pheno ####################
+#################### Load counts and pheno ####################
 ## Load a count Table from recount-experiment, merge counts per sample
 ## and apply some pre-filtering (remove zero-variance and near-zero-variance genes).
 if (parameters$compute) {
@@ -58,7 +58,7 @@ sampleColors <- classColors[loaded$classes]
 names(sampleColors) <- rownames(loaded$phenoTable)
 # print(sampleColors)
 
-##### Normalize the counts without log2 transformation (first test) ####
+##### Normalize the counts without log2 transformation (first test) #####
 ##
 ## Note: this method takes a table with one column per sample and one
 ## row per gene, we thus have to transpose the raw count table.
@@ -87,16 +87,16 @@ if (parameters$save.tables) {
   message.with.time("Skipping saving of normalized counts table")
 }
 
-##### Normalize counts with log2 transformation (second test) ####
+##### Normalize counts with log2 transformation (second test) #####
 ##
 ## Note: this method takes a table with one column per sample and one
 ## row per gene, we thus have to transpose the raw count table.
 if (parameters$compute) {
   message.with.time("Normalizing counts based on 75th percentile + log2 transformation")
-  log2norm <- NormalizeCounts(t(loaded$countTable), method = "quantile", quantile=0.75,
+  log2normCounts <- NormalizeCounts(t(loaded$countTable), method = "quantile", quantile=0.75,
                               log2 = TRUE, epsilon=0.1)
-  log2normCounts <- t(log2norm$normCounts)
-  dim(log2normCounts)
+  log2norm <- t(log2normCounts$normCounts)
+  dim(log2norm)
 } else {
   message.with.time("Skipping normalisation with log2 transformation")
 }
@@ -107,11 +107,11 @@ log2normCounts.file <- file.path(dir.log2Impact, paste(sep="", parameters$recoun
 message.with.time("Exporting log2 normalised counts to file ", "\n", log2normCounts.file)
 if (parameters$save.tables) {
   write.table(sep="\t", quote=FALSE, row.names = TRUE, col.names=NA,
-              x = round(digits=3, t(log2normCounts)),
+              x = round(digits=3, t(log2norm)),
               file = log2normCounts.file)
 }
 
-## Compute a trimmed mean: suppress the 5% top and bottom values
+#### Compute a trimmed mean: suppress the 5% top and bottom values ####
 if (parameters$compute) {
   message.with.time("Computing trimmed mean of normalized counts")
   x <- unlist(normCounts)
@@ -131,8 +131,8 @@ message.with.time("finished executing 02_load_and_normalise_counts.R")
 
 #### Compute principal components for normalized log2 counts ####
 message.with.time("Pre-processing by Principal Component analysis (PCA)")
-log2norm.prcomp.centred <- prcomp( na.omit(log2normCounts), center = TRUE, scale. = FALSE)
-log2norm.prcomp.centred.scaled <- prcomp(na.omit(log2normCounts), center = TRUE, scale. = TRUE)
+log2norm.prcomp.centred <- prcomp( na.omit(log2norm), center = TRUE, scale. = FALSE)
+log2norm.prcomp.centred.scaled <- prcomp(na.omit(log2norm), center = TRUE, scale. = TRUE)
 
 ## Indicate that this principal components analysis for log2 count has finished running
 message.with.time("finished running Principal Component analysis (PCA) for normalized log2 counts")
