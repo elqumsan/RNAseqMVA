@@ -31,7 +31,7 @@ if (parameters$compute) {
   } else if (data.type == "norm") {
     counts <- normCounts
   } else if (data.type == "log2") {
-    counts <- log2normCounts
+    counts <- log2norm
   } else if (grepl("prc", data.type)) {
     ## If we are not in the cases above, we assume that the data type is a
     ## PCA results, and we need to get the components.
