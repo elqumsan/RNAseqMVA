@@ -69,8 +69,8 @@ DEGordering <- function( countTable,
     }
 
     ## Notes: we have some NA values for adjusted p-value so that we will choose the p Value for ordering
-    geneOrderIndex <- order(DEGtable$padj, decreasing = FALSE)
-    result$geneOrder <- colnames(countTable)[geneOrderIndex]
+    geneOrderIndex <- order(na.omit( DEGtable$padj), decreasing = FALSE)
+    result$geneOrder <- colnames(na.omit(as.data.frame(countTable)))[geneOrderIndex]
 
     ## Sort the genes (columns) of the count table by increasing p-value
     result$orderedCountTable <- countTable[ ,result$geneOrder]
@@ -92,7 +92,7 @@ DEGordering <- function( countTable,
     #dim(countTable)
 
     ## Build dgList object which is required to run edgeR DE analysis
-    dgList <- DGEList(counts = t(countTable))
+    dgList <- DGEList(counts = t(na.omit(as.data.frame(countTable))))
     #dim(dgList)
 
     ## Estimate the dispersion parameter for our model. The edgeR method uses
@@ -135,7 +135,7 @@ DEGordering <- function( countTable,
       lrt$table$PValue <- na.omit(lrt$table$PValue)
     }
     geneOrderIndex <- order(lrt$table$PValue)
-    result$geneOrder <- as.vector(colnames(countTable)[geneOrderIndex])
+    result$geneOrder <- as.vector(colnames(na.omit(as.data.frame(countTable)))[geneOrderIndex])
 
     result$DEGtable <- lrt$table[result$geneOrder,]
     names(result$DEGtable) <- c("log2FC", "logCPM", "LR", "padj")
