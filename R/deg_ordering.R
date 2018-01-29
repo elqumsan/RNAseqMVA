@@ -68,7 +68,7 @@ DEGordering <- function( countTable,
       DEGtable$padj <- na.omit(DEGtable$padj)
     }
 
-    ## Notes: we have some NA values for p adjusted so that we will choise the p Value for ordering
+    ## Notes: we have some NA values for adjusted p-value so that we will choose the p Value for ordering
     geneOrderIndex <- order(DEGtable$padj, decreasing = FALSE)
     result$geneOrder <- colnames(countTable)[geneOrderIndex]
 
