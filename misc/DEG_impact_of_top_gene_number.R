@@ -6,12 +6,12 @@
 
 ## Choice of the classifier
 
-classifier <- "rf"
+classifier <- "svm"
 
 
 ## Choice of the coutns
 #data.type <- "log2norm.prcomp.centred"
-data.type <- "log2norm"
+#data.type <- "log2norm"
 
 # dim(counts)
 # View(counts)
@@ -37,7 +37,7 @@ if (parameters$compute) {
 
         ## For the time being we do this experiment only with log2 normalised counts
         ## since we saw that it improves the result with all variables
-        data.type <- "log2norm"
+        data.type <- paste("DEG", deg.method, sep = ".")
         data.table <- data.frame(get(data.type))
         selected.DEG.names <- DEG$geneOrder[1:varnb]
 
@@ -90,6 +90,6 @@ ErrorRateBoxPlot(experimentList = train.test.results.DEG,
                                 parameters$recountID,";",
                                 parameters$iterations,
                                 "iterations",
-                                "log2normcounts" ,
+                                "DEG.data.type" ,
                                 "ordered_variables"))
 
