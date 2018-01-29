@@ -38,7 +38,7 @@ if (parameters$compute) {
         ## For the time being we do this experiment only with log2 normalised counts
         ## since we saw that it improves the result with all variables
         data.type <- paste("DEG", deg.method, sep = ".")
-        data.table <- data.frame(get(data.type))
+        data.table <- na.omit( as.data.frame(get(data.type)[["orderedCountTable"]]))
         selected.DEG.names <- DEG$geneOrder[1:varnb]
 
         ## Make sure that we select gene names present in the selected data type
@@ -89,7 +89,7 @@ ErrorRateBoxPlot(experimentList = train.test.results.DEG,
                  main = paste(  "impact of number of variables sorted according DEG", "\n",
                                 parameters$recountID,";",
                                 parameters$iterations,
-                                "iterations",
-                                "DEG.data.type" ,
+                                "iterations;",
+                                "DEG.data.type;" ,
                                 "ordered_variables"))
 

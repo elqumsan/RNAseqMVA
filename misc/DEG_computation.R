@@ -18,6 +18,12 @@ message.with.time("Done DESeq2 DEG analysis")
 ## Order genes at random
 message.with.time("Generating a fake DEG result by random gene ordering")
 DEG.randomized <- list()
-DEG.randomized$geneOrder <- sample(DEG.edgeR$geneOrder)
+## such is randomizing the ordered count table by DEG edgeR; BUT be ware we should keep the neme of this variable as
+## DEG.randomized$orderedCountTable to we can correctly use it in the script (DEG_impact_of_top_gene_number.R) where there
+## is method to automatically get the name of object under the "$orderedCountTable"; so that you should keep this part
+# as it that to avoiding the vey critical error in computation.
+DEG.randomized <- DEG.edgeR
+DEG.randomized$geneOrder <-sample( DEG.randomized$geneOrder)
+DEG.randomized$orderedCountTable <- DEG.edgeR$orderedCountTable[ ,sample(DEG.edgeR$geneOrder)]
 
 message.with.time("Finishing from the DEG Computation Process")
