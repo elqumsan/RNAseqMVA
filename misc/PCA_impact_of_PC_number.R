@@ -90,7 +90,7 @@ if (parameters$compute) {
 
       ## define experiment prefix
       exp.prefix <-
-        paste(sep = "_", classifier,  data.type, "nb_of_PCs", pc.nb)
+        paste(sep = "_", classifier, parameters$recountID  ,"prcomp", "nb_of_PCs", pc.nb)
       if (permute) {
         exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
       }# end if permuted class

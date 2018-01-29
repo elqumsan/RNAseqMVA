@@ -54,7 +54,7 @@ if (parameters$compute) {
 
     ## Run classifier with all variables (log2-transformed log counts)
     exp.prefix <-
-      paste(sep = "_", classifier, "log2norm", "allvars")
+      paste(sep = "_", classifier, parameters$recountID ,data.type , "allvars")
     if (permute) {
       exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
     }# end if permuted class
@@ -78,7 +78,7 @@ if (parameters$compute) {
      first.pcs <- get("log2norm.prcomp.centred.scaled")
     ## define experiment prefix
     exp.prefix <-
-      paste(sep = "_", classifier, parameters$data.types["prcomp"])
+      paste(sep = "_", classifier, parameters$recountID , parameters$data.types["prcomp"])
     if (permute) {
       exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
     }# end if permuted class
