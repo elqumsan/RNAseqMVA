@@ -1,17 +1,18 @@
 
 ################################################################
-## All variables versus all PCs.
+##### All variables versus all PCs. #####
 ##
 ## QUESTION: is it better to use the PCAs-transformed data, and, if so, is it better to use a subset of the first components or all the components ?
 ## For the time being we test this with only one classifier (KNN, default k)  but we will come back to it with other classifiers later.
-
+## IMPORTANT NOTE : i would like to pay your intention for here we should take " data.type, so that we will not give the user to
+## choose the data.type in return we will pass the data.type for each experiment. 
 ## Choice of the classifier
 
 classifier <- "svm"
 
 ## Choice of the Counts
-#data.type <- "log2norm.prcomp.centred"
-data.type <- "log2norm"
+# data.type <- "log2norm.prcomp.centred"
+# data.type <- "log2norm"
 
 
 # dim(counts)
@@ -30,40 +31,40 @@ if (parameters$compute) {
   message.with.time("\tTrain/test, k=", parameters$knn$k, "; classifier=", classifier)
 
   ## Select the counts depending on the data type
-  if (data.type == "raw") {
-    counts <- rawCounts
-  } else if (data.type == "norm") {
-    counts <- normCounts
-  } else if (data.type == "log2norm") {
-    counts <- log2norm
-  } else if (grepl("prc", data.type)) {
-    ## If we are not in the cases above, we assume that the data type is a
-    ## PCA results, and we need to get the components.
-    ##
-    ## Create a variable name "counts" with the content of the variable whose
-    ## name is given in "data.type"
-    counts <- get(data.type)[["x"]]
+  # if (data.type == "raw") {
+  #   counts <- rawCounts
+  # } else if (data.type == "norm") {
+  #   counts <- normCounts
+  # } else if (data.type == "log2norm") {
+  #   counts <- log2norm
+  # } else if (grepl("prc", data.type)) {
+  #   ## If we are not in the cases above, we assume that the data type is a
+  #   ## PCA results, and we need to get the components.
+  #   ##
+  #   ## Create a variable name "counts" with the content of the variable whose
+  #   ## name is given in "data.type"
+  #   counts <- get(data.type)[["x"]]
+  #
+  # } else {
+  #   stop(data.type, " is not a valid type, Supported: raw, norm, log2, and *pcr*")
+  # } # end else of other data.type
 
-  } else {
-    stop(data.type, " is not a valid type, Supported: raw, norm, log2, and *pcr*")
-  } # end else of other data.type
 
-
-  ## Associate each analysis of real data with a permutation test
+  #### Associate each analysis of real data with a permutation test ####
   for (permute in c(FALSE, TRUE)) {
 
-    ## Run classifier with all variables (log2-transformed log counts)
+    #### Run classifier with all variables (log2-transformed log counts) ####
     exp.prefix <-
-      paste(sep = "_", classifier, parameters$recountID ,data.type , "allvars")
+      paste(sep = "_", classifier, parameters$recountID , parameters$data.type["log2norm"] , "allvars")
     if (permute) {
       exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
     }# end if permuted class
 
     train.test.results.all.variables[[exp.prefix]] <-
       one.experiment (
-        countTable = log2norm,
+        countTable = na.omit(as.data.frame(log2norm)),
         classes = classes,
-        data.type = data.type,
+        data.type = parameters$data.types["log2norm"],
         classifier = classifier,
         #variable.type = variable.type,
         trainingProportion = parameters$trainingProportion,
@@ -73,7 +74,7 @@ if (parameters$compute) {
         verbose = parameters$verbose
       )
 
-    ## take all the principal components, and cast them to a data.frame
+    #### take all the principal components, and cast them to a data.frame ####
     #first.pcs <- data.frame(counts)
      first.pcs <- get("log2norm.prcomp.centred.scaled")
     ## define experiment prefix
@@ -97,12 +98,37 @@ if (parameters$compute) {
         verbose = parameters$verbose
       )
 
+
+    #### take all the raw data without any nolmalization, and cast them to a data.frame ####
+    ## we looking here to notice the ipmact of normalization into classifiers
+
+    rawCounts <- na.omit(as.data.frame(get("rawCounts")))
+    ## define experiment prefix
+    exp.prefix <-
+      paste(sep = "_", classifier, parameters$recountID , parameters$data.types["raw"])
+    if (permute) {
+      exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
+    }# end if permuted class
+
+    train.test.results.all.variables[[exp.prefix]] <-
+      one.experiment (
+        countTable = rawCounts,
+        classes = classes,
+        data.type = parameters$data.types["raw"],
+        classifier = classifier,
+        variable.type = "raw",
+        trainingProportion = parameters$trainingProportion,
+        file.prefix = exp.prefix,
+        permute = permute,
+        k = parameters$knn$k,
+        verbose = parameters$verbose
+      )
     #  } # end of iterative of PC Numbers
-  } # end of permutation
-} # end of computation
+  } # end for loop permutation
+} # end if statment computation
 
 ###############################################################################################
-## What is better to using all PCs versus all variables with KNN classifier?
+#### What is better to using all PCs versus all variables with KNN classifier? ####
 ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
                  classifier = classifier,
                  main = paste(sep="",
