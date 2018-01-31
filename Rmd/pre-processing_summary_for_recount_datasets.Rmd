@@ -3,11 +3,6 @@ title: "Interpretation for ALL dataset SRP056295 (Pabst, Blood, 2016)"
 author: "Mustafa AbuElqumsan and Jacques van Helden"
 date: '`r Sys.Date()`'
 output:
-  pdf_document:
-    fig_caption: yes
-    highlight: zenburn
-    toc: yes
-    toc_depth: 3
   html_document:
     fig_caption: yes
     highlight: zenburn
@@ -15,6 +10,11 @@ output:
     toc: yes
     toc_depth: 3
     toc_float: true
+  pdf_document:
+    fig_caption: yes
+    highlight: zenburn
+    toc: yes
+    toc_depth: 3
   word_document: default
   bookdown::html_document2: default 
 # bibliography: Bibliography.bib
@@ -30,19 +30,30 @@ knitr::opts_chunk$set(echo = F, fig.path = "figures/")
 We look forward to make the quantitative summary for some critical values and parameters, which are summaried as in the follwing table 
 
 ```{r quantitative summary}
-qunt.sammay <- data.frame( "recountID" = parameters$recountID,
-                           "Descrip.dataset" = parameters$classColumn,
-                           "no.runs" = length(loaded$runPheno$run),
-                           "No.samples before filtering" = length(loaded$runPheno$sample),
-                           "No.genes before filtering" = nrow(loaded$countsPerRuns),
-                           "No.genes NA vlues" = loaded$filteredData$naGenes,
-                           "No.genes zero.variance" = length(loaded$filteredData$zeroVarGenes),
-                           "No.genes kept filtering" = length(loaded$filteredData$keptGenes),
-                           "selected classes" = data.frame(loaded$filteredData$selectedClasses),
-                           "No.classes" = length(unique(loaded$filteredData$classes)),
-                            "Nosamp per.class"= table(loaded$samples.per.class)
-                           )
+# qunt.sammay <- data.frame( "recountID" = parameters$recountID,
+#                            "Descrip.dataset" = parameters$classColumn,
+#                            "no.runs" = length(loaded$runPheno$run),
+#                            "No.samples before filtering" = length(loaded$runPheno$sample),
+#                            "No.genes before filtering" = nrow(loaded$countsPerRuns),
+#                            "No.genes NA vlues" = loaded$filteredData$naGenes,
+#                            "No.genes zero.variance" = length(loaded$filteredData$zeroVarGenes),
+#                            "No.genes kept filtering" = length(loaded$filteredData$keptGenes),
+#                            "selected classes" = data.frame(loaded$filteredData$selectedClasses),
+#                            "No.classes" = length(unique(loaded$filteredData$classes)),
+#                             "Nosamp per.class"= table(loaded$samples.per.class)
+#                            )
 
-kable(qunt.sammay)
+#kable(qunt.sammay)
 ```
 
+A summarized report about preprocessing process before we start to study the impact of classification methods on RNAseq count data.
+
+
+
+| recountID | No.runs | No.features | No.samples after prerocessing | No.genes after preprocessing | unique samples | pheno Table dimensions | No. of classes |
+|---------------------------|--------|--------|--------|--------|--------|--------|--------|
+| "SRP042620"| 167 |58037  | 162 | 55506 | 167 | 162 X 22 | 5 |
+| "SRP003611"| 52  |58037 | 0 | 51239 | 8| 0 X 17 |
+| "SRP061240"| 384  |58037 | 186 | 7056 | 192 | 186 X 19 | 3 |
+| "SRP062966"| 117 |  58037 | 117 | 45247 | 117 | 117 X 25 | 2 |
+| "SRP066834"| 729 |  58037 |  729| 15741 |729 | 729 X 23 | 3 |
