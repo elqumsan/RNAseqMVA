@@ -25,7 +25,7 @@ if (parameters$compute) {
 
   train.test.results.DEG <- list()
 
- ## Associate all computation with permuted and not permuted class lables
+ #### Associate all computation with permuted and not permuted class lables ####
   for (permute in c(FALSE, TRUE)) {
 
     for (deg.method in parameters$deg.methods) {
@@ -50,7 +50,7 @@ if (parameters$compute) {
 
         ## dim(counts)
 
-        ## Define experiment prefix
+        #### Define experiment prefix ####
         variable.type <- paste(sep="_", "DEG", deg.method, "top", varnb)
         exp.prefix <- paste(sep="_", classifier,  parameters$recountID, variable.type)
         if (permute) {
@@ -80,7 +80,7 @@ if (parameters$compute) {
 names(train.test.results.DEG)
 
 #################################################################################################################
-### results for the imapct of the number of variables (genes) sorted according to DEG
+#### results for the imapct of the number of variables (genes) sorted according to DEG ####
 #################################################################################################################
 ErrorRateBoxPlot(experimentList = train.test.results.DEG,
                  classifier=classifier,
@@ -91,5 +91,5 @@ ErrorRateBoxPlot(experimentList = train.test.results.DEG,
                                 parameters$iterations,
                                 "iterations;",
                                 "DEG.data.type;" ,
-                                "ordered_variables"))
+                                "ordered_variables",sep = ""))
 
