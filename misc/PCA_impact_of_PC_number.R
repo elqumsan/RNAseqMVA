@@ -1,9 +1,8 @@
-
 ################################################################
 #### QUESTION: What is imapct of number of PCAs-transformed data?, ####
 # which is the better to use a subsets of the first components or all the components ?
 
-## Choice of the classifier
+#### Choice of the classifier ####
 classifier <- "svm"
 
 #data.type <- "log2norm.prcomp.centred"
@@ -11,7 +10,7 @@ classifier <- "svm"
 #data.type <- parameters$data.types["prcomp"]
 data.type <- "log2norm.prcomp.centred.scaled"
 
-## iterate over permutation status
+#### iterate over permutation status ####
 pc.numbers <- c(2, 3, 4, 5, 6, 7,
                 seq(from=10, to=ncol(log2norm.prcomp.centred.scaled$x)-1, by = 10), ncol(log2norm.prcomp.centred.scaled$x))
 pc.nb <- 4 ## Default or quick test
@@ -47,14 +46,14 @@ if (parameters$compute) {
     stop(data.type, " is not a valid type, Supported: raw, norm, log2, and *pcr*")
   } # end else of other data.type
 
-  ## iterate over permutation status
+  #### iterate over permutation status ####
   pc.numbers <- c(2, 3, 4, 5, 6, 7,
                   seq(from=10, to=ncol(counts)-1, by = 10), ncol(counts))
   pc.nb <- 4 ## Default or quick test
 
 
 
-  ## Associate each analysis of real data with a permutation test
+  #### Associate each analysis of real data with a permutation test ####
   for (permute in c(FALSE, TRUE)) {
 
     ## Run classifier withb all variables (log2-transformed log counts)
@@ -80,7 +79,7 @@ if (parameters$compute) {
     #   )
 
 
-    ## Iterate over PC numbers
+    #### Iterate over PC numbers ####
     for (pc.nb in pc.numbers) {
 
       ## Select the first N principal components
@@ -114,11 +113,11 @@ if (parameters$compute) {
 } # end of computation
 
 ###############################################################################################
-## Print the results of the effect of the number of PCs on the efficiancy of KNN classifier
+#### Print the results of the effect of the number of PCs on the efficiancy of KNN classifier ####
 ErrorRateBoxPlot(experimentList = train.test.results.No.PCs,
                  classifier = classifier,
                  variable.type = "number_of_PCs",
                  main = paste("Impact of the number of PCs on,", classifier, "\n,",parameters$recountID,";",
                               parameters$iterations , "iterations,",
-                              data.type))
+                              data.type,sep = ""))
 
