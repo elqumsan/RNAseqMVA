@@ -57,3 +57,4 @@ A summarized report about preprocessing process before we start to study the imp
 | "SRP061240"| 384  |58037 | 186 | 7056 | 192 | 186 X 19 | 3 |
 | "SRP062966"| 117 |  58037 | 117 | 45247 | 117 | 117 X 25 | 2 |
 | "SRP066834"| 729 |  58037 |  729| 15741 |729 | 729 X 23 | 3 |
+| "SRP056295"| 520 | 58037 | 259  | 43780 | 263 | 259 X 17 |  2  |
