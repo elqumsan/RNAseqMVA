@@ -5,10 +5,10 @@
 ## QUESTION: is it better to use the PCAs-transformed data, and, if so, is it better to use a subset of the first components or all the components ?
 ## For the time being we test this with only one classifier (KNN, default k)  but we will come back to it with other classifiers later.
 ## IMPORTANT NOTE : i would like to pay your intention for here we should take " data.type, so that we will not give the user to
-## choose the data.type in return we will pass the data.type for each experiment. 
+## choose the data.type in return we will pass the data.type for each experiment.
 ## Choice of the classifier
 
-classifier <- "svm"
+classifier <- "rf"
 
 ## Choice of the Counts
 # data.type <- "log2norm.prcomp.centred"
@@ -135,5 +135,5 @@ ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
                               classifier, ": all variables vs all PCs,", "\n",
                               parameters$recountID, ", ",
                               parameters$iterations, " iterations, ",
-                              data.type = data.type))
+                              data.type = "diverse data type"))
 
