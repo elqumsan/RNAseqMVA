@@ -129,6 +129,8 @@ if (parameters$compute) {
 
     DEG.object <- get("DEG.edgeR")
     DEG.Counts <- na.omit(as.data.frame(DEG.object$orderedCountTable))
+    sig.variables <- round(ncol(DEG.Counts) * 0.75)
+    DEG.Counts <- DEG.Counts[, 1:sig.variables]
     ## define experiment prefix
     exp.prefix <-
       paste(sep = "_", classifier, parameters$recountID , parameters$data.types["DEG"])
