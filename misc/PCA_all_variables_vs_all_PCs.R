@@ -123,6 +123,33 @@ if (parameters$compute) {
         k = parameters$knn$k,
         verbose = parameters$verbose
       )
+
+    #### take all the raw data ordered by DEG edgeR tool, and cast them to a data.frame ####
+    ## we looking here to notice the ipmact of ordered variables by DEG edgeR tool into classifiers
+
+    DEG.object <- get("DEG.edgeR")
+    DEG.Counts <- na.omit(as.data.frame(DEG.object$orderedCountTable))
+    ## define experiment prefix
+    exp.prefix <-
+      paste(sep = "_", classifier, parameters$recountID , parameters$data.types["DEG"])
+    if (permute) {
+      exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
+    }# end if permuted class
+
+    train.test.results.all.variables[[exp.prefix]] <-
+      one.experiment (
+        countTable = DEG.Counts,
+        classes = classes,
+        data.type = parameters$data.types["DEG"],
+        classifier = classifier,
+        variable.type = "DEG",
+        trainingProportion = parameters$trainingProportion,
+        file.prefix = exp.prefix,
+        permute = permute,
+        k = parameters$knn$k,
+        verbose = parameters$verbose
+      )
+
     #  } # end of iterative of PC Numbers
   } # end for loop permutation
 } # end if statment computation
@@ -134,6 +161,6 @@ ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
                  main = paste(sep="",
                               classifier, ": all variables vs all PCs,", "\n",
                               parameters$recountID, ", ",
-                              parameters$iterations, " iterations, ",
+                              parameters$iterations, " iterations, ","\n",
                               data.type = "diverse data type"))
 
