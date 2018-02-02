@@ -143,6 +143,6 @@ message.with.time("finished running Principal Component analysis (PCA) for norma
 message.with.time("Exhibit the geo charactiristics for such experiment: ", parameters$recountID, "in order to know the class lable
                   for such experiment")
 head( geo.characteristics)
-geo.characteristics.file <- file.path(RNAseqMVA_workspace, "/data", parameters$recountID, "geo.characteristics")
+geo.characteristics.file <- file.path("~/RNAseqMVA_workspace", "data", parameters$recountID, "geo.characteristics.tsv")
 write.table( geo.characteristics, file = geo.characteristics.file, quote = FALSE,
              row.names = FALSE, sep = "\t" )
