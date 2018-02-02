@@ -9,6 +9,10 @@
 #' @param labels=files labels associated to each file (used for displays)
 #' The files should be formatted as tab-separated values.
 #' Each row corresponds to one iteration.
+#'
+#' @import recount
+#'
+#' @export
 SummarizeErrorTable <- function (files,
                                  stopIfMissing = TRUE,
                                  labels = files) {
