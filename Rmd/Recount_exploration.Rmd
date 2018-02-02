@@ -180,10 +180,7 @@ project.disease.summary$sample.sums
 
 ```{r exploring_duplicating_in_row.name_for_project.disease}
 
-
-recountID <- "SRP003611"  
-
-recountID <- "SRP041736"
+recountID <- "SRP057196"
 studyPath <- paste0("~/test_recount/",recountID)
 dir.create(studyPath, recursive = TRUE, showWarnings = FALSE)
 download_study(recountID, outdir = studyPath)

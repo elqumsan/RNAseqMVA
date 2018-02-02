@@ -37,9 +37,9 @@ SRP042620:
   classColumn: "tissue"
 #      description:  "Multi-group breast cancer"
 
-SRP057196:
-  description: ""
-  classColumn: ["tissue", "cell.type"]
+#SRP057196:
+#  description: ""
+#  classColumn: ["tissue", "cell.type"]
 #  classColumn: c("tissue", "cell.type")
   ## Running parameters for SRP057196
   ## NOTE FOR MUSTAFA: For this dataset, the groups are defined
@@ -97,3 +97,6 @@ SRP006574:
   description: ""
   classColumn: "disease.status"
 
+SRP057196:
+  description: "individual cells into all of the major neuronal, glial, and vascular cell types in the brain"
+  classColumn: "cell.type"
