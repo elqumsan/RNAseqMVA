@@ -134,7 +134,7 @@ DEGordering <- function( countTable,
       message("we will revome all genes that heve NA values",na.padj,  "to avoid the some problimatics when we passing it for the classifiers")
       lrt$table$PValue <- na.omit(lrt$table$PValue)
     }
-    geneOrderIndex <- order(lrt$table$PValue)
+    geneOrderIndex <- order(lrt$table$PValue, decreasing = FALSE)
     result$geneOrder <- as.vector(colnames(na.omit(as.data.frame(countTable)))[geneOrderIndex])
 
     result$DEGtable <- lrt$table[result$geneOrder,]

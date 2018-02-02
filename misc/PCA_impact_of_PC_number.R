@@ -3,7 +3,7 @@
 # which is the better to use a subsets of the first components or all the components ?
 
 #### Choice of the classifier ####
-classifier <- "knn"
+classifier <- "rf"
 
 #data.type <- "log2norm.prcomp.centred"
 #data.type <- "log2norm"

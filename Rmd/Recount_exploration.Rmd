@@ -180,10 +180,7 @@ project.disease.summary$sample.sums
 
 ```{r exploring_duplicating_in_row.name_for_project.disease}
 
-
-recountID <- "SRP003611"  
-
-recountID <- "SRP042620"
+recountID <- "SRP057196"
 studyPath <- paste0("~/test_recount/",recountID)
 dir.create(studyPath, recursive = TRUE, showWarnings = FALSE)
 download_study(recountID, outdir = studyPath)
@@ -379,6 +376,7 @@ sample.nb <- length(unique(selected.project.metadata$sample))
 geo.acc.nb <- length(unique(na.omit(selected.project.metadata$geo_accession)))
 characteristic.nb <- length(unique(selected.project.metadata$characteristics))
 message(sample.nb, " samples, ", geo.acc.nb, " non-NA geo accession numbers, ", "classes Number:", characteristic.nb  )
+
 
 ```
 
