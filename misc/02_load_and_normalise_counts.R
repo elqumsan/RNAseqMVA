@@ -12,6 +12,7 @@ if (parameters$compute) {
   ## Assign a specific color to each sammple according to its class
   pheno <- loaded$phenoTable
   classes <- loaded$classes
+  geo.characteristics <- loaded$geo.characteristics
   # table(classes)
   # length(classes)
   distinct.classes <- as.vector(unique(loaded$classes))
@@ -21,7 +22,8 @@ if (parameters$compute) {
 
   dim(pheno.data.frame)
   # View(pheno.data.frame)
-  write.table(pheno.data.frame, file = paste(tsv.dir, "/pheno_",parameters$recountID,".tsv",sep = ""), row.names = FALSE, sep = "\t")
+  write.table(pheno.data.frame, file = paste(tsv.dir, "/pheno_",parameters$recountID,".tsv",sep = ""),
+              row.names = FALSE, sep = "\t")
 } else {
   message.with.time("Skipping data loading")
 }
@@ -137,4 +139,10 @@ log2norm.prcomp.centred.scaled <- prcomp(na.omit(log2norm), center = TRUE, scale
 ## Indicate that this principal components analysis for log2 count has finished running
 message.with.time("finished running Principal Component analysis (PCA) for normalized log2 counts")
 
-
+##### Exhibiting the geo charactiristics for the current project #####
+message.with.time("Exhibit the geo charactiristics for such experiment: ", parameters$recountID, "in order to know the class lable
+                  for such experiment")
+head( geo.characteristics)
+geo.characteristics.file <- file.path(RNAseqMVA_workspace, "/data", parameters$recountID, "geo.characteristics")
+write.table( geo.characteristics, file = geo.characteristics.file, quote = FALSE,
+             row.names = FALSE, sep = "\t" )
