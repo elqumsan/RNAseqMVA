@@ -201,6 +201,8 @@ geodata <- do.call(rbind, sapply(geoids, geo_info))
 # Get characteristics from pheno table
 geo_characteristics(runPheno)
 
+(unique( geo_characteristics(runPheno)[,1]))
+
 unique(geo_characteristics(runPheno))
 
 # dim(countTable)
