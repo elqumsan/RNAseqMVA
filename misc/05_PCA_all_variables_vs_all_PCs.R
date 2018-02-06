@@ -8,7 +8,7 @@
 ## choose the data.type in return we will pass the data.type for each experiment.
 ## Choice of the classifier
 
-classifier <- "knn"
+classifier <- "rf"
 
 ## Choice of the Counts
 # data.type <- "log2norm.prcomp.centred"
