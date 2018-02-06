@@ -140,7 +140,7 @@ log2norm.prcomp.centred.scaled <- prcomp(na.omit(log2norm), center = TRUE, scale
 message.with.time("finished running Principal Component analysis (PCA) for normalized log2 counts")
 
 ##### Exhibiting the geo charactiristics for the current project #####
-message.with.time("Exhibit the geo charactiristics for such experiment: ", parameters$recountID, "in order to know the class lable
+message.with.time("Exhibit the geo charactiristics for such experiment: ", parameters$recountID, " in order to know the class lable
                   for such experiment")
 head( geo.characteristics)
 geo.characteristics.file <- file.path("~/RNAseqMVA_workspace", "data", parameters$recountID, "geo.characteristics.tsv")
