@@ -3,6 +3,11 @@ title: "Interpretation for ALL dataset SRP056295 (Pabst, Blood, 2016)"
 author: "Mustafa AbuElqumsan and Jacques van Helden"
 date: '`r Sys.Date()`'
 output:
+  pdf_document:
+    fig_caption: yes
+    highlight: zenburn
+    toc: yes
+    toc_depth: 3
   html_document:
     fig_caption: yes
     highlight: zenburn
@@ -10,11 +15,6 @@ output:
     toc: yes
     toc_depth: 3
     toc_float: true
-  pdf_document:
-    fig_caption: yes
-    highlight: zenburn
-    toc: yes
-    toc_depth: 3
   word_document: default
   bookdown::html_document2: default 
 # bibliography: Bibliography.bib
