@@ -6,7 +6,7 @@
 
 ## Choice of the classifier
 
-classifier <- "knn"
+classifier <- "svm"
 
 
 ## Choice of the coutns
