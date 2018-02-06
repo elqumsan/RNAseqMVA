@@ -2,6 +2,7 @@
 ## Load a count Table from recount-experiment, merge counts per sample
 ## and apply some pre-filtering (remove zero-variance and near-zero-variance genes).
 if (parameters$compute) {
+  rawCounts <- list()
   message.with.time("Loading count table from recount", "; recountID = ", parameters$recountID)
   loaded <- loadCounts(recountID = parameters$recountID, mergeRuns = TRUE ,
                        classColumn = parameters$classColumn,
@@ -29,7 +30,7 @@ if (parameters$compute) {
 }
 
 # Check the dimensions of the count table
-rawCounts <- list()
+
 dim(rawCounts1)
 rawCounts$Counts <- rawCounts1
 ######### sptiting the rawCounts dataset for the train set and test set #########
@@ -138,7 +139,7 @@ log2normCounts.file <- file.path(dir.log2Impact, paste(sep="", parameters$recoun
 message.with.time("Exporting log2 normalised counts to file ", "\n", log2normCounts.file)
 if (parameters$save.tables) {
   write.table(sep="\t", quote=FALSE, row.names = TRUE, col.names=NA,
-              x = round(digits=3, t(log2norm)),
+              x = round(digits=3, t(log2norm$Counts)),
               file = log2normCounts.file)
 }
 
