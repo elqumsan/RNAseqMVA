@@ -96,6 +96,16 @@ loadCounts <- function(recountID = parameters$recountID,
     stop("invaled number of classes labes, (", length(classes) ,"). ",
          "must equal the number of individuals in Count Table (",nrow(countTable),").")
 
+######### sptiting the countTable for the train set and test set #########
+  n <- nrow(countTable) ## Number of observations (samples)
+  train.size <- round(n * parameters$trainingProportion)
+
+  ## Random selection of indices for the training set
+  trainIndex <- sort(sample(1:n, size=train.size))
+  ## Use remaining indices for the testing set
+  testIndex <- setdiff(1:n, trainIndex)
+
+########### results is  loadedRecount ###########
   loadedRecount <- list()
   loadedRecount$countTable<- countTable
   loadedRecount$phenoTable <- phenoTable
@@ -105,6 +115,8 @@ loadCounts <- function(recountID = parameters$recountID,
   loadedRecount$samples.per.class <- as.data.frame.table(table(classes), row.names=1)
   loadedRecount$filteredData <- filteredData
   loadedRecount$geo.characteristics <- geo.characteristics
+  loadedRecount$trainIndex <- trainIndex
+  loadedRecount$testIndex <- testIndex
 
   message.with.time("Finished Load Count Table process for Recount experiment ID ", parameters$recountID)
 
