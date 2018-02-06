@@ -2,11 +2,12 @@
 ## Load a count Table from recount-experiment, merge counts per sample
 ## and apply some pre-filtering (remove zero-variance and near-zero-variance genes).
 if (parameters$compute) {
+  rawCounts <- list()
   message.with.time("Loading count table from recount", "; recountID = ", parameters$recountID)
   loaded <- loadCounts(recountID = parameters$recountID, mergeRuns = TRUE ,
                        classColumn = parameters$classColumn,
                        minSamplesPerClass = parameters$minSamplesPerClass)
-  rawCounts <- loaded$countTable ## Note: one row per sample, one column per gene
+  rawCounts1 <- loaded$countTable ## Note: one row per sample, one column per gene
   # dim(rawCounts)
 
   ## Assign a specific color to each sammple according to its class
@@ -29,7 +30,21 @@ if (parameters$compute) {
 }
 
 # Check the dimensions of the count table
-dim(rawCounts)
+
+dim(rawCounts1)
+rawCounts$Counts <- rawCounts1
+######### sptiting the rawCounts dataset for the train set and test set #########
+n <- nrow(rawCounts$Counts) ## Number of observations (samples)
+train.size <- round(n * parameters$trainingProportion)
+
+## Random selection of indices for the training set
+trainIndex <- sort(sample(1:n, size=train.size))
+## Use remaining indices for the testing set
+testIndex <- setdiff(1:n, trainIndex)
+
+rawCounts$trainIndex <- trainIndex
+rawCounts$testIndex  <- testIndex
+
 ## Number of samples per class
 print(loaded$samples.per.class)
 
@@ -93,12 +108,27 @@ if (parameters$save.tables) {
 ##
 ## Note: this method takes a table with one column per sample and one
 ## row per gene, we thus have to transpose the raw count table.
+log2norm <- list()
 if (parameters$compute) {
   message.with.time("Normalizing counts based on 75th percentile + log2 transformation")
   log2normCounts <- NormalizeCounts(t(loaded$countTable), method = "quantile", quantile=0.75,
                               log2 = TRUE, epsilon=0.1)
-  log2norm <- t(log2normCounts$normCounts)
-  dim(log2norm)
+  Counts <- t(log2normCounts$normCounts)
+  log2norm$Counts <- Counts
+  dim(log2norm$Counts)
+
+  ######### sptiting the log2norm dataset for the train set and test set #########
+  n <- nrow(log2norm$Counts) ## Number of observations (samples)
+  train.size <- round(n * parameters$trainingProportion)
+
+  ## Random selection of indices for the training set
+  trainIndex <- sort(sample(1:n, size=train.size))
+  ## Use remaining indices for the testing set
+  testIndex <- setdiff(1:n, trainIndex)
+
+  log2norm$trainIndex <- trainIndex
+  log2norm$testIndex  <- testIndex
+
 } else {
   message.with.time("Skipping normalisation with log2 transformation")
 }
@@ -109,7 +139,7 @@ log2normCounts.file <- file.path(dir.log2Impact, paste(sep="", parameters$recoun
 message.with.time("Exporting log2 normalised counts to file ", "\n", log2normCounts.file)
 if (parameters$save.tables) {
   write.table(sep="\t", quote=FALSE, row.names = TRUE, col.names=NA,
-              x = round(digits=3, t(log2norm)),
+              x = round(digits=3, t(log2norm$Counts)),
               file = log2normCounts.file)
 }
 

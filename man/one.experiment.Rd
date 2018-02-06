@@ -6,8 +6,8 @@
 \usage{
 one.experiment(countTable, classes, classifier, data.type,
   iterations = parameters$iterations, variable.type = "all",
-  trainingProportion, permute = FALSE, file.prefix = NULL,
-  verbose = FALSE, k = 3)
+  trainingProportion, trainIndex, testIndex, permute = FALSE,
+  file.prefix = NULL, verbose = FALSE, k = 3)
 }
 \arguments{
 \item{countTable}{is the passed count data for the iterative process.}

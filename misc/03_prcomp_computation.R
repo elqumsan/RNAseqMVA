@@ -1,9 +1,10 @@
 
 #### Compute principal components for normalized log2 counts ####
 message.with.time("Pre-processing by Principal Component analysis (PCA)")
-log2norm.prcomp.centred <- prcomp( na.omit(log2norm), center = TRUE, scale. = FALSE)
-log2norm.prcomp.centred.scaled <- prcomp(na.omit(log2norm), center = TRUE, scale. = TRUE)
+log2norm.prcomp.centred <- prcomp( na.omit(log2norm$Counts), center = TRUE, scale. = FALSE)
+log2norm.prcomp.centred.scaled <- prcomp(na.omit(log2norm$Counts), center = TRUE, scale. = TRUE)
 
+######### sptiting the log2norm.prcomp.centres.scaled[["x"]] dataset for the train set and test set #########
 
 n <- nrow(log2norm.prcomp.centred.scaled$x) ## Number of observations (samples)
 train.size <- round(n * parameters$trainingProportion)

@@ -26,6 +26,7 @@ one.experiment <- function (countTable, # count table (may be normalized or not,
                             iterations = parameters$iterations,
                             variable.type = "all", ## e.g;. "all", "top20", "top200", ...
                             trainingProportion, # ratio of training proportion
+                            trainIndex, testIndex,
                             permute = FALSE, # permute the class labels before running the test
                             file.prefix = NULL, # prefix for the saved files. If not provided, will be automatically generated
                             verbose=FALSE,
@@ -63,7 +64,7 @@ one.experiment <- function (countTable, # count table (may be normalized or not,
 
     # computing the testing errors rate for the KNN classfier
     message("\t", format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", classifier, " training/testing evaluation, iteration ", i , "/", iterations)
-    oneTest <- MisclassificationEstimate(countTable, classes , trainingProportion , classifier = classifier, k=k, verbose=verbose)
+    oneTest <- MisclassificationEstimate(countTable, classes , trainingProportion, trainIndex, testIndex , classifier = classifier, k=k, verbose=verbose)
     testTable <- rbind (testTable, oneTest$stats)
   }
 

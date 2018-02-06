@@ -62,8 +62,10 @@ if (parameters$compute) {
 
     train.test.results.all.variables[[exp.prefix]] <-
       one.experiment (
-        countTable = na.omit(as.data.frame(log2norm)),
+        countTable = na.omit(as.data.frame(log2norm$Counts)),
         classes = classes,
+        trainIndex = log2norm$trainIndex,
+        testIndex = log2norm$testIndex,
         data.type = parameters$data.types["log2norm"],
         classifier = classifier,
         #variable.type = variable.type,
@@ -88,10 +90,12 @@ if (parameters$compute) {
       one.experiment (
         countTable = first.pcs$x,
         classes = classes,
+        trainIndex = log2norm.prcomp.centred.scaled$trainIndex, testIndex = log2norm.prcomp.centred.scaled$testIndex,
         data.type = parameters$data.types["prcomp"],
         classifier = classifier,
         variable.type = "all_PCs",
         trainingProportion = parameters$trainingProportion,
+
         file.prefix = exp.prefix,
         permute = permute,
         k = parameters$knn$k,
@@ -102,7 +106,7 @@ if (parameters$compute) {
     #### take all the raw data without any nolmalization, and cast them to a data.frame ####
     ## we looking here to notice the ipmact of normalization into classifiers
 
-    rawCounts <- na.omit(as.data.frame(get("rawCounts")))
+    rawCounts1 <- na.omit(as.data.frame(get("rawCounts")[["Counts"]]))
     ## define experiment prefix
     exp.prefix <-
       paste(sep = "_", classifier, parameters$recountID , parameters$data.types["raw"])
@@ -112,12 +116,14 @@ if (parameters$compute) {
 
     train.test.results.all.variables[[exp.prefix]] <-
       one.experiment (
-        countTable = rawCounts,
+        countTable = rawCounts1,
         classes = classes,
+        trainIndex= rawCounts$trainIndex, testIndex = rawCounts$testIndex,
         data.type = parameters$data.types["raw"],
         classifier = classifier,
         variable.type = "raw",
         trainingProportion = parameters$trainingProportion,
+
         file.prefix = exp.prefix,
         permute = permute,
         k = parameters$knn$k,
@@ -142,6 +148,7 @@ if (parameters$compute) {
       one.experiment (
         countTable = DEG.Counts,
         classes = classes,
+        trainIndex = DEG.edgeR$trainIndex , testIndex = DEG.edgeR$testIndex,
         data.type = parameters$data.types["DEG"],
         classifier = classifier,
         variable.type = "DEG",
