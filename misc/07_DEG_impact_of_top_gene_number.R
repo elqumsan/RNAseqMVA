@@ -63,6 +63,7 @@ if (parameters$compute) {
                          data.type=data.type,
                          classifier=classifier,
                          classes=classes,
+                         trainIndex =get( paste(sep = ".", "DEG", deg.method))[["trainIndex"]], testIndex = get( paste(sep = ".","DEG", deg.method))[["testIndex"]],
                          variable.type = variable.type,
                          trainingProportion = parameters$trainingProportion,
                          permute = permute,
