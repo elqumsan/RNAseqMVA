@@ -62,7 +62,7 @@ if (parameters$compute) {
 
     train.test.results.all.variables[[exp.prefix]] <-
       one.experiment (
-        countTable = na.omit(as.data.frame(log2norm$Counts)),
+        countTable = as.data.frame(log2norm$Counts),
         classes = classes,
         trainIndex = log2norm$trainIndex,
         testIndex = log2norm$testIndex,
