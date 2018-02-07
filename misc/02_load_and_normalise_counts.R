@@ -113,7 +113,7 @@ if (parameters$compute) {
   message.with.time("Normalizing counts based on 75th percentile + log2 transformation")
   log2normCounts <- NormalizeCounts(t(loaded$countTable), method = "quantile", quantile=0.75,
                               log2 = TRUE, epsilon=0.1)
-  Counts <- t(log2normCounts$normCounts)
+  Counts <- na.omit( as.data.frame(t(log2normCounts$normCounts)))
   log2norm$Counts <- Counts
   dim(log2norm$Counts)
 
