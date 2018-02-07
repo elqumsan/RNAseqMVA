@@ -33,6 +33,8 @@ MisclassificationEstimate <- function(countTable, classes,
   # trainIndex <- sort(sample(1:n, size=train.size))
   # ## Use remaining indices for the testing set
   # testIndex <- setdiff(1:n, trainIndex)
+   trainIndex <- sample(trainIndex)
+   testIndex <- sample(testIndex)
 
   if (classifier == "knn"){
 
