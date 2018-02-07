@@ -61,6 +61,8 @@ one.experiment <- function (countTable, # count table (may be normalized or not,
     if (permute) {
       classes <- sample(classes)
     }
+    # trainIndex <- sample(trainIndex)
+    # testIndex <- sample(testIndex)
 
     # computing the testing errors rate for the KNN classfier
     message("\t", format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", classifier, " training/testing evaluation, iteration ", i , "/", iterations)
