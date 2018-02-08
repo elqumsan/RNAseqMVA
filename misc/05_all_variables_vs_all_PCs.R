@@ -64,8 +64,8 @@ if (parameters$compute) {
       one.experiment (
         countTable = as.data.frame(log2norm$Counts),
         classes = classes,
-        trainIndex = sample(log2norm$trainIndex),
-        testIndex = sample(log2norm$testIndex),
+        # trainIndex = sample(log2norm$trainIndex),
+        # testIndex = sample(log2norm$testIndex),
         data.type = parameters$data.types["log2norm"],
         classifier = classifier,
         #variable.type = variable.type,
@@ -90,8 +90,8 @@ if (parameters$compute) {
       one.experiment (
         countTable = first.pcs$x,
         classes = classes,
-        trainIndex = sample( log2norm.prcomp.centred.scaled$trainIndex),
-        testIndex = sample(log2norm.prcomp.centred.scaled$testIndex),
+        # trainIndex = sample( log2norm.prcomp.centred.scaled$trainIndex),
+        # testIndex = sample(log2norm.prcomp.centred.scaled$testIndex),
         data.type = parameters$data.types["prcomp"],
         classifier = classifier,
         variable.type = "all_PCs",
@@ -119,8 +119,8 @@ if (parameters$compute) {
       one.experiment (
         countTable = rawCounts1,
         classes = classes,
-        trainIndex= sample( rawCounts$trainIndex),
-        testIndex = sample(rawCounts$testIndex),
+        # trainIndex= sample( rawCounts$trainIndex),
+        # testIndex = sample(rawCounts$testIndex),
         data.type = parameters$data.types["raw"],
         classifier = classifier,
         variable.type = "raw",
@@ -150,8 +150,8 @@ if (parameters$compute) {
       one.experiment (
         countTable = DEG.Counts,
         classes = classes,
-        trainIndex = sample( DEG.edgeR$trainIndex ) ,
-        testIndex = sample( DEG.edgeR$testIndex),
+        # trainIndex = sample( DEG.edgeR$trainIndex ) ,
+        # testIndex = sample( DEG.edgeR$testIndex),
         data.type = parameters$data.types["DEG"],
         classifier = classifier,
         variable.type = "DEG",

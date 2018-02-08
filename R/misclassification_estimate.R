@@ -18,7 +18,7 @@
 #' @export
 MisclassificationEstimate <- function(countTable, classes,
                                       trainingProportion = 2/3,
-                                      trainIndex, testIndex,
+                                    #  trainIndex, testIndex,
                                       classifier = "knn",
                                       verbose = FALSE,
                                       k= 3) {
@@ -26,15 +26,17 @@ MisclassificationEstimate <- function(countTable, classes,
   # countTable <- t(countTable)
   # classes <-na.omit(classes)
   # countTable <-countTable[classes,]
-  # n <- nrow(countTable) ## Number of observations (samples)
-  # train.size <- round(n * trainingProportion)
-  #
-  # ## Random selection of indices for the training set
-  # trainIndex <- sort(sample(1:n, size=train.size))
-  # ## Use remaining indices for the testing set
-  # testIndex <- setdiff(1:n, trainIndex)
-   trainIndex <- sample(trainIndex)
-   testIndex <- sample(testIndex)
+
+  n <- nrow(countTable) ## Number of observations (samples)
+  train.size <- round(n * trainingProportion)
+
+  ## Random selection of indices for the training set
+  trainIndex <- sort(sample(1:n, size=train.size))
+  ## Use remaining indices for the testing set
+  testIndex <- setdiff(1:n, trainIndex)
+
+   # trainIndex <- sample(trainIndex)
+   # testIndex <- sample(testIndex)
 
   if (classifier == "knn"){
 

@@ -98,7 +98,7 @@ if (parameters$compute) {
         one.experiment (
           countTable = first.pcs,
           classes = classes,
-          trainIndex = log2norm.prcomp.centred.scaled$trainIndex, testIndex = log2norm.prcomp.centred.scaled$testIndex,
+        #  trainIndex = log2norm.prcomp.centred.scaled$trainIndex, testIndex = log2norm.prcomp.centred.scaled$testIndex,
           data.type = data.type,
           classifier = classifier,
           variable.type = "PC_comp",
