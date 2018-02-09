@@ -5,7 +5,7 @@
 \title{RNA-Seq classifier evaluation to assesse the performance of the classifier}
 \usage{
 MisclassificationEstimate(countTable, classes, trainingProportion = 2/3,
-  trainIndex, testIndex, classifier = "knn", verbose = FALSE, k = 3)
+  classifier = "knn", verbose = FALSE, k = 3)
 }
 \arguments{
 \item{countTable}{this data frame for RNA-Seq data which contains one row for indiviual and one column for variable}
