@@ -32,7 +32,7 @@ one.experiment <- function (countTable, # count table (may be normalized or not,
                             permute = FALSE, # permute the class labels before running the test
                             file.prefix = NULL, # prefix for the saved files. If not provided, will be automatically generated
                             verbose=FALSE,
-                            k=3 ## For KNN only
+                            k = 3 ## For KNN only
 ) {
 
 
@@ -79,6 +79,7 @@ one.experiment <- function (countTable, # count table (may be normalized or not,
       trainIndex <- NULL
     } else {
       trainIndex <- trainIndices[[i]]
+    #  message("\t\ttrainIndex from trainIndices")
     }
     message("\t", format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", classifier, " training/testing evaluation, iteration ", i , "/", iterations)
     oneTest <- MisclassificationEstimate(countTable, classes , trainingProportion,
