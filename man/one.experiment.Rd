@@ -6,8 +6,8 @@
 \usage{
 one.experiment(countTable, classes, classifier, data.type,
   iterations = parameters$iterations, variable.type = "all",
-  trainingProportion, permute = FALSE, file.prefix = NULL,
-  verbose = FALSE, k = 3)
+  trainingProportion, trainIndices = NULL, permute = FALSE,
+  file.prefix = NULL, verbose = FALSE, k = 3)
 }
 \arguments{
 \item{countTable}{is the passed count data for the iterative process.}
@@ -21,6 +21,8 @@ one.experiment(countTable, classes, classifier, data.type,
 \item{variable.type}{this indicate for the number of variables that will used with iterative procedure.}
 
 \item{trainingProportion}{is the ratio of trianing proportion.}
+
+\item{trainIndices}{a list of vectors providing training sample indices that will be used at each iteration. The length of the list must correspond to the number of iteractions. This enables to compare different methods wilt using exactly the same training/testing sets between methods.}
 
 \item{permute}{is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier}
 

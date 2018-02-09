@@ -5,7 +5,7 @@
 \title{RNA-Seq classifier evaluation to assesse the performance of the classifier}
 \usage{
 MisclassificationEstimate(countTable, classes, trainingProportion = 2/3,
-  classifier = "knn", verbose = FALSE, k = 3)
+  trainIndex = NULL, classifier = "knn", verbose = FALSE, k = 3)
 }
 \arguments{
 \item{countTable}{this data frame for RNA-Seq data which contains one row for indiviual and one column for variable}
@@ -17,6 +17,8 @@ MisclassificationEstimate(countTable, classes, trainingProportion = 2/3,
 \item{k}{is number of neighbours passed to classifier}
 
 \item{trainingproportion}{is the ratio of the training subset from the whole data set}
+
+\item{trainIndex=NULL}{vector providing training sample indices. if NULL, training indices are sampled randomly}
 }
 \description{
 this script to evaluate and assesse the performance of the RNA-Seq classifier by

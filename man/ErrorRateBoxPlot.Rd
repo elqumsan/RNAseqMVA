@@ -7,9 +7,8 @@
 ErrorRateBoxPlot(experimentList, classifier,
   main = paste("Misclassification rates", "\\n", parameters$iterations,
   "iterations"), expColor = "#00BBFF", permColor = "grey",
-  expLegend = "Train/test", permLegend = "Permuted labels",
-  data.type = "log2norm.prcomp.centred", variable.type = "all.variables",
-  ....)
+  expLegend = "Train/test", permLegend = "Permuted labels", data.type,
+  variable.type = "all.variables", ....)
 }
 \arguments{
 \item{experimentList}{this is list of experiment where each cell of list error rate of the single experiment with special parameters}
