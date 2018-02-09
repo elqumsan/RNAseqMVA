@@ -8,6 +8,7 @@
 #' @param classes  such is vector for our cases for classes,
 #' @param k is number of neighbours passed to classifier
 #' @param trainingproportion is the ratio of the training subset from the whole data set
+#' @param trainIndex=NULL vector providing training sample indices. if NULL, training indices are sampled randomly
 #' @param classifier is a type of the classifier
 #' @example
 #' oneTest <- MisclassificationEstimate(countTable, classes, trainingProportion = 2/3, classifier = "rf")
@@ -18,7 +19,7 @@
 #' @export
 MisclassificationEstimate <- function(countTable, classes,
                                       trainingProportion = 2/3,
-                                    #  trainIndex, testIndex,
+                                      trainIndex = NULL, #
                                       classifier = "knn",
                                       verbose = FALSE,
                                       k= 3) {
@@ -30,8 +31,10 @@ MisclassificationEstimate <- function(countTable, classes,
   n <- nrow(countTable) ## Number of observations (samples)
   train.size <- round(n * trainingProportion)
 
-  ## Random selection of indices for the training set
-  trainIndex <- sort(sample(1:n, size=train.size))
+  if (is.null(trainIndex)) {
+    ## Random selection of indices for the training set
+    trainIndex <- sort(sample(1:n, size=train.size))
+  }
   ## Use remaining indices for the testing set
   testIndex <- setdiff(1:n, trainIndex)
 
