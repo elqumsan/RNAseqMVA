@@ -2,7 +2,7 @@
 % Please edit documentation in R/one_experiment.R
 \name{one.experiment}
 \alias{one.experiment}
-\title{repeating the classifier with particular data type}
+\title{Iterate training/testing procedures with a given classifier and a given data type}
 \usage{
 one.experiment(countTable, classes, classifier, data.type,
   iterations = parameters$iterations, variable.type = "all",
