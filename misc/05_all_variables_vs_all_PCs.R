@@ -7,10 +7,16 @@
 ## choose the data.type in return we will pass the data.type for each experiment.
 ## Choice of the classifier
 
-classifier <- "svm" ## Default classifier for quick testing and debugging
+## define the file to store memory image for the "all variables" test
+image.dir <- file.path (parameters$dir$memoryImages, parameters$recountID)
+dir.create(image.dir, showWarnings = FALSE, recursive = TRUE)
+image.file <- file.path(image.dir,  paste(sep="","train_test_all_variables_", parameters$recountID,".Rdata"))
+
+# classifier <- "svm" ## Default classifier for quick testing and debugging
 ## Choice of the Counts
 # data.type <- "log2norm.prcomp.centred"
 # data.type <- "log2norm"
+
 
 if (parameters$identicalTrainTest) {
   ## New option: define all the train indices for all the iterations, in order to use the same training/testing sets between dfferent classifiers and data types
@@ -35,6 +41,7 @@ permute <- FALSE
 
 if (parameters$compute) {
 
+  train.test.results.all.variables.per.classifier <- list()
   for (classifier in parameters$classifiers) {
 
     ## List to store all results
@@ -182,17 +189,45 @@ if (parameters$compute) {
 
       #  } # end of iterative of PC Numbers
     } # end for loop permutation
+
+    #### Plotting the Miscalssification Error rate using all diverse data type all variables with KNN classifier? ####
+    ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
+                     classifier = classifier,
+                     data.type = "diverse_data_type",
+                     main = paste(sep="",
+                                  classifier, ": all variables vs all PCs,", "\n",
+                                  parameters$recountID, ", ",
+                                  parameters$iterations, " iterations, ","\n",
+                                  data.type = "diverse data type"))
+
+    train.test.results.all.variables.per.classifier[[classifier]] <- train.test.results.all.variables
+
   } # end of loop over classifiers
-} # end if statment computation
+
+  #### Save an image of the results to enable reloading them withouht recomputing everything ####
+  if (parameters$save.image) {
+    save.image(file = image.file)
+  }
+
+} else {
+  # reload previous results if exist
+  if (file.exists(image.file)) {
+    message ("Reloading memory image ", image.file)
+    load(image.file)
+  } else {
+    stop("Cannot reload memory image file ", image.file)
+  }
+
+} # end else if compute statment
 
 
 ###############################################################################################
 #### What is better to using all PCs versus all variables with KNN classifier? ####
-ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
-                 classifier = classifier,
-                 main = paste(sep="",
-                              classifier, ": all variables vs all PCs,", "\n",
-                              parameters$recountID, ", ",
-                              parameters$iterations, " iterations, ","\n",
-                              data.type = "diverse data type"))
-
+# ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
+#                  classifier = classifier,
+#                  main = paste(sep="",
+#                               classifier, ": all variables vs all PCs,", "\n",
+#                               parameters$recountID, ", ",
+#                               parameters$iterations, " iterations, ","\n",
+#                               data.type = "diverse data type"))
+#

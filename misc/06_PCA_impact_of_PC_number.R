@@ -3,7 +3,7 @@
 # which is the better to use a subsets of the first components or all the components ?
 
 #### Choice of the classifier ####
-classifier <- "svm"
+# classifier <- "svm"
 
 #data.type <- "log2norm.prcomp.centred"
 #data.type <- "log2norm"
@@ -17,6 +17,9 @@ pc.nb <- 4 ## Default or quick test
 
 
 if (parameters$compute) {
+
+  for (classifier in parameters$classifiers) {
+
   ## List to store all results
   train.test.results.No.PCs <- list()
 
@@ -110,15 +113,25 @@ if (parameters$compute) {
         )
 
     } # end of iterative of PC Numbers
-  } # end of permutation
+   } # end of permutation
+
+  #### Print the results of the effect of the number of PCs on the efficiancy of each classifier classifier ####
+  ErrorRateBoxPlot(experimentList = train.test.results.No.PCs,
+                   classifier = classifier,
+                   data.type = parameters$data.types["prcomp"],
+                   variable.type = "number_of_PCs",
+                   main = paste("Impact of the number of PCs on,", classifier, "\n,",parameters$recountID,";",
+                                parameters$iterations , "iterations,",
+                                data.type,sep = ""))
+  }  # end of loop classifier
 } # end of computation
 
 ###############################################################################################
 #### Print the results of the effect of the number of PCs on the efficiancy of KNN classifier ####
-ErrorRateBoxPlot(experimentList = train.test.results.No.PCs,
-                 classifier = classifier,
-                 variable.type = "number_of_PCs",
-                 main = paste("Impact of the number of PCs on,", classifier, "\n,",parameters$recountID,";",
-                              parameters$iterations , "iterations,",
-                              data.type,sep = ""))
+# ErrorRateBoxPlot(experimentList = train.test.results.No.PCs,
+#                  classifier = classifier,
+#                  variable.type = "number_of_PCs",
+#                  main = paste("Impact of the number of PCs on,", classifier, "\n,",parameters$recountID,";",
+#                               parameters$iterations , "iterations,",
+#                               data.type,sep = ""))
 
