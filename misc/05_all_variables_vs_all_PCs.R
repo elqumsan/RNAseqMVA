@@ -21,7 +21,7 @@ image.file <- file.path(image.dir,  paste(sep="","train_test_all_variables_", pa
 if (parameters$identicalTrainTest) {
   ## New option: define all the train indices for all the iterations, in order to use the same training/testing sets between dfferent classifiers and data types
   trainIndices <- list()
-  for(i in parameters$iterations) {
+  for(i in 1:parameters$iterations) {
     n <- nrow(log2norm$Counts)
     train.size <- round(parameters$trainingProportion * n)
     trainIndices [[i]] <- sample(1:n, size = train.size, replace = FALSE)
@@ -42,6 +42,7 @@ permute <- FALSE
 if (parameters$compute) {
 
   train.test.results.all.variables.per.classifier <- list()
+
   for (classifier in parameters$classifiers) {
 
     ## List to store all results
@@ -187,8 +188,38 @@ if (parameters$compute) {
           verbose = parameters$verbose
         )
 
-      #  } # end of iterative of PC Numbers
-    } # end for loop permutation
+
+
+      #### Run classifier with all the variables importance computed by random forest, and then ordered the variables rely on the most 3/4 imporatnce from all varaibles   ####
+
+      v.importance <- get("ordered.countTable.by.importance")
+      ## define experiment prefix
+      exp.prefix <-
+        paste(sep = "_", classifier, parameters$recountID , parameters$data.types["V.importance"], "allvars")
+      if (permute) {
+        exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
+      }# end if permuted class
+
+      train.test.results.all.variables[[exp.prefix]] <-
+        one.experiment (
+          countTable = as.data.frame(ordered.countTable.by.importance),
+          classes = classes,
+          trainIndices = trainIndices,
+          # trainIndex = sample( log2norm.prcomp.centred.scaled$trainIndex),
+          # testIndex = sample(log2norm.prcomp.centred.scaled$testIndex),
+          data.type = parameters$data.types["V.importance"],
+          classifier = classifier,
+          variable.type = "all_v.importance",
+          trainingProportion = parameters$trainingProportion,
+
+          file.prefix = exp.prefix,
+          permute = permute,
+          k = parameters$knn$k,
+          verbose = parameters$verbose
+        )
+
+
+    } # end loop over permutation
 
     #### Plotting the Miscalssification Error rate using all diverse data type all variables with KNN classifier? ####
     ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
@@ -209,6 +240,7 @@ if (parameters$compute) {
     save.image(file = image.file)
   }
 
+  ##### if compution not required, you can load the image file without any computations ####
 } else {
   # reload previous results if exist
   if (file.exists(image.file)) {
