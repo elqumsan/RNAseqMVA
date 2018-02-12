@@ -66,7 +66,14 @@ one.experiment <- function (countTable, # count table (may be normalized or not,
 
     # computing the testing errors rate for the KNN classfier
     message("\t", format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", classifier, " training/testing evaluation, iteration ", i , "/", iterations)
-    oneTest <- MisclassificationEstimate(countTable, classes , trainingProportion, trainIndex, testIndex , classifier = classifier, k=k, verbose=verbose)
+    oneTest <- MisclassificationEstimate(countTable = countTable,
+                                         classes = classes ,
+                                         trainingProportion = trainingProportion,
+                                         trainIndex = trainIndex,
+                                         testIndex = testIndex ,
+                                         classifier = classifier,
+                                         k=k,
+                                         verbose=verbose)
     testTable <- rbind (testTable, oneTest$stats)
   }
 
