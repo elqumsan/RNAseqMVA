@@ -1,7 +1,7 @@
 
 #### Differential analysis with DESeq2 and edgeR to define gene (variable) order ####
 
-
+if(parameters$compute){
 #### Run differential analysis with edgeR to define variable order ####
 message.with.time("Running edgeR to define variable ordering")
 DEG.edgeR  <- DEGordering(loaded$countTable, loaded$classes, method = "edgeR")
@@ -62,3 +62,25 @@ DEG.randomized$trainIndex <- trainIndex
 DEG.randomized$testIndex  <- testIndex
 
 message.with.time("Finishing from the DEG Computation Process")
+
+## define the file to store memory image for the "all DEG Computation" process
+
+image.dir <- file.path (parameters$dir$memoryImages, parameters$recountID)
+dir.create(image.dir, showWarnings = FALSE, recursive = TRUE)
+image.file <- file.path(image.dir,  paste(sep="","all_DEG_computation_", parameters$recountID,".Rdata"))
+
+if (parameters$save.image) {
+  save.image(file = image.file)
+}
+
+##### if compution not required, you can load the image file without any computations ####
+} else {
+  # reload previous results if exist
+  if (file.exists(image.file)) {
+    message ("Reloading memory image ", image.file)
+    load(image.file)
+  } else {
+    stop("Cannot reload memory image file ", image.file)
+  }
+}
+
