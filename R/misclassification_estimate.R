@@ -89,7 +89,7 @@ MisclassificationEstimate <- function(countTable,
     rf.trained  <- randomForest(
       x = countTable[trainIndex, ],
       y =  as.factor( classes[trainIndex]),
-      xtest = countTable[testIndex,], importance = T, keep.forest = T)
+      xtest = countTable[testIndex,],  keep.forest = T)
     ## MUSTAFA: I think you don't use the xtest result after this,
     ## since you use predict() to predict the class of the testinf set.
     ## You should either keep xtest as randomForest parameter, but then
