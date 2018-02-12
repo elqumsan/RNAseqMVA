@@ -4,11 +4,25 @@
 #### Second experiment: measure hit rates with increasing number of variables ordered by DEG p-value ####
 ###################################################################################################
 
-## Choice of the classifier
+##### define the file to store memory Image for " the Number of DEG Ordered" test #####
+image.dir <- file.path( parameters$dir$memoryImages, parameters$recountID)
+dir.create(image.dir, showWarnings = FALSE, recursive = TRUE)
+image.file <- file.path(image.dir, paste(sep = "", "train_test_no._of_DEG_ordered_",parameters$recountID , ".Rdata"))
 
-# classifier <- "svm"
 
-
+##### Define all the train indices for all the iterations, in order to using the same training\testing parts with different classifiers and data type. #####
+if (parameters$identicalTrainTest) {
+  ## New option: define all the train indices for all the iterations, in order to use the same training/testing sets between dfferent classifiers and data types
+  trainIndices <- list()
+  for(i in 1:parameters$iterations) {
+    n <- nrow(log2norm$Counts)
+    train.size <- round(parameters$trainingProportion * n)
+    trainIndices [[i]] <- sample(1:n, size = train.size, replace = FALSE)
+  }
+} else {
+  ## First option: select different indices at each experiment
+  trainIndices = NULL
+}
 ## Choice of the coutns
 #data.type <- "log2norm.prcomp.centred"
 #data.type <- "log2norm"
@@ -22,10 +36,10 @@ permute <- FALSE
 
 if (parameters$compute) {
   message.with.time("Starting classification")
+
+  train.test.results.all.DEG.ordered.per.classifier <- list()
+
   for (classifier in parameters$classifiers) {
-
-
-
 
   train.test.results.DEG <- list()
 
@@ -72,9 +86,9 @@ if (parameters$compute) {
                          trainingProportion = parameters$trainingProportion,
                          permute = permute,
                          file.prefix = exp.prefix)
-      }
-    }
-  }
+      } # end of for loop over nb.variables
+    } # end  of for loop over DEG.methods
+  } # end of for loop over permuted lables
 
   #### Print the results of the effect of the number of DEG ordered on the efficiancy of each classifier ####
   ErrorRateBoxPlot(experimentList = train.test.results.DEG,
@@ -88,9 +102,28 @@ if (parameters$compute) {
                                   "DEG.data.type;" ,
                                   "ordered_variables",sep = ""))
 
-    } # end for the assiciate the analysis for each classifier
+  train.test.results.all.DEG.ordered.per.classifier[[classifier]] <- train.test.results.DEG
+
+    } # end loop over classifiers
+
+  #### Save an image of the results to enable reloading them withouht recomputing everything ####
+  if (parameters$save.image) {
+    save.image(file = image.file)
+  }
+
+  ##### if compution not required, you can load the image file without any computations ####
+
+
 }  else {
-  message.with.time("Skipping train/test analysis with DEG-ordered top variables")
+  # message.with.time("Skipping train/test analysis with DEG-ordered top variables")
+  # reload previous results if exist
+  if (file.exists(image.file)) {
+    message ("Reloading memory image ", image.file)
+    load(image.file)
+  } else {
+    stop("Cannot reload memory image file ", image.file)
+  }
+
 }
 
 ## For each experiment, the results were stored in an element of the list train.test.results.

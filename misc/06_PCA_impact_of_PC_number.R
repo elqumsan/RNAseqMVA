@@ -2,13 +2,29 @@
 #### QUESTION: What is imapct of number of PCAs-transformed data?, ####
 # which is the better to use a subsets of the first components or all the components ?
 
-#### Choice of the classifier ####
-# classifier <- "svm"
+##### define the file to store memory Image for " the Number of PCs" test #####
+image.dir <- file.path( parameters$dir$memoryImages, parameters$recountID)
+dir.create(image.dir, showWarnings = FALSE, recursive = TRUE)
+image.file <- file.path(image.dir, paste(sep = "", "train_test_no._of_PCs_",parameters$recountID , ".Rdata"))
 
 #data.type <- "log2norm.prcomp.centred"
 #data.type <- "log2norm"
 #data.type <- parameters$data.types["prcomp"]
 data.type <- "log2norm.prcomp.centred.scaled"
+
+##### Define all the train indices for all the iterations, in order to using the same training\testing parts with different classifiers and data type. #####
+if (parameters$identicalTrainTest) {
+  ## New option: define all the train indices for all the iterations, in order to use the same training/testing sets between dfferent classifiers and data types
+  trainIndices <- list()
+  for(i in 1:parameters$iterations) {
+    n <- nrow(log2norm$Counts)
+    train.size <- round(parameters$trainingProportion * n)
+    trainIndices [[i]] <- sample(1:n, size = train.size, replace = FALSE)
+  }
+} else {
+  ## First option: select different indices at each experiment
+  trainIndices = NULL
+}
 
 #### iterate over permutation status ####
 pc.numbers <- c(2, 3, 4, 5, 6, 7,
@@ -17,6 +33,8 @@ pc.nb <- 4 ## Default or quick test
 
 
 if (parameters$compute) {
+
+  train.test.results.all.PCs.per.classifier <- list()
 
   for (classifier in parameters$classifiers) {
 
@@ -123,8 +141,29 @@ if (parameters$compute) {
                    main = paste("Impact of the number of PCs on,", classifier, "\n,",parameters$recountID,";",
                                 parameters$iterations , "iterations,",
                                 data.type,sep = ""))
-  }  # end of loop classifier
-} # end of computation
+  train.test.results.all.PCs.per.classifier[[classifier]] <- train.test.results.No.PCs
+
+  }  # end of loop over classifiers
+
+  #### Save an image of the results to enable reloading them withouht recomputing everything ####
+  if (parameters$save.image) {
+    save.image(file = image.file)
+  }
+
+  ##### if compution not required, you can load the image file without any computations ####
+
+} else {
+  # reload previous results if exist
+  if (file.exists(image.file)) {
+    message ("Reloading memory image ", image.file)
+    load(image.file)
+  } else {
+    stop("Cannot reload memory image file ", image.file)
+  }
+
+} # end else if loading image file
+
+# end of computation
 
 ###############################################################################################
 #### Print the results of the effect of the number of PCs on the efficiancy of KNN classifier ####
