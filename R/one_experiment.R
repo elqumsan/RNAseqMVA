@@ -82,10 +82,12 @@ one.experiment <- function (countTable, # count table (may be normalized or not,
     #  message("\t\ttrainIndex from trainIndices")
     }
     message("\t", format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", classifier, " training/testing evaluation, iteration ", i , "/", iterations)
+
     oneTest <- MisclassificationEstimate(countTable, classes , trainingProportion,
                                          trainIndex= trainIndex,
                                          #trainIndex, testIndex ,
                                          classifier = classifier, k=k, verbose=verbose)
+
     testTable <- rbind (testTable, oneTest$stats)
   }
 

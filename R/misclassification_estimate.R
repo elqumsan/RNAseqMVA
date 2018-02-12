@@ -17,7 +17,8 @@
 #'
 #' @import doMC
 #' @export
-MisclassificationEstimate <- function(countTable, classes,
+MisclassificationEstimate <- function(countTable,
+                                      classes,
                                       trainingProportion = 2/3,
                                       trainIndex = NULL, #
                                       classifier = "knn",
