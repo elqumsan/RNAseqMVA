@@ -1,6 +1,7 @@
 ########### Computation the importace of all vaiables in raw count table and ordered it by the importance ########
 countTable <-  rawCounts$Counts
 classes <- loaded$classes
+#### The computation of the variables importance by Random forest, and ordered it by the most importance ####
 
 # n <- nrow(rawCounts$Counts) ## Number of observations (samples)
 # trainingProportion <- 0.66
@@ -10,6 +11,8 @@ classes <- loaded$classes
 # trainIndex <- sort(sample(1:n, size=train.size))
 # ## Use remaining indices for the testing set
 # testIndex <- setdiff(1:n, trainIndex)
+
+message.with.time("The computation of the variables importance by Random forest, and ordered it by the most importance")
 
 rf.model  <- randomForest(
   x = countTable,
