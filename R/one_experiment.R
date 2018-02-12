@@ -1,5 +1,5 @@
-####################################################################################
-#' @title repeating the classifier with particular data type
+##### Iterate training/testing procedures with a given classifier and a given data type #####
+#' @title Iterate training/testing procedures with a given classifier and a given data type
 #' @author Mustafa ABUELQUMSAN and Jacques van Helden
 #' @description for sake of the accuracy and due to the error rate have computed from sampleing from the origin count data,
 #' # it is better to compute the the error rate multiple time and then we would find the avarage for the error rate.
@@ -10,6 +10,7 @@
 #' @param iteration is the how much number it will be repeated the process.
 #' @param variable.type this indicate for the number of variables that will used with iterative procedure.
 #' @param trainingProportion is the ratio of trianing proportion.
+#' @param trainIndices a list of vectors providing training sample indices that will be used at each iteration. The length of the list must correspond to the number of iteractions. This enables to compare different methods wilt using exactly the same training/testing sets between methods.
 #' @param permute is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier
 #' @param file.prefix in order to let us to save file from the one experiment
 #' @param verbose to write messages to indicate the progressing of tasks
@@ -26,15 +27,24 @@ one.experiment <- function (countTable, # count table (may be normalized or not,
                             iterations = parameters$iterations,
                             variable.type = "all", ## e.g;. "all", "top20", "top200", ...
                             trainingProportion, # ratio of training proportion
-                            trainIndex, testIndex,
+                            trainIndices = NULL,
+                          #  trainIndex, testIndex,
                             permute = FALSE, # permute the class labels before running the test
                             file.prefix = NULL, # prefix for the saved files. If not provided, will be automatically generated
                             verbose=FALSE,
-                            k=3 ## For KNN only
+                            k = 3 ## For KNN only
 ) {
 
 
   startTime <- Sys.time();
+
+  ## Check the consistency between trainIndices and iterations
+  if (!is.null(trainIndices)) {
+      if (length(trainIndices) != iterations) {
+        stop("Invalid specification of trainIndices: should be a list of vectors, with the same number of vectors as the iterations. ")
+      }
+  }
+
 
   message(format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", classifier, " classifier (train vs test), ", data.type, " counts, ", variable.type, " variables, ", parameters$iterations, " iterations.")
   testTable <- data.frame()
@@ -65,15 +75,19 @@ one.experiment <- function (countTable, # count table (may be normalized or not,
     # testIndex <- sample(testIndex)
 
     # computing the testing errors rate for the KNN classfier
+    if (is.null(trainIndices)) {
+      trainIndex <- NULL
+    } else {
+      trainIndex <- trainIndices[[i]]
+    #  message("\t\ttrainIndex from trainIndices")
+    }
     message("\t", format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", classifier, " training/testing evaluation, iteration ", i , "/", iterations)
-    oneTest <- MisclassificationEstimate(countTable = countTable,
-                                         classes = classes ,
-                                         trainingProportion = trainingProportion,
-                                         trainIndex = trainIndex,
-                                         testIndex = testIndex ,
-                                         classifier = classifier,
-                                         k=k,
-                                         verbose=verbose)
+
+    oneTest <- MisclassificationEstimate(countTable, classes , trainingProportion,
+                                         trainIndex= trainIndex,
+                                         #trainIndex, testIndex ,
+                                         classifier = classifier, k=k, verbose=verbose)
+
     testTable <- rbind (testTable, oneTest$stats)
   }
 

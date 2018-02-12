@@ -12,14 +12,14 @@ parameters <- project.parameters$default
 
 
 # recountID <- "SRP042620"   ## Multi-group breast cancer
-# recountID <- "SRP057196"
+ recountID <- "SRP057196"    # individual cells into all of the major neuronal, glial, and vascular cell types in the brain
 # recountID <- "SRP003611"   # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
 # recountID <- "SRP061240"   # several types from cancer (pancreatic, colorectal, prostat cancer) against Healthy control
 
 #recountID <- "SRP006574"  # NOT working:  # this Project will constitute the classes that have IRanges object and then it will not have the same length for count Table such leads for STOP
 
 # recountID <- "SRP062966"   # this project Boold disease
- recountID <- "SRP066834"   # cerebral cancer type.
+# recountID <- "SRP066834"   # cerebral cancer type.
 # recountID <-  "SRP039694"  # hepatocellular carcinoma
 # recountID <- "SRP008976"   # NOT working properly
 ######################### such these projects have promptly working #####################

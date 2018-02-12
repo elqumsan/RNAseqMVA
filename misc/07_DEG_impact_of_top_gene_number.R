@@ -6,7 +6,7 @@
 
 ## Choice of the classifier
 
-classifier <- "svm"
+# classifier <- "svm"
 
 
 ## Choice of the coutns
@@ -22,6 +22,10 @@ permute <- FALSE
 
 if (parameters$compute) {
   message.with.time("Starting classification")
+  for (classifier in parameters$classifiers) {
+
+
+
 
   train.test.results.DEG <- list()
 
@@ -63,7 +67,7 @@ if (parameters$compute) {
                          data.type=data.type,
                          classifier=classifier,
                          classes=classes,
-                         trainIndex =get( paste(sep = ".", "DEG", deg.method))[["trainIndex"]], testIndex = get( paste(sep = ".","DEG", deg.method))[["testIndex"]],
+                        # trainIndex =get( paste(sep = ".", "DEG", deg.method))[["trainIndex"]], testIndex = get( paste(sep = ".","DEG", deg.method))[["testIndex"]],
                          variable.type = variable.type,
                          trainingProportion = parameters$trainingProportion,
                          permute = permute,
@@ -71,7 +75,20 @@ if (parameters$compute) {
       }
     }
   }
-  #  } # end for the assiciate the analysis for each classifier
+
+  #### Print the results of the effect of the number of DEG ordered on the efficiancy of each classifier ####
+  ErrorRateBoxPlot(experimentList = train.test.results.DEG,
+                   classifier=classifier,
+                   data.type = parameters$data.types["DEG"],
+                   variable.type = "ordered_variables_2",
+                   main = paste(  "impact of number of variables sorted according DEG", "\n",
+                                  parameters$recountID,";",
+                                  parameters$iterations,
+                                  "iterations;",
+                                  "DEG.data.type;" ,
+                                  "ordered_variables",sep = ""))
+
+    } # end for the assiciate the analysis for each classifier
 }  else {
   message.with.time("Skipping train/test analysis with DEG-ordered top variables")
 }
@@ -83,14 +100,14 @@ names(train.test.results.DEG)
 #################################################################################################################
 #### results for the imapct of the number of variables (genes) sorted according to DEG ####
 #################################################################################################################
-ErrorRateBoxPlot(experimentList = train.test.results.DEG,
-                 classifier=classifier,
-
-                 variable.type = "ordered_variables_2",
-                 main = paste(  "impact of number of variables sorted according DEG", "\n",
-                                parameters$recountID,";",
-                                parameters$iterations,
-                                "iterations;",
-                                "DEG.data.type;" ,
-                                "ordered_variables",sep = ""))
+# ErrorRateBoxPlot(experimentList = train.test.results.DEG,
+#                  classifier=classifier,
+#
+#                  variable.type = "ordered_variables_2",
+#                  main = paste(  "impact of number of variables sorted according DEG", "\n",
+#                                 parameters$recountID,";",
+#                                 parameters$iterations,
+#                                 "iterations;",
+#                                 "DEG.data.type;" ,
+#                                 "ordered_variables",sep = ""))
 

@@ -27,7 +27,7 @@ ErrorRateBoxPlot <- function(experimentList,
                              permColor = "grey",
                              expLegend = "Train/test",
                              permLegend = "Permuted labels",
-                             data.type = "log2norm.prcomp.centred",
+                             data.type, # = "log2norm.prcomp.centred",
                              variable.type = "all.variables", ....) {
 
 
