@@ -5,7 +5,7 @@
 #### Run differential analysis with edgeR to define variable order ####
 message.with.time("Running edgeR to define variable ordering")
 DEG.edgeR  <- DEGordering(loaded$countTable, loaded$classes, method = "edgeR")
-messagex.with.time("Done edgeR DEG analysis")
+message.with.time("Done edgeR DEG analysis")
 # sorted.log2.transformed.edgeR <- loaded$countTable[, DEG.DESeq2$geneOrder]
 
 ######### sptiting the DEG.edgeR dataset for the train set and test set #########
