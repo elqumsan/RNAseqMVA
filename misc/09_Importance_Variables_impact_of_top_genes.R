@@ -66,29 +66,35 @@ if (parameters$compute) {
         valid.v.importance.names <- selected.v.importance.names[selected.v.importance.names %in% colnames(v.importance)]
 
         counts <- v.importance[,valid.v.importance.names]
-      #### Run classifier with the most importance variables (raw counts) ####
-      exp.prefix <-
-        paste(sep = "_", classifier, parameters$recountID , parameters$data.type["V.importance"] , "most.v.importance")
-      if (permute) {
-        exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
-      }# end if permuted class
+
+        #### Run classifier with the most importance variables (raw counts) ####
+
+      ###### Define experiment prefix #######
+        variable.type <- paste(sep = "_","v.import.rf","top", varnb,"var")
+        exp.prefix <-
+          paste(sep = "_", classifier, parameters$recountID , variable.type)
+        if (permute) {
+          exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
+        }# end if permuted class
+
+        message (format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", "Experiment prefix: ", exp.prefix)
 
         train.test.results.importance.varaibles[[exp.prefix]] <-
-        one.experiment (
-          countTable = as.data.frame(counts),
-          classes = classes,
-          trainIndices = trainIndices,
-          # trainIndex = sample(log2norm$trainIndex),
-          # testIndex = sample(log2norm$testIndex),
-          data.type = parameters$data.types["V.importance"],
-          classifier = classifier,
-          #variable.type = variable.type,
-          trainingProportion = parameters$trainingProportion,
-          file.prefix = exp.prefix,
-          permute = permute ,
-          k = parameters$knn$k,
-          verbose = parameters$verbose
-        )
+          one.experiment (
+            countTable = as.data.frame(counts),
+            classes = classes,
+            trainIndices = trainIndices,
+            # trainIndex = sample(log2norm$trainIndex),
+            # testIndex = sample(log2norm$testIndex),
+            data.type = parameters$data.types["V.importance"],
+            classifier = classifier,
+            #variable.type = variable.type,
+            trainingProportion = parameters$trainingProportion,
+            file.prefix = exp.prefix,
+            permute = permute ,
+            k = parameters$knn$k,
+            verbose = parameters$verbose
+          )
 
 
       } # end of for loop nb.varaibles importance
@@ -102,7 +108,7 @@ if (parameters$compute) {
                      classifier = classifier,
                      data.type = parameters$data.types["V.importance"],
                      main = paste(sep="",
-                                  classifier, ": impact of number of variables sorted according the most importance variables by,", "\n",
+                                  classifier, ": impact of number of variables sorted according\n\t ","the most importance variables by random forest,", "\n",
                                   parameters$recountID, ", ",
                                   parameters$iterations, " iterations, ","\n",
                                   data.type = "V.importance"))
