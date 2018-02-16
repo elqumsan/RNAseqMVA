@@ -131,8 +131,9 @@ if (parameters$compute) {
 
       #### Run classifier with raw counts (no normalization) ####
       ## we looking here to notice the ipmact of normalization into classifiers
+      rawCounts1 <- na.omit(as.data.frame(rawCounts$Counts))
+      # dim(rawCounts1)
 
-      rawCounts1 <- na.omit(as.data.frame(get("rawCounts")[["Counts"]]))
       ## define experiment prefix
       exp.prefix <-
         paste(sep = "_", classifier, parameters$recountID , parameters$data.types["raw"])
