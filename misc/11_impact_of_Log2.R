@@ -15,37 +15,124 @@
 #'
 
 rawTable <- loaded$countTable
-stat <- list()
+stat.raw <- list()
 
 # M = data.frame(matrix(rnorm(100000),nrow=500))
-stat$min = apply(rawTable,2,min)
-stat$fQuan = apply(rawTable,2,quantile,prob=0.25)
-stat$median = apply(rawTable,2,median)
-stat$tQaun = apply(rawTable,2,quantile,prob=0.75)
-stat$max = apply(rawTable,2,max)
+##### some basic statistics to exhibit the nature of the raw data #####
+stat.raw$min = apply(rawTable,2,min)
+stat.raw$fQuan = apply(rawTable,2,quantile,prob=0.25)
+stat.raw$median = apply(rawTable,2,median)
+stat.raw$tQaun = apply(rawTable,2,quantile,prob=0.75)
+stat.raw$max = apply(rawTable,2,max)
 
-stat$mean = apply(rawTable,2,mean)
-stat$sd = apply(rawTable,2,sd)
+stat.raw$mean = apply(rawTable,2,mean)
+stat.raw$sd = apply(rawTable,2,sd)
 
 # par(mfrow=c(1,2))
 
-file.prefix <- paste("main_stat_",parameters$recountID,sep = "")
+file.prefix <- paste("main_stat.raw_",parameters$recountID,sep = "")
 boxplot.file <- file.path(dir.log2Impact, paste(file.prefix,"boxplot.pdf", sep = "_"))
 pdf(file = boxplot.file)
-boxplot(cbind(stat$min, stat$fQuan,stat$median,stat$tQuan, stat$max, stat$mean, stat$sd) , ylim= c(0,50000),
-           names=c("min","F.Qaunt","median","T.Qaunt","max","mean","sd"), las=1, cex.axis = 0.7,
+boxplot(cbind(stat.raw$min, stat.raw$fQuan, stat.raw$median, stat.raw$tQaun, stat.raw$max, stat.raw$mean, stat.raw$sd) ,
+        ylim= c(0,50000), names=c("min","F.Qaunt","median","T.Qaunt","max","mean","sd"), las=1, cex.axis = 0.7,
         xlab= c(paste("Sammary statistics for the raw Table",parameters$recountID)))
 silence <- dev.off()
 
-file.prefix <- paste("diff_bet_statistics_", parameters$recountID, sep = "")
+file.prefix <- paste("diff_bet_stat.raw_", parameters$recountID, sep = "")
 boxplot.file <- file.path(dir.log2Impact, paste(file.prefix, "boxplot.pdf", sep = "_"))
 pdf(file = boxplot.file)
-boxplot(cbind(stat$fQuan-stat$min, stat$median- stat$min, stat$tQuan - stat$min, stat$max- stat$tQuan) , ylim= c(0,50000),
+boxplot(cbind(stat.raw$fQuan - stat.raw$min, stat.raw$median - stat.raw$min, stat.raw$tQaun - stat.raw$min, stat.raw$max - stat.raw$tQaun) , ylim= c(0,50000),
         names= c("fQaun-min", "median-min", "tQuan-min", "max-tQuan"), cex.axis = 0.7,
-        xlab= c(paste("difference between some statistics",parameters$recountID)))
+        xlab= c(paste("difference between some statistics\n","in Raw table" ,parameters$recountID)))
+silence <- dev.off()
+
+##### cheking the No. libsum for each classes in the Raw Table  ##################
+
+# data.frame(libsum=apply(loaded$countTable, 1, sum), class=loaded$classes)
+
+# x <- data.frame(q3 = apply(rawCounts$Counts, 1, quantile, q=0.75), sum = apply(rawCounts$Counts, 1, sum), class=loaded$classes)
+#
+# x <- data.frame(q3 = apply(rawCounts$Counts, 1, quantile, q=0.75), sum = apply(rawCounts$Counts, 1, sum), class=loaded$classes)
+
+x <- data.frame(libsum=apply(rawCounts$Counts, 1, sum), class=loaded$classes)
+
+head(x)
+
+boxplot(libsum ~ class , data=x)
+boxplot(libsum ~ class , data=x, horizontal=TRUE)
+
+boxplot(libsum ~ class , data=x, horizontal=TRUE, las=1)
+boxplot(libsum ~ class , data=x, horizontal=TRUE, las=1, cex=0.5)
+
+file.prefix <- paste("libsum.raw_",parameters$recountID,sep = "")
+boxplot.file <- file.path(dir.log2Impact, paste(file.prefix,"boxplot.pdf", sep = "_"))
+pdf(file = boxplot.file)
+save.margins <- par("mar")
+par(mar = c(14,5,5,1))
+boxplot(libsum ~ class , data=x, horizontal=TRUE, las=1, cex.axis=0.7,
+        xlab= c(paste("Libsum statistics for the raw Table\n","distribution for each class in",parameters$recountID)))
+par(mar=save.margins)
 silence <- dev.off()
 
 
+##### some basic statistics to exhibit the nature of the log2norm data #####
+log2normTable <- log2norm$Counts
+stat.log2norm <- list()
+
+stat.log2norm$min = apply(log2normTable,2,min)
+stat.log2norm$fQuan = apply(log2normTable,2,quantile,prob=0.25)
+stat.log2norm$median = apply(log2normTable,2,median)
+stat.log2norm$tQaun = apply(log2normTable,2,quantile,prob=0.75)
+stat.log2norm$max = apply(log2normTable,2,max)
+
+stat.log2norm$mean = apply(log2normTable,2,mean)
+stat.log2norm$sd = apply(log2normTable,2,sd)
+
+# par(mfrow=c(1,2))
+
+file.prefix <- paste("main_stat.log2norm_",parameters$recountID,sep = "")
+boxplot.file <- file.path(dir.log2Impact, paste(file.prefix,"boxplot.pdf", sep = "_"))
+pdf(file = boxplot.file)
+boxplot(cbind(stat.log2norm$min, stat.log2norm$fQuan, stat.log2norm$median, stat.log2norm$tQaun, stat.log2norm$max, stat.log2norm$mean, stat.log2norm$sd) ,
+        ylim= c(0,50000), names=c("min","F.Qaunt","median","T.Qaunt","max","mean","sd"), las=1, cex.axis = 0.7,
+        xlab= c(paste("Sammary statistics for the log2norm Table",parameters$recountID)))
+silence <- dev.off()
+
+file.prefix <- paste("diff_bet_stat.log2norm_", parameters$recountID, sep = "")
+boxplot.file <- file.path(dir.log2Impact, paste(file.prefix, "boxplot.pdf", sep = "_"))
+pdf(file = boxplot.file)
+boxplot(cbind(stat.log2norm$fQuan - stat.log2norm$min, stat.log2norm$median - stat.log2norm$min, stat.log2norm$tQaun - stat.log2norm$min, stat.log2norm$max - stat.log2norm$tQaun) , ylim= c(0,50000),
+        names= c("fQaun-min", "median-min", "tQuan-min", "max-tQuan"), cex.axis = 0.7,
+        xlab= c(paste("difference between some statistics\n","in log2norm table" ,parameters$recountID)))
+silence <- dev.off()
+
+##### cheking the No. libsum for each classes in the log2norm Table  ##################
+
+# data.frame(libsum=apply(loaded$countTable, 1, sum), class=loaded$classes)
+
+# x <- data.frame(q3 = apply(log2norm$Counts, 1, quantile, q=0.75), sum = apply(log2norm$Counts, 1, sum), class=loaded$classes)
+#
+# x <- data.frame(q3 = apply(rawCounts1, 1, quantile, q=0.75), sum = apply(rawCounts1, 1, sum), class=loaded$classes)
+
+x <- data.frame(libsum=apply(log2norm$Counts, 1, sum), class=loaded$classes)
+
+head(x)
+
+boxplot(libsum ~ class , data=x)
+boxplot(libsum ~ class , data=x, horizontal=TRUE)
+
+boxplot(libsum ~ class , data=x, horizontal=TRUE, las=1)
+boxplot(libsum ~ class , data=x, horizontal=TRUE, las=1, cex=0.5)
+
+file.prefix <- paste("libsum.log2norm_",parameters$recountID,sep = "")
+boxplot.file <- file.path(dir.log2Impact, paste(file.prefix,"boxplot.pdf", sep = "_"))
+pdf(file = boxplot.file)
+save.margins <- par("mar")
+par(mar = c(14,5,5,1))
+boxplot(libsum ~ class , data=x, horizontal=TRUE, las=1, cex.axis=0.7,
+        xlab= c(paste("Libsum statistics for the log2norm Table\n","distribution for each class in",parameters$recountID)))
+par(mar=save.margins)
+silence <- dev.off()
 
 # ## Running parameters
 # parameters <- list(
