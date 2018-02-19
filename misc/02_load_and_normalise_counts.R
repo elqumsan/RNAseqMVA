@@ -32,7 +32,11 @@ if (parameters$compute) {
 # Check the dimensions of the count table
 
 dim(rawCounts1)
-rawCounts$Counts <- rawCounts1
+rawCounts$Counts <- na.omit(rawCounts1)
+if(nrow(rawCounts$Counts) != length(classes)){
+  stop(" the Number of samples should be eqaul to Number of classes")
+}
+
 ######### sptiting the rawCounts dataset for the train set and test set #########
 n <- nrow(rawCounts$Counts) ## Number of observations (samples)
 train.size <- round(n * parameters$trainingProportion)
@@ -116,6 +120,10 @@ if (parameters$compute) {
   Counts <- na.omit( as.data.frame(t(log2normCounts$normCounts)))
   log2norm$Counts <- Counts
   dim(log2norm$Counts)
+
+  if(nrow(log2norm$Counts) != length(classes)){
+    stop(" the Number of samples in log2norm counts should be the same length of classes")
+  }
 
   ######### sptiting the log2norm dataset for the train set and test set #########
   n <- nrow(log2norm$Counts) ## Number of observations (samples)
