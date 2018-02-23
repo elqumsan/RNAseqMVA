@@ -4,8 +4,8 @@
 
 ################################################################
 ## Compute principla components for normalized log2 counts
-log2norm.prcomp.centred <- prcomp(log2normCounts, center = TRUE, scale. = FALSE)
-log2norm.prcomp.uncentred <- prcomp(log2normCounts, center = FALSE, scale. = FALSE)
+log2norm.prcomp.centred <- prcomp(log2norm$Counts, center = TRUE, scale. = FALSE)
+log2norm.prcomp.uncentred <- prcomp(log2norm$Counts, center = FALSE, scale. = FALSE)
 # log2norm.prcomp.centred.scaled <- prcomp(log2normCounts, center = TRUE, scale. = TRUE)
 # log2norm.prcomp.scaled <- prcomp(log2normCounts, center = T , scale. = T)
 
@@ -30,18 +30,26 @@ log2norm.prcomp.centred$x[1:10, 1:5] ## x corresponds to the "scores", or coordi
 # log2norm.princomp$scores[1:10, 1:5]
 # log2norm.princomp$loadings[1:10, 1:5]
 
-## Stadard deviation plot
+###### Stadard deviation plot ######
+PC.sd.plot <- file.path(dir.visualisePCs, paste("standard_deviation_plot.pdf"))
+pdf(file = PC.sd.plot)
 barplot(log2norm.prcomp.centred$sdev,
         main= paste0("centred PCs (no scaling) with experiment no.", parameters$recountID),
         las=1, ylab="Standard dev per coponent", xlab="Component number")
+silence <- dev.off()
 
-## Variance plot: compare scaled and unscaled
+##### Variance plot: compare scaled and unscaled #####
+PC.var.plot <- file.path(dir.visualisePCs, paste("compare_scaled_and_unscaled_effect.pdf"))
+message("Plotting scaled and unscaled of principal components for the experiment no.", parameters$recountID," file path", PC.pair.file)
+pdf(file =PC.var.plot )
 par(mfrow = c(2,1))
 barplot((log2norm.prcomp.centred$sdev^2)[1:50], las=1, ylab="Variance per coponent", xlab="Component number", main="Centered variables")
 barplot((log2norm.prcomp.uncentred$sdev^2)[1:50], las=1, ylab="Variance per coponent", xlab="Component number", main="Uncentered variables")
 par(mfrow = c(1,1))
 
-## Plot pairs of principal components
+silence <- dev.off()
+
+####### Plot pairs of principal components ######
 PC.pair.file <- file.path(dir.visualisePCs, paste0("PCA_plot_first_compontent_pairs_",parameters$recountID,".pdf"))
 message("Plotting pairs of principal components for the experiment no.", parameters$recountID," file path", PC.pair.file)
 
@@ -74,7 +82,7 @@ par(mfrow=c(1,1))
 silence <- dev.off()
 
 #############################################
-## Drax a 3D plot with the 3 first components
+####### Drax a 3D plot with the 3 first components #####
 # install.packages("scatterplot3d", dependencies = TRUE)
 library(scatterplot3d)
 scatterplot3d.file <- file.path(dir.visualisePCs, paste0("PCA_scatterplot3d_PC3-PC4-PC1_",parameters$recountID,".pdf"))
