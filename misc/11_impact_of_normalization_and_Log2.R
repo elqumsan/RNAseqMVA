@@ -31,7 +31,7 @@ stat.raw$sd = apply(rawTable,2,sd)
 # par(mfrow=c(1,2))
 
 file.prefix <- paste("main_stat.raw_",parameters$recountID,sep = "")
-boxplot.file <- file.path(dir.log2Impact, paste(file.prefix,"boxplot.pdf", sep = "_"))
+boxplot.file <- file.path(dir.NormImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
 pdf(file = boxplot.file)
 boxplot(cbind(stat.raw$min, stat.raw$fQuan, stat.raw$median, stat.raw$tQaun, stat.raw$max, stat.raw$mean, stat.raw$sd) ,
         ylim= c(0,50000), names=c("min","F.Qaunt","median","T.Qaunt","max","mean","sd"), las=1, cex.axis = 0.7,
@@ -39,7 +39,7 @@ boxplot(cbind(stat.raw$min, stat.raw$fQuan, stat.raw$median, stat.raw$tQaun, sta
 silence <- dev.off()
 
 file.prefix <- paste("diff_bet_stat.raw_", parameters$recountID, sep = "")
-boxplot.file <- file.path(dir.log2Impact, paste(file.prefix, "boxplot.pdf", sep = "_"))
+boxplot.file <- file.path(dir.NormImpact, paste(file.prefix, "boxplot.pdf", sep = "_"))
 pdf(file = boxplot.file)
 boxplot(cbind(stat.raw$fQuan - stat.raw$min, stat.raw$median - stat.raw$min, stat.raw$tQaun - stat.raw$min, stat.raw$max - stat.raw$tQaun) , ylim= c(0,50000),
         names= c("fQaun-min", "median-min", "tQuan-min", "max-tQuan"), cex.axis = 0.7,
@@ -65,7 +65,7 @@ boxplot(libsum ~ class , data=x, horizontal=TRUE, las=1)
 boxplot(libsum ~ class , data=x, horizontal=TRUE, las=1, cex=0.5)
 
 file.prefix <- paste("libsum.raw_",parameters$recountID,sep = "")
-boxplot.file <- file.path(dir.log2Impact, paste(file.prefix,"boxplot.pdf", sep = "_"))
+boxplot.file <- file.path(dir.NormImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
 pdf(file = boxplot.file)
 save.margins <- par("mar")
 par(mar = c(14,5,5,1))
@@ -91,7 +91,7 @@ stat.log2norm$sd = apply(log2normTable,2,sd)
 # par(mfrow=c(1,2))
 
 file.prefix <- paste("main_stat.log2norm_",parameters$recountID,sep = "")
-boxplot.file <- file.path(dir.log2Impact, paste(file.prefix,"boxplot.pdf", sep = "_"))
+boxplot.file <- file.path(dir.NormImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
 pdf(file = boxplot.file)
 boxplot(cbind(stat.log2norm$min, stat.log2norm$fQuan, stat.log2norm$median, stat.log2norm$tQaun, stat.log2norm$max, stat.log2norm$mean, stat.log2norm$sd) ,
         ylim= c(0,50000), names=c("min","F.Qaunt","median","T.Qaunt","max","mean","sd"), las=1, cex.axis = 0.7,
@@ -99,7 +99,7 @@ boxplot(cbind(stat.log2norm$min, stat.log2norm$fQuan, stat.log2norm$median, stat
 silence <- dev.off()
 
 file.prefix <- paste("diff_bet_stat.log2norm_", parameters$recountID, sep = "")
-boxplot.file <- file.path(dir.log2Impact, paste(file.prefix, "boxplot.pdf", sep = "_"))
+boxplot.file <- file.path(dir.NormImpact, paste(file.prefix, "boxplot.pdf", sep = "_"))
 pdf(file = boxplot.file)
 boxplot(cbind(stat.log2norm$fQuan - stat.log2norm$min, stat.log2norm$median - stat.log2norm$min, stat.log2norm$tQaun - stat.log2norm$min, stat.log2norm$max - stat.log2norm$tQaun) , ylim= c(0,50000),
         names= c("fQaun-min", "median-min", "tQuan-min", "max-tQuan"), cex.axis = 0.7,
@@ -125,7 +125,7 @@ boxplot(libsum ~ class , data=x, horizontal=TRUE, las=1)
 boxplot(libsum ~ class , data=x, horizontal=TRUE, las=1, cex=0.5)
 
 file.prefix <- paste("libsum.log2norm_",parameters$recountID,sep = "")
-boxplot.file <- file.path(dir.log2Impact, paste(file.prefix,"boxplot.pdf", sep = "_"))
+boxplot.file <- file.path(dir.NormImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
 pdf(file = boxplot.file)
 save.margins <- par("mar")
 par(mar = c(14,5,5,1))
