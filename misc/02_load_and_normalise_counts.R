@@ -168,6 +168,10 @@ if (parameters$compute) {
 ## Indicate that this script has finished running
 message.with.time("finished executing 02_load_and_normalise_counts.R")
 
+##### plotting some figures to explore the nuture of recount data set #####
+message.with.time(" plotting some figures to explore distribution for the recount data set ",parameters$recountID)
+source("misc/11_impact_of_Log2.R")
+
 ##### Exhibiting the geo charactiristics for the current project #####
 message.with.time("Exhibit the geo charactiristics for such experiment: ", parameters$recountID, " in order to know the class lable
                   for such experiment")
