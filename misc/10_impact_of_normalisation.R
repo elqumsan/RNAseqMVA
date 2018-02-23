@@ -67,11 +67,11 @@ pdf(file=file.path(
   dir.log2Impact,
   paste(parameters$recountID, "_log2counts_norm-perc75_hist", ".pdf", sep = "")),
   width = 7, height = 5)
-hist(unlist(log2normCounts), breaks=100, las=1,
+hist(unlist(log2norm$Counts), breaks=100, las=1,
      xlab="log2(counts)", ylab="Occurrences", col="grey",
      main=paste(parameters$recountID, "Normalised log2-count distrib"))
-abline(v=mean(unlist(log2normCounts)), lwd=2, col="darkgreen") # mark the median
-abline(v=median(unlist(log2normCounts)), lwd=2, col="blue") # mark the median
+abline(v=mean(unlist(log2norm$Counts)), lwd=2, col="darkgreen") # mark the median
+abline(v=median(unlist(log2norm$Counts)), lwd=2, col="blue") # mark the median
 legend("topright",lwd=2,
        legend=c("mean", "median"),
        col=c("darkgreen", "blue"))
@@ -84,9 +84,9 @@ pdf(file=file.path(
   dir.log2Impact,
   paste(parameters$recountID, "_log2counts_norm-perc75_mean_vs_median", ".pdf", sep = "")),
   width = 8, height = 8)
-plot(apply(log2normCounts, 1, mean),
-     apply(log2normCounts, 1, median),
-     main="log2normCounts: Median versus mean",
+plot(apply(log2norm$Counts, 1, mean),
+     apply(log2norm$Counts, 1, median),
+     main="log2norm$Counts: Median versus mean",
      xlab="Mean log2(norm counts) per sample",
      ylab="Median log2(norm counts) per sample",
      col=sampleColors,
@@ -136,7 +136,7 @@ silence <- dev.off()
 # boxplot(t(normCounts), horizontal=TRUE,  cex.axis=0.4, las=1,
 #         col=sampleColors,
 #         main="p75-normalised counts per sample")
-# boxplot(t(log2normCounts), horizontal=TRUE,  cex.axis=0.4, las=1,
+# boxplot(t(log2norm$Counts), horizontal=TRUE,  cex.axis=0.4, las=1,
 #         col=sampleColors,
 #         main="log2-transformed p75--normalised counts per sample")
 # par(mfrow=c(1,1))
@@ -171,7 +171,7 @@ if (parameters$compute) {
         } else if (data.type == "norm") {
           counts <- normCounts
         } else if (data.type == "log2") {
-          counts <- log2normCounts
+          counts <- log2norm$Counts
         } else {
           stop(data.type, " is not a valid data type. Supported: raw, norm, log2")
         }
@@ -239,7 +239,7 @@ if (parameters$compute) {
           ## For the time being we do this experiment only with log2 normalised counts
           ## since we saw that it improves the result with all variables
           data.type <- "log2"
-          counts <- (log2normCounts[,DEG$geneOrder[1:varnb]])
+          counts <- (log2norm$Counts[,DEG$geneOrder[1:varnb]])
           ## dim(counts)
 
           ## Define experiment prefix
@@ -619,8 +619,8 @@ if (parameters$compute) {
   KNNlog2TestTable.DESeq2ordering <- list()
   DESeq2.error.table <- data.frame()
 
-  sorted.log2.transformed.edgeR <- log2normCounts[, DEG.DESeq2$geneOrder]
-  sorted.log2.transformed.DESeq2 <- log2normCounts[, DEG.edgeR$geneOrder]
+  sorted.log2.transformed.edgeR <- log2norm$Counts[, DEG.DESeq2$geneOrder]
+  sorted.log2.transformed.DESeq2 <- log2norm$Counts[, DEG.edgeR$geneOrder]
 
   iteratedKnn.test.edgeR.allVariables <- data.frame()
   iteratedKnn.test.DESeq2.allVariables <- data.frame()
@@ -767,8 +767,8 @@ if(parameters$compute) {
   DEG.DESeq2 <-  DEGordering(loaded$countTable , loaded$classes, method = "DESeq2")
   DEG.edgeR  <- DEGordering(loaded$countTable, loaded$classes, method = "edgeR")
 
-  sorted.log2.transformed.edgeR <-log2normCounts[, DEG.DESeq2$geneOrder]
-  sorted.log2.transformed.DESeq2 <- log2normCounts[, DEG.edgeR$geneOrder]
+  sorted.log2.transformed.edgeR <-log2norm$Counts[, DEG.DESeq2$geneOrder]
+  sorted.log2.transformed.DESeq2 <- log2norm$Counts[, DEG.edgeR$geneOrder]
 
   iteratedKnn.test.edgeR.Log2Norm <- data.frame()
   iteratedKnn.test.DESeq2.Log2Norm <- data.frame()
@@ -884,8 +884,8 @@ if(parameters$compute){
   # DEG.DESeq2 <- DEGordering(loaded$countTable , loaded$classes, method = "DESeq2")
   # DEG.edgeR  <- DEGordering(loaded$countTable, loaded$classes, method = "edgeR")
 
-  sorted.log2.transformed.edgeR <-log2normCounts[, DEG.DESeq2$geneOrder]
-  sorted.log2.transformed.DESeq2 <- log2normCounts[, DEG.edgeR$geneOrder]
+  sorted.log2.transformed.edgeR <-log2norm$Counts[, DEG.DESeq2$geneOrder]
+  sorted.log2.transformed.DESeq2 <- log2norm$Counts[, DEG.edgeR$geneOrder]
 
   iteratedRf.test.edgeR <- data.frame()
   iteratedRf.test.DESeq2 <- data.frame()
@@ -963,8 +963,8 @@ if(parameters$compute){
   # DEG.DESeq2 <- DEGordering(loaded$countTable , loaded$classes, method = "DESeq2")
   # DEG.edgeR  <- DEGordering(loaded$countTable, loaded$classes, method = "edgeR")
 
-  sorted.log2.transformed.edgeR <-log2normCounts[, DEG.DESeq2$geneOrder]
-  sorted.log2.transformed.DESeq2 <- log2normCounts[, DEG.edgeR$geneOrder]
+  sorted.log2.transformed.edgeR <-log2norm$Counts[, DEG.DESeq2$geneOrder]
+  sorted.log2.transformed.DESeq2 <- log2norm$Counts[, DEG.edgeR$geneOrder]
 
   iteratedRf.test.edgeRPermuted <- data.frame()
   iteratedRf.test.DESeq2Permuted<- data.frame()
