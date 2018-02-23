@@ -3,6 +3,7 @@ default:
   dir: ## Directories
     main: "~/RNAseqMVA"
     workspace: "~/RNAseqMVA_workspace"
+    results: "~/RNAseqMVA_workspace/results"
     TSV: "~/RNAseqMVA_workspace/data"
     memoryImages: "~/RNAseqMVA_workspace/memory_images"
 

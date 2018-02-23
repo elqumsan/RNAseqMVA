@@ -90,7 +90,7 @@ tsv.dir <- paste(sep = "" ,parameters$dir$TSV,"/",recountID)
 #classifier <- "knn"
 ## All other directories should be defined relative to dir.main
 dir.scripts <- file.path(dir.main, "R")
-dir.results <- file.path(dir.main, "results", parameters$recountID)
+dir.results <- file.path(parameters$dir$, "results", parameters$recountID)
 classifiers <- c("knn","rf", "svm")
 dir.classifier <- file.path(dir.results, classifiers)
 
