@@ -1,6 +1,6 @@
-# Define a directory for PCA figures
-dir.pca <- file.path(dir.results, "PCA")
-dir.create(dir.pca, showWarnings = FALSE, recursive = TRUE)
+# # Define a directory for PCA figures
+# dir.visualisePCs <- file.path(dir.results, "PCA")
+# dir.create(dir.visualisePCs, showWarnings = FALSE, recursive = TRUE)
 
 ################################################################
 ## Compute principla components for normalized log2 counts
@@ -42,7 +42,7 @@ barplot((log2norm.prcomp.uncentred$sdev^2)[1:50], las=1, ylab="Variance per copo
 par(mfrow = c(1,1))
 
 ## Plot pairs of principal components
-PC.pair.file <- file.path(dir.pca, paste0("PCA_plot_first_compontent_pairs_",parameters$recountID,".pdf"))
+PC.pair.file <- file.path(dir.visualisePCs, paste0("PCA_plot_first_compontent_pairs_",parameters$recountID,".pdf"))
 message("Plotting pairs of principal components for the experiment no.", parameters$recountID," file path", PC.pair.file)
 
 pdf(file = PC.pair.file, width=12, height=12)
@@ -77,7 +77,7 @@ silence <- dev.off()
 ## Drax a 3D plot with the 3 first components
 # install.packages("scatterplot3d", dependencies = TRUE)
 library(scatterplot3d)
-scatterplot3d.file <- file.path(dir.pca, paste0("PCA_scatterplot3d_PC3-PC4-PC1_",parameters$recountID,".pdf"))
+scatterplot3d.file <- file.path(dir.visualisePCs, paste0("PCA_scatterplot3d_PC3-PC4-PC1_",parameters$recountID,".pdf"))
 message("3D scatter plot: for the experiment no.",parameters$recountID," path file :", scatterplot3d.file)
 pdf(file = scatterplot3d.file, width=7, height=7)
 scatterplot3d(x = log2norm.prcomp.centred$x[,3],

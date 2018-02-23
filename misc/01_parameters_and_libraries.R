@@ -90,7 +90,7 @@ tsv.dir <- paste(sep = "" ,parameters$dir$TSV,"/",recountID)
 #classifier <- "knn"
 ## All other directories should be defined relative to dir.main
 dir.scripts <- file.path(dir.main, "R")
-dir.results <- file.path(parameters$dir$, "results", parameters$recountID)
+dir.results <- file.path(parameters$dir$workspace, "results", parameters$recountID)
 classifiers <- c("knn","rf", "svm")
 dir.classifier <- file.path(dir.results, classifiers)
 
@@ -142,13 +142,13 @@ RequiredBioconductorPackages(requiredBioconductor)
 ################################################################
 ## TO CHECK LATER: DO wE STILL NEED THESE VARIABLES ???
 
-## Directory for the normalized counts (and the study of its impact)
-dir.NormImpact <- file.path(dir.results , paste(parameters$recountID, "_impacte_of_normalisation", sep = ""))
+## Directory for impact of Normalization and log2 into counts (and the study of its impact)
+dir.NormImpact <- file.path(dir.results , paste("impacte_of_normalisation_and_log2", sep = ""))
 dir.create(dir.NormImpact, showWarnings = F, recursive = T)
 
-## Directory for the log2-transformed counts (and the study of its impact)
-dir.log2Impact <- file.path(dir.results , paste(parameters$recountID, "_impacte_of_log2", sep = ""))
-dir.create(dir.log2Impact, showWarnings = F, recursive = T)
+## Directory for the visualization of Principal component for counts (and the study of its impact)
+dir.visualisePCs <- file.path(dir.results , paste( "visualization_of_PCs", sep = ""))
+dir.create(dir.visualisePCs, showWarnings = F, recursive = T)
 
 ## END OF SCRIPT
 #################################################################
