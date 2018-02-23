@@ -19,4 +19,8 @@ log2norm.prcomp.centred.scaled$testIndex <- testIndex
 ## Indicate that this principal components analysis for log2 count has finished running
 message.with.time("finished running Principal Component analysis (PCA) for normalized log2 counts")
 
+##### Visualization of the Principal Component analysis (PCA) to showcase impact of PCs #####
+message.with.time("Visualization of the Principal Component analysis (PCA) to showcase impact of PCs")
+source("misc/12_visualization_prcomp_analysis.R")
+
 
