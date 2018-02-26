@@ -101,8 +101,8 @@ pdf(file=file.path(
   dir.figures,
   paste(parameters$recountID, "_counts_mean_vs_Q3", ".pdf", sep = "")),
   width = 8, height = 8)
-plot(x=apply(rawCounts, 1, mean),
-     y=signif(digits=3, apply(rawCounts, 1, quantile, 0.75)),
+plot(x=apply(rawCounts1, 1, mean),
+     y=signif(digits=3, apply(rawCounts1, 1, quantile, 0.75)),
      main="raw counts: Percentile 75 versus mean",
      xlab="Mean counts per sample",
      ylab="Percentile 75",
