@@ -30,6 +30,8 @@ stat.raw$sd = apply(rawTable,2,sd)
 
 # par(mfrow=c(1,2))
 
+message.with.time("Drawing plots describing count table statistics")
+
 file.prefix <- paste("main_stat.raw_",parameters$recountID,sep = "")
 boxplot.file <- file.path(dir.NormImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
 pdf(file = boxplot.file)
@@ -58,11 +60,11 @@ x <- data.frame(libsum=apply(rawCounts$Counts, 1, sum), class=loaded$classes)
 
 head(x)
 
-boxplot(libsum ~ class , data=x)
-boxplot(libsum ~ class , data=x, horizontal=TRUE)
-
-boxplot(libsum ~ class , data=x, horizontal=TRUE, las=1)
-boxplot(libsum ~ class , data=x, horizontal=TRUE, las=1, cex=0.5)
+# boxplot(libsum ~ class , data=x)
+# boxplot(libsum ~ class , data=x, horizontal=TRUE)
+#
+# boxplot(libsum ~ class , data=x, horizontal=TRUE, las=1)
+# boxplot(libsum ~ class , data=x, horizontal=TRUE, las=1, cex=0.5)
 
 file.prefix <- paste("libsum.raw_",parameters$recountID,sep = "")
 boxplot.file <- file.path(dir.NormImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
@@ -89,6 +91,7 @@ stat.log2norm$mean = apply(log2normTable,2,mean)
 stat.log2norm$sd = apply(log2normTable,2,sd)
 
 # par(mfrow=c(1,2))
+message.with.time("Drawing plots describing log2norm table statistics")
 
 file.prefix <- paste("main_stat.log2norm_",parameters$recountID,sep = "")
 boxplot.file <- file.path(dir.NormImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
@@ -118,11 +121,11 @@ x <- data.frame(libsum=apply(log2norm$Counts, 1, sum), class=loaded$classes)
 
 head(x)
 
-boxplot(libsum ~ class , data=x)
-boxplot(libsum ~ class , data=x, horizontal=TRUE)
-
-boxplot(libsum ~ class , data=x, horizontal=TRUE, las=1)
-boxplot(libsum ~ class , data=x, horizontal=TRUE, las=1, cex=0.5)
+# boxplot(libsum ~ class , data=x)
+# boxplot(libsum ~ class , data=x, horizontal=TRUE)
+#
+# boxplot(libsum ~ class , data=x, horizontal=TRUE, las=1)
+# boxplot(libsum ~ class , data=x, horizontal=TRUE, las=1, cex=0.5)
 
 file.prefix <- paste("libsum.log2norm_",parameters$recountID,sep = "")
 boxplot.file <- file.path(dir.NormImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
@@ -133,6 +136,76 @@ boxplot(libsum ~ class , data=x, horizontal=TRUE, las=1, cex.axis=0.7,
         xlab= c(paste("Libsum statistics for the log2norm Table\n","distribution for each class in",parameters$recountID)))
 par(mar=save.margins)
 silence <- dev.off()
+
+
+#############################################################################################
+###### Draw some plots to showing effects of some treatments(Norm and log2) on the Count Table ####
+#############################################################################################
+message.with.time("Drawing plots describing count table statistics and distribution")
+
+## histogram of normalized counts. Zoom on the representative part of the histogram
+file.prefix <- file.path(dir.NormImpact, paste(parameters$recountID, "_counts_norm_perc75_hist.pdf", sep = ""))
+
+pdf(file=file.prefix,
+  width = 8, height = 8)
+hist(unlist(normCounts), breaks=10, las=1,
+     xlab="normalized counts", ylab="Occurrences", col="grey",
+     main=paste(parameters$recountID, "Normalised count distrib"))
+abline(v=mean(unlist(normCounts)), lwd=1, col="darkgreen") # mark the mean
+abline(v=median(unlist(normCounts)), lwd=1, col="blue") # mark the median
+abline(v=mean(unlist(trimmed)), lwd=1, col="purple") # mark the trimmed mean
+legend("topright",lwd=2,
+       legend=c("mean", "median", "trimmed mean"),
+       col=c("darkgreen", "blue", "purple"))
+silence <- dev.off()
+
+file.prefix <- file.path(dir.NormImpact, paste(parameters$recountID, "_counts_norm_perc75_and_log2_hist.pdf", sep = ""))
+
+pdf(file=file.prefix,
+    width = 8, height = 8)
+hist(unlist(log2norm$Counts), breaks=100, las=1,
+     xlab="log2 Normalized counts", ylab="Occurrences", col="grey",
+     main=paste(parameters$recountID, " log 2 Normalised count distribution"))
+abline(v=mean(unlist(log2norm$Counts)), lwd=1, col="darkgreen") # mark the mean
+abline(v=median(unlist(log2norm$Counts)), lwd=1, col="blue") # mark the median
+abline(v=mean(unlist(log2.trimmed)), lwd=1, col="purple") # mark the trimmed mean
+legend("topright",lwd=2,
+       legend=c("mean", "median", "trimmed mean"),
+       col=c("darkgreen", "blue", "purple"))
+silence <- dev.off()
+
+
+######  interpretation the difference between the mean and the third quartile raw count #####
+file.prefix <- file.path(dir.NormImpact, paste(parameters$recountID, "_rawcounts_mean_vs_Q3.pdf", sep = ""))
+pdf(file= file.prefix,
+  width = 8, height = 8)
+plot(x=apply(rawCounts1, 1, mean),
+     y=signif(digits=3, apply(rawCounts1, 1, quantile, 0.75)),
+     main="raw counts: Percentile 75 versus mean",
+     xlab="Mean counts per sample",
+     ylab="Percentile 75",
+     col=sampleColors,
+     las=1,
+     panel.first=grid())
+legend("topleft", legend=names(classColors), col=classColors, pch=1, cex=0.8)
+silence <- dev.off()
+
+######  interpretation the difference between the mean and the third quartile log2counts #####
+file.prefix <- file.path(dir.NormImpact, paste(parameters$recountID, "_log2norm_mean_vs_Q3.pdf", sep = ""))
+pdf(file= file.prefix,
+    width = 8, height = 8)
+plot(x=apply(log2norm$Counts, 1, mean),
+     y=signif(digits=3, apply(log2norm$Counts, 1, quantile, 0.75)),
+     main="log2norm counts: Percentile 75 versus mean",
+     xlab="Mean counts per sample",
+     ylab="Percentile 75",
+     col=sampleColors,
+     las=1,
+     panel.first=grid())
+legend("topleft", legend=names(classColors), col=classColors, pch=1, cex=0.8)
+silence <- dev.off()
+
+message.with.time(" finishing from drawing plots describing count table statistics and distribution")
 
 # ## Running parameters
 # parameters <- list(
