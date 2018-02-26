@@ -164,6 +164,18 @@ if (parameters$compute) {
 }
 
 
+#### Compute a trimmed mean: suppress the 5% top and bottom values ####
+if (parameters$compute) {
+  message.with.time("Computing trimmed mean of log2normalized counts")
+  x <- unlist(log2norm$Counts)
+  q0.05 <- quantile(x = x, probs = 0.05, na.rm=TRUE)
+  q0.95 <- quantile(x = x, probs = 0.95, na.rm=TRUE)
+  log2.trimmed <- (x[x > q0.05 & x < q0.95])
+  suppressed.proportion <- 1 - length(log2.trimmed)/length(x)
+} else {
+  message.with.time("Skipping a trimmed mean")
+}
+
 
 ## Indicate that this script has finished running
 message.with.time("finished executing 02_load_and_normalise_counts.R")
