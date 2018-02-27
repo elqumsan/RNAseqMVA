@@ -40,7 +40,7 @@ silence <- dev.off()
 
 ##### Variance plot: compare scaled and unscaled #####
 PC.var.plot <- file.path(dir.visualisePCs, paste("compare_scaled_and_unscaled_effect.pdf"))
-message("Plotting scaled and unscaled of principal components for the experiment no.", parameters$recountID," file path", PC.pair.file)
+message("Plotting scaled and unscaled of principal components for the experiment no.", parameters$recountID, " in ",file.path(PC.var.plot))
 pdf(file =PC.var.plot )
 par(mfrow = c(2,1))
 barplot((log2norm.prcomp.centred$sdev^2)[1:50], las=1, ylab="Variance per coponent", xlab="Component number", main="Centered variables")
