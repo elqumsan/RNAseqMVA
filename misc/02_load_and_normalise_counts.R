@@ -142,8 +142,8 @@ if (parameters$compute) {
 }
 
 #### Export log2-transformed normalized counts ####
-dir.create(dir.log2Impact, recursive = TRUE, showWarnings = FALSE)
-log2normCounts.file <- file.path(dir.log2Impact, paste(sep="", parameters$recountID, "_log2_normalized_counts.tsv"))
+dir.create(dir.NormImpact, recursive = TRUE, showWarnings = FALSE)
+log2normCounts.file <- file.path(dir.NormImpact, paste(sep="", parameters$recountID, "_log2_normalized_counts.tsv"))
 message.with.time("Exporting log2 normalised counts to file ", "\n", log2normCounts.file)
 if (parameters$save.tables) {
   write.table(sep="\t", quote=FALSE, row.names = TRUE, col.names=NA,
