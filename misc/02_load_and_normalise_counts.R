@@ -121,7 +121,7 @@ if (parameters$compute) {
   log2norm$Counts <- Counts
   dim(log2norm$Counts)
 
-  if(nrow(log2norm$Counts) != length(classes)){
+  if (nrow(log2norm$Counts) != length(classes)){
     stop(" the Number of samples in log2norm counts should be the same length of classes")
   }
 
