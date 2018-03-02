@@ -59,9 +59,9 @@ loadCounts <- function(recountID = parameters$recountID,
   ## and one column per feature (gene).
   message("Transposing count table to use it with classifier methods. ")
   if (mergeRuns){
-    countTable <-as.data.frame(t(countdata$merged$sampleCounts))
+    countTable <-as.data.frame(t(na.omit(countdata$merged$sampleCounts)))
   } else {
-    countTable <- as.data.frame(t(countdata$countsPerRun))
+    countTable <- as.data.frame(t(na.omit(countdata$countsPerRun)))
   }
   message("\tcountTable contains ",
           nrow(countTable), " rows (samples) and ",
@@ -71,7 +71,7 @@ loadCounts <- function(recountID = parameters$recountID,
 
   ################################################################
   # Extract pheno table for the sample-wised merged count
-  message("Extracting pheno Table from sample-wised merged count")
+  message("\tExtracting pheno Table from sample-wised merged count")
   if (mergeRuns){
     phenoTable <- countdata$merged$samplePheno
   } else {
