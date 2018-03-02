@@ -88,16 +88,25 @@ filterCountTable <- function(countTable,
   #dim(countTable)
   message("\tFiltering out ", length(zeroVarGenes)," genes with zero variance; keeping ", length(keptGenes), " genes")
 
+
+
   ## Use caret::nearZeroVar() to discard supposedly bad predictor genes.
   ## This includes zero variance genes (already filtered above) but also less trivial cases, see nearZeroVar() doc for details.
   message("\tDetecting genes with near-zero variance  with caret::nearZeroVar()")
-  nearZeroVarColumns <- nearZeroVar(countTable)
+  nearZeroVarColumns <- nearZeroVar(countTable, allowParallel = T, saveMetrics = FALSE)
   nearZeroVarGenes <- colnames(countTable)[nearZeroVarColumns]
   #length(nearZeroVarGenes)
   keptGenes <- setdiff(colnames(countTable), nearZeroVarGenes)
   message("\tFiltering out ", length(nearZeroVarGenes)," genes with near-zero variance (poor predictors); kept genes: ", length(keptGenes))
   countTable <- countTable[, keptGenes]
   # dim(countTable)
+
+
+  ## Count the number of zero values per gene
+  # zerosPerGene <- apply(countTable == 0, 2, sum)
+  # hist(zerosPerGene)
+  # hist(zerosPerGene[nearZeroVarGenes])
+
 
   ## Plot an histogram to compare variance distribution  between all genes and those with  near-zero variance
   if (draw.plot) {
