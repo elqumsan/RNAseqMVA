@@ -6,7 +6,7 @@
 a count table in order to prepare it for classification.}
 \usage{
 filterCountTable(countTable, phenoTable, classColumn = parameters$classColumn,
-  minSamplesPerClass = parameters$minSamplesPerClass, ...)
+  minSamplesPerClass = parameters$minSamplesPerClass, draw.plot = FALSE)
 }
 \arguments{
 \item{countTable}{a data.frame with one row per observation and one column per variable}
@@ -18,6 +18,8 @@ In some cases classes must be built by concatenating several columns of the phen
 This can be achieved by providing a vector of column names from the pheno table. In this case, class names}
 
 \item{minSamplesPerClass=parameters$minSamplesPerClass}{minimum nuimber of samples per class to keep}
+
+\item{draw.plot=FALSE}{if TRUE, draw an histogram of variance per gene}
 }
 \description{
 Apply various filters on the observations (e.g. biological samples)
