@@ -2,13 +2,26 @@
 ## Load a count Table from recount-experiment, merge counts per sample
 ## and apply some pre-filtering (remove zero-variance and near-zero-variance genes).
 if (parameters$compute) {
-  rawCounts <- list()
   message.with.time("Loading count table from recount", "; recountID = ", parameters$recountID)
   loaded <- loadCounts(recountID = parameters$recountID, mergeRuns = TRUE ,
                        classColumn = parameters$classColumn,
                        minSamplesPerClass = parameters$minSamplesPerClass)
-  rawCounts1 <- loaded$countTable ## Note: one row per sample, one column per gene
-  # dim(rawCounts1)
+
+  dim(loaded$countTable)
+
+  ############################################################
+  ## Build an object (formally a simple list) for the raw counts table and associated info.
+  ## We will then treat similar objects for different types of pre-processed data:
+  ## - log2-transformed
+  ## - normalised
+  ## - CPA-transformed
+  ## - ....
+  rawCounts <- list()
+  rawCounts$Counts <- loaded$countTable ## Note: one row per sample, one column per gene
+  rawCounts$sample.nb <- nrow(rawCounts$Counts)
+  rawCounts$feature.nb <- ncol(rawCounts$Counts)
+  # dim(rawCounts$Counts)
+
 
   ## Assign a specific color to each sammple according to its class
   pheno <- loaded$phenoTable
@@ -38,12 +51,10 @@ if (parameters$compute) {
 }
 
 # Check the dimensions of the count table
-
-dim(rawCounts1)
-rawCounts$Counts <- na.omit(rawCounts1)
-if(nrow(rawCounts$Counts) != length(classes)){
+if (nrow(rawCounts$Counts) != length(classes)){
   stop("The number of samples (", nrow(rawCounts$Counts), ") differs from the number class labels (", length(classes),")")
 }
+
 
 ######### sptiting the rawCounts dataset for the train set and test set #########
 n <- nrow(rawCounts$Counts) ## Number of observations (samples)
