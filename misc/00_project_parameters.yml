@@ -25,6 +25,7 @@ default:
   compute: TRUE ## If FALSE, do not run the heavy computations, just generate the pictures and save tables
   save.tables: TRUE ## If TRUE, save tab-delimited files with the results
   save.image: TRUE
+  draw.plot : TRUE
   #  classifiers: c("lda"),
   classifiers: ["knn","rf","svm"]
   data.types: ["raw", "norm", "log2norm", "prcomp", "DEG", "V.importance"]
