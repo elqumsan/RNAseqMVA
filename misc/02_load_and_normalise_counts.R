@@ -8,7 +8,7 @@ if (parameters$compute) {
                        classColumn = parameters$classColumn,
                        minSamplesPerClass = parameters$minSamplesPerClass)
   rawCounts1 <- loaded$countTable ## Note: one row per sample, one column per gene
-  # dim(rawCounts)
+  # dim(rawCounts1)
 
   ## Assign a specific color to each sammple according to its class
   pheno <- loaded$phenoTable
@@ -16,14 +16,22 @@ if (parameters$compute) {
   geo.characteristics <- loaded$geo.characteristics
   # table(classes)
   # length(classes)
+  # length(unique(classes))
   distinct.classes <- as.vector(unique(loaded$classes))
-  write.table(rawCounts, file = paste(tsv.dir,"/rawCounts_",parameters$recountID,".tsv", sep = ""), row.names = FALSE, sep = "\t")
-  characteristics.string <- unlist(lapply(pheno$characteristics, paste, collapse="; "))
-  pheno.data.frame <- data.frame(pheno$sample, characteristics.string)
+  file.name <- file.path(tsv.dir, paste("rawCounts_", parameters$recountID, ".tsv", sep = ""))
+  message("\tSaving filtered counts table in TSV file\t", file.name)
+  write.table(rawCounts, file = file.name, row.names = FALSE, sep = "\t")
 
-  dim(pheno.data.frame)
+  ## Export a table with class labels + phenotypic information
+  characteristics.string <- unlist(lapply(pheno$characteristics, paste, collapse="; "))
+  pheno.data.frame <- data.frame(sample = pheno$sample,
+                                 class = classes,
+                                 description = characteristics.string)
+  # dim(pheno.data.frame)
   # View(pheno.data.frame)
-  write.table(pheno.data.frame, file = paste(tsv.dir, "/pheno_",parameters$recountID,".tsv",sep = ""),
+  file.name <- file.path(tsv.dir, paste("pheno_",parameters$recountID,".tsv", sep = ""))
+  message("\tExporting sample classes and description in TSV file\t", file.name)
+  write.table(pheno.data.frame, file = file.name,
               row.names = FALSE, sep = "\t")
 } else {
   message.with.time("Skipping data loading")
@@ -34,7 +42,7 @@ if (parameters$compute) {
 dim(rawCounts1)
 rawCounts$Counts <- na.omit(rawCounts1)
 if(nrow(rawCounts$Counts) != length(classes)){
-  stop(" the Number of samples should be eqaul to Number of classes")
+  stop("The number of samples (", nrow(rawCounts$Counts), ") differs from the number class labels (", length(classes),")")
 }
 
 ######### sptiting the rawCounts dataset for the train set and test set #########
