@@ -14,7 +14,11 @@ default:
   classColumn: "tissue" ## Characteristics to be used as class label
   mergeRuns: TRUE ## Whether or not to merge runs per sample
   sampleIdColumn: "geo_accession"
+
+  ## Filtering options
   minSamplesPerClass: 10 ## THERE IS A BUG TO FIX: if we set this parameter to 10 (for example) the class labels must be adapted by suppressing the
+  nearZeroVarFilter: TRUE
+
   #  iterations: 50, ## Number of iterations for the classiifers
   iterations: 10 ## Number of iterations for the classiifers
   reload: FALSE
