@@ -11,6 +11,7 @@
 #' This can be achieved by providing a vector of column names from the pheno table. In this case, class names
 ## are built by concantenating the values in the specified columns (separated by "_").
 #' @param minSamplesPerClass=parameters$minSamplesPerClass minimum nuimber of samples per class to keep
+#' @param nearZeroVarFilter=parameters$nearZeroVarFilter if TRUE, applyb caret::nearZeroVariance() to filter out poor predictor genes
 #' @param draw.plot=FALSE if TRUE, draw an histogram of variance per gene
 #'
 #' @examples
@@ -46,15 +47,17 @@ filterCountTable <- function(countTable,
                              phenoTable,
                              classColumn = parameters$classColumn,
                              minSamplesPerClass = parameters$minSamplesPerClass,
-                             draw.plot = FALSE) {
+                             nearZeroVarFilter = parameters$nearZeroVarFilter,
+                             draw.plot = TRUE) {
 
+  message.with.time("Filtering count table")
   result <- list()
 
   ## Check if there are NA values, and discard all genes having at least one NA value
   if (sum(is.na(countTable)) > 0) {
     naGenes <- colnames(countTable)[apply(is.na(countTable), 2, sum) > 0]
     result$naGenes <- naGenes
-    message("Filtering out ", length(naGenes)," genes with NA values")
+    message("\tFiltering out ", length(naGenes)," genes with NA values")
     if (naGenes > 0) {
       keptGenes <- setdiff(colnames(countTable), naGenes)
       countTable <- countTable[, keptGenes]
@@ -72,7 +75,7 @@ filterCountTable <- function(countTable,
   }
 
   ## Detect genes with zero variance
-  message("Detecting genes with zero variance")
+  message("\tDetecting genes with zero variance")
   varPerGene <- apply(countTable, 2 , var, na.rm=TRUE) # Compute variance per gene (row)
   # table(varPerGene == 0)
 
@@ -87,19 +90,19 @@ filterCountTable <- function(countTable,
 
   ## Use caret::nearZeroVar() to discard supposedly bad predictor genes.
   ## This includes zero variance genes (already filtered above) but also less trivial cases, see nearZeroVar() doc for details.
-  message("Detecting genes with near-zero variance  with caret::nearZeroVar()")
+  message("\tDetecting genes with near-zero variance  with caret::nearZeroVar()")
   nearZeroVarColumns <- nearZeroVar(countTable)
   nearZeroVarGenes <- colnames(countTable)[nearZeroVarColumns]
   #length(nearZeroVarGenes)
   keptGenes <- setdiff(colnames(countTable), nearZeroVarGenes)
-  message("Filtering out ", length(nearZeroVarGenes)," genes with near-zero variance (poor predictors); kept genes: ", length(keptGenes))
+  message("\tFiltering out ", length(nearZeroVarGenes)," genes with near-zero variance (poor predictors); kept genes: ", length(keptGenes))
   countTable <- countTable[, keptGenes]
   # dim(countTable)
 
   ## Plot an histogram to compare variance distribution  between all genes and those with  near-zero variance
   if (draw.plot) {
     plot.file <- file.path(dir.NormImpact, "var_per_gene_hist.pdf")
-    message("Variance per gene histograms\t", plot.file)
+    message("\tVariance per gene histograms\t", plot.file)
     pdf(plot.file, width=7, height=8)
 
     logVarPerGene <- log2(varPerGene)
@@ -156,7 +159,7 @@ filterCountTable <- function(countTable,
   ## Check if there are NA values in the sample classes
   discardedSamples <- is.na(classes)
   if (sum(discardedSamples) > 0) {
-    message("Discarding ", sum(discardedSamples), " samples with undefined class in ", classColumn, " column of pheno table")
+    message("\tDiscarding ", sum(discardedSamples), " samples with undefined class in ", classColumn, " column of pheno table")
     nonaSamples <- !is.na(tissue)
     countTable <- countTable[nonaSamples, ]
     phenoTable<- phenoTable[nonaSamples, ]
@@ -167,18 +170,18 @@ filterCountTable <- function(countTable,
   ################################################################
   ## Select classess for which we dispose of at least 10 samples
   # length(classes)
-  message("Selecting classes with at least ", minSamplesPerClass, " samples")
+  message("\tSelecting classes with at least ", minSamplesPerClass, " samples")
   samplesPerClass <- table(classes)
   discardedClasses <- names(samplesPerClass)[samplesPerClass < minSamplesPerClass]
   selectedClasses <- names(samplesPerClass)[samplesPerClass >= minSamplesPerClass]
   selectedSamples <- classes %in% selectedClasses
   if (length (discardedClasses) > 0) {
-    message("Discarding ", length (discardedClasses), " classes containng less than ", minSamplesPerClass, "samples")
-    message("Discarded classes\t", paste(collapse=",", discardedClasses))
+    message("\tDiscarding ", length (discardedClasses), " classes containng less than ", minSamplesPerClass, "samples")
+    message("\tDiscarded classes\t", paste(collapse=",", discardedClasses))
   }
-  message("Keeping ", sum(selectedSamples), " samples from ",
+  message("\tKeeping ", sum(selectedSamples), " samples from ",
           length(selectedClasses), " classes")
-  message("Kept classes\t", paste(selectedClasses, collapse=", "))
+  message("\tKept classes\t", paste(selectedClasses, collapse=", "))
 
 
   ## Update count table, pheno table and classes vector to keep only the samples belonging to selected classess
@@ -191,7 +194,7 @@ filterCountTable <- function(countTable,
   ## Return an object with the filtered counts + updated pheno table selected classes and samples
   ## Transpose the table in order to get it in the suitable format for classifiers:
   ## one row per individual, one column per variable.
-  message("After filtering, count table contains ",
+  message("\tAfter filtering, count table contains ",
           nrow(countTable), " samples (rows) and ",
           ncol(countTable), " genes (columns) ",
           "belonging to ", length(selectedClasses), " classes")
