@@ -17,7 +17,7 @@ loadCounts(recountID = parameters$recountID,
 
 \item{mergeRuns}{to wrapper the rus by sample}
 
-\item{...}{additional parameters are passed to loadRecountExperiment}
+\item{...}{additional parameters are passed to loadRecountExperiment()}
 
 \item{sampleIdColumn="geo_accession"}{name of the column of the pheno table which contains the sample IDs.}
 
