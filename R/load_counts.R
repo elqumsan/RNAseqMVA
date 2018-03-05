@@ -91,19 +91,27 @@ loadCounts <- function(recountID = parameters$recountID,
   filteredData <- filterCountTable(countTable = countTable,
                                    phenoTable = phenoTable,
                                    classColumn = classColumn,
+                                   nearZeroVarFilter = FALSE,
                                    minSamplesPerClass = minSamplesPerClass)
+  # dim(countTable)
 
   # replace unfiltered Data with filted data
-  countTable <- filteredData$countTable
-  phenoTable <- filteredData$phenoTable
-  classes <- make.names(filteredData$classes , unique = F , allow_ = T)
-  #classifier requires a factor for classes
+  # countTable <- filteredData$countTable
+  # phenoTable <- filteredData$phenoTable
+  # classes <- make.names(filteredData$classes , unique = F , allow_ = T)
+  # #classifier requires a factor for classes
   # classes <- as.factor(classes) ## RandomForest requires as.factor()
 
-  message("\tCount table dimensions: ", nrow(countTable), sep= " x ", ncol(countTable),
-          "\n\tPheno table dimensions: ",nrow(phenoTable), " X ", ncol(phenoTable),
-          "\n\tVector of class labels length: ", length(classes),
-          "\n\tNumber of distinct classes: ", length(unique(classes)))
+  message("\tUnfiltered count table",
+          "\n\t\tdimensions: ", nrow(filteredData$countTable), sep= " x ", ncol(filteredData$countTable),
+          "\n\t\tPheno table dimensions: ",nrow(filteredData$phenoTable), " X ", ncol(filteredData$phenoTable),
+          "\n\t\tVector of class labels length: ", length(filteredData$classes),
+          "\n\t\tNumber of distinct classes: ", length(unique(filteredData$classes)))
+  message("\tFiltered count table",
+          "\n\t\tdimensions: ", nrow(filteredData$filteredCountTable), sep= " x ", ncol(filteredData$filteredCountTable),
+          "\n\t\tPheno table dimensions: ",nrow(filteredData$filteredPhenoTable), " X ", ncol(filteredData$filteredPhenoTable),
+          "\n\t\tVector of class labels length: ", length(filteredData$filteredClasses),
+          "\n\tNumber of distinct classes: ", length(unique(filteredData$filteredClasses)))
 
   if (length(classes) != nrow(countTable)) {
     stop("invaled number of classes labes, (", length(classes) ,"). ",
@@ -115,9 +123,15 @@ loadCounts <- function(recountID = parameters$recountID,
   #### Build a list with the results of the loadCounts() function
   #loadedRecount <- list()
 
-  experiment$countTable<- countTable
-  experiment$phenoTable <- phenoTable
-  experiment$classes <- classes
+  experiment$originalCountTable<- countTable
+  experiment$originalPhenoTable <- phenoTable
+  experiment$originalClasses <- classes
+
+  experiment$filteredCountTable<- filteredData$filteredCountTable
+  experiment$filterePhenoTable <- filteredData$filteredPhenoTable
+  experiment$filteredClasses <- filteredData$filteredClasses
+
+
   experiment$samples.per.class <- as.data.frame.table(table(classes), row.names=1)
   experiment$filteredData <- filteredData
   experiment$geo.characteristics <- geo.characteristics
@@ -126,5 +140,5 @@ loadCounts <- function(recountID = parameters$recountID,
 
   message.with.time("Finished Load Count Table process for Recount experiment ID ", parameters$recountID)
 
-  return(loadedRecount)
+  return(experiment)
 }
