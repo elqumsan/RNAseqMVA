@@ -25,7 +25,7 @@ if (parameters$compute) {
 
 
   ## Assign a specific color to each sammple according to its class
-  pheno <- loaded$filteredPhenoTable
+  pheno <- loaded$filterePhenoTable
   classes <- loaded$filteredClasses
   geo.characteristics <- loaded$geo.characteristics
   # table(classes)
@@ -57,18 +57,6 @@ if (nrow(rawCounts$Counts) != length(classes)){
   stop("The number of samples (", nrow(rawCounts$Counts), ") differs from the number class labels (", length(classes),")")
 }
 
-
-######### sptiting the rawCounts dataset for the train set and test set #########
-n <- nrow(rawCounts$Counts) ## Number of observations (samples)
-train.size <- round(n * parameters$trainingProportion)
-
-## Random selection of indices for the training set
-trainIndex <- sort(sample(1:n, size=train.size))
-## Use remaining indices for the testing set
-testIndex <- setdiff(1:n, trainIndex)
-
-rawCounts$trainIndex <- trainIndex
-rawCounts$testIndex  <- testIndex
 
 ## Number of samples per class
 print(loaded$samples.per.class)
@@ -106,7 +94,7 @@ names(sampleColors) <- rownames(loaded$phenoTable)
 ## row per gene, we thus have to transpose the raw count table.
 if (parameters$compute) {
   message.with.time("Normalizing counts based on 75th percentile")
-  norm <- NormalizeCounts(t(loaded$countTable), method = "quantile", quantile=0.75, log2 = FALSE)
+  norm <- NormalizeCounts(t(loaded$filteredCountTable), method = "quantile", quantile=0.75, log2 = FALSE)
   normCounts <- t(norm$normCounts) ## Transpose normalized counts for classifiers
   dim(normCounts)
 
@@ -136,7 +124,7 @@ if (parameters$save.tables) {
 log2norm <- list()
 if (parameters$compute) {
   message.with.time("Normalizing counts based on 75th percentile + log2 transformation")
-  log2normCounts <- NormalizeCounts(t(loaded$countTable), method = "quantile", quantile=0.75,
+  log2normCounts <- NormalizeCounts(t(loaded$filteredCountTable), method = "quantile", quantile=0.75,
                               log2 = TRUE, epsilon=0.1)
   Counts <- na.omit( as.data.frame(t(log2normCounts$normCounts)))
   log2norm$Counts <- Counts
