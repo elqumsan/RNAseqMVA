@@ -25,6 +25,9 @@ loadCounts(recountID = parameters$recountID,
 
 \item{dir.workspace=parameters$dir$workspace}{Directory in which the data and results will be stored.}
 }
+\value{
+
+}
 \description{
 Given a ReCount ID, load the count table, the pheno table
 and the vector of classes, prepares and filters the count table, via

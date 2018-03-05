@@ -12,6 +12,7 @@
 #' @param ...  additional parameters are passed to loadRecountExperiment()
 #'
 #' @return
+#'
 #' @examples
 #'
 #' ##############################################
@@ -36,7 +37,7 @@ loadCounts <- function(recountID = parameters$recountID,
                        minSamplesPerClass = parameters$minSamplesPerClass,
                        dir.workspace = parameters$dir$workspace,
                        ... ) {
-  message.with.time("Starting loadCounts() for Recount ID ", parameters$recountID)
+  message.with.time("Starting loadCounts() for Recount ID ", recountID)
 
   ################################################
   # loading required libraries and install them if required
@@ -46,8 +47,7 @@ loadCounts <- function(recountID = parameters$recountID,
   ################################################
   # loading count Data from recount_experiment, Via our wrapper which will Automatically merge the runs by
   # sample in order to obtain sample-wise count rather than run-wise counts.
-
-  countdata <- loadRecountExperiment(recountID=recountID,
+  experiment <- loadRecountExperiment(recountID=recountID,
                                      mergeRuns=mergeRuns,
                                      sampleIdColumn=parameters$sampleIdColumn,
                                      dir.workspace = parameters$dir$workspace,
@@ -57,35 +57,34 @@ loadCounts <- function(recountID = parameters$recountID,
   ## Tanspose the count tabe in order to use it with classifier methods
   ## which expect a table with one raw per individual (biological samples)
   ## and one column per feature (gene).
-  message("Transposing count table to use it with classifier methods. ")
+  message("\tTransposing count table to use it with classifier methods. ")
   if (mergeRuns){
-    countTable <-as.data.frame(t(na.omit(countdata$merged$sampleCounts)))
+    countTable <-as.data.frame(t(na.omit(experiment$merged$sampleCounts)))
   } else {
-    countTable <- as.data.frame(t(na.omit(countdata$countsPerRun)))
+    countTable <- as.data.frame(t(na.omit(experiment$countsPerRun)))
   }
   message("\tcountTable contains ",
           nrow(countTable), " rows (samples) and ",
           ncol(countTable), " columns (genes).")
-  #countTable <-as.data.frame(t(countdata$runCounts))
+  #countTable <-as.data.frame(t(experiment$runCounts))
 
 
   ################################################################
   # Extract pheno table for the sample-wised merged count
   message("\tExtracting pheno Table from sample-wised merged count")
   if (mergeRuns){
-    phenoTable <- countdata$merged$samplePheno
+    phenoTable <- experiment$merged$samplePheno
   } else {
-    phenoTable <- countdata$runPhenoTable
+    phenoTable <- experiment$runPhenoTable
   }
   message("\tphenoTable contains ",
           nrow(phenoTable), " rows (samples) and ",
           ncol(phenoTable), " columns (pheno description fields).")
   # names(phenoTable)
+  # dim(phenoTable)
 
-  #phenoTable <- countdata$runPheno$characteristics
-  #countsPerRun <- countdata$countsPerRun
-  geo.characteristics <- countdata$geo.characteristics
-  #dim(phenoTable)
+  geo.characteristics <- experiment$geo.characteristics
+  # dim(geo.characteristics)
 
   ################################################
   ## Filter zero-variance and near-zero variance variables from the count table
@@ -114,17 +113,18 @@ loadCounts <- function(recountID = parameters$recountID,
 
 
   #### Build a list with the results of the loadCounts() function
-  loadedRecount <- list()
-  loadedRecount$countTable<- countTable
-  loadedRecount$phenoTable <- phenoTable
-  loadedRecount$classes <- classes
-  loadedRecount$samples.per.class <- as.data.frame.table(table(classes), row.names=1)
-  loadedRecount$filteredData <- filteredData
-  loadedRecount$geo.characteristics <- geo.characteristics
-  loadedRecount$countsPerRuns <- countdata$countsPerRun
-  loadedRecount$runPheno <- countdata$runPheno
+  #loadedRecount <- list()
+
+  experiment$countTable<- countTable
+  experiment$phenoTable <- phenoTable
+  experiment$classes <- classes
+  experiment$samples.per.class <- as.data.frame.table(table(classes), row.names=1)
+  experiment$filteredData <- filteredData
+  experiment$geo.characteristics <- geo.characteristics
+  experiment$countsPerRuns <- experiment$countsPerRun
+  experiment$runPheno <- experiment$runPheno
 
   message.with.time("Finished Load Count Table process for Recount experiment ID ", parameters$recountID)
 
-  return(loadedRecount )
+  return(loadedRecount)
 }
