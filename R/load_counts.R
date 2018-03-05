@@ -91,7 +91,7 @@ loadCounts <- function(recountID = parameters$recountID,
   filteredData <- filterCountTable(countTable = countTable,
                                    phenoTable = phenoTable,
                                    classColumn = classColumn,
-                                   nearZeroVarFilter = FALSE,
+#                                   nearZeroVarFilter = FALSE,
                                    minSamplesPerClass = minSamplesPerClass)
   # dim(countTable)
 
