@@ -7,7 +7,8 @@ if (parameters$compute) {
                        classColumn = parameters$classColumn,
                        minSamplesPerClass = parameters$minSamplesPerClass)
 
-  dim(loaded$countTable)
+  # dim(loaded$originalCountTable)
+  # dim(loaded$filteredCountTable)
 
   ############################################################
   ## Build an object (formally a simple list) for the raw counts table and associated info.
@@ -17,20 +18,20 @@ if (parameters$compute) {
   ## - CPA-transformed
   ## - ....
   rawCounts <- list()
-  rawCounts$Counts <- loaded$countTable ## Note: one row per sample, one column per gene
+  rawCounts$Counts <- loaded$filteredCountTable ## Note: one row per sample, one column per gene
   rawCounts$sample.nb <- nrow(rawCounts$Counts)
   rawCounts$feature.nb <- ncol(rawCounts$Counts)
   # dim(rawCounts$Counts)
 
 
   ## Assign a specific color to each sammple according to its class
-  pheno <- loaded$phenoTable
-  classes <- loaded$classes
+  pheno <- loaded$filteredPhenoTable
+  classes <- loaded$filteredClasses
   geo.characteristics <- loaded$geo.characteristics
   # table(classes)
   # length(classes)
   # length(unique(classes))
-  distinct.classes <- as.vector(unique(loaded$classes))
+  distinct.classes <- as.vector(unique(classes))
   file.name <- file.path(tsv.dir, paste("rawCounts_", parameters$recountID, ".tsv", sep = ""))
   message("\tSaving filtered counts table in TSV file\t", file.name)
   write.table(rawCounts$Counts, file = file.name, row.names = FALSE, sep = "\t")
@@ -46,6 +47,7 @@ if (parameters$compute) {
   message("\tExporting sample classes and description in TSV file\t", file.name)
   write.table(pheno.data.frame, file = file.name,
               row.names = FALSE, sep = "\t")
+
 } else {
   message.with.time("Skipping data loading")
 }
