@@ -255,6 +255,10 @@ filterCountTable <- function(countTable,
   ## Return an object with the filtered counts + updated pheno table selected classes and samples
   ## Transpose the table in order to get it in the suitable format for classifiers:
   ## one row per individual, one column per variable.
+  message("\tBefore filtering, count table contains ",
+          nrow(countTable), " samples (rows) and ",
+          ncol(countTable), " genes (columns) ",
+          "belonging to ", length(classes), " classes")
   message("\tAfter filtering, count table contains ",
           nrow(filteredCountTable), " samples (rows) and ",
           ncol(filteredCountTable), " genes (columns) ",
