@@ -7,7 +7,7 @@
 #'
 #' @export
 geocharFromPheno <- function(runPheno) {
-  message("Extracting geo characteristics")
+  message("\tExtracting geo characteristics")
   geochar.list <- lapply(split(
     runPheno,
     seq(from=1, to=nrow(runPheno))),

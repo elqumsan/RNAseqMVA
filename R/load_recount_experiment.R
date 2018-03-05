@@ -52,12 +52,14 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
                                   forceDownload = FALSE,
                                   verbose = parameters$verbose,
                                   ...) {
+  message.with.time("loadRecountExperiment()\trecountID = ", recountID)
+
   result <- list()
   studyPath <- file.path(dir.workspace, "data", recountID)
 
   #### Create studyPath directory ####
   if (!file.exists(studyPath)) {
-    message("Creating directory to store Recount dataset ", recountID," in ", studyPath)
+    message("\tCreating directory to store Recount dataset ", recountID," in ", studyPath)
     dir.create(studyPath, recursive = TRUE, showWarnings = FALSE)
   }
 
@@ -74,7 +76,7 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
   #### Download the counts if required ####
   if ((forceDownload == TRUE) || (!file.exists(rseFile))) {
     if (verbose) {
-      message("Dowloading counts from ReCount for study ", recountID)
+      message("\tDowloading counts from ReCount for study ", recountID)
     }
     url <- download_study(recountID, outdir = studyPath)
     result$param["url"] <- url
@@ -83,32 +85,32 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
 
   #### Load in memory data from the recount database ####
   if (verbose) {
-    message("Loading counts from local file ", rseFile)
+    message("\tLoading counts from local file ", rseFile)
   }
   load(rseFile)
 
   #### Scale counts by mapped reads, in order to to get read counts per gene ####
   if (verbose) {
-    message("Scaling counts")
+    message("\tScaling counts")
   }
   rse <- scale_counts(rse_gene, by="mapped_reads")
   result$rse <- rse
 
   #### Extract a matrix with the counts per feature for each run ####
   if (verbose) {
-    message("Extracing table of counts per run")
+    message("\tExtracing table of counts per run")
   }
   countsPerRun <- assay(rse)
   # View(countsPerRun)
   result$countsPerRun <- countsPerRun
   if (verbose) {
-    message("Loaded counts per run: ", nrow(countsPerRun), " features x ", ncol(countsPerRun), " runs.")
+    message("\tLoaded counts per run: ", nrow(countsPerRun), " features x ", ncol(countsPerRun), " runs.")
   }
 
   #### Extract pheno table ####
   ## The pheno table contains information about the columns of the RangedSeummaryExperiment.
   if (verbose) {
-    message("Building pheno table")
+    message("\tBuilding pheno table")
   }
   runPheno <- colData(rse) ## phenotype per run
   geo.characteristics <- geo_characteristics(runPheno)
@@ -156,7 +158,7 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
 
   # STOP Mustafa
   if (mergeRuns) {
-    if (verbose) { message("Merging run-wise counts by sample") }
+    if (verbose) { message("\tMerging run-wise counts by sample") }
     result$merged <- MergeRuns(countsPerRun,
                                runPhenoTable,
                                sampleIdColumn = sampleIdColumn,

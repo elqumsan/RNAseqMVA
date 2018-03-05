@@ -12,9 +12,10 @@ MergeRuns <- function(countsPerRun,
                       runPhenoTable,
                       sampleIdColumn = "geo_accession",
                       verbose=FALSE) {
+  message.with.time("MergeRuns()\t", "recountID = ", parameters$recountID)
 
   unique.samples <- as.vector(unique(unlist(runPhenoTable[, sampleIdColumn])))
-  message("Merging runs from count table (", nrow(countsPerRun), " features, ",
+  message("\tMerging runs from count table (", nrow(countsPerRun), " features, ",
           ncol(countsPerRun), " runs), ",
           length(unique.samples), " unique samples. ")
   sample.nb <- length(unique.samples)
@@ -30,7 +31,7 @@ MergeRuns <- function(countsPerRun,
   s <- 0
   for (sample in unique.samples) {
     s <- s + 1
-    # if (verbose) { message("merging counts for sample ", s, "/", sample.nb, " ", sample) }
+    # if (verbose) { message("\tmerging counts for sample ", s, "/", sample.nb, " ", sample) }
     runs <- grep(pattern = sample, x = runPhenoTable[, sampleIdColumn])
     if (length(runs ) > 1) {
       sample.counts[,sample] <- apply(countsPerRun[,runs],1,sum)
@@ -46,7 +47,7 @@ MergeRuns <- function(countsPerRun,
   for (field in names(runPhenoTable)) {
     nb.val <- length(unique(unlist(runPhenoTable[,field])))
     if (nb.val  <= sample.nb) {
-      # if (verbose) { message("Sample field ", field, "; values: ",  nb.val) }
+      # if (verbose) { message("\tSample field ", field, "; values: ",  nb.val) }
       sampleFields <- append(sampleFields, field)
     }
   }
@@ -56,7 +57,7 @@ MergeRuns <- function(countsPerRun,
   sample.nb <- ncol(sample.counts)
   gene.nb <- nrow(sample.counts)
 
-  message("Count table contains ", sample.nb, " samples (columns) and ", gene.nb, " genes (rows). ")
+  message("\tCount table contains ", sample.nb, " samples (columns) and ", gene.nb, " genes (rows). ")
   result <- list(sampleCounts = sample.counts,
                  samplePheno = samplePheno,
                  sampleFields = sampleFields,
