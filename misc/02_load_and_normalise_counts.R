@@ -33,7 +33,7 @@ if (parameters$compute) {
   distinct.classes <- as.vector(unique(loaded$classes))
   file.name <- file.path(tsv.dir, paste("rawCounts_", parameters$recountID, ".tsv", sep = ""))
   message("\tSaving filtered counts table in TSV file\t", file.name)
-  write.table(rawCounts, file = file.name, row.names = FALSE, sep = "\t")
+  write.table(rawCounts$Counts, file = file.name, row.names = FALSE, sep = "\t")
 
   ## Export a table with class labels + phenotypic information
   characteristics.string <- unlist(lapply(pheno$characteristics, paste, collapse="; "))
