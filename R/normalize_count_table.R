@@ -60,7 +60,7 @@ NormalizeCounts <- function(rawCounts,
   if (log2) {
     normCounts <- na.omit( log2(normCounts + epsilon))
     # dim(normCounts)
-    # NnormCounts <-na.omit(normCounts)
+     NnormCounts <-na.omit(normCounts)
 
   }
 
