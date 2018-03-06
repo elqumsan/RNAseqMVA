@@ -155,6 +155,18 @@ if (parameters$compute) {
 
   if (nrow(loaded$log2norm$normCounts) != length(classes)){
     stop(" the Number of samples in log2norm counts should be the same length of classes")
+
+    ## TEMPORARY : CONFLICTING SECTION
+  # log2normCounts <- NormalizeCounts(t(loaded$filteredCountTable), method = "quantile", quantile=0.75,
+  #                             log2 = TRUE, epsilon=0.1)
+  # Counts <-  as.data.frame(t(log2normCounts$normCounts))
+  # log2norm$Counts <- Counts
+  # log2norm$nb.samples <- nrow(log2norm$Counts)
+  # log2norm$nb.genes <-  ncol(log2norm$Counts)
+  #
+  # if (nrow(log2norm$Counts) != length(classes)){
+  #   stop( "number of class lables",length(classes)," should be the same size of the samples in log2norm count Table")
+    ## END TEMPORARY : CONFLICTING SECTION
   }
 
   ######### sptiting the log2norm dataset for the train set and test set #########
