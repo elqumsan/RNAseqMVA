@@ -99,9 +99,9 @@ if (parameters$compute) {
     phenoTable = loaded$filterePhenoTable,
     classLabels = loaded$filteredClasses,
     method = "quantile", quantile=0.75, log2 = FALSE)
-  # dim(loaded$normCounts)
+  # dim(loaded$loaded$norm$counts)
 
-#  hist(unlist(loaded$normCounts), main="Normalised count distribution", breaks=1000)
+#  hist(unlist(loaded$loaded$norm$counts), main="Normalised count distribution", breaks=1000)
 
 } else {
   message.with.time("Skipping normalisation")
@@ -114,11 +114,11 @@ normCounts.file <- file.path(dir.NormImpact, paste(sep="", parameters$recountID,
 message.with.time("Exporting normalised counts to file ", "\n", normCounts.file)
 if (parameters$save.tables) {
   write.table(sep="\t", quote=FALSE, row.names = TRUE, col.names=NA,
-              x = round(t(loaded$normCounts), digits=2),
+              x = round(t(loaded$norm$counts), digits=2),
               file = normCounts.file)
-  write.table(x = round(t(loaded$normCounts), digits = 3),
-              file = paste(tsv.dir,"/NormCounts_",parameters$recountID,".tsv", sep = ""),
-              row.names = FALSE, quote=FALSE, sep = "\t")
+  # write.table(x = round(t(loaded$normCounts), digits = 3),
+  #             file = paste(tsv.dir,"/NormCounts_",parameters$recountID,".tsv", sep = ""),
+  #             row.names = FALSE, quote=FALSE, sep = "\t")
 } else {
   message.with.time("Skipping saving of normalized counts table")
 }
@@ -130,25 +130,28 @@ if (parameters$save.tables) {
 if (parameters$compute) {
   message.with.time("Normalizing counts based on 75th percentile + log2 transformation")
   loaded$log2norm <- NormalizeCounts(
-    t(loaded$filteredCountTable), method = "quantile", quantile=0.75,
+    counts =t(loaded$filteredCountTable),
+    loaded$filterePhenoTable,
+    loaded$filteredClasses,
+    method = "quantile", quantile=0.75,
     log2 = TRUE, epsilon=0.1)
-  dim(loaded$log2norm$normCounts)
+  dim(loaded$log2norm$counts)
 
   ## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   ## We have a problem: the normalisation generates thousands of NA values.
-  sum(is.na(loaded$filteredCountTable))
-  sum((loaded$normCounts)==0, na.rm = TRUE)
-  sum((loaded$normCounts)!=0, na.rm = TRUE)
-  sum(is.na(loaded$normCounts))
-  sum(is.na(loaded$log2norm$normCounts))
-  sum(is.infinite(loaded$log2norm$normCounts))
+  # sum(is.na(loaded$filteredCountTable))
+  # sum((loaded$normCounts)==0, na.rm = TRUE)
+  # sum((loaded$normCounts)!=0, na.rm = TRUE)
+  # sum(is.na(loaded$normCounts))
+  # sum(is.na(loaded$log2norm$counts))
+  # sum(is.infinite(loaded$log2norm$counts))
   ## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
   plot.file <- file.path(dir.NormImpact, "log2normCount_hist.pdf")
   message("\tlog2(norm counts) histogram\t", plot.file)
   pdf(plot.file, width=7, height=5)
-  hist(unlist(loaded$log2norm$normCounts), breaks=100,
+  hist(unlist(loaded$log2norm$counts), breaks=100,
        col="grey",
        main=paste("log2(norm counts) distrib;", recountID),
        las=1,
@@ -157,7 +160,7 @@ if (parameters$compute) {
 
   silence <- dev.off()
 
-  if (nrow(loaded$log2norm$normCounts) != length(classes)){
+  if (ncol(loaded$log2norm$counts) != length(loaded$log2norm$classLabels)){
     stop(" the Number of samples in log2norm counts should be the same length of classes")
 
     ## TEMPORARY : CONFLICTING SECTION
@@ -173,17 +176,17 @@ if (parameters$compute) {
     ## END TEMPORARY : CONFLICTING SECTION
   }
 
-  ######### sptiting the log2norm dataset for the train set and test set #########
-  n <- nrow(loaded$log2normCounts) ## Number of observations (samples)
-  train.size <- round(n * parameters$trainingProportion)
-
-  ## Random selection of indices for the training set
-  trainIndex <- sort(sample(1:n, size=train.size))
-  ## Use remaining indices for the testing set
-  testIndex <- setdiff(1:n, trainIndex)
-
-  log2norm$trainIndex <- trainIndex
-  log2norm$testIndex  <- testIndex
+  # ######### sptiting the log2norm dataset for the train set and test set #########
+  # n <- nrow(loaded$log2normCounts) ## Number of observations (samples)
+  # train.size <- round(n * parameters$trainingProportion)
+  #
+  # ## Random selection of indices for the training set
+  # trainIndex <- sort(sample(1:n, size=train.size))
+  # ## Use remaining indices for the testing set
+  # testIndex <- setdiff(1:n, trainIndex)
+  #
+  # log2norm$trainIndex <- trainIndex
+  # log2norm$testIndex  <- testIndex
 
 } else {
   message.with.time("Skipping normalisation with log2 transformation")
@@ -195,14 +198,14 @@ log2normCounts.file <- file.path(dir.NormImpact, paste(sep="", parameters$recoun
 message.with.time("Exporting log2 normalised counts to file ", "\n", log2normCounts.file)
 if (parameters$save.tables) {
   write.table(sep="\t", quote=FALSE, row.names = TRUE, col.names=NA,
-              x = round(digits=3, t(log2norm$Counts)),
+              x = round(digits=3, t(loaded$log2norm$counts)),
               file = log2normCounts.file)
 }
 
 #### Compute a trimmed mean: suppress the 5% top and bottom values ####
 if (parameters$compute) {
   message.with.time("Computing trimmed mean of normalized counts")
-  x <- unlist(normCounts)
+  x <- unlist(loaded$norm$counts)
   q0.05 <- quantile(x = x, probs = 0.05, na.rm=TRUE)
   q0.95 <- quantile(x = x, probs = 0.95, na.rm=TRUE)
   trimmed <- (x[x > q0.05 & x < q0.95])
@@ -215,7 +218,7 @@ if (parameters$compute) {
 #### Compute a trimmed mean: suppress the 5% top and bottom values ####
 if (parameters$compute) {
   message.with.time("Computing trimmed mean of log2normalized counts")
-  x <- unlist(log2norm$Counts)
+  x <- unlist(loaded$log2norm$counts)
   q0.05 <- quantile(x = x, probs = 0.05, na.rm=TRUE)
   q0.95 <- quantile(x = x, probs = 0.95, na.rm=TRUE)
   log2.trimmed <- (x[x > q0.05 & x < q0.95])
