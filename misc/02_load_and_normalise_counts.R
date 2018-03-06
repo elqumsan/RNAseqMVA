@@ -34,7 +34,7 @@ if (parameters$compute) {
   distinct.classes <- as.vector(unique(classes))
   file.name <- file.path(tsv.dir, paste("rawCounts_", parameters$recountID, ".tsv", sep = ""))
   message("\tSaving filtered counts table in TSV file\t", file.name)
-  write.table(rawCounts$Counts, file = file.name, row.names = FALSE, sep = "\t")
+  write.table(rawCounts$Counts, file = file.name, row.names = FALSE, quote=FALSE, sep = "\t")
 
   ## Export a table with class labels + phenotypic information
   characteristics.string <- unlist(lapply(pheno$characteristics, paste, collapse="; "))
@@ -45,8 +45,7 @@ if (parameters$compute) {
   # View(pheno.data.frame)
   file.name <- file.path(tsv.dir, paste("pheno_",parameters$recountID,".tsv", sep = ""))
   message("\tExporting sample classes and description in TSV file\t", file.name)
-  write.table(pheno.data.frame, file = file.name,
-              row.names = FALSE, sep = "\t")
+  write.table(pheno.data.frame, file = file.name, quote=FALSE, row.names = FALSE, sep = "\t")
 
 } else {
   message.with.time("Skipping data loading")
@@ -66,11 +65,11 @@ print(loaded$samples.per.class)
 classColors <- 1:length(distinct.classes)
 names(classColors) <- distinct.classes
 
-##JvH: Mustafa, these colors are specific for one dataset.
-## In a future phase we will discuss about how to manage dataset-specific parameters,
-## but not before your seminar Let us just keep this in mind for later.
+## JvH: Mustafa, these colors are specific for one dataset.
+##
+## Message from JvH, 2018-03-06:
+## These should now be placed in the yaml file.
 
-## Then Assign some specific colors which evoke particular sampletypes
 if (parameters$recountID == "SRP048759") {
   classColors["Heparinised.blood"] <- "#BB0000"
   classColors["Bone.marrow"] <- "#4488FF"
@@ -84,8 +83,8 @@ if (parameters$recountID == "SRP048759") {
 }
 # print(classColors)
 ## Assign colors per sample according to their class
-sampleColors <- classColors[loaded$classes]
-names(sampleColors) <- rownames(loaded$phenoTable)
+sampleColors <- classColors[loaded$filteredClasses]
+names(sampleColors) <- rownames(loaded$filterePhenoTable)
 # print(sampleColors)
 
 ##### Normalize the counts without log2 transformation (first test) #####
@@ -95,8 +94,10 @@ names(sampleColors) <- rownames(loaded$phenoTable)
 if (parameters$compute) {
   message.with.time("Normalizing counts based on 75th percentile")
   norm <- NormalizeCounts(t(loaded$filteredCountTable), method = "quantile", quantile=0.75, log2 = FALSE)
-  normCounts <- t(norm$normCounts) ## Transpose normalized counts for classifiers
-  dim(normCounts)
+  loaded$normCounts <- t(norm$normCounts) ## Transpose normalized counts for classifiers
+  # dim(loaded$normCounts)
+
+#  hist(unlist(loaded$normCounts), main="Normalised count distribution", breaks=1000)
 
 } else {
   message.with.time("Skipping normalisation")
@@ -109,10 +110,11 @@ normCounts.file <- file.path(dir.NormImpact, paste(sep="", parameters$recountID,
 message.with.time("Exporting normalised counts to file ", "\n", normCounts.file)
 if (parameters$save.tables) {
   write.table(sep="\t", quote=FALSE, row.names = TRUE, col.names=NA,
-              x = round(t(normCounts), digits=2),
+              x = round(t(loaded$normCounts), digits=2),
               file = normCounts.file)
-  write.table(x = round(t(normCounts), digits = 3), file = paste(tsv.dir,"/NormCounts_",parameters$recountID,".tsv", sep = ""),
-              row.names = FALSE, sep = "\t")
+  write.table(x = round(t(loaded$normCounts), digits = 3),
+              file = paste(tsv.dir,"/NormCounts_",parameters$recountID,".tsv", sep = ""),
+              row.names = FALSE, quote=FALSE, sep = "\t")
 } else {
   message.with.time("Skipping saving of normalized counts table")
 }
@@ -121,21 +123,42 @@ if (parameters$save.tables) {
 ##
 ## Note: this method takes a table with one column per sample and one
 ## row per gene, we thus have to transpose the raw count table.
-log2norm <- list()
 if (parameters$compute) {
   message.with.time("Normalizing counts based on 75th percentile + log2 transformation")
-  log2normCounts <- NormalizeCounts(t(loaded$filteredCountTable), method = "quantile", quantile=0.75,
-                              log2 = TRUE, epsilon=0.1)
-  Counts <- na.omit( as.data.frame(t(log2normCounts$normCounts)))
-  log2norm$Counts <- Counts
-  dim(log2norm$Counts)
+  loaded$log2norm <- NormalizeCounts(
+    t(loaded$filteredCountTable), method = "quantile", quantile=0.75,
+    log2 = TRUE, epsilon=0.1)
+  dim(loaded$log2norm$normCounts)
 
-  if (nrow(log2norm$Counts) != length(classes)){
+  ## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  ## We have a problem: the normalisation generates thousands of NA values.
+  sum(is.na(loaded$filteredCountTable))
+  sum((loaded$normCounts)==0, na.rm = TRUE)
+  sum((loaded$normCounts)!=0, na.rm = TRUE)
+  sum(is.na(loaded$normCounts))
+  sum(is.na(loaded$log2norm$normCounts))
+  sum(is.infinite(loaded$log2norm$normCounts))
+  ## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+  plot.file <- file.path(dir.NormImpact, "log2normCount_hist.pdf")
+  message("\tlog2(norm counts) histogram\t", plot.file)
+  pdf(plot.file, width=7, height=5)
+  hist(unlist(loaded$log2norm$normCounts), breaks=100,
+       col="grey",
+       main=paste("log2(norm counts) distrib;", recountID),
+       las=1,
+       xlab="log2(norm counts)",
+       ylab="Frequency")
+
+  silence <- dev.off()
+
+  if (nrow(loaded$log2norm$normCounts) != length(classes)){
     stop(" the Number of samples in log2norm counts should be the same length of classes")
   }
 
   ######### sptiting the log2norm dataset for the train set and test set #########
-  n <- nrow(log2norm$Counts) ## Number of observations (samples)
+  n <- nrow(loaded$log2normCounts) ## Number of observations (samples)
   train.size <- round(n * parameters$trainingProportion)
 
   ## Random selection of indices for the training set
