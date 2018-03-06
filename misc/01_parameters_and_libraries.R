@@ -109,7 +109,7 @@ for (classifier in classifiers) {
 }
 
 ## File to store a memory image
-image.file <- file.path(dir.results, paste("RNA-seq_classifer_evaluation_", parameters$recountID, ".RData", sep = ""))
+image.file <- file.path(dir.results, paste("RNA-seq_classifer_evaluation_", parameters$recountID, ".Rdata", sep = ""))
 
 if (parameters$reload == TRUE) {
   ################################################################################
