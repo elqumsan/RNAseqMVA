@@ -130,6 +130,8 @@ filterCountTable <- function(countTable,
          xlab="log2(varPerGene)",
          ylab="Number of genes")
 #    legend("topright", parameters$recountID)
+
+
     if (nearZeroVarFilter) {
       hist(log2(varPerGene[nearZeroVarGenes]),
          breaks=breaks,
@@ -234,7 +236,7 @@ filterCountTable <- function(countTable,
   selectedClasses <- names(samplesPerClass)[samplesPerClass >= minSamplesPerClass]
   selectedSamples <- filteredClasses %in% selectedClasses
   if (length (discardedClasses) > 0) {
-    message("\tDiscarding ", length (discardedClasses), " classes containng less than ", minSamplesPerClass, "samples")
+    message("\tDiscarding ", length (discardedClasses), " classes containng less than ", minSamplesPerClass, " samples")
     message("\tDiscarded classes\t", paste(collapse=",", discardedClasses))
   }
   message("\tKeeping ", sum(selectedSamples), " samples from ",
