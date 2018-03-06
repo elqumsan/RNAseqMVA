@@ -132,7 +132,7 @@ loadCounts <- function(recountID = parameters$recountID,
   experiment$filteredClasses <- filteredData$filteredClasses
 
 
-  experiment$samples.per.class <- as.data.frame.table(table(classes), row.names=1)
+  experiment$samples.per.class <- as.data.frame.table(table(filteredData$classes), row.names=1)
   experiment$filteredData <- filteredData
   experiment$geo.characteristics <- geo.characteristics
   experiment$countsPerRuns <- experiment$countsPerRun
