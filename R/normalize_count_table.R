@@ -58,8 +58,12 @@ NormalizeCounts <- function(rawCounts,
 
   ## Run log2 transformation if required
   if (log2) {
-    normCounts <- log2(normCounts + epsilon)
+    normCounts <- na.omit( log2(normCounts + epsilon))
+    # dim(normCounts)
+    # NnormCounts <-na.omit(normCounts)
+
   }
+
 
   # hist(unlist(normCounts), breaks=100)
 
