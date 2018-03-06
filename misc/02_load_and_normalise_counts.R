@@ -17,6 +17,8 @@ if (parameters$compute) {
   ## - normalised
   ## - CPA-transformed
   ## - ....
+
+  ## JvH 2018-03-06: this rawCounts list is redundant with loaded$filteredCountTable
   rawCounts <- list()
   rawCounts$Counts <- loaded$filteredCountTable ## Note: one row per sample, one column per gene
   rawCounts$sample.nb <- nrow(rawCounts$Counts)
@@ -69,7 +71,6 @@ names(classColors) <- distinct.classes
 ##
 ## Message from JvH, 2018-03-06:
 ## These should now be placed in the yaml file.
-
 if (parameters$recountID == "SRP048759") {
   classColors["Heparinised.blood"] <- "#BB0000"
   classColors["Bone.marrow"] <- "#4488FF"
@@ -93,8 +94,11 @@ names(sampleColors) <- rownames(loaded$filterePhenoTable)
 ## row per gene, we thus have to transpose the raw count table.
 if (parameters$compute) {
   message.with.time("Normalizing counts based on 75th percentile")
-  norm <- NormalizeCounts(t(loaded$filteredCountTable), method = "quantile", quantile=0.75, log2 = FALSE)
-  loaded$normCounts <- t(norm$normCounts) ## Transpose normalized counts for classifiers
+  loaded$norm <- NormalizeCounts(
+    counts = t(loaded$filteredCountTable),
+    phenoTable = loaded$filterePhenoTable,
+    classLabels = loaded$filteredClasses,
+    method = "quantile", quantile=0.75, log2 = FALSE)
   # dim(loaded$normCounts)
 
 #  hist(unlist(loaded$normCounts), main="Normalised count distribution", breaks=1000)
