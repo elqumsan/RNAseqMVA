@@ -293,7 +293,7 @@ filterCountTable <- function(countTable,
   result$filteredPhenoTable <- filteredPhenoTable
   result$filteredClasses <- filteredClasses
 
-  message.with.time("Finished Filter Count Table process for Recount experiment ID ", parameters$recountID)
+  message.with.time("Finished filterCountTable() for Recount experiment ID ", parameters$recountID)
 
   return(result)
 
