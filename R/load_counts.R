@@ -113,9 +113,9 @@ loadCounts <- function(recountID = parameters$recountID,
           "\n\t\tVector of class labels length: ", length(filteredData$filteredClasses),
           "\n\tNumber of distinct classes: ", length(unique(filteredData$filteredClasses)))
 
-  if (length(classes) != nrow(countTable)) {
-    stop("invaled number of classes labes, (", length(classes) ,"). ",
-         "must equal the number of individuals in Count Table (",nrow(countTable),").")
+  if (length(filteredData$filteredClasses) != nrow(filteredData$filteredCountTable)) {
+    stop("invaled number of filtered class labels, (", length(filteredData$filteredClasses) ,"). ",
+         "must equal the number of individuals in Count Table (",nrow(filteredData$filteredCountTable),").")
   }
 
 
@@ -123,9 +123,9 @@ loadCounts <- function(recountID = parameters$recountID,
   #### Build a list with the results of the loadCounts() function
   #loadedRecount <- list()
 
-  experiment$originalCountTable<- countTable
-  experiment$originalPhenoTable <- phenoTable
-  experiment$originalClasses <- classes
+  experiment$originalCountTable<- filteredData$countTable
+  experiment$originalPhenoTable <- filteredData$phenoTable
+  experiment$originalClasses <- filteredData$classes
 
   experiment$filteredCountTable<- filteredData$filteredCountTable
   experiment$filterePhenoTable <- filteredData$filteredPhenoTable
