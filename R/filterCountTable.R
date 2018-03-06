@@ -95,7 +95,7 @@ filterCountTable <- function(countTable,
   ## This includes zero variance genes (already filtered above) but also less trivial cases, see nearZeroVar() doc for details.
   if (nearZeroVarFilter) {
 
-    message("\tDetecting genes with near-zero variance  with caret::nearZeroVar()")
+    message("\tDetecting genes with near-zero variance using caret::nearZeroVar()")
     nearZeroVarColumns <- nearZeroVar(countTable, allowParallel = T, saveMetrics = FALSE)
     nearZeroVarGenes <- colnames(countTable)[nearZeroVarColumns]
     #length(nearZeroVarGenes)
@@ -117,14 +117,14 @@ filterCountTable <- function(countTable,
     xmin <- floor(min(logVarPerGene[noInfVar]))
     xmax <- ceiling(max(logVarPerGene[noInfVar]))
     xlim <- c(xmax, xmin)
-    breaks <- seq(from=xmin,  to=xmax, by=0.1)
+    varbreaks <- seq(from=xmin,  to=xmax, by=0.1)
     if (nearZeroVarFilter) {
       par(mfrow=c(4,1))
     } else {
       par(mfrow=c(3,1))
     }
     hist(log2(varPerGene[noInfVar]),
-         breaks=breaks,
+         breaks=varbreaks,
          col="gray", border = "gray",
          main = paste("All non-zero var genes; ", parameters$recountID),
          xlab="log2(varPerGene)",
@@ -132,14 +132,14 @@ filterCountTable <- function(countTable,
 #    legend("topright", parameters$recountID)
     if (nearZeroVarFilter) {
       hist(log2(varPerGene[nearZeroVarGenes]),
-         breaks=breaks,
+         breaks=varbreaks,
          col="red", border = "orange",
          main = "Near zero variance",
          xlab="log2(varPerGene)",
          ylab="Number of genes")
     }
     hist(log2(varPerGene[keptGenes]),
-         breaks=breaks,
+         breaks=varbreaks,
          col="darkgreen", border = "#00BB00",
          main = "Kept genes",
          xlab="log2(varPerGene)",
@@ -147,21 +147,29 @@ filterCountTable <- function(countTable,
 
     ## Count the number of zero values per gene
     zerosPerGene <- apply(countTable == 0, 2, sum)
-    breaks <- seq(from=0, to=max(zerosPerGene+1), length.out =50)
+    zerobreaks <- seq(from=0, to=max(zerosPerGene+1), length.out =50)
+    # zerobreaks <- seq(from=0, to=max(zerosPerGene+1), by=1)
+
+    #### Histogram of zero values per gene. ####
+    ##
+    ## Displayed in green (color for kept genes) because we will then
+    ## overlay the histograms of near zero var (orange) and zero var (red),
+    ## so that the remaining part of the histogram will correspond to genes
+    ## kept.
     hist(zerosPerGene,
-         breaks = breaks,
+         breaks = zerobreaks,
          main = "Zeros per gene",
          xlab = "Number of zero values",
          ylab = "Number of genes",
-         col = "#00BB00")
+         col = "#00BB00", border = "#00BB00")
     if (nearZeroVarFilter) {
-      hist(zerosPerGene[nearZeroVarGenes],
-         breaks = breaks,
-         add=TRUE, col="orange")
+      hist(zerosPerGene[union(nearZeroVarGenes, zeroVarGenes)],
+         breaks = zerobreaks,
+         add=TRUE, col="orange", border="orange")
     }
     hist(zerosPerGene[zeroVarGenes],
-         breaks = breaks,
-         add=TRUE, col="red")
+         breaks = zerobreaks,
+         add=TRUE, col="red", border="red")
     if (nearZeroVarFilter) {
       legend("topleft",
              legend=paste(
