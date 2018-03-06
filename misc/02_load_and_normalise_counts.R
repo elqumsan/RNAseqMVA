@@ -126,12 +126,12 @@ if (parameters$compute) {
   message.with.time("Normalizing counts based on 75th percentile + log2 transformation")
   log2normCounts <- NormalizeCounts(t(loaded$filteredCountTable), method = "quantile", quantile=0.75,
                               log2 = TRUE, epsilon=0.1)
-  Counts <- na.omit( as.data.frame(t(log2normCounts$normCounts)))
+  Counts <-  as.data.frame(t(log2normCounts$normCounts))
   log2norm$Counts <- Counts
   dim(log2norm$Counts)
 
   if (nrow(log2norm$Counts) != length(classes)){
-    stop(" the Number of samples in log2norm counts should be the same length of classes")
+    stop( "number of class lables",length(classes)," should be the same size of the samples in log2norm count Table")
   }
 
   ######### sptiting the log2norm dataset for the train set and test set #########
