@@ -4,12 +4,16 @@
 \alias{NormalizeCounts}
 \title{Normalize RNA-seq count table}
 \usage{
-NormalizeCounts(rawCounts, method = "quantile", quantile = 0.75,
-  log2 = TRUE, epsilon = 0.1)
+NormalizeCounts(counts, phenoTable, classLabels, method = "quantile",
+  quantile = 0.75, log2 = TRUE, epsilon = 0.1)
 }
 \arguments{
-\item{rawCounts}{a raw count table, with one column per sample and one row per gene.
+\item{counts}{a raw count table, with one column per sample and one row per gene.
 Normalization will be done by samples (columns).}
+
+\item{phenoTable}{the pheno table associated to the count table. Should be provided in order to adapt it in case samples would be suppressed because they have a scaling factor of 0.}
+
+\item{classLabels}{the class labels associated each sample of the count table. Should be provided in order to adapt it in case samples would be suppressed because they have a scaling factor of 0.}
 
 \item{method="quantile"}{normalization method. Supported: sum, mean, media, quantile.
 Preferred method: quantile = 0.75. Quantiles are more robust to outliers than the mean
