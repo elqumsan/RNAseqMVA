@@ -128,7 +128,8 @@ if (parameters$compute) {
                               log2 = TRUE, epsilon=0.1)
   Counts <-  as.data.frame(t(log2normCounts$normCounts))
   log2norm$Counts <- Counts
-  dim(log2norm$Counts)
+  log2norm$nb.samples <- nrow(log2norm$Counts)
+  log2norm$nb.genes <-  ncol(log2norm$Counts)
 
   if (nrow(log2norm$Counts) != length(classes)){
     stop( "number of class lables",length(classes)," should be the same size of the samples in log2norm count Table")
