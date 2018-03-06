@@ -63,5 +63,6 @@ MergeRuns <- function(countsPerRun,
                  sampleFields = sampleFields,
                  sampleIdColumn = sampleIdColumn)
 
+  message.with.time("Finished MergeRuns()\t", "recountID = ", parameters$recountID)
   return(result)
 }
