@@ -10,8 +10,6 @@ project.parameters <- yaml.load_file("misc/00_project_parameters.yml")
 ## Lad default parameters (must have been defined n the parameter field)
 parameters <- project.parameters$default
 
-
-
 # recountID <- "SRP042620"   ## Multi-group breast cancer
 recountID <- "SRP057196"    # individual cells into all of the major neuronal, glial, and vascular cell types in the brain
 
