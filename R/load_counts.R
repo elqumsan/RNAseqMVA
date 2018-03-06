@@ -132,13 +132,13 @@ loadCounts <- function(recountID = parameters$recountID,
   experiment$filteredClasses <- filteredData$filteredClasses
 
 
-  experiment$samples.per.class <- as.data.frame.table(table(classes), row.names=1)
+  experiment$samples.per.class <- as.data.frame.table(table(filteredData$filteredClasses), row.names=1)
   experiment$filteredData <- filteredData
   experiment$geo.characteristics <- geo.characteristics
   experiment$countsPerRuns <- experiment$countsPerRun
   experiment$runPheno <- experiment$runPheno
 
-  message.with.time("Finished Load Count Table process for Recount experiment ID ", parameters$recountID)
+  message.with.time("Finished loadCounts() for Recount experiment ID ", parameters$recountID)
 
   return(experiment)
 }
