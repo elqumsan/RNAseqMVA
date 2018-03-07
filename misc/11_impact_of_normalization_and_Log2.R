@@ -14,7 +14,7 @@
 #'
 #'
 
-rawTable <- loaded$countTable
+rawTable <- loaded$originalCountTable
 stat.raw <- list()
 
 # M = data.frame(matrix(rnorm(100000),nrow=500))
@@ -56,7 +56,7 @@ silence <- dev.off()
 #
 # x <- data.frame(q3 = apply(rawCounts$Counts, 1, quantile, q=0.75), sum = apply(rawCounts$Counts, 1, sum), class=loaded$classes)
 
-x <- data.frame(libsum=apply(rawCounts$Counts, 1, sum), class=loaded$classes)
+x <- data.frame(libsum=apply(loaded$originalCountTable, 1, sum), class=loaded$originalClasses)
 
 head(x)
 
@@ -78,7 +78,7 @@ silence <- dev.off()
 
 
 ##### some basic statistics to exhibit the nature of the log2norm data #####
-log2normTable <- log2norm$Counts
+log2normTable <- loaded$log2norm$counts
 stat.log2norm <- list()
 
 stat.log2norm$min = apply(log2normTable,2,min)
@@ -117,7 +117,7 @@ silence <- dev.off()
 #
 # x <- data.frame(q3 = apply(rawCounts1, 1, quantile, q=0.75), sum = apply(rawCounts1, 1, sum), class=loaded$classes)
 
-x <- data.frame(libsum=apply(log2norm$Counts, 1, sum), class=loaded$classes)
+x <- data.frame(libsum=apply(loaded$log2norm$counts, 1, sum), class=loaded$log2norm$classLabels)
 
 head(x)
 
@@ -148,11 +148,11 @@ file.prefix <- file.path(dir.NormImpact, paste(parameters$recountID, "_counts_no
 
 pdf(file=file.prefix,
   width = 8, height = 8)
-hist(unlist(normCounts), breaks=10, las=1,
+hist(unlist(loaded$norm$counts), breaks=10, las=1,
      xlab="normalized counts", ylab="Occurrences", col="grey",
      main=paste(parameters$recountID, "Normalised count distrib"))
-abline(v=mean(unlist(normCounts)), lwd=1, col="darkgreen") # mark the mean
-abline(v=median(unlist(normCounts)), lwd=1, col="blue") # mark the median
+abline(v=mean(unlist(loaded$norm$counts)), lwd=1, col="darkgreen") # mark the mean
+abline(v=median(unlist(loaded$norm$counts)), lwd=1, col="blue") # mark the median
 abline(v=mean(unlist(trimmed)), lwd=1, col="purple") # mark the trimmed mean
 legend("topright",lwd=2,
        legend=c("mean", "median", "trimmed mean"),
@@ -163,11 +163,11 @@ file.prefix <- file.path(dir.NormImpact, paste(parameters$recountID, "_counts_no
 
 pdf(file=file.prefix,
     width = 8, height = 8)
-hist(unlist(log2norm$Counts), breaks=100, las=1,
+hist(unlist(loaded$log2norm$counts), breaks=100, las=1,
      xlab="log2 Normalized counts", ylab="Occurrences", col="grey",
      main=paste(parameters$recountID, " log 2 Normalised count distribution"))
-abline(v=mean(unlist(log2norm$Counts)), lwd=1, col="darkgreen") # mark the mean
-abline(v=median(unlist(log2norm$Counts)), lwd=1, col="blue") # mark the median
+abline(v=mean(unlist(loaded$log2norm$counts)), lwd=1, col="darkgreen") # mark the mean
+abline(v=median(unlist(loaded$log2norm$counts)), lwd=1, col="blue") # mark the median
 abline(v=mean(unlist(log2.trimmed)), lwd=1, col="purple") # mark the trimmed mean
 legend("topright",lwd=2,
        legend=c("mean", "median", "trimmed mean"),
@@ -179,8 +179,8 @@ silence <- dev.off()
 file.prefix <- file.path(dir.NormImpact, paste(parameters$recountID, "_rawcounts_mean_vs_Q3.pdf", sep = ""))
 pdf(file= file.prefix,
   width = 8, height = 8)
-plot(x=apply(rawCounts1, 1, mean),
-     y=signif(digits=3, apply(rawCounts1, 1, quantile, 0.75)),
+plot(x=apply(loaded$originalCountTable, 1, mean),
+     y=signif(digits=3, apply(loaded$originalCountTable, 1, quantile, 0.75)),
      main="raw counts: Percentile 75 versus mean",
      xlab="Mean counts per sample",
      ylab="Percentile 75",
@@ -194,8 +194,8 @@ silence <- dev.off()
 file.prefix <- file.path(dir.NormImpact, paste(parameters$recountID, "_log2norm_mean_vs_Q3.pdf", sep = ""))
 pdf(file= file.prefix,
     width = 8, height = 8)
-plot(x=apply(log2norm$Counts, 1, mean),
-     y=signif(digits=3, apply(log2norm$Counts, 1, quantile, 0.75)),
+plot(x=apply(loaded$log2norm$counts, 1, mean),
+     y=signif(digits=3, apply(loaded$log2norm$counts, 1, quantile, 0.75)),
      main="log2norm counts: Percentile 75 versus mean",
      xlab="Mean counts per sample",
      ylab="Percentile 75",
