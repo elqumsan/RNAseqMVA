@@ -49,6 +49,7 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
                                   dir.workspace = parameters$dir$workspace,
                                   mergeRuns = parameters$mergeRuns,
                                   sampleIdColumn = parameters$sampleIdColumn, ## Alternative: use "sample"
+                                  classColumn = parameters$classColumn,
                                   forceDownload = FALSE,
                                   verbose = parameters$verbose,
                                   ...) {
@@ -184,8 +185,8 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
     result$original$phenoTable <- runPhenoTable
   }
   message("\tphenoTable contains ",
-          nrow(phenoTable), " rows (samples) and ",
-          ncol(phenoTable), " columns (pheno description fields).")
+          nrow(result$original$phenoTable), " rows (samples) and ",
+          ncol(result$original$phenoTable), " columns (pheno description fields).")
   # names(phenoTable)
   # dim(phenoTable)
 

@@ -7,7 +7,8 @@
 loadRecountExperiment(recountID = parameters$recountID,
   dir.workspace = parameters$dir$workspace,
   mergeRuns = parameters$mergeRuns,
-  sampleIdColumn = parameters$sampleIdColumn, forceDownload = FALSE,
+  sampleIdColumn = parameters$sampleIdColumn,
+  classColumn = parameters$classColumn, forceDownload = FALSE,
   verbose = parameters$verbose, ...)
 }
 \arguments{
