@@ -58,16 +58,6 @@ loadCounts <- function(recountID = parameters$recountID,
                                      dir.workspace = parameters$dir$workspace,
                                      ...)
 
-  ################################################################
-  ## Tanspose the count tabe in order to use it with classifier methods
-  ## which expect a table with one raw per individual (biological samples)
-  ## and one column per feature (gene).
-  if (mergeRuns){
-    countTable <-as.data.frame(experiment$merged$sampleCounts)
-  } else {
-    countTable <- as.data.frame(experiment$countsPerRun)
-  }
-  # dim(countTable)
 
   ## If requested, suppress the NA values
   if (na.rm) {
@@ -83,45 +73,15 @@ loadCounts <- function(recountID = parameters$recountID,
   #countTable <-as.data.frame(t(experiment$runCounts))
 
 
-  ################################################################
-  # Extract pheno table for the sample-wised merged count
-  message("\tExtracting pheno Table from sample-wised merged count")
-  if (mergeRuns){
-    phenoTable <- experiment$merged$samplePheno
-  } else {
-    phenoTable <- experiment$runPhenoTable
-  }
-  message("\tphenoTable contains ",
-          nrow(phenoTable), " rows (samples) and ",
-          ncol(phenoTable), " columns (pheno description fields).")
-  # names(phenoTable)
-  # dim(phenoTable)
-
-  geo.characteristics <- experiment$geo.characteristics
-  # dim(geo.characteristics)
-
-
-  ################################################################
-  ## Specify sample classes (classLabels) by extracting information about specified class columns
-  if (is.null(classColumn) || (length(classColumn) < 1)) {
-    stop("classColumn must be defined. ")
-  } else if (length(classColumn) == 1) {
-    classLabels <-  as.vector(phenoTable[, classColumn])
-  } else {
-    ## Combine several columns to establish the classLabels
-    classLabels <- apply(phenoTable[, classColumn], 1, paste, collapse="_")
-  }
-  # table(classLabels)
-
-
 
   ################################################
   ## Filter zero-variance and near-zero variance variables from the count table
-  filteredData <- filterCountTable(countTable = countTable,
-                                   phenoTable = phenoTable,
-                                   classLabels = classLabels,
-#                                   nearZeroVarFilter = FALSE,
-                                   minSamplesPerClass = minSamplesPerClass)
+  experiment$filtered <- filterCountTable(
+    countTable = experiment$original$countTable,
+    phenoTable = experiment$original$phenoTable,
+    classLabels = experiment$original$classLabels,
+    #                                   nearZeroVarFilter = FALSE,
+    minSamplesPerClass = minSamplesPerClass)
   # dim(countTable)
 
   # replace unfiltered Data with filted data
