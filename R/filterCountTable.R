@@ -280,8 +280,8 @@ filterCountTable <- function(countTable,
   result$countTable <- filteredCountTable
   result$phenoTable <- filteredPhenoTable
   result$classLabels <- filteredClassLabels
-  result$nb.samples <- ncol(filteredCountTable)
-  result$nb.genes <- nrow(filteredCountTable)
+  result$nbSamples <- ncol(filteredCountTable)
+  result$nbGenes <- nrow(filteredCountTable)
 
   ## Include the filtering criteria in the returned list
   result$zeroVarGenes <- zeroVarGenes
