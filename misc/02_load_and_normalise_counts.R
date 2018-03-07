@@ -19,10 +19,10 @@ if (parameters$compute) {
   ## - ....
 
   ## JvH 2018-03-06: this rawCounts list is redundant with loaded$filteredCountTable
-  rawCounts <- list()
-  rawCounts$Counts <- loaded$filteredCountTable ## Note: one row per sample, one column per gene
-  rawCounts$sample.nb <- nrow(rawCounts$Counts)
-  rawCounts$feature.nb <- ncol(rawCounts$Counts)
+  # rawCounts <- list()
+  # rawCounts$Counts <- loaded$filteredCountTable ## Note: one row per sample, one column per gene
+  # rawCounts$sample.nb <- nrow(rawCounts$Counts)
+  # rawCounts$feature.nb <- ncol(rawCounts$Counts)
   # dim(rawCounts$Counts)
 
 
@@ -93,13 +93,17 @@ names(sampleColors) <- rownames(loaded$filterePhenoTable)
 ## Note: this method takes a table with one column per sample and one
 ## row per gene, we thus have to transpose the raw count table.
 if (parameters$compute) {
+  # dim(loaded$loaded$norm$counts)
   message.with.time("Normalizing counts based on 75th percentile")
   loaded$norm <- NormalizeCounts(
     counts = t(loaded$filteredCountTable),
     phenoTable = loaded$filterePhenoTable,
     classLabels = loaded$filteredClasses,
     method = "quantile", quantile=0.75, log2 = FALSE)
-  # dim(loaded$loaded$norm$counts)
+  # dim(loaded$normCounts)
+  # loaded$norm$nb.samples
+  # loaded$norm$nb.genes
+
 
 #  hist(unlist(loaded$loaded$norm$counts), main="Normalised count distribution", breaks=1000)
 
