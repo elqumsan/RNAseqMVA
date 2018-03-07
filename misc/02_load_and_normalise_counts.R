@@ -5,7 +5,8 @@ if (parameters$compute) {
   message.with.time("Loading count table from recount", "; recountID = ", parameters$recountID)
   loaded <- loadCounts(recountID = parameters$recountID, mergeRuns = TRUE ,
                        classColumn = parameters$classColumn,
-                       minSamplesPerClass = parameters$minSamplesPerClass)
+                       minSamplesPerClass = parameters$minSamplesPerClass,
+                       na.rm = parameters$na.rm)
 
   # dim(loaded$originalCountTable)
   # dim(loaded$filteredCountTable)
@@ -27,36 +28,22 @@ if (parameters$compute) {
 
 
   ## Assign a specific color to each sammple according to its class
-  pheno <- loaded$filterePhenoTable
-  classes <- loaded$filteredClasses
-  geo.characteristics <- loaded$geo.characteristics
+  countTable <- loaded$filteredExperiment$countTable
+  pheno <- loaded$filteredExperiment$phenoTable
+  classes <- loaded$filteredExperiment$classLabels
+  geo.characteristics <- loaded$filteredExperiment$geo.characteristics
   # table(classes)
   # length(classes)
   # length(unique(classes))
   distinct.classes <- as.vector(unique(classes))
-  file.name <- file.path(tsv.dir, paste("rawCounts_", parameters$recountID, ".tsv", sep = ""))
-  message("\tSaving filtered counts table in TSV file\t", file.name)
-  write.table(rawCounts$Counts, file = file.name, row.names = FALSE, quote=FALSE, sep = "\t")
 
-  ## Export a table with class labels + phenotypic information
-  characteristics.string <- unlist(lapply(pheno$characteristics, paste, collapse="; "))
-  pheno.data.frame <- data.frame(sample = pheno$sample,
-                                 class = classes,
-                                 description = characteristics.string)
-  # dim(pheno.data.frame)
-  # View(pheno.data.frame)
-  file.name <- file.path(tsv.dir, paste("pheno_",parameters$recountID,".tsv", sep = ""))
-  message("\tExporting sample classes and description in TSV file\t", file.name)
-  write.table(pheno.data.frame, file = file.name, quote=FALSE, row.names = FALSE, sep = "\t")
+
+
 
 } else {
   message.with.time("Skipping data loading")
 }
 
-# Check the dimensions of the count table
-if (nrow(rawCounts$Counts) != length(classes)){
-  stop("The number of samples (", nrow(rawCounts$Counts), ") differs from the number class labels (", length(classes),")")
-}
 
 
 ## Number of samples per class
