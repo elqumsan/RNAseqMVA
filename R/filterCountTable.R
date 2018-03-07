@@ -4,15 +4,12 @@
 #' @description Apply various filters on the observations (e.g. biological samples)
 #' and variables (e.g. genes) of
 #' a count table in order to prepare it for classification.
-#' @param countTable a data.frame with one row per observation and one column per variable
-#' @param phenoTable a data.frame with one row per observation and one column per attribute
-#' @param classColumn=parameters$classColumn name of a column of the pheno table which contains the class labels.
-#' In some cases classes must be built by concatenating several columns of the pheno table (e.g. "tissue" and "cell.type" for dataset SRP057196),
-#' This can be achieved by providing a vector of column names from the pheno table. In this case, class names
-## are built by concantenating the values in the specified columns (separated by "_").
+#' @param countTable a data.frame containing the number of read counts per gene (row) in each sample (column)
+#' @param phenoTable a data.frame describing each sample (row) with different attributes (columns)
+#' @param classLabels a vector indicating the class associated to each sample.
 #' @param minSamplesPerClass=parameters$minSamplesPerClass minimum nuimber of samples per class to keep
 #' @param nearZeroVarFilter=parameters$nearZeroVarFilter if TRUE, applyb caret::nearZeroVariance() to filter out poor predictor genes
-#' @param draw.plot=FALSE if TRUE, draw an histogram of variance per gene
+#' @param draw.plot=TRUE if TRUE, draw an histogram of variance per gene.
 #'
 #' @examples
 #' ## Load a data set
@@ -26,16 +23,16 @@
 #' # Replace unfiltered data by filtered data
 #' countTable <- filteredData$countTable
 #' phenoTable <- filteredData$phenoTable
-#' classes <- filteredData$classes
+#' classLabels <- filteredData$classLabels
 #'
-#' ## Filter a dataset and build classes based on 2 columns
+#' ## Filter a dataset and build classLabels based on 2 columns
 #' countdata <- loadRecountExperiment(recountID = "SRP057196", mergeRuns = TRUE)
 #' countTable <- t(countdata$merged$sampleCounts)
 #' phenoTable <- countdata$merged$samplePheno
 #'
 #' #' # Run the filtering
 #' filteredData <- filterCountTable(countTable, phenoTable, classColumn=c("tissue", "cell.type"), minSamplesPerClass=5)
-#' table(filteredData$classes)
+#' table(filteredData$classLabels)
 #'
 #' @import recount
 #' @import SummarizedExperiment
@@ -45,7 +42,7 @@
 #' @export
 filterCountTable <- function(countTable,
                              phenoTable,
-                             classColumn = parameters$classColumn,
+                             classLabels,
                              minSamplesPerClass = parameters$minSamplesPerClass,
                              nearZeroVarFilter = parameters$nearZeroVarFilter,
                              draw.plot = TRUE) {
@@ -55,7 +52,7 @@ filterCountTable <- function(countTable,
 
   ## Check if there are NA values, and discard all genes having at least one NA value
   if (sum(is.na(countTable)) > 0) {
-    naGenes <- colnames(countTable)[apply(is.na(countTable), 2, sum) > 0]
+    naGenes <- colnames(countTable)[apply(is.na(countTable), 1, sum) > 0]
     result$naGenes <- naGenes
     message("\tFiltering out ", length(naGenes)," genes with NA values")
     if (naGenes > 0) {
@@ -76,7 +73,7 @@ filterCountTable <- function(countTable,
 
   ## Detect genes with zero variance
   message("\tDetecting genes with zero variance")
-  varPerGene <- apply(countTable, 2 , var, na.rm=TRUE) # Compute variance per gene (row)
+  varPerGene <- apply(countTable, 1 , var, na.rm=TRUE) # Compute variance per gene (row)
   # table(varPerGene == 0)
 
   # sum(zeroVarGenes == 0) # count genes with zero variance
@@ -84,24 +81,23 @@ filterCountTable <- function(countTable,
   # length(zeroVarGenes) ## Number of genes to discard
   keptGenes <- names(varPerGene)[varPerGene > 0]
   #length(keptGenes) ## Number of genes to keep
-  filteredCountTable <- countTable[, keptGenes]
+  filteredCountTable <- countTable[keptGenes, ]
+  message("\tFiltering out ", length(zeroVarGenes)," genes with zero variance; keeping ", length(keptGenes), " genes")
   # dim(countTable)
   # dim(filteredCountTable)
-  message("\tFiltering out ", length(zeroVarGenes)," genes with zero variance; keeping ", length(keptGenes), " genes")
 
 
 
   ## Use caret::nearZeroVar() to discard supposedly bad predictor genes.
   ## This includes zero variance genes (already filtered above) but also less trivial cases, see nearZeroVar() doc for details.
   if (nearZeroVarFilter) {
-
     message("\tDetecting genes with near-zero variance using caret::nearZeroVar()")
-    nearZeroVarColumns <- nearZeroVar(countTable, allowParallel = T, saveMetrics = FALSE)
-    nearZeroVarGenes <- colnames(countTable)[nearZeroVarColumns]
+    nearZeroVarIndices <- nearZeroVar(t(countTable), allowParallel = TRUE, saveMetrics = FALSE)
+    nearZeroVarGenes <- rownames(countTable)[nearZeroVarIndices]
     #length(nearZeroVarGenes)
-    keptGenes <- setdiff(colnames(filteredCountTable), nearZeroVarGenes)
+    keptGenes <- setdiff(rownames(filteredCountTable), nearZeroVarGenes)
     message("\tFiltering out ", length(nearZeroVarGenes)," genes with near-zero variance (poor predictors); kept genes: ", length(keptGenes))
-    filteredCountTable <- filteredCountTable[, keptGenes]
+    filteredCountTable <- filteredCountTable[keptGenes,]
   # dim(filteredCountTable)
   }
 
@@ -148,7 +144,7 @@ filterCountTable <- function(countTable,
          ylab="Number of genes")
 
     ## Count the number of zero values per gene
-    zerosPerGene <- apply(countTable == 0, 2, sum)
+    zerosPerGene <- apply(countTable == 0, 1, sum)
     zerobreaks <- seq(from=0, to=max(zerosPerGene+1), length.out =50)
     # zerobreaks <- seq(from=0, to=max(zerosPerGene+1), by=1)
 
@@ -205,60 +201,63 @@ filterCountTable <- function(countTable,
   # dim(phenoTable)
   # View( phenoTable)
 
-  ################################################################
-  ## Specify sample classes by extracting information about specified class columns
-  if (is.null(classColumn) || (length(classColumn) < 1)) {
-    stop("classColumn must be defined. ")
-  } else if (length(classColumn) == 1) {
-    classes <-  as.vector(phenoTable[, classColumn])
-  } else {
-    ## Combine several columns to establish the classes
-    classes <- apply(phenoTable[, classColumn], 1, paste, collapse="_")
-  }
-  # table(classes)
+  # ################################################################
+  # ## Specify sample classes by extracting information about specified class columns
+  # if (is.null(classColumn) || (length(classColumn) < 1)) {
+  #   stop("classColumn must be defined. ")
+  # } else if (length(classColumn) == 1) {
+  #   classLabels <-  as.vector(phenoTable[, classColumn])
+  # } else {
+  #   ## Combine several columns to establish the classLabels
+  #   classLabels <- apply(phenoTable[, classColumn], 1, paste, collapse="_")
+  # }
+  # # table(classLabels)
+  #
+
 
 
   ################################################################
   ## Check if there are NA values in the sample classes
-  discardedSamples <- is.na(classes)
+  discardedSamples <- is.na(classLabels)
   if (sum(discardedSamples) > 0) {
     message("\tDiscarding ", sum(discardedSamples), " samples with undefined class in ", classColumn, " column of pheno table")
-    nonaSamples <- !is.na(classes)
-    filteredCountTable <- filteredCountTable[nonaSamples, ]
+    nonaSamples <- !is.na(classLabels)
+    filteredCountTable <- filteredCountTable[, nonaSamples]
     # dim(filteredCountTable)
     # dim(filteredPhenoTable)
     filteredPhenoTable<- phenoTable[nonaSamples, ]
-    filteredClasses <- classes[nonaSamples]
+    filteredClassLabels <- classLabels[nonaSamples]
+    # table(classLabels, filteredClassLabels)
   } else {
     filteredPhenoTable<- phenoTable
-    filteredClasses <- classes
+    filteredClassLabels <- classLabels
   }
   filterdSampleNb <- nrow(filteredCountTable)
 
   ################################################################
   ## Select classess for which we dispose of at least 10 samples
-  # length(classes)
+  # length(classLabels)
   message("\tSelecting classes with at least ", minSamplesPerClass, " samples")
-  samplesPerClass <- table(filteredClasses)
+  samplesPerClass <- table(filteredClassLabels)
   discardedClasses <- names(samplesPerClass)[samplesPerClass < minSamplesPerClass]
-  selectedClasses <- names(samplesPerClass)[samplesPerClass >= minSamplesPerClass]
-  selectedSamples <- filteredClasses %in% selectedClasses
+  keptClasses <- names(samplesPerClass)[samplesPerClass >= minSamplesPerClass]
+  keptSamples <- filteredClassLabels %in% keptClasses
   if (length (discardedClasses) > 0) {
     message("\tDiscarding ", length (discardedClasses), " classes containing less than ", minSamplesPerClass, " samples")
     message("\tDiscarded classes\t", paste(collapse=",", discardedClasses))
   }
-  message("\tKeeping ", sum(selectedSamples), " samples from ",
-          length(selectedClasses), " classes")
-  message("\tKept classes\t", paste(selectedClasses, collapse=", "))
+  message("\tKeeping ", sum(keptSamples), " samples from ",
+          length(keptClasses), " classes")
+  message("\tKept classes\t", paste(keptClasses, collapse=", "))
 
 
-  ## Update count table, pheno table and classes vector to keep only the samples belonging to selected classess
-  filteredCountTable <- filteredCountTable[selectedSamples, ]
+  ## Update count table, pheno table and classLabels vector to keep only the samples belonging to selected classess
+  filteredCountTable <- filteredCountTable[, keptSamples]
   # dim(filteredCountTable)
-  filteredPhenoTable <- filteredPhenoTable[selectedSamples, ]
+  filteredPhenoTable <- filteredPhenoTable[keptSamples, ]
   # dim(filteredPhenoTable)
-  filteredClasses <- filteredClasses[selectedSamples]
-  # length(filteredClasses)
+  filteredClassLabels <- filteredClassLabels[keptSamples]
+  # length(filteredClassLabels)
   filteredSampleNb <- nrow(filteredCountTable)
 
   ################################################################################
@@ -266,21 +265,23 @@ filterCountTable <- function(countTable,
   ## Transpose the table in order to get it in the suitable format for classifiers:
   ## one row per individual, one column per variable.
   message("\tBefore filtering, count table contains ",
-          nrow(countTable), " samples (rows) and ",
-          ncol(countTable), " genes (columns) ",
-          "belonging to ", length(classes), " classes")
+          nrow(countTable), " genes (rows) and ",
+          ncol(countTable), " samples (columns) ",
+          "belonging to ", length(unique(classLabels)), " classes")
   message("\tAfter filtering, count table contains ",
-          nrow(filteredCountTable), " samples (rows) and ",
-          ncol(filteredCountTable), " genes (columns) ",
-          "belonging to ", length(selectedClasses), " classes")
+          nrow(filteredCountTable), " genes (rows) and ",
+          ncol(filteredCountTable), " samples (columns) ",
+          "belonging to ", length(unique(keptClasses)), " classes")
   # View(filteredCountTable)
   # dim(filteredCountTable)
 
 
-  ## Return unfiltered count table + phenotable + classes
-  result$countTable <- countTable
-  result$phenoTable <- phenoTable
-  result$classes <- classes
+  ## Return unfiltered count table + phenotable + classLabels
+  result$countTable <- filteredCountTable
+  result$phenoTable <- filteredPhenoTable
+  result$classLabels <- filteredClassLabels
+  result$nbSamples <- ncol(filteredCountTable)
+  result$nbGenes <- nrow(filteredCountTable)
 
   ## Include the filtering criteria in the returned list
   result$zeroVarGenes <- zeroVarGenes
@@ -288,12 +289,7 @@ filterCountTable <- function(countTable,
     result$nearZeroVarGenes <- nearZeroVarGenes
   }
   result$keptGenes <- keptGenes
-  result$selectedClasses <- selectedClasses
-
-  ## Return gene-wise and sample-wise filtered count table
-  result$filteredCountTable <- filteredCountTable
-  result$filteredPhenoTable <- filteredPhenoTable
-  result$filteredClasses <- filteredClasses
+  result$keptClasses <- keptClasses
 
   message.with.time("Finished filterCountTable() for Recount experiment ID ", parameters$recountID)
 

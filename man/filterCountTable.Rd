@@ -5,24 +5,22 @@
 \title{Apply various filters on the observations and variables of
 a count table in order to prepare it for classification.}
 \usage{
-filterCountTable(countTable, phenoTable, classColumn = parameters$classColumn,
+filterCountTable(countTable, phenoTable, classLabels,
   minSamplesPerClass = parameters$minSamplesPerClass,
   nearZeroVarFilter = parameters$nearZeroVarFilter, draw.plot = TRUE)
 }
 \arguments{
-\item{countTable}{a data.frame with one row per observation and one column per variable}
+\item{countTable}{a data.frame containing the number of read counts per gene (row) in each sample (column)}
 
-\item{phenoTable}{a data.frame with one row per observation and one column per attribute}
+\item{phenoTable}{a data.frame describing each sample (row) with different attributes (columns)}
 
-\item{classColumn=parameters$classColumn}{name of a column of the pheno table which contains the class labels.
-In some cases classes must be built by concatenating several columns of the pheno table (e.g. "tissue" and "cell.type" for dataset SRP057196),
-This can be achieved by providing a vector of column names from the pheno table. In this case, class names}
+\item{classLabels}{a vector indicating the class associated to each sample.}
 
 \item{minSamplesPerClass=parameters$minSamplesPerClass}{minimum nuimber of samples per class to keep}
 
 \item{nearZeroVarFilter=parameters$nearZeroVarFilter}{if TRUE, applyb caret::nearZeroVariance() to filter out poor predictor genes}
 
-\item{draw.plot=FALSE}{if TRUE, draw an histogram of variance per gene}
+\item{draw.plot=TRUE}{if TRUE, draw an histogram of variance per gene.}
 }
 \description{
 Apply various filters on the observations (e.g. biological samples)
@@ -41,16 +39,16 @@ filteredData <- filterCountTable(countTable, phenoTable, classColumn="tissue")
 # Replace unfiltered data by filtered data
 countTable <- filteredData$countTable
 phenoTable <- filteredData$phenoTable
-classes <- filteredData$classes
+classLabels <- filteredData$classLabels
 
-## Filter a dataset and build classes based on 2 columns
+## Filter a dataset and build classLabels based on 2 columns
 countdata <- loadRecountExperiment(recountID = "SRP057196", mergeRuns = TRUE)
 countTable <- t(countdata$merged$sampleCounts)
 phenoTable <- countdata$merged$samplePheno
 
 #' # Run the filtering
 filteredData <- filterCountTable(countTable, phenoTable, classColumn=c("tissue", "cell.type"), minSamplesPerClass=5)
-table(filteredData$classes)
+table(filteredData$classLabels)
 
 }
 \author{
