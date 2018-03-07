@@ -165,6 +165,52 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
                                verbose = verbose)
   }
 
+  ################################################################
+  ## Use either the merged or the original runs as original count table
+  result$original <- list()
+  if (mergeRuns){
+    result$original$countTable <-as.data.frame(result$merged$sampleCounts)
+  } else {
+    result$original$countTable <- as.data.frame(countsPerRun)
+  }
+  # dim(result$original$countTable)
+
+  ################################################################
+  # Extract pheno table for the sample-wised merged count
+  message("\tExtracting pheno Table from sample-wised merged count")
+  if (mergeRuns){
+    result$original$phenoTable <- result$merged$samplePheno
+  } else {
+    result$original$phenoTable <- runPhenoTable
+  }
+  message("\tphenoTable contains ",
+          nrow(phenoTable), " rows (samples) and ",
+          ncol(phenoTable), " columns (pheno description fields).")
+  # names(phenoTable)
+  # dim(phenoTable)
+
+  result$geo.characteristics <- geo.characteristics
+  # dim(geo.characteristics)
+
+
+  ################################################################
+  ## Specify sample classes (classLabels) by extracting information about specified class columns
+  if (is.null(classColumn) || (length(classColumn) < 1)) {
+    stop("classColumn must be defined. ")
+  } else if (length(classColumn) == 1) {
+    result$original$classLabels <-  as.vector(result$original$phenoTable[, classColumn])
+  } else {
+    ## Combine several columns to establish the classLabels
+    result$original$classLabels <- apply(result$original$phenoTable[, classColumn], 1, paste, collapse="_")
+  }
+  # table(classLabels)
+
+  result$original$nbSamples <- ncol(result$original$countTable)
+  result$original$nbGenes <- nrow(result$original$countTable)
+  result$original$classNames <- sort(unique(result$original$classLabels))
+  result$original$nbClasses <- length(result$original$classNames)
+
+
   message.with.time("Finished loading Recount experiment ID ", parameters$recountID)
   return(result)
 }

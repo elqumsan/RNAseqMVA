@@ -2,18 +2,16 @@
 % Please edit documentation in R/load_counts.R
 \name{loadCounts}
 \alias{loadCounts}
-\title{Loading the count table, the Pheno table and vector of classes}
+\title{Loading the count table, the Pheno table and vector of class labels}
 \usage{
 loadCounts(recountID = parameters$recountID,
   classColumn = parameters$classColumn, mergeRuns = parameters$mergeRuns,
   sampleIdColumn = parameters$sampleIdColumn,
   minSamplesPerClass = parameters$minSamplesPerClass,
-  dir.workspace = parameters$dir$workspace, ...)
+  dir.workspace = parameters$dir$workspace, na.rm = TRUE, ...)
 }
 \arguments{
 \item{recountID}{number of experiment}
-
-\item{classColumn}{## Column(s) of the pheno table used to define class labels. Passed to filterCountTable()}
 
 \item{mergeRuns}{to wrapper the rus by sample}
 
@@ -21,16 +19,22 @@ loadCounts(recountID = parameters$recountID,
 
 \item{sampleIdColumn="geo_accession"}{name of the column of the pheno table which contains the sample IDs.}
 
+\item{classColumn=parameters$classColumn}{name of a column of the pheno table which contains the class labels.
+In some cases classes must be built by concatenating several columns of the pheno table (e.g. "tissue" and "cell.type" for dataset SRP057196),
+This can be achieved by providing a vector of column names from the pheno table. In this case, class names}
+
 \item{minSamplesPerClass=parameters$minSamplesPerClass}{min number of samples per class for the filtering.  Passed to filterCountTable()}
 
 \item{dir.workspace=parameters$dir$workspace}{Directory in which the data and results will be stored.}
+
+\item{na.rm=TRUE}{if TRUE, omit all the rows (genes) that contain NA values. True by default because these NA values are problematic for classification methods.}
 }
 \value{
 
 }
 \description{
 Given a ReCount ID, load the count table, the pheno table
-and the vector of classes, prepares and filters the count table, via
+and the vector of class labels, prepares and filters the count table, via
 wrapper runs by sample.
 }
 \examples{
@@ -40,7 +44,7 @@ wrapper runs by sample.
 x <- loadCounts( recountID = "SRP048759", mergeRuns=T, classColumn = "tissue")
 
 ################################################################
-## RNA-seq data combining 2 columns to define sample classes
+## RNA-seq data combining 2 columns to define sample classes (classLabels vector)
 ## Reduce the min number of samples per class for this dataset.
 x <- loadCounts( recountID = "SRP057196", mergeRuns=T,
     classColumn = c("tissue", "cell.type"), minSamplesPerClass=5)
