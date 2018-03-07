@@ -1,14 +1,18 @@
-#' @title  Loading the count table, the Pheno table and vector of classes
+#' @title  Loading the count table, the Pheno table and vector of class labels
 #' @author Mustafa ABUELQUMSAN and Jacques van Helden
 #' @description Given a ReCount ID, load the count table, the pheno table
-#' and the vector of classes, prepares and filters the count table, via
+#' and the vector of class labels, prepares and filters the count table, via
 #' wrapper runs by sample.
 #' @param recountID  number of experiment
 #' @param mergeRuns to wrapper the rus by sample
 #' @param sampleIdColumn="geo_accession"  name of the column of the pheno table which contains the sample IDs.
-#' @param classColumn ## Column(s) of the pheno table used to define class labels. Passed to filterCountTable()
+#' @param classColumn=parameters$classColumn name of a column of the pheno table which contains the class labels.
+#' In some cases classes must be built by concatenating several columns of the pheno table (e.g. "tissue" and "cell.type" for dataset SRP057196),
+#' This can be achieved by providing a vector of column names from the pheno table. In this case, class names
+## are built by concantenating the values in the specified columns (separated by "_").
 #' @param minSamplesPerClass=parameters$minSamplesPerClass min number of samples per class for the filtering.  Passed to filterCountTable()
 #' @param dir.workspace=parameters$dir$workspace Directory in which the data and results will be stored.
+#' @param na.rm=TRUE if TRUE, omit all the rows (genes) that contain NA values. True by default because these NA values are problematic for classification methods.
 #' @param ...  additional parameters are passed to loadRecountExperiment()
 #'
 #' @return
@@ -20,7 +24,7 @@
 #' x <- loadCounts( recountID = "SRP048759", mergeRuns=T, classColumn = "tissue")
 #'
 #' ################################################################
-#' ## RNA-seq data combining 2 columns to define sample classes
+#' ## RNA-seq data combining 2 columns to define sample classes (classLabels vector)
 #' ## Reduce the min number of samples per class for this dataset.
 #' x <- loadCounts( recountID = "SRP057196", mergeRuns=T,
 #'     classColumn = c("tissue", "cell.type"), minSamplesPerClass=5)
@@ -36,6 +40,7 @@ loadCounts <- function(recountID = parameters$recountID,
                        sampleIdColumn = parameters$sampleIdColumn, ## Alternative: use "sample"
                        minSamplesPerClass = parameters$minSamplesPerClass,
                        dir.workspace = parameters$dir$workspace,
+                       na.rm = TRUE,
                        ... ) {
   message.with.time("Starting loadCounts() for Recount ID ", recountID)
 
@@ -57,15 +62,24 @@ loadCounts <- function(recountID = parameters$recountID,
   ## Tanspose the count tabe in order to use it with classifier methods
   ## which expect a table with one raw per individual (biological samples)
   ## and one column per feature (gene).
-  message("\tTransposing count table to use it with classifier methods. ")
   if (mergeRuns){
-    countTable <-as.data.frame(t(na.omit(experiment$merged$sampleCounts)))
+    countTable <-as.data.frame(experiment$merged$sampleCounts)
   } else {
-    countTable <- as.data.frame(t(na.omit(experiment$countsPerRun)))
+    countTable <- as.data.frame(experiment$countsPerRun)
   }
+  # dim(countTable)
+
+  ## If requested, suppress the NA values
+  if (na.rm) {
+    message("\tSuppressing rows (genes) with NA values")
+    countTable <- na.omit(countTable)
+    # dim(countTable)
+  }
+
+
   message("\tcountTable contains ",
-          nrow(countTable), " rows (samples) and ",
-          ncol(countTable), " columns (genes).")
+          nrow(countTable), " rows (genes) and ",
+          ncol(countTable), " columns (samples).")
   #countTable <-as.data.frame(t(experiment$runCounts))
 
 
@@ -86,11 +100,26 @@ loadCounts <- function(recountID = parameters$recountID,
   geo.characteristics <- experiment$geo.characteristics
   # dim(geo.characteristics)
 
+
+  ################################################################
+  ## Specify sample classes (classLabels) by extracting information about specified class columns
+  if (is.null(classColumn) || (length(classColumn) < 1)) {
+    stop("classColumn must be defined. ")
+  } else if (length(classColumn) == 1) {
+    classLabels <-  as.vector(phenoTable[, classColumn])
+  } else {
+    ## Combine several columns to establish the classLabels
+    classLabels <- apply(phenoTable[, classColumn], 1, paste, collapse="_")
+  }
+  # table(classLabels)
+
+
+
   ################################################
   ## Filter zero-variance and near-zero variance variables from the count table
   filteredData <- filterCountTable(countTable = countTable,
                                    phenoTable = phenoTable,
-                                   classColumn = classColumn,
+                                   classLabels = classLabels,
 #                                   nearZeroVarFilter = FALSE,
                                    minSamplesPerClass = minSamplesPerClass)
   # dim(countTable)
@@ -98,15 +127,15 @@ loadCounts <- function(recountID = parameters$recountID,
   # replace unfiltered Data with filted data
   # countTable <- filteredData$countTable
   # phenoTable <- filteredData$phenoTable
-  # classes <- make.names(filteredData$classes , unique = F , allow_ = T)
-  # #classifier requires a factor for classes
-  # classes <- as.factor(classes) ## RandomForest requires as.factor()
+  # classLabels <- make.names(filteredData$classLabels , unique = F , allow_ = T)
+  # #classifier requires a factor for classLabels
+  # classLabels <- as.factor(classLabels) ## RandomForest requires as.factor()
 
   message("\tUnfiltered count table",
           "\n\t\tdimensions: ", nrow(filteredData$countTable), sep= " x ", ncol(filteredData$countTable),
           "\n\t\tPheno table dimensions: ",nrow(filteredData$phenoTable), " X ", ncol(filteredData$phenoTable),
-          "\n\t\tVector of class labels length: ", length(filteredData$classes),
-          "\n\t\tNumber of distinct classes: ", length(unique(filteredData$classes)))
+          "\n\t\tVector of class labels length: ", length(filteredData$classLabels),
+          "\n\t\tNumber of distinct classes: ", length(unique(filteredData$classLabels)))
   message("\tFiltered count table",
           "\n\t\tdimensions: ", nrow(filteredData$filteredCountTable), sep= " x ", ncol(filteredData$filteredCountTable),
           "\n\t\tPheno table dimensions: ",nrow(filteredData$filteredPhenoTable), " X ", ncol(filteredData$filteredPhenoTable),
@@ -125,7 +154,7 @@ loadCounts <- function(recountID = parameters$recountID,
 
   experiment$originalCountTable<- filteredData$countTable
   experiment$originalPhenoTable <- filteredData$phenoTable
-  experiment$originalClasses <- filteredData$classes
+  experiment$originalClasses <- filteredData$classLabels
 
   experiment$filteredCountTable<- filteredData$filteredCountTable
   experiment$filterePhenoTable <- filteredData$filteredPhenoTable
