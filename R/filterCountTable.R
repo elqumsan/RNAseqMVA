@@ -4,9 +4,7 @@
 #' @description Apply various filters on the observations (e.g. biological samples)
 #' and variables (e.g. genes) of
 #' a count table in order to prepare it for classification.
-#' @param countTable a data.frame containing the number of read counts per gene (row) in each sample (column)
-#' @param phenoTable a data.frame describing each sample (row) with different attributes (columns)
-#' @param classLabels a vector indicating the class associated to each sample.
+#' @param countsWithClasses an object of the class CountTableWithClasses
 #' @param minSamplesPerClass=parameters$minSamplesPerClass minimum nuimber of samples per class to keep
 #' @param nearZeroVarFilter=parameters$nearZeroVarFilter if TRUE, applyb caret::nearZeroVariance() to filter out poor predictor genes
 #' @param draw.plot=TRUE if TRUE, draw an histogram of variance per gene.
@@ -40,25 +38,31 @@
 #' @import lattice
 #' @import ggplot2
 #' @export
-filterCountTable <- function(countTable,
-                             phenoTable,
-                             classLabels,
+filterCountTable <- function(countsWithClasses,
                              minSamplesPerClass = parameters$minSamplesPerClass,
                              nearZeroVarFilter = parameters$nearZeroVarFilter,
                              draw.plot = TRUE) {
 
   message.with.time("Filtering count table")
+
+  ## Check validity of the input class
+  if (!is(countsWithClasses, "CountTableWithClasses")) {
+    stop("filterCountTable() requires an object of class CountTableWithClasses")
+  }
+
   result <- list()
+  class(result) <- "CountTableWithClasses"
+  result$dataType <- "filtered counts"
 
   ## Check if there are NA values, and discard all genes having at least one NA value
-  if (sum(is.na(countTable)) > 0) {
-    naGenes <- colnames(countTable)[apply(is.na(countTable), 1, sum) > 0]
+  if (sum(is.na(countsWithClasses$countTable)) > 0) {
+    naGenes <- colnames(countsWithClasses$countTable)[apply(is.na(countsWithClasses$countTable), 1, sum) > 0]
     result$naGenes <- naGenes
     message("\tFiltering out ", length(naGenes)," genes with NA values")
     if (naGenes > 0) {
-      keptGenes <- setdiff(colnames(countTable), naGenes)
-      countTable <- countTable[, keptGenes]
-      dim(countTable)
+      keptGenes <- setdiff(colnames(countsWithClasses$countTable), naGenes)
+      countsWithClasses$countTable <- countsWithClasses$countTable[, keptGenes]
+      dim(countsWithClasses$countTable)
     }
     ## Report the number of genes with NA values
     if (exists("naGenes")){
@@ -73,7 +77,7 @@ filterCountTable <- function(countTable,
 
   ## Detect genes with zero variance
   message("\tDetecting genes with zero variance")
-  varPerGene <- apply(countTable, 1 , var, na.rm=TRUE) # Compute variance per gene (row)
+  varPerGene <- apply(countsWithClasses$countTable, 1 , var, na.rm=TRUE) # Compute variance per gene (row)
   # table(varPerGene == 0)
 
   # sum(zeroVarGenes == 0) # count genes with zero variance
@@ -81,9 +85,9 @@ filterCountTable <- function(countTable,
   # length(zeroVarGenes) ## Number of genes to discard
   keptGenes <- names(varPerGene)[varPerGene > 0]
   #length(keptGenes) ## Number of genes to keep
-  filteredCountTable <- countTable[keptGenes, ]
+  filteredCountTable <- countsWithClasses$countTable[keptGenes, ]
   message("\tFiltering out ", length(zeroVarGenes)," genes with zero variance; keeping ", length(keptGenes), " genes")
-  # dim(countTable)
+  # dim(countsWithClasses$countTable)
   # dim(filteredCountTable)
 
 
@@ -92,8 +96,8 @@ filterCountTable <- function(countTable,
   ## This includes zero variance genes (already filtered above) but also less trivial cases, see nearZeroVar() doc for details.
   if (nearZeroVarFilter) {
     message("\tDetecting genes with near-zero variance using caret::nearZeroVar()")
-    nearZeroVarIndices <- nearZeroVar(t(countTable), allowParallel = TRUE, saveMetrics = FALSE)
-    nearZeroVarGenes <- rownames(countTable)[nearZeroVarIndices]
+    nearZeroVarIndices <- nearZeroVar(t(countsWithClasses$countTable), allowParallel = TRUE, saveMetrics = FALSE)
+    nearZeroVarGenes <- rownames(countsWithClasses$countTable)[nearZeroVarIndices]
     #length(nearZeroVarGenes)
     keptGenes <- setdiff(rownames(filteredCountTable), nearZeroVarGenes)
     message("\tFiltering out ", length(nearZeroVarGenes)," genes with near-zero variance (poor predictors); kept genes: ", length(keptGenes))
@@ -144,7 +148,7 @@ filterCountTable <- function(countTable,
          ylab="Number of genes")
 
     ## Count the number of zero values per gene
-    zerosPerGene <- apply(countTable == 0, 1, sum)
+    zerosPerGene <- apply(countsWithClasses$countTable == 0, 1, sum)
     zerobreaks <- seq(from=0, to=max(zerosPerGene+1), length.out =50)
     # zerobreaks <- seq(from=0, to=max(zerosPerGene+1), by=1)
 
@@ -195,48 +199,48 @@ filterCountTable <- function(countTable,
 
   }
 
-  # sample.nb <- nrow(countTable)
-  # gene.nb <- ncol(countTable)
-  # dim(countTable)
-  # dim(phenoTable)
-  # View( phenoTable)
+  # sample.nb <- nrow(countsWithClasses$countTable)
+  # gene.nb <- ncol(countsWithClasses$countTable)
+  # dim(countsWithClasses$countTable)
+  # dim(countsWithClasses$phenoTable)
+  # View( countsWithClasses$phenoTable)
 
   # ################################################################
   # ## Specify sample classes by extracting information about specified class columns
   # if (is.null(classColumn) || (length(classColumn) < 1)) {
   #   stop("classColumn must be defined. ")
   # } else if (length(classColumn) == 1) {
-  #   classLabels <-  as.vector(phenoTable[, classColumn])
+  #   countsWithClasses$classLabels <-  as.vector(countsWithClasses$phenoTable[, classColumn])
   # } else {
-  #   ## Combine several columns to establish the classLabels
-  #   classLabels <- apply(phenoTable[, classColumn], 1, paste, collapse="_")
+  #   ## Combine several columns to establish the countsWithClasses$classLabels
+  #   countsWithClasses$classLabels <- apply(countsWithClasses$phenoTable[, classColumn], 1, paste, collapse="_")
   # }
-  # # table(classLabels)
+  # # table(countsWithClasses$classLabels)
   #
 
 
 
   ################################################################
   ## Check if there are NA values in the sample classes
-  discardedSamples <- is.na(classLabels)
+  discardedSamples <- is.na(countsWithClasses$classLabels)
   if (sum(discardedSamples) > 0) {
     message("\tDiscarding ", sum(discardedSamples), " samples with undefined class in ", classColumn, " column of pheno table")
-    nonaSamples <- !is.na(classLabels)
+    nonaSamples <- !is.na(countsWithClasses$classLabels)
     filteredCountTable <- filteredCountTable[, nonaSamples]
     # dim(filteredCountTable)
     # dim(filteredPhenoTable)
-    filteredPhenoTable<- phenoTable[nonaSamples, ]
-    filteredClassLabels <- classLabels[nonaSamples]
-    # table(classLabels, filteredClassLabels)
+    filteredPhenoTable<- countsWithClasses$phenoTable[nonaSamples, ]
+    filteredClassLabels <- countsWithClasses$classLabels[nonaSamples]
+    # table(countsWithClasses$classLabels, filteredClassLabels)
   } else {
-    filteredPhenoTable<- phenoTable
-    filteredClassLabels <- classLabels
+    filteredPhenoTable<- countsWithClasses$phenoTable
+    filteredClassLabels <- countsWithClasses$classLabels
   }
   filterdSampleNb <- nrow(filteredCountTable)
 
   ################################################################
   ## Select classess for which we dispose of at least 10 samples
-  # length(classLabels)
+  # length(countsWithClasses$classLabels)
   message("\tSelecting classes with at least ", minSamplesPerClass, " samples")
   samplesPerClass <- table(filteredClassLabels)
   discardedClasses <- names(samplesPerClass)[samplesPerClass < minSamplesPerClass]
@@ -251,7 +255,7 @@ filterCountTable <- function(countTable,
   message("\tKept classes\t", paste(keptClasses, collapse=", "))
 
 
-  ## Update count table, pheno table and classLabels vector to keep only the samples belonging to selected classess
+  ## Update count table, pheno table and countsWithClasses$classLabels vector to keep only the samples belonging to selected classess
   filteredCountTable <- filteredCountTable[, keptSamples]
   # dim(filteredCountTable)
   filteredPhenoTable <- filteredPhenoTable[keptSamples, ]
@@ -265,9 +269,9 @@ filterCountTable <- function(countTable,
   ## Transpose the table in order to get it in the suitable format for classifiers:
   ## one row per individual, one column per variable.
   message("\tBefore filtering, count table contains ",
-          nrow(countTable), " genes (rows) and ",
-          ncol(countTable), " samples (columns) ",
-          "belonging to ", length(unique(classLabels)), " classes")
+          nrow(countsWithClasses$countTable), " genes (rows) and ",
+          ncol(countsWithClasses$countTable), " samples (columns) ",
+          "belonging to ", length(unique(countsWithClasses$classLabels)), " classes")
   message("\tAfter filtering, count table contains ",
           nrow(filteredCountTable), " genes (rows) and ",
           ncol(filteredCountTable), " samples (columns) ",
@@ -276,7 +280,7 @@ filterCountTable <- function(countTable,
   # dim(filteredCountTable)
 
 
-  ## Return unfiltered count table + phenotable + classLabels
+  ## Return unfiltered count table + phenotable + countsWithClasses$classLabels
   result$countTable <- filteredCountTable
   result$phenoTable <- filteredPhenoTable
   result$classLabels <- filteredClassLabels

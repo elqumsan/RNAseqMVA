@@ -74,7 +74,7 @@ loadCounts <- function(recountID = parameters$recountID,
   }
 
 
-  message("\tcountTable contains ",
+  message("\toriginal$countTable contains ",
           nrow(experiment$original$countTable), " rows (genes) and ",
           ncol(experiment$original$countTable), " columns (samples).")
   #countTable <-as.data.frame(t(experiment$runCounts))
@@ -105,10 +105,10 @@ loadCounts <- function(recountID = parameters$recountID,
 
   ################################################
   #### Filter zero-variance and near-zero variance variables from the count table #####
-  experiment$filtered <- filterCountTable(
-                            countTable = experiment$original$countTable,
-                            phenoTable = experiment$original$phenoTable,
-                            classLabels = experiment$original$classLabels,
+  experiment$filtered <- filterCountTable(countsWithClasses = experiment$original,
+                            # countTable = experiment$original$countTable,
+                            # phenoTable = experiment$original$phenoTable,
+                            # classLabels = experiment$original$classLabels,
     #                                   nearZeroVarFilter = FALSE,
                             minSamplesPerClass = parameters$minSamplesPerClass)
   # dim(countTable)
