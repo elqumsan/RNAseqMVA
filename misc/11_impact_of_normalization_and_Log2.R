@@ -14,7 +14,7 @@
 #'
 #'
 
-rawTable <- loaded$originalCountTable
+rawTable <- loaded$originalExperiment$countTable
 stat.raw <- list()
 
 # M = data.frame(matrix(rnorm(100000),nrow=500))
@@ -30,7 +30,7 @@ stat.raw$sd = apply(rawTable,2,sd)
 
 # par(mfrow=c(1,2))
 
-message.with.time("Drawing plots describing count table statistics")
+message.with.time("\t\tDrawing plots describing original count table statistics")
 
 file.prefix <- paste("main_stat.raw_",parameters$recountID,sep = "")
 boxplot.file <- file.path(dir.NormImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
@@ -56,15 +56,11 @@ silence <- dev.off()
 #
 # x <- data.frame(q3 = apply(rawCounts$Counts, 1, quantile, q=0.75), sum = apply(rawCounts$Counts, 1, sum), class=loaded$classes)
 
-x <- data.frame(libsum=apply(loaded$originalCountTable, 1, sum), class=loaded$originalClasses)
+libsum=apply(loaded$originalExperiment$countTable, 2, sum)
+x <- data.frame(libsum=apply(loaded$originalExperiment$countTable, 2, sum), class=loaded$originalExperiment$classLabels)
 
 head(x)
 
-# boxplot(libsum ~ class , data=x)
-# boxplot(libsum ~ class , data=x, horizontal=TRUE)
-#
-# boxplot(libsum ~ class , data=x, horizontal=TRUE, las=1)
-# boxplot(libsum ~ class , data=x, horizontal=TRUE, las=1, cex=0.5)
 
 file.prefix <- paste("libsum.raw_",parameters$recountID,sep = "")
 boxplot.file <- file.path(dir.NormImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
@@ -97,14 +93,14 @@ file.prefix <- paste("main_stat.log2norm_",parameters$recountID,sep = "")
 boxplot.file <- file.path(dir.NormImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
 pdf(file = boxplot.file)
 boxplot(cbind(stat.log2norm$min, stat.log2norm$fQuan, stat.log2norm$median, stat.log2norm$tQaun, stat.log2norm$max, stat.log2norm$mean, stat.log2norm$sd) ,
-        ylim= c(0,50000), names=c("min","F.Qaunt","median","T.Qaunt","max","mean","sd"), las=1, cex.axis = 0.7,
+        ylim= c(0,100), names=c("min","F.Qaunt","median","T.Qaunt","max","mean","sd"), las=1, cex.axis = 0.7,
         xlab= c(paste("Sammary statistics for the log2norm Table",parameters$recountID)))
 silence <- dev.off()
 
 file.prefix <- paste("diff_bet_stat.log2norm_", parameters$recountID, sep = "")
 boxplot.file <- file.path(dir.NormImpact, paste(file.prefix, "boxplot.pdf", sep = "_"))
 pdf(file = boxplot.file)
-boxplot(cbind(stat.log2norm$fQuan - stat.log2norm$min, stat.log2norm$median - stat.log2norm$min, stat.log2norm$tQaun - stat.log2norm$min, stat.log2norm$max - stat.log2norm$tQaun) , ylim= c(0,50000),
+boxplot(cbind(stat.log2norm$fQuan - stat.log2norm$min, stat.log2norm$median - stat.log2norm$min, stat.log2norm$tQaun - stat.log2norm$min, stat.log2norm$max - stat.log2norm$tQaun) , ylim= c(0,100),
         names= c("fQaun-min", "median-min", "tQuan-min", "max-tQuan"), cex.axis = 0.7,
         xlab= c(paste("difference between some statistics\n","in log2norm table" ,parameters$recountID)))
 silence <- dev.off()
@@ -117,15 +113,11 @@ silence <- dev.off()
 #
 # x <- data.frame(q3 = apply(rawCounts1, 1, quantile, q=0.75), sum = apply(rawCounts1, 1, sum), class=loaded$classes)
 
-x <- data.frame(libsum=apply(loaded$log2norm$counts, 1, sum), class=loaded$log2norm$classLabels)
+x <- data.frame(libsum=apply(loaded$log2norm$counts, 2, sum), class=loaded$log2norm$classLabels)
 
 head(x)
 
-# boxplot(libsum ~ class , data=x)
-# boxplot(libsum ~ class , data=x, horizontal=TRUE)
 #
-# boxplot(libsum ~ class , data=x, horizontal=TRUE, las=1)
-# boxplot(libsum ~ class , data=x, horizontal=TRUE, las=1, cex=0.5)
 
 file.prefix <- paste("libsum.log2norm_",parameters$recountID,sep = "")
 boxplot.file <- file.path(dir.NormImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
@@ -141,7 +133,23 @@ silence <- dev.off()
 #############################################################################################
 ###### Draw some plots to showing effects of some treatments(Norm and log2) on the Count Table ####
 #############################################################################################
-message.with.time("Drawing plots describing count table statistics and distribution")
+message.with.time("\tDrawing plots describing count table statistics and distribution")
+
+#### Compute a trimmed mean: suppress the 5% top and bottom values ####
+if (parameters$compute) {
+  message.with.time("Computing trimmed mean of normalized counts")
+  x <- unlist(loaded$norm$counts)
+  q0.05 <- quantile(x = x, probs = 0.05, na.rm=TRUE)
+  q0.95 <- quantile(x = x, probs = 0.95, na.rm=TRUE)
+  trimmed <- (x[x > q0.05 & x < q0.95])
+  suppressed.proportion <- 1 - length(trimmed)/length(x)
+} else {
+  message.with.time("Skipping a trimmed mean")
+}
+
+
+
+
 
 ## histogram of normalized counts. Zoom on the representative part of the histogram
 file.prefix <- file.path(dir.NormImpact, paste(parameters$recountID, "_counts_norm_perc75_hist.pdf", sep = ""))
@@ -158,6 +166,19 @@ legend("topright",lwd=2,
        legend=c("mean", "median", "trimmed mean"),
        col=c("darkgreen", "blue", "purple"))
 silence <- dev.off()
+
+
+#### Compute a trimmed mean: suppress the 5% top and bottom values ####
+if (parameters$compute) {
+  message.with.time("Computing trimmed mean of log2normalized counts")
+  x <- unlist(loaded$log2norm$counts)
+  q0.05 <- quantile(x = x, probs = 0.05, na.rm=TRUE)
+  q0.95 <- quantile(x = x, probs = 0.95, na.rm=TRUE)
+  log2.trimmed <- (x[x > q0.05 & x < q0.95])
+  suppressed.proportion <- 1 - length(log2.trimmed)/length(x)
+} else {
+  message.with.time("Skipping a trimmed mean")
+}
 
 file.prefix <- file.path(dir.NormImpact, paste(parameters$recountID, "_counts_norm_perc75_and_log2_hist.pdf", sep = ""))
 
@@ -179,8 +200,8 @@ silence <- dev.off()
 file.prefix <- file.path(dir.NormImpact, paste(parameters$recountID, "_rawcounts_mean_vs_Q3.pdf", sep = ""))
 pdf(file= file.prefix,
   width = 8, height = 8)
-plot(x=apply(loaded$originalCountTable, 1, mean),
-     y=signif(digits=3, apply(loaded$originalCountTable, 1, quantile, 0.75)),
+plot(x=apply(loaded$originalExperiment$countTable, 2, mean),
+     y=signif(digits=3, apply(loaded$originalExperiment$countTable, 2, quantile, 0.75)),
      main="raw counts: Percentile 75 versus mean",
      xlab="Mean counts per sample",
      ylab="Percentile 75",
