@@ -44,6 +44,11 @@ SRP042620:
   geo_series: "GSE58135"
   description: "Multi-group breast cancer"
   classColumn: "tissue"
+  classColors["Breast.Cancer.Cell.Line"]: "red"
+  classColors["ER..Breast.Cancer.Primary.Tumor"]: "darkblue"
+  classColors["Triple.Negative.Breast.Cancer.Primary.Tumor"]: "purple"
+  classColors["Uninvolved.Breast.Tissue.Adjacent.to.ER..Primary.Tumor"]: "green"
+  classColors["Uninvolved.Breast.Tissue.Adjacent.to.TNBC.Primary.Tumor"]: "black"
 #      description:  "Multi-group breast cancer"
 
 #SRP057196:
@@ -109,3 +114,13 @@ SRP006574:
 SRP057196:
   description: "individual cells into all of the major neuronal, glial, and vascular cell types in the brain"
   classColumn: "cell.type"
+  classColors: ["fetal_quiescent", "fetal_replicating", "astrocytes", "neurons", "hybrid","oligodendrocytes","endothelial","microglia","OPC"]
+      classColors["fetal_quiescent"]: "red"
+      classColors["fetal_replicating"]: "darkblue"
+      classColors["astrocytes"]: "purple"
+      classColors["neurons"]: "green"
+      classColors["hybrid"]: "black"
+      classColors["oligodendrocytes"]: "cyan"
+      classColors["endothelial"]: "darkgoldenrod1"
+      classColors["microglia"]: "aquamarine4"
+      classColors["OPC"]: "burlywood4"
