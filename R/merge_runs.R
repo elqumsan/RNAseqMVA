@@ -13,56 +13,66 @@ MergeRuns <- function(countsPerRun,
                       sampleIdColumn = "geo_accession",
                       verbose=FALSE) {
   message.with.time("MergeRuns()\t", "recountID = ", parameters$recountID)
+  result <- list()
+  result$sampleIdColumn <- sampleIdColumn
 
-  unique.samples <- as.vector(unique(unlist(runPhenoTable[, sampleIdColumn])))
-  message("\tMerging runs from count table (", nrow(countsPerRun), " features, ",
+  # dim(countsPerRun)
+
+  result$sampleNames <- as.vector(unique(unlist(runPhenoTable[, sampleIdColumn])))
+  result$nbSamples <- length(result$sampleNames)
+  message("\tMerging runs from count table (",
+          nrow(countsPerRun), " features, ",
           ncol(countsPerRun), " runs), ",
-          length(unique.samples), " unique samples. ")
-  sample.nb <- length(unique.samples)
-  sample.counts <- data.frame(matrix(nrow=nrow(countsPerRun),
-                                     ncol=length(unique.samples)))
-  names(sample.counts) <- unique.samples
-  rownames(sample.counts) <- rownames(countsPerRun)
-  # View(sample.counts)
+          result$nbSamples, " unique samples. ")
+  result$countTable <- data.frame(matrix(nrow=nrow(countsPerRun),
+                                     ncol=length(result$sampleNames)))
+  names(result$countTable) <- result$sampleNames
+  rownames(result$countTable) <- rownames(countsPerRun)
+  # View(result$countTable)
 
 
   ## TO DO: see if we can use some apply or do.call() function
   ## to replace this loop, since "for" is an heresy in R
   s <- 0
-  for (sample in unique.samples) {
+  for (sample in result$sampleNames) {
     s <- s + 1
-    # if (verbose) { message("\tmerging counts for sample ", s, "/", sample.nb, " ", sample) }
+    # if (verbose) { message("\tmerging counts for sample ", s, "/", result$nbSamples, " ", sample) }
     runs <- grep(pattern = sample, x = runPhenoTable[, sampleIdColumn])
     if (length(runs ) > 1) {
-      sample.counts[,sample] <- apply(countsPerRun[,runs],1,sum)
+      result$countTable[,sample] <- apply(countsPerRun[,runs],1,sum)
     } else {
-      sample.counts[,sample] <- countsPerRun[,runs]
+      result$countTable[,sample] <- countsPerRun[,runs]
     }
   }
+  # View(result$countTable)
 
   ## Prepare a phenotable with all fields that are identical between runs
   ## This is tricky.
-  sample.rows <- pmatch(unique.samples, unlist(runPhenoTable[sampleIdColumn]))
-  sampleFields <- vector()
+  sample.rows <- pmatch(result$sampleNames, unlist(runPhenoTable[sampleIdColumn]))
+  result$sampleFields <- vector()
   for (field in names(runPhenoTable)) {
     nb.val <- length(unique(unlist(runPhenoTable[,field])))
-    if (nb.val  <= sample.nb) {
+    if (nb.val  <= result$nbSamples) {
       # if (verbose) { message("\tSample field ", field, "; values: ",  nb.val) }
-      sampleFields <- append(sampleFields, field)
+      result$sampleFields <- append(result$sampleFields, field)
     }
   }
-  samplePheno <- runPhenoTable[sample.rows, sampleFields]
-  rownames(samplePheno) <- samplePheno[,sampleIdColumn]
-  # View(samplePheno)
-  sample.nb <- ncol(sample.counts)
-  gene.nb <- nrow(sample.counts)
+  result$phenoTable <- runPhenoTable[sample.rows, result$sampleFields]
+  rownames(result$phenoTable) <- result$phenoTable[,sampleIdColumn]
+  # View(result$phenoTable)
+  if (result$nbSamples!=  ncol(result$countTable)) {
+    stop("The number of columns in the count table must equal the number of samples. ")
+  }
+  result$nbGenes <- nrow(result$countTable)
 
-  message("\tCount table contains ", sample.nb, " samples (columns) and ", gene.nb, " genes (rows). ")
-  result <- list(sampleCounts = sample.counts,
-                 samplePheno = samplePheno,
-                 sampleFields = sampleFields,
-                 sampleIdColumn = sampleIdColumn)
+  message("\tCount table contains ", result$nbSamples, " samples (columns) and ", result$nbGenes, " genes (rows). ")
 
   message.with.time("Finished MergeRuns()\t", "recountID = ", parameters$recountID)
+
+  ## S3 way of assigning a class of the result
+  class(result) <- "CountTableWithDoc"
+  class(result)
+  names(result)
+
   return(result)
 }
