@@ -114,13 +114,13 @@ SRP006574:
 SRP057196:
   description: "individual cells into all of the major neuronal, glial, and vascular cell types in the brain"
   classColumn: "cell.type"
-  classColors: ["fetal_quiescent", "fetal_replicating", "astrocytes", "neurons", "hybrid","oligodendrocytes","endothelial","microglia","OPC"]
-      classColors["fetal_quiescent"]: "red"
-      classColors["fetal_replicating"]: "darkblue"
-      classColors["astrocytes"]: "purple"
-      classColors["neurons"]: "green"
-      classColors["hybrid"]: "black"
-      classColors["oligodendrocytes"]: "cyan"
-      classColors["endothelial"]: "darkgoldenrod1"
-      classColors["microglia"]: "aquamarine4"
-      classColors["OPC"]: "burlywood4"
+  classColor:
+      fetal_quiescent: "red"
+      fetal_replicating: "darkblue"
+      astrocytes: "purple"
+      neurons: "green"
+      hybrid: "black"
+      oligodendrocytes: "cyan"
+      endothelial: "darkgoldenrod1"
+      microglia: "aquamarine4"
+      OPC: "burlywood4"
