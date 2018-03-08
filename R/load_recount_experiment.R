@@ -120,7 +120,7 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
     message("\tBuilding pheno table")
   }
   result$runs$phenoTable <- colData(rse) ## phenotype per run
-  result$geo.characteristics <- geo_characteristics(result$runs$phenoTable)
+  result$geo.characteristics <- recount::geo_characteristics(result$runs$phenoTable)
   # View(result$runs$phenoTable)
   # names(result$runs$phenoTable)
   geochar <- geocharFromPheno(result$runs$phenoTable)
