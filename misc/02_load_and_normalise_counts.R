@@ -8,6 +8,23 @@ if (parameters$compute) {
                        minSamplesPerClass = parameters$minSamplesPerClass,
                        na.rm = parameters$na.rm)
 
+
+
+  ## Class colors may be defined in the yaml parameters
+  if (!is.null(parameters$classColor)) {
+    #  parameters$classColor[["astrocytes"]]
+    ## Convert the yaml-imported list into a named vector
+    loaded$original$classColors <- unlist(parameters$classColor) # convert list to a vector
+    # names(classColors) # check vector names
+    # classColors["astrocytes"]
+
+  } else {
+    classNames <- unique(classLabels)
+    classColors <- 1:length(classNames)
+    names(classColors) <- classNames
+  }
+
+
   # dim(loaded$originalCountTable)
   # dim(loaded$filteredCountTable)
 
