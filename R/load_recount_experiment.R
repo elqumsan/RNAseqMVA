@@ -18,7 +18,7 @@
 #' recountData <- loadRecountExperiment(recountID)
 #'
 #' ## Check the dimension of the table with counts per run
-#' dim(recountData$countsPerRun)
+#' dim(recountData$result$runs$countTable)
 #'
 #' ## Check the number of runs per sample
 #' table(recountData$runPheno$geo_accession)
@@ -30,7 +30,7 @@
 #' ## Check the dimension of the table with counts per sample
 #' dim(recountData$merged$sampleCounts)
 #'
-#' cor(log(recountData$countsPerRun[, recountData$runPheno$geo_accession == "GSM1521620"]+1))
+#' cor(log(recountData$result$runs$countTable[, recountData$runPheno$geo_accession == "GSM1521620"]+1))
 #'
 #' ## Test correlation between 8 randomly selected biological replicates (distinct samples)
 #' cor(log(recountData$merged$sampleCounts[, sample(1:ncol(recountData$merged$sampleCounts), size=8)]+1))
@@ -101,11 +101,17 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
   if (verbose) {
     message("\tExtracing table of counts per run")
   }
-  countsPerRun <- assay(rse)
-  # View(countsPerRun)
-  result$countsPerRun <- countsPerRun
+
+
+  ## Create one data structure for the runs
+  result$runs <- list()
+  class(result$runs) <- "CountTableWithPheno"
+  result$runs$dataType <- "counts per run"
+
+  result$runs$countTable <- assay(rse)
+  # View(result$result$runs$countTable)
   if (verbose) {
-    message("\tLoaded counts per run: ", nrow(countsPerRun), " features x ", ncol(countsPerRun), " runs.")
+    message("\tLoaded counts per run: ", nrow(result$runs$countTable), " features x ", ncol(result$runs$countTable), " runs.")
   }
 
   #### Extract pheno table ####
@@ -113,85 +119,45 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
   if (verbose) {
     message("\tBuilding pheno table")
   }
-  runPheno <- colData(rse) ## phenotype per run
-  geo.characteristics <- geo_characteristics(runPheno)
-  # result$runPheno <- runPheno
-  # class(runPheno)
-  # pheno <- runPheno ## A TRICK
-  # View(runPheno)
-  # names(runPheno)
+  result$runs$phenoTable <- colData(rse) ## phenotype per run
+  result$geo.characteristics <- geo_characteristics(result$runs$phenoTable)
+  # View(result$runs$phenoTable)
+  # names(result$runs$phenoTable)
+  geochar <- geocharFromPheno(result$runs$phenoTable)
+  result$runs$phenoTable <- cbind(result$runs$phenoTable, geochar)
+  # View(result$runs$phenoTable)
+  # names(result$runs$phenoTable)
+  result$runs$geneNames <- rownames(result$runs$countTable)
+  result$runs$nbGenes <- length(result$runs$geneNames)
+  result$runs$sampleNames <- colnames(result$runs$countTable)
+  result$runs$nbSamples <- length(result$runs$sampleNames)
+  # names(result$runs)
 
-  geochar <- geocharFromPheno(runPheno)
-  runPhenoTable <- cbind(runPheno, geochar)
-  result$runPhenoTable <- runPhenoTable
-  result$geo.characteristics <- geo.characteristics
-
-  # View(as.data.frame(geochar))
-
-  # View(geochar)
-  # head(geochar)
-
-  # Build a pheno table with selected columns from coldata + the geodata we just extracted
-  # runPhenoTable <- cbind(
-  #   runPheno[, grep(pattern="(characteristics|sharq)", x=names(runPheno), invert=TRUE)],
-  #   geochar)
-  # View(phenoTable)
-  # class(phenoTable)
-
-  # ## MUSTAFA STOPE THE TWO FOLLOWING PARTS DUE TO THE error duplicate in row.mane
-
-  # ## Extract a phenoTable with selected fields from the runPheno object
-  # runPhenoTable2 <- data.frame(
-  #   project = runPheno$project,
-  #   sample = runPheno$sample,
-  #   experiment = runPheno$experiment,
-  #   run = runPheno$run,
-  #   geo_accession = runPheno$geo_accession,
-  #   characteristics = runPheno$characteristics@unlistData
-  # )
-  #
-  # ## Missing: parse sub-fields from the "characteristics" field (somehow tricky)
-  #
-  # rownames(runPhenoTable2) <- runPhenoTable2$run
-  # # View(runPhenoTable2)
-  # # class(runPhenoTable2)
-  # result$runPhenoTable2 <- runPhenoTable2
-
-  # STOP Mustafa
   if (mergeRuns) {
     if (verbose) { message("\tMerging run-wise counts by sample") }
-    result$merged <- MergeRuns(countsPerRun,
-                               runPhenoTable,
+    result$merged <- MergeRuns(countsPerRun = result$runs$countTable,
+                               runPhenoTable = result$runs$phenoTable,
                                sampleIdColumn = sampleIdColumn,
                                verbose = verbose)
+    # class(result$merged)
+    # result$merged$dataType
+    # class(result$runs)
+    # result$runs$dataType
   }
 
   ################################################################
   ## Use either the merged or the original runs as original count table
   result$original <- list()
-  if (mergeRuns){
-    result$original$countTable <-as.data.frame(result$merged$sampleCounts)
+  if (mergeRuns) {
+    result$original <- result$merged
+#    result$original$countTable <-as.data.frame(result$merged$countTable)
   } else {
-    result$original$countTable <- as.data.frame(countsPerRun)
+    result$original <- result$runs
   }
+  # class(result$original)
+  # result$original$dataType
+  # result$original$nbSamples
   # dim(result$original$countTable)
-
-  ################################################################
-  # Extract pheno table for the sample-wised merged count
-  message("\tExtracting pheno Table from sample-wised merged count")
-  if (mergeRuns){
-    result$original$phenoTable <- result$merged$samplePheno
-  } else {
-    result$original$phenoTable <- runPhenoTable
-  }
-  message("\tphenoTable contains ",
-          nrow(result$original$phenoTable), " rows (samples) and ",
-          ncol(result$original$phenoTable), " columns (pheno description fields).")
-  # names(phenoTable)
-  # dim(phenoTable)
-
-  result$geo.characteristics <- geo.characteristics
-  # dim(geo.characteristics)
 
 
   ################################################################
@@ -206,11 +172,9 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
   }
   # table(classLabels)
 
-  result$original$nbSamples <- ncol(result$original$countTable)
-  result$original$nbGenes <- nrow(result$original$countTable)
   result$original$classNames <- sort(unique(result$original$classLabels))
   result$original$nbClasses <- length(result$original$classNames)
-
+  class(result$original) <- append(class(result$original), "CountTableWithClasses")
 
   message.with.time("Finished loading Recount experiment ID ", parameters$recountID)
   return(result)
