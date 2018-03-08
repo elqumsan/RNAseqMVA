@@ -13,66 +13,69 @@ MergeRuns <- function(countsPerRun,
                       sampleIdColumn = "geo_accession",
                       verbose=FALSE) {
   message.with.time("MergeRuns()\t", "recountID = ", parameters$recountID)
-  result <- list()
-  result$sampleIdColumn <- sampleIdColumn
+
+  ## S3 way of assigning a class of the mergedRuns
+  mergedRuns <- list()
+  class(mergedRuns) <- "CountTableWithPheno"
+  mergedRuns$dataType <- "counts per sample"
+  mergedRuns$sampleIdColumn <- sampleIdColumn
 
   # dim(countsPerRun)
 
-  result$sampleNames <- as.vector(unique(unlist(runPhenoTable[, sampleIdColumn])))
-  result$nbSamples <- length(result$sampleNames)
+  mergedRuns$geneNames <- rownames(countsPerRun)
+  mergedRuns$nbGenes <- length(mergedRuns$geneNames)
+
+  mergedRuns$sampleNames <- as.vector(unique(unlist(runPhenoTable[, sampleIdColumn])))
+  mergedRuns$nbSamples <- length(mergedRuns$sampleNames)
+
   message("\tMerging runs from count table (",
-          nrow(countsPerRun), " features, ",
+          mergedRuns$nbGenes, " genes, ",
           ncol(countsPerRun), " runs), ",
-          result$nbSamples, " unique samples. ")
-  result$countTable <- data.frame(matrix(nrow=nrow(countsPerRun),
-                                     ncol=length(result$sampleNames)))
-  names(result$countTable) <- result$sampleNames
-  rownames(result$countTable) <- rownames(countsPerRun)
-  # View(result$countTable)
+          mergedRuns$nbSamples, " unique samples. ")
+  mergedRuns$countTable <- data.frame(matrix(nrow=nrow(countsPerRun),
+                                     ncol=length(mergedRuns$sampleNames)))
+  names(mergedRuns$countTable) <- mergedRuns$sampleNames
+  rownames(mergedRuns$countTable) <- rownames(countsPerRun)
+  # View(mergedRuns$countTable)
 
 
   ## TO DO: see if we can use some apply or do.call() function
   ## to replace this loop, since "for" is an heresy in R
   s <- 0
-  for (sample in result$sampleNames) {
+  for (sample in mergedRuns$sampleNames) {
     s <- s + 1
-    # if (verbose) { message("\tmerging counts for sample ", s, "/", result$nbSamples, " ", sample) }
+    # if (verbose) { message("\tmerging counts for sample ", s, "/", mergedRuns$nbSamples, " ", sample) }
     runs <- grep(pattern = sample, x = runPhenoTable[, sampleIdColumn])
     if (length(runs ) > 1) {
-      result$countTable[,sample] <- apply(countsPerRun[,runs],1,sum)
+      mergedRuns$countTable[,sample] <- apply(countsPerRun[,runs],1,sum)
     } else {
-      result$countTable[,sample] <- countsPerRun[,runs]
+      mergedRuns$countTable[,sample] <- countsPerRun[,runs]
     }
   }
-  # View(result$countTable)
+  # View(mergedRuns$countTable)
 
   ## Prepare a phenotable with all fields that are identical between runs
   ## This is tricky.
-  sample.rows <- pmatch(result$sampleNames, unlist(runPhenoTable[sampleIdColumn]))
-  result$sampleFields <- vector()
+  sample.rows <- pmatch(mergedRuns$sampleNames, unlist(runPhenoTable[sampleIdColumn]))
+  mergedRuns$sampleFields <- vector()
   for (field in names(runPhenoTable)) {
     nb.val <- length(unique(unlist(runPhenoTable[,field])))
-    if (nb.val  <= result$nbSamples) {
+    if (nb.val  <= mergedRuns$nbSamples) {
       # if (verbose) { message("\tSample field ", field, "; values: ",  nb.val) }
-      result$sampleFields <- append(result$sampleFields, field)
+      mergedRuns$sampleFields <- append(mergedRuns$sampleFields, field)
     }
   }
-  result$phenoTable <- runPhenoTable[sample.rows, result$sampleFields]
-  rownames(result$phenoTable) <- result$phenoTable[,sampleIdColumn]
-  # View(result$phenoTable)
-  if (result$nbSamples!=  ncol(result$countTable)) {
+  mergedRuns$phenoTable <- runPhenoTable[sample.rows, mergedRuns$sampleFields]
+  rownames(mergedRuns$phenoTable) <- mergedRuns$phenoTable[,sampleIdColumn]
+  # View(mergedRuns$phenoTable)
+  if (mergedRuns$nbSamples!=  ncol(mergedRuns$countTable)) {
     stop("The number of columns in the count table must equal the number of samples. ")
   }
-  result$nbGenes <- nrow(result$countTable)
 
-  message("\tCount table contains ", result$nbSamples, " samples (columns) and ", result$nbGenes, " genes (rows). ")
+  message("\tCount table contains ", mergedRuns$nbSamples, " samples (columns) and ", mergedRuns$nbGenes, " genes (rows). ")
 
   message.with.time("Finished MergeRuns()\t", "recountID = ", parameters$recountID)
 
-  ## S3 way of assigning a class of the result
-  class(result) <- "CountTableWithDoc"
-  class(result)
-  names(result)
 
-  return(result)
+  return(mergedRuns)
 }
