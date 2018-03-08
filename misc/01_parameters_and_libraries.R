@@ -148,6 +148,8 @@ dir.create(dir.NormImpact, showWarnings = F, recursive = T)
 dir.visualisePCs <- file.path(dir.results , paste( "visualization_of_PCs", sep = ""))
 dir.create(dir.visualisePCs, showWarnings = F, recursive = T)
 
+
+
 ## END OF SCRIPT
 #################################################################
 
