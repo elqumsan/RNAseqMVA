@@ -5,16 +5,12 @@
 \title{Apply various filters on the observations and variables of
 a count table in order to prepare it for classification.}
 \usage{
-filterCountTable(countTable, phenoTable, classLabels,
+filterCountTable(countsWithClasses,
   minSamplesPerClass = parameters$minSamplesPerClass,
   nearZeroVarFilter = parameters$nearZeroVarFilter, draw.plot = TRUE)
 }
 \arguments{
-\item{countTable}{a data.frame containing the number of read counts per gene (row) in each sample (column)}
-
-\item{phenoTable}{a data.frame describing each sample (row) with different attributes (columns)}
-
-\item{classLabels}{a vector indicating the class associated to each sample.}
+\item{countsWithClasses}{an object of the class CountTableWithClasses}
 
 \item{minSamplesPerClass=parameters$minSamplesPerClass}{minimum nuimber of samples per class to keep}
 
