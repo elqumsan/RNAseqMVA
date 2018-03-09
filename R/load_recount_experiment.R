@@ -1,4 +1,3 @@
-#' @title Load one count table from ReCount and optionally merge the counts per sample.
 #' @author: Jacques van Helden and Mustafa Abuelqumsan
 #' @description Load one count table from Recount for a given experiment ID, and optionally
 #' merge the counts in order to avoid redundancy between multipl runs per sample.
@@ -56,6 +55,7 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
   message.with.time("loadRecountExperiment()\trecountID = ", recountID)
 
   result <- list()
+
   studyPath <- file.path(dir.workspace, "data", recountID)
 
   #### Create studyPath directory ####
@@ -95,7 +95,6 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
     message("\tScaling counts")
   }
   rse <- scale_counts(rse_gene, by="mapped_reads")
-  result$rse <- rse
 
   #### Extract a matrix with the counts per feature for each run ####
   if (verbose) {
@@ -103,15 +102,10 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
   }
 
 
-  ## Create one data structure for the runs
-  result$runs <- list()
-  class(result$runs) <- "CountTableWithPheno"
-  result$runs$dataType <- "counts per run"
-
-  result$runs$countTable <- assay(rse)
-  # View(result$result$runs$countTable)
+  ## Extract the count table
+  countTable <- assay(rse)
   if (verbose) {
-    message("\tLoaded counts per run: ", nrow(result$runs$countTable), " features x ", ncol(result$runs$countTable), " runs.")
+    message("\tLoaded counts per run: ", nrow(countTable), " features x ", ncol(countTable), " runs.")
   }
 
   #### Extract pheno table ####
@@ -119,57 +113,47 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
   if (verbose) {
     message("\tBuilding pheno table")
   }
-  result$runs$phenoTable <- colData(rse) ## phenotype per run
-  result$geo.characteristics <- recount::geo_characteristics(result$runs$phenoTable)
-  # View(result$runs$phenoTable)
-  # names(result$runs$phenoTable)
-  geochar <- geocharFromPheno(result$runs$phenoTable)
-  result$runs$phenoTable <- cbind(result$runs$phenoTable, geochar)
-  # View(result$runs$phenoTable)
-  # names(result$runs$phenoTable)
-  result$runs$geneNames <- rownames(result$runs$countTable)
-  result$runs$nbGenes <- length(result$runs$geneNames)
-  result$runs$sampleNames <- colnames(result$runs$countTable)
-  result$runs$nbSamples <- length(result$runs$sampleNames)
-  # names(result$runs)
+  phenoTable <- colData(rse) ## phenotype per run
+  geo.characteristics <- recount::geo_characteristics(phenoTable)
+  geochar <- geocharFromPheno(phenoTable)
+  phenoTable <- cbind(phenoTable, geochar)
+  # View(phenoTable)
+  # names(phenoTable)
 
-  if (mergeRuns) {
-    if (verbose) { message("\tMerging run-wise counts by sample") }
-    result$merged <- MergeRuns(countsPerRun = result$runs$countTable,
-                               runPhenoTable = result$runs$phenoTable,
-                               sampleIdColumn = sampleIdColumn,
-                               verbose = verbose)
-    # class(result$merged)
-    # result$merged$dataType
-    # class(result$runs)
-    # result$runs$dataType
-  }
+
+  countsPerRuns <- countTableWithClasses(countTable = countTable,
+                                       phenoTable = phenoTable,
+                                       classColumn = classColumn,
+                                       dataType = "raw counts per run")
+  # class(runs)
+  summary(countsPerRuns)
 
   ################################################################
   ## Use either the merged or the original runs as original count table
-  result$original <- list()
   if (mergeRuns) {
-    result$original <- result$merged
-#    result$original$countTable <-as.data.frame(result$merged$countTable)
+    ## Merge runs if required
+    if (verbose) { message("\tMerging run-wise counts by sample") }
+    result$countsPerRun <- countsPerRun
+    result$rawCounts <- MergeRuns(countsPerRun,
+                                  sampleIdColumn = sampleIdColumn,
+                                  verbose = verbose)
   } else {
-    result$original <- result$runs
+    result$rawCounts <- countsPerRun
   }
-  # class(result$original)
-  # result$original$dataType
-  # result$original$nbSamples
-  # dim(result$original$countTable)
+  # class(result$rawCounts)
+  # summary(result$rawCounts)
 
 
-  ################################################################
-  ## Specify sample classes (classLabels) by extracting information about specified class columns
-  if (is.null(classColumn) || (length(classColumn) < 1)) {
-    stop("classColumn must be defined. ")
-  } else if (length(classColumn) == 1) {
-    result$original$classLabels <-  as.vector(result$original$phenoTable[, classColumn])
-  } else {
-    ## Combine several columns to establish the classLabels
-    result$original$classLabels <- apply(result$original$phenoTable[, classColumn], 1, paste, collapse="_")
-  }
+  # ################################################################
+  # ## Specify sample classes (classLabels) by extracting information about specified class columns
+  # if (is.null(classColumn) || (length(classColumn) < 1)) {
+  #   stop("classColumn must be defined. ")
+  # } else if (length(classColumn) == 1) {
+  #   result$original$classLabels <-  as.vector(result$original$phenoTable[, classColumn])
+  # } else {
+  #   ## Combine several columns to establish the classLabels
+  #   result$original$classLabels <- apply(result$original$phenoTable[, classColumn], 1, paste, collapse="_")
+  # }
   # table(classLabels)
 
   result$original$classNames <- sort(unique(result$original$classLabels))

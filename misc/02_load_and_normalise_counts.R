@@ -3,7 +3,8 @@
 ## and apply some pre-filtering (remove zero-variance and near-zero-variance genes).
 if (parameters$compute) {
   message.with.time("Loading count table from recount", "; recountID = ", parameters$recountID)
-  loaded <- loadCounts(recountID = parameters$recountID, mergeRuns = TRUE ,
+  loaded <- loadCounts(recountID = parameters$recountID,
+                       mergeRuns = TRUE,
                        classColumn = parameters$classColumn,
                        minSamplesPerClass = parameters$minSamplesPerClass,
                        na.rm = parameters$na.rm)
