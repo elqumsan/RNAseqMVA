@@ -23,6 +23,7 @@ countTableWithClasses <- function(countTable,
 ) {
 
   ## Built a list from the input parameters
+message.with.time("\tCreate object has the countTableWithClasses attribute" )
 
   object <- structure(
     list(
@@ -43,7 +44,7 @@ countTableWithClasses <- function(countTable,
   #### Check consistency of input parameters ####
 
   ## Check rows of pheno table
-  if (nrow(phenoTable) != ncol(countTable)) {
+  if (nrow(object$phenoTable) != ncol(object$countTable)) {
     stop("countTableWithClasses(): inconsistent dimensions of phenoTable (",
          nrow(phenoTable), " rows) and countTable (",
          ncol(countTable), " columns).")
@@ -77,9 +78,10 @@ countTableWithClasses <- function(countTable,
   # table(classLabels)
   object$classNames <- unique(sort(object$classLabels))
   object$nbClasses <- length(object$classNames)
-  object$samplesPerClass <- (as.data.frame.table(table(x$classLabels)))
+  object$samplesPerClass <- (as.data.frame.table(table(object$classLabels)))
   colnames(object$samplesPerClass) <- c("Class", "nbSamples")
 
+  message("\t\tfinishing from creating the object with countTablewithClasses attribute")
   return(object)
 }
 
@@ -91,11 +93,11 @@ summary.countTableWithClasses <- function(x) {
   cat("\tNumber of samples \t", x$nbSamples, "\n")
   cat("\tNumber of classes \t", x$nbClasses, "\n")
   cat("\tSamples per classes \n")
-  print(samplesPerClass)
+  print(object$samplesPerClass)
   cat("\n")
 }
 
-
+message("\t\t\n giving the summary of the created object")
 print.countTableWithClasses <- function(x) {
   summary.countTableWithClasses(x)
 }
