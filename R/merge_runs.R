@@ -9,6 +9,7 @@
 #' @export
 MergeRuns <- function(runs,
                       sampleIdColumn = "geo_accession",
+                      classColumn  = classColumn  ,
                       verbose=FALSE) {
   message.with.time("MergeRuns()\t", "recountID = ", parameters$recountID)
 
@@ -16,20 +17,20 @@ MergeRuns <- function(runs,
   class(runs)
 
   ## Extract gene names from the run count table
-  geneNames <- rownames(countsPerRun)
-  nbGenes <- length(geneNames)
+  geneNames <- rownames(runs$countTable)
+  nbGenes <- length(runs$geneNames)
 
   ## Extract sample names from the specified column of the pheno table
-  sampleNames <- as.vector(unique(unlist(runPhenoTable[, sampleIdColumn])))
+  sampleNames <- as.vector(unique(unlist(runs$phenoTable[, sampleIdColumn])))
   nbSamples <- length(sampleNames)
 
   message("\tMerging runs from count table (",
           nbGenes, " genes, ",
-          ncol(countsPerRun), " runs), ",
+          ncol(runs$countTable), " runs), ",
           nbSamples, " unique samples. ",
           "\n\tColumn from the pheno table used todefine sample IDs: ", sampleIdColumn)
   ## Build an empty count table with the right dimensions
-  countTable <- data.frame(matrix(nrow=nrow(countsPerRun),
+  countTable <- data.frame(matrix(nrow=nrow(runs$countTable),
                                      ncol=nbSamples))
   colnames(countTable) <- sampleNames
   rownames(countTable) <- geneNames
@@ -40,27 +41,27 @@ MergeRuns <- function(runs,
   for (sample in sampleNames) {
     s <- s + 1
     # if (verbose) { message("\tmerging counts for sample ", s, "/", mergedRuns$nbSamples, " ", sample) }
-    runs <- grep(pattern = sample, x = runPhenoTable[, sampleIdColumn])
-    if (length(runs ) > 1) {
-      countTable[,sample] <- apply(countsPerRun[,runs],1,sum)
+    iterate <- grep(pattern = sample, x = runs$phenoTable[, sampleIdColumn])
+    if (length( iterate ) > 1) {
+      countTable[,sample] <- apply(runs$countTable[, iterate],1,sum)
     } else {
-      countTable[,sample] <- countsPerRun[,runs]
+      countTable[,sample] <- runs$countTable[, iterate]
     }
   }
   # View(countTable[1:10, 1:20])
 
   ## Prepare a phenotable with all fields that are identical between runs
   ## This is tricky.
-  sample.rows <- pmatch(sampleNames, unlist(runPhenoTable[sampleIdColumn]))
+  sample.rows <- pmatch(sampleNames, unlist(runs$phenoTable[sampleIdColumn]))
   sampleFields <- vector()
-  for (field in names(runPhenoTable)) {
-    nb.val <- length(unique(unlist(runPhenoTable[,field])))
+  for (field in names(runs$phenoTable)) {
+    nb.val <- length(unique(unlist(runs$phenoTable[,field])))
     if (nb.val  <= nbSamples) {
       # if (verbose) { message("\tSample field ", field, "; values: ",  nb.val) }
       sampleFields <- append(sampleFields, field)
     }
   }
-  phenoTable <- runPhenoTable[sample.rows, sampleFields]
+  phenoTable <- runs$phenoTable[sample.rows, sampleFields]
   rownames(phenoTable) <- phenoTable[,sampleIdColumn]
   # View(mergedRuns$phenoTable)
   if (nbSamples!=  ncol(countTable)) {
@@ -72,6 +73,7 @@ MergeRuns <- function(runs,
   ## Instantiate a new object of the class countTableWithClasses, with the merged runs
   mergedRuns <- countTableWithClasses(countTable = countTable,
                                     phenoTable = phenoTable,
+                                    classColumn = classColumn,
                                     dataType = "raw counts per sample")
   # class(mergedRuns)
   if (verbose) {

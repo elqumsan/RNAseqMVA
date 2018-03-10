@@ -125,7 +125,7 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
                                        phenoTable = phenoTable,
                                        classColumn = classColumn,
                                        dataType = "raw counts per run")
-  # class(runs)
+  # class(countsPerRuns)
   summary(countsPerRuns)
 
   ################################################################
@@ -133,8 +133,9 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
   if (mergeRuns) {
     ## Merge runs if required
     if (verbose) { message("\tMerging run-wise counts by sample") }
-    result$countsPerRun <- countsPerRun
-    result$rawCounts <- MergeRuns(countsPerRun,
+    result$countsPerRun <- countsPerRuns
+    result$rawCounts <- MergeRuns(countsPerRuns,
+                                  classColumn  = classColumn ,
                                   sampleIdColumn = sampleIdColumn,
                                   verbose = verbose)
   } else {
@@ -156,9 +157,9 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
   # }
   # table(classLabels)
 
-  result$original$classNames <- sort(unique(result$original$classLabels))
-  result$original$nbClasses <- length(result$original$classNames)
-  class(result$original) <- append(class(result$original), "CountTableWithClasses")
+  # result$original$classNames <- sort(unique(result$original$classLabels))
+  # result$original$nbClasses <- length(result$original$classNames)
+  # class(result$original) <- append(class(result$original), "CountTableWithClasses")
 
   message.with.time("Finished loading Recount experiment ID ", parameters$recountID)
   return(result)

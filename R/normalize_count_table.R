@@ -23,15 +23,18 @@
 #' @examples
 #'
 #' @export
-NormalizeCounts <- function(counts,
-                            phenoTable,
-                            classLabels,
+NormalizeCounts <- function(objectFiltered,
+                            # counts,
+                            #phenoTable,
+                            #classLabels,
                             method="quantile",
                             quantile=0.75,
                             log2=TRUE,
                             epsilon=0.1) {
   message.with.time("Starting NormalizeCounts() for Recount experiment ID ", parameters$recountID)
 
+  counts <- objectFiltered$countTable
+  #dim(counts)
   ## Compute sample-wise statistics
   sampleStats <- data.frame(
     sum = apply(counts, 2, sum, na.rm=TRUE),

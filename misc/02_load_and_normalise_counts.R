@@ -15,7 +15,7 @@ if (parameters$compute) {
   if (!is.null(parameters$classColor)) {
     #  parameters$classColor[["astrocytes"]]
     ## Convert the yaml-imported list into a named vector
-    loaded$original$classColors <- unlist(parameters$classColor) # convert list to a vector
+    loaded$filtered$classColors <- unlist(parameters$classColor) # convert list to a vector
     # names(classColors) # check vector names
     # classColors["astrocytes"]
 
@@ -46,10 +46,10 @@ if (parameters$compute) {
 
 
   ## Assign a specific color to each sammple according to its class
-  countTable <- loaded$filteredExperiment$countTable
-  pheno <- loaded$filteredExperiment$phenoTable
-  classes <- loaded$filteredExperiment$classLabels
-  geo.characteristics <- loaded$filteredExperiment$geo.characteristics
+  countTable <- loaded$filtered$countTable
+  pheno <- loaded$filtered$phenoTable
+  classes <- loaded$filtered$classLabels
+  geo.characteristics <- loaded$filtered$geo.characteristics
   # table(classes)
   # length(classes)
   # length(unique(classes))
@@ -65,7 +65,7 @@ if (parameters$compute) {
 
 
 ## Number of samples per class
-print(loaded$samples.per.class)
+# print(loaded$filtered$nbSamples)
 
 ## I start by assigning one systematic color(number) to each class,
 ## To make sure that each class has a color even with different datasets analsed in the efuture.
@@ -89,8 +89,8 @@ if (parameters$recountID == "SRP048759") {
 }
 # print(classColors)
 ## Assign colors per sample according to their class
-sampleColors <- classColors[loaded$filteredClasses]
-names(sampleColors) <- rownames(loaded$filterePhenoTable)
+sampleColors <- classColors[loaded$filtered$classLabels]
+names(sampleColors) <- rownames(loaded$filtered$phenoTable)
 # print(sampleColors)
 
 ##### Normalize the counts without log2 transformation (first test) #####
