@@ -34,6 +34,10 @@ NormalizeCounts <- function(objectFiltered,
   message.with.time("Starting NormalizeCounts() for Recount experiment ID ", parameters$recountID)
 
   counts <- objectFiltered$countTable
+  phenoTable <- objectFiltered$phenoTable
+  classLabels  <- objectFiltered$classLabels
+
+
   #dim(counts)
   ## Compute sample-wise statistics
   sampleStats <- data.frame(
