@@ -4,7 +4,8 @@
 \alias{MergeRuns}
 \title{Merge read counts from different runs by sample.}
 \usage{
-MergeRuns(runs, sampleIdColumn = "geo_accession", verbose = FALSE)
+MergeRuns(runs, sampleIdColumn = "geo_accession", classColumn = classColumn,
+  verbose = FALSE)
 }
 \arguments{
 \item{countsPerRun}{an object of the class CounttableWithPheno}
