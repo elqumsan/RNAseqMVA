@@ -93,7 +93,7 @@ summary.countTableWithClasses <- function(x) {
   cat("\tNumber of samples \t", x$nbSamples, "\n")
   cat("\tNumber of classes \t", x$nbClasses, "\n")
   cat("\tSamples per classes \n")
-  print(object$samplesPerClass)
+  print(x$samplesPerClass)
   cat("\n")
 }
 
