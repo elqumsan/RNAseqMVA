@@ -101,9 +101,9 @@ if (parameters$compute) {
   # dim(loaded$loaded$norm$counts)
   message.with.time("Normalizing counts based on 75th percentile")
   loaded$norm <- NormalizeCounts(
-    counts = loaded$filteredExperiment$countTable,
-    phenoTable = loaded$filteredExperiment$phenoTable,
-    classLabels = loaded$filteredExperiment$classLabels,
+    objectFiltered = experiment$filtered,
+    # phenoTable = loaded$filteredExperiment$phenoTable,
+    # classLabels = loaded$filteredExperiment$classLabels,
     method = "quantile", quantile=0.75, log2 = FALSE)
   # dim(loaded$normCounts)
   # loaded$norm$nb.samples
