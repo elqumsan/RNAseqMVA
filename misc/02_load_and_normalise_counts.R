@@ -101,7 +101,7 @@ if (parameters$compute) {
   # dim(loaded$loaded$norm$counts)
   message.with.time("Normalizing counts based on 75th percentile")
   loaded$norm <- NormalizeCounts(
-    objectFiltered = experiment$filtered,
+    objectFiltered = loaded$filtered,
     # phenoTable = loaded$filteredExperiment$phenoTable,
     # classLabels = loaded$filteredExperiment$classLabels,
     method = "quantile", quantile=0.75, log2 = FALSE)
@@ -125,9 +125,10 @@ if (parameters$compute) {
 if (parameters$compute) {
   message.with.time("Normalizing counts based on 75th percentile + log2 transformation")
   loaded$log2norm <- NormalizeCounts(
-    counts =loaded$filteredExperiment$countTable,
-    phenoTable = loaded$filteredExperiment$phenoTable,
-    classLabels = loaded$filteredExperiment$classLabels,
+    objectFiltered = loaded$filtered,
+    # counts =loaded$filteredExperiment$countTable,
+    # phenoTable = loaded$filteredExperiment$phenoTable,
+    # classLabels = loaded$filteredExperiment$classLabels,
     method = "quantile", quantile=0.75,
     log2 = TRUE, epsilon=0.1)
   dim(loaded$log2norm$counts)
