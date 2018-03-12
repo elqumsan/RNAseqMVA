@@ -5,9 +5,10 @@
 \title{Apply various filters on the observations and variables of
 a count table in order to prepare it for classification.}
 \usage{
-filterCountTable(countsWithClasses,
+filterCountTable(rawCounts,
   minSamplesPerClass = parameters$minSamplesPerClass,
-  nearZeroVarFilter = parameters$nearZeroVarFilter, draw.plot = TRUE)
+  nearZeroVarFilter = parameters$nearZeroVarFilter,
+  classColumn = classColumn, draw.plot = TRUE)
 }
 \arguments{
 \item{countsWithClasses}{an object of the class CountTableWithClasses}
