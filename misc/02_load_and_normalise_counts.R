@@ -9,6 +9,20 @@ if (parameters$compute) {
                        minSamplesPerClass = parameters$minSamplesPerClass,
                        na.rm = parameters$na.rm)
 
+  # names(loaded)
+
+  ## Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files
+  exportTables(loaded$countsPerRun,
+               export.dir = parameters$dir$TSV,
+               file.prefix = "counts_per_run_")
+
+  exportTables(loaded$rawCounts,
+               export.dir = parameters$dir$TSV,
+               file.prefix = "original_counts_")
+
+  exportTables(loaded$filtered,
+               export.dir = parameters$dir$TSV,
+               file.prefix = "filtered_counts_")
 
 
   ## Class colors may be defined in the yaml parameters
