@@ -13,15 +13,15 @@ if (parameters$compute) {
 
   ## Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files
   exportTables(loaded$countsPerRun,
-               export.dir = parameters$dir$TSV,
+               export.dir = paste(parameters$dir$TSV, parameters$recountID, sep = "/"),
                file.prefix = "counts_per_run_")
 
   exportTables(loaded$originalCounts,
-               export.dir = parameters$dir$TSV,
+               export.dir = paste( parameters$dir$TSV, parameters$recountID, sep = "/"),
                file.prefix = "original_counts_")
 
   exportTables(loaded$filtered,
-               export.dir = parameters$dir$TSV,
+               export.dir = paste( parameters$dir$TSV,parameters$recountID, sep = "/"),
                file.prefix = "filtered_counts_")
 
 
