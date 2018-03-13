@@ -8,7 +8,7 @@ a count table in order to prepare it for classification.}
 filterCountTable(rawCounts,
   minSamplesPerClass = parameters$minSamplesPerClass,
   nearZeroVarFilter = parameters$nearZeroVarFilter,
-  classColumn = classColumn, draw.plot = TRUE)
+  classColumn = parameters$classColumn, draw.plot = TRUE)
 }
 \arguments{
 \item{countsWithClasses}{an object of the class CountTableWithClasses}
