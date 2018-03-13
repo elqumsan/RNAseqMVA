@@ -16,7 +16,7 @@ if (parameters$compute) {
                export.dir = parameters$dir$TSV,
                file.prefix = "counts_per_run_")
 
-  exportTables(loaded$rawCounts,
+  exportTables(loaded$originalCounts,
                export.dir = parameters$dir$TSV,
                file.prefix = "original_counts_")
 
