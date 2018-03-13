@@ -10,8 +10,8 @@ project.parameters <- yaml.load_file("misc/00_project_parameters.yml")
 ## Lad default parameters (must have been defined n the parameter field)
 parameters <- project.parameters$default
 
-# recountID <- "SRP042620"   ## Multi-group breast cancer
-recountID <- "SRP057196"    # individual cells into all of the major neuronal, glial, and vascular cell types in the brain
+recountID <- "SRP042620"   ## Multi-group breast cancer
+# recountID <- "SRP057196"    # individual cells into all of the major neuronal, glial, and vascular cell types in the brain
 
 # recountID <- "SRP003611"   # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
 # recountID <- "SRP061240"   # several types from cancer (pancreatic, colorectal, prostat cancer) against Healthy control
@@ -41,8 +41,10 @@ parameters$recountID <- recountID
 ## Overwrite default parameters wih project-specific parameters
 selected.parameters <- project.parameters[[recountID]]
 if (is.null(selected.parameters)) {
-  message("No specific parameters specfied in yaml file for recount ID ", recountID)
+  message("No specific parameters for recount ID ", recountID)
+  message("Using generic parameters from the yaml file. ")
 } else {
+  message("Using specific parameters specfied in yaml file for recount ID ", recountID)
   parameters[names(selected.parameters)] <- project.parameters[[recountID]]
   names(parameters$data.types)<-parameters$data.types
 }
