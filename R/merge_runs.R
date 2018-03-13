@@ -9,7 +9,7 @@
 #' @export
 MergeRuns <- function(runs,
                       sampleIdColumn = "geo_accession",
-                      classColumn  = classColumn  ,
+                      classColumn  = parameters$classColumn ,
                       verbose=FALSE) {
   message.with.time("MergeRuns()\t", "recountID = ", parameters$recountID)
 
