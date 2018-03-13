@@ -64,36 +64,36 @@ loadCounts <- function(recountID = parameters$recountID,
   ## If requested, suppress the NA values
   if (na.rm) {
     message("\tSuppressing rows (genes) with NA values")
-    countTable <- na.omit(experiment$rawCounts$countTable)
+    countTable <- na.omit(experiment$originalCounts$countTable)
     # dim(countTable)
   }
 
   ##### Check the dimensions of original experiment #####
-  if (ncol(experiment$rawCounts$countTable) != length(experiment$rawCounts$classLabels)){
+  if (ncol(experiment$originalCounts$countTable) != length(experiment$originalCounts$classLabels)){
     stop("The number of samples (", ncol(experiment$original$countTable), ") differs from the number class labels (", length(experiment$original$classLabels),")")
   }
 
 
   message("\toriginal countTable contains ",
-          nrow(experiment$rawCounts$countTable), " rows (genes) and ",
-          ncol(experiment$rawCounts$countTable), " columns (samples).")
+          nrow(experiment$originalCounts$countTable), " rows (genes) and ",
+          ncol(experiment$originalCounts$countTable), " columns (samples).")
   #countTable <-as.data.frame(t(experiment$runCounts))
 
   ############## Exporting the original raw count data ####################
   file.name <- file.path(tsv.dir, paste("original_counts_", parameters$recountID, ".tsv", sep = ""))
   message("\tSaving original raw counts table in TSV file\t", file.name)
-  write.table(experiment$rawCounts$countTable, file = file.name, row.names = FALSE, quote=FALSE, sep = "\t")
+  write.table(experiment$originalCounts$countTable, file = file.name, row.names = FALSE, quote=FALSE, sep = "\t")
 
   ############## Exporting the original Pheno Table ####################
   file.name <- file.path(tsv.dir, paste("original_pheno_table_", parameters$recountID, ".tsv", sep = ""))
   message("\tSaving original pheno table in TSV file\t", file.name)
-  write.table(experiment$rawCounts$phenoTable, file = file.name, row.names = FALSE, quote=FALSE, sep = "\t")
+  write.table(experiment$originalCounts$phenoTable, file = file.name, row.names = FALSE, quote=FALSE, sep = "\t")
 
 
   ##### Export a table with class labels + phenotypic information #####
   message("\tSaving original pheno table + class labels information in TSV file\t", file.name)
-  characteristics.string <- unlist(lapply(experiment$rawCounts$phenoTable$characteristics, paste, collapse="; "))
-  pheno.data.frame <- data.frame(sample = experiment$rawCounts$phenoTable$sample,
+  characteristics.string <- unlist(lapply(experiment$originalCounts$phenoTable$characteristics, paste, collapse="; "))
+  pheno.data.frame <- data.frame(sample = experiment$originalCounts$phenoTable$sample,
                                 # class = experiment$original$phenoTable,
                                  description = characteristics.string)
   # dim(pheno.data.frame)
@@ -105,32 +105,14 @@ loadCounts <- function(recountID = parameters$recountID,
 
   ################################################
   #### Filter zero-variance and near-zero variance variables from the count table #####
-  experiment$filtered <- filterCountTable(rawCounts = experiment$rawCounts,
-                            # countTable = experiment$original$countTable,
-                            # phenoTable = experiment$original$phenoTable,
-                            # classLabels = experiment$original$classLabels,
-                                       nearZeroVarFilter = FALSE,
-                            minSamplesPerClass = parameters$minSamplesPerClass,
-                            classColumn = classColumn )
+  experiment$filtered <- filterCountTable(rawCounts = experiment$originalCounts,
+                                          nearZeroVarFilter = FALSE,
+                                          minSamplesPerClass = parameters$minSamplesPerClass,
+                                          classColumn = classColumn )
+  # class(experiment$filtered)
+  # summary(experiment$filtered)
   # dim(countTable)
 
-  # replace unfiltered Data with filted data
-  # countTable <- filteredData$countTable
-  # phenoTable <- filteredData$phenoTable
-  # classLabels <- make.names(filteredData$classLabels , unique = F , allow_ = T)
-  # #classifier requires a factor for classLabels
-  # classLabels <- as.factor(classLabels) ## RandomForest requires as.factor()
-
-  message("\tUnfiltered count table",
-          "\n\t\tdimensions: ", nrow(experiment$rawCounts$countTable), sep= " x ", ncol(experiment$rawCounts$countTable),
-          "\n\t\tPheno table dimensions: ",nrow(experiment$rawCounts$phenoTable), " X ", ncol(experiment$rawCounts$phenoTable),
-          "\n\t\tVector of class labels length: ", length(experiment$rawCounts$classLabels),
-          "\n\t\tNumber of distinct classes: ", experiment$rawCounts$nbClasses)
-  message("\tFiltered count table",
-          "\n\t\tdimensions: ", nrow(experiment$filtered$countTable), sep= " x ", ncol(experiment$filtered$countTable),
-          "\n\t\tPheno table dimensions: ",nrow(experiment$filtered$phenoTable), " X ", ncol(experiment$filtered$phenoTable),
-          "\n\t\tVector of class labels length: ", length(experiment$filtered$classLabels),
-          "\n\tNumber of distinct classes: ", length(unique(experiment$filtered$classLabels)))
 
   ##### Check the dimensions of filtered experiment #####
   if (length(experiment$filtered$classLabels) != ncol(experiment$filtered$countTable)) {
@@ -139,36 +121,9 @@ loadCounts <- function(recountID = parameters$recountID,
   }
 
 
-  ############## Exporting the filtered raw count data ####################
-  file.name <- file.path(tsv.dir, paste("filtered_counts_", parameters$recountID, ".tsv", sep = ""))
-  message("\tSaving filtered raw counts table in TSV file\t", file.name)
-  write.table(experiment$filtered$countTable, file = file.name, row.names = FALSE, quote=FALSE, sep = "\t")
-
-  ############## Exporting the filtered Pheno Table ####################
-  file.name <- file.path(tsv.dir, paste("filtered_pheno_table_", parameters$recountID, ".tsv", sep = ""))
-  message("\tSaving filtered pheno table in TSV file\t", file.name)
-  write.table(experiment$filtered$phenoTable, file = file.name, row.names = FALSE, quote=FALSE, sep = "\t")
-  ################################################
-
   #### Build a list with the results of the loadCounts() function
-  #loadedRecount <- list()
-
-  #experiment$originalExperiment <- experiment$original
-  # experiment$originalPhenoTable <- experiment$original$phenoTable
-  # experiment$originalClasses <- experiment$original$classLabels
-
-  #experiment$filteredExperiment<- experiment$filtered
-  # experiment$filterePhenoTable <- experiment$filtered$filteredPhenoTable
-  # experiment$filteredClasses <- experiment$filtered$filteredClasses
-
-
-  # experiment$samples.per.class <- as.data.frame.table(table(experiment$filtered$filteredClasses), row.names=1)
-  # experiment$filteredData <- filteredData
-  experiment$rawCounts$geo.characteristics <- geo_characteristics(experiment$rawCounts$phenoTable)
+  experiment$originalCounts$geo.characteristics <- geo_characteristics(experiment$originalCounts$phenoTable)
   experiment$filtered$geo.characteristics <- geo_characteristics(experiment$filtered$phenoTable)
-
-  # experiment$countsPerRuns <- experiment$countsPerRun
-  # experiment$runPheno <- experiment$runPheno
 
   message.with.time("Finished loadCounts() for Recount experiment ID ", parameters$recountID)
   # experiment$countsPerRun <- NULL
