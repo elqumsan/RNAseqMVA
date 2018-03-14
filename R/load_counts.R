@@ -79,28 +79,29 @@ loadCounts <- function(recountID = parameters$recountID,
           ncol(experiment$originalCounts$countTable), " columns (samples).")
   #countTable <-as.data.frame(t(experiment$runCounts))
 
-  ############## Exporting the original raw count data ####################
-  file.name <- file.path(tsv.dir, paste("original_counts_", parameters$recountID, ".tsv", sep = ""))
-  message("\tSaving original raw counts table in TSV file\t", file.name)
-  write.table(experiment$originalCounts$countTable, file = file.name, row.names = FALSE, quote=FALSE, sep = "\t")
-
-  ############## Exporting the original Pheno Table ####################
-  file.name <- file.path(tsv.dir, paste("original_pheno_table_", parameters$recountID, ".tsv", sep = ""))
-  message("\tSaving original pheno table in TSV file\t", file.name)
-  write.table(experiment$originalCounts$phenoTable, file = file.name, row.names = FALSE, quote=FALSE, sep = "\t")
-
-
-  ##### Export a table with class labels + phenotypic information #####
-  message("\tSaving original pheno table + class labels information in TSV file\t", file.name)
-  characteristics.string <- unlist(lapply(experiment$originalCounts$phenoTable$characteristics, paste, collapse="; "))
-  pheno.data.frame <- data.frame(sample = experiment$originalCounts$phenoTable$sample,
-                                # class = experiment$original$phenoTable,
-                                 description = characteristics.string)
-  # dim(pheno.data.frame)
-  # View(pheno.data.frame)
-  file.name <- file.path(tsv.dir, paste("phenoDataframe_",parameters$recountID,".tsv", sep = ""))
-  message("\tExporting sample ID's and description in TSV file\t", file.name)
-  write.table(pheno.data.frame, file = file.name, quote=FALSE, row.names = FALSE, sep = "\t")
+  # ############## Exporting the original raw count data ####################
+  # file.name <- file.path(tsv.dir, paste("original_counts_", parameters$recountID, ".tsv", sep = ""))
+  # message("\tSaving original raw counts table in TSV file\t", file.name)
+  # write.table(experiment$originalCounts$countTable, file = file.name, row.names = FALSE, quote=FALSE, sep = "\t")
+  #
+  # ############## Exporting the original Pheno Table ####################
+  # file.name <- file.path(tsv.dir, paste("original_pheno_table_", parameters$recountID, ".tsv", sep = ""))
+  # message("\tSaving original pheno table in TSV file\t", file.name)
+  # write.table(experiment$originalCounts$phenoTable, file = file.name, row.names = FALSE, quote=FALSE, sep = "\t")
+  #
+  #
+  # ##### Export a table with class labels + phenotypic information #####
+  # message("\tSaving original pheno table + class labels information in TSV file\t", file.name)
+  # characteristics.string <- unlist(lapply(experiment$originalCounts$phenoTable$characteristics, paste, collapse="; "))
+  # pheno.data.frame <- data.frame(sample = experiment$originalCounts$phenoTable$sample,
+  #                               # class = experiment$original$phenoTable,
+  #                                description = characteristics.string)
+  # # dim(pheno.data.frame)
+  # # View(pheno.data.frame)
+  #
+  # file.name <- file.path(tsv.dir, paste("phenoDataframe_",parameters$recountID,".tsv", sep = ""))
+  # message("\tExporting sample ID's and description in TSV file\t", file.name)
+  # write.table(pheno.data.frame, file = file.name, quote=FALSE, row.names = FALSE, sep = "\t")
 
 
   ################################################
