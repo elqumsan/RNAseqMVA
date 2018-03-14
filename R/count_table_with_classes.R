@@ -10,7 +10,7 @@
 #' @param classColumn a vector indicating one or several columns of the pheno table that will define the sample class labels. If umtiple columns are specified, they will be concatenated to build sample labels
 #' @param ID=parameters$recountID identifier associated to the count table (by default, the RecountID, but can be specified with custom identifiers)
 #' @param sampleNames=colnames(countTable) sample names (by default, automatically taken from the column names of the count table)
-#' @param geneNames=townames(countTable) gene names (by default, automatically taken from the row names of the count table)
+#' @param geneNames=rownames(countTable) gene names (by default, automatically taken from the row names of the count table)
 #' @param dataType="raw counts" data type, free text (e.g. raw counts, log2-transformed counts, log2 normalised counts  ...).
 #'
 #' @export
