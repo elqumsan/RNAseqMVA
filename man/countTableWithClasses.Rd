@@ -20,7 +20,7 @@ one column per sample.}
 
 \item{sampleNames=colnames(countTable)}{sample names (by default, automatically taken from the column names of the count table)}
 
-\item{geneNames=townames(countTable)}{gene names (by default, automatically taken from the row names of the count table)}
+\item{geneNames=rownames(countTable)}{gene names (by default, automatically taken from the row names of the count table)}
 
 \item{dataType="raw}{counts" data type, free text (e.g. raw counts, log2-transformed counts, log2 normalised counts  ...).}
 }
