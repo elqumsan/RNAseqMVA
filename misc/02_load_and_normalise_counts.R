@@ -11,7 +11,7 @@ if (parameters$compute) {
 
   # names(loaded)
 
-  ## Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files
+  #### Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files ###
   exportTables(loaded$countsPerRun,
                export.dir = paste(parameters$dir$TSV, parameters$recountID, sep = "/"),
                file.prefix = "counts_per_run_")
@@ -30,92 +30,62 @@ if (parameters$compute) {
     #  parameters$classColor[["astrocytes"]]
     ## Convert the yaml-imported list into a named vector
     loaded$filtered$classColors <- unlist(parameters$classColor) # convert list to a vector
+
+    #classColors <- 1:length(loaded$filtered$classColors)
+    #names(loaded$filtered$classColors) <- loaded$filtered$classNames
+
+    loaded$filtered$sampleColors <- loaded$filtered$classColors[loaded$filtered$classLabels]
+    #names(sampleColors) <- rownames(loaded$filtered$phenoTable)
     # names(classColors) # check vector names
+
     # classColors["astrocytes"]
 
   } else {
-    classNames <- unique(classLabels)
-    classColors <- 1:length(classNames)
-    names(classColors) <- classNames
+   # # loaded$filtered$classNames <- unique(loaded$filtered$classLabels)
+   #  classColors <- 1:length(classNames)
+   #  names(classColors) <- classNames
+   stop("Don't haveing any class Color, you should go back yml file to revise it...")
+
   }
 
 
   # dim(loaded$originalCountTable)
   # dim(loaded$filteredCountTable)
 
-  ############################################################
-  ## Build an object (formally a simple list) for the raw counts table and associated info.
-  ## We will then treat similar objects for different types of pre-processed data:
-  ## - log2-transformed
-  ## - normalised
-  ## - CPA-transformed
-  ## - ....
 
-  ## JvH 2018-03-06: this rawCounts list is redundant with loaded$filteredCountTable
-  # rawCounts <- list()
-  # rawCounts$Counts <- loaded$filteredCountTable ## Note: one row per sample, one column per gene
-  # rawCounts$sample.nb <- nrow(rawCounts$Counts)
-  # rawCounts$feature.nb <- ncol(rawCounts$Counts)
-  # dim(rawCounts$Counts)
-
-
-  ## Assign a specific color to each sammple according to its class
-  countTable <- loaded$filtered$countTable
-  pheno <- loaded$filtered$phenoTable
-  classes <- loaded$filtered$classLabels
-  geo.characteristics <- loaded$filtered$geo.characteristics
-  # table(classes)
-  # length(classes)
-  # length(unique(classes))
-  distinct.classes <- as.vector(unique(classes))
-
-
+#
+#
+#   ## Assign a specific color to each sammple according to its class
+#   countTable <- loaded$filtered$countTable
+#   pheno <- loaded$filtered$phenoTable
+#   classes <- loaded$filtered$classLabels
+#   geo.characteristics <- loaded$filtered$geo.characteristics
+#   # table(classes)
+#   # length(classes)
+#   # length(unique(classes))
+#   distinct.classes <- as.vector(unique(classes))
 
 
 } else {
-  message.with.time("Skipping data loading")
+  message.with.time("Skipping load the count Table from recount experiment, merge count per sample and filter it\n","
+                    from zero and near-zero variance")
 }
 
 
 
-## Number of samples per class
-# print(loaded$filtered$nbSamples)
-
-## I start by assigning one systematic color(number) to each class,
-## To make sure that each class has a color even with different datasets analsed in the efuture.
-classColors <- 1:length(distinct.classes)
-names(classColors) <- distinct.classes
-
-## JvH: Mustafa, these colors are specific for one dataset.
-##
-## Message from JvH, 2018-03-06:
-## These should now be placed in the yaml file.
-if (parameters$recountID == "SRP048759") {
-  classColors["Heparinised.blood"] <- "#BB0000"
-  classColors["Bone.marrow"] <- "#4488FF"
-} else if (parameters$recountID == "SRP042620") {
-  ## TO DO : define colors for the multi-group breast cancer dataset
-  classColors["Breast.Cancer.Cell.Line"] <- "red"
-  classColors["ER..Breast.Cancer.Primary.Tumor"] <- "darkblue"
-  classColors["Triple.Negative.Breast.Cancer.Primary.Tumor"] <- "purple"
-  classColors["Uninvolved.Breast.Tissue.Adjacent.to.ER..Primary.Tumor"] <- "green"
-  classColors["Uninvolved.Breast.Tissue.Adjacent.to.TNBC.Primary.Tumor"] <- "black"
-}
-# print(classColors)
-## Assign colors per sample according to their class
-sampleColors <- classColors[loaded$filtered$classLabels]
-names(sampleColors) <- rownames(loaded$filtered$phenoTable)
-# print(sampleColors)
 
 ##### Normalize the counts without log2 transformation (first test) #####
 ##
 ## Note: this method takes a table with one column per sample and one
 ## row per gene, we thus have to transpose the raw count table.
+
+###### Normalization method for the recount Table after merge and filtered it ########
 if (parameters$compute) {
   # dim(loaded$loaded$norm$counts)
   message.with.time("Normalizing counts based on 75th percentile")
   loaded$norm <- NormalizeCounts(
     objectFiltered = loaded$filtered,
+    classColumn = parameters$classColumn,
     # phenoTable = loaded$filteredExperiment$phenoTable,
     # classLabels = loaded$filteredExperiment$classLabels,
     method = "quantile", quantile=0.75, log2 = FALSE)
@@ -127,8 +97,16 @@ if (parameters$compute) {
 #  hist(unlist(loaded$loaded$norm$counts), main="Normalised count distribution", breaks=1000)
 
 } else {
-  message.with.time("Skipping normalisation")
+  message.with.time("Skipping normalisation for the count Table  and log2 trasformation")
 }
+
+
+## Export the Normalized count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files
+exportTables(loaded$norm,
+             export.dir = paste(parameters$dir$TSV, parameters$recountID, sep = "/"),
+             file.prefix = "norm_counts_")
+
+
 
 
 
@@ -140,13 +118,18 @@ if (parameters$compute) {
   message.with.time("Normalizing counts based on 75th percentile + log2 transformation")
   loaded$log2norm <- NormalizeCounts(
     objectFiltered = loaded$filtered,
+    classColumn = parameters$classColumn,
     # counts =loaded$filteredExperiment$countTable,
     # phenoTable = loaded$filteredExperiment$phenoTable,
     # classLabels = loaded$filteredExperiment$classLabels,
     method = "quantile", quantile=0.75,
     log2 = TRUE, epsilon=0.1)
-  dim(loaded$log2norm$counts)
 
+  #dim(loaded$log2norm$countTable)
+  ## Export the log2 trasformation plus Normalized count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files
+  exportTables(loaded$log2norm,
+               export.dir = paste(parameters$dir$TSV, parameters$recountID, sep = "/"),
+               file.prefix = "log2norm_counts_")
 
 
 
@@ -162,14 +145,14 @@ if (parameters$compute) {
   #
   # silence <- dev.off()
 
-  if (ncol(loaded$log2norm$counts) != length(loaded$log2norm$classLabels)){
+  if (ncol(loaded$log2norm$countTable) != length(loaded$log2norm$classLabels)){
     stop(" the Number of samples in log2norm counts should be the same length of classes")
   }
 
 
 
 } else {
-  message.with.time("Skipping normalisation with log2 transformation")
+  message.with.time("Skipping normalisation for count Table with log2 transformation")
 }
 
 
