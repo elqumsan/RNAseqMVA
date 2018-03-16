@@ -25,29 +25,6 @@ if (parameters$compute) {
                file.prefix = "filtered_counts_")
 
 
-  ## Class colors may be defined in the yaml parameters
-  if (!is.null(parameters$classColor)) {
-    #  parameters$classColor[["astrocytes"]]
-    ## Convert the yaml-imported list into a named vector
-    loaded$filtered$classColors <- unlist(parameters$classColor) # convert list to a vector
-
-    #classColors <- 1:length(loaded$filtered$classColors)
-    #names(loaded$filtered$classColors) <- loaded$filtered$classNames
-
-    loaded$filtered$sampleColors <- loaded$filtered$classColors[loaded$filtered$classLabels]
-    #names(sampleColors) <- rownames(loaded$filtered$phenoTable)
-    # names(classColors) # check vector names
-
-    # classColors["astrocytes"]
-
-  } else {
-   # # loaded$filtered$classNames <- unique(loaded$filtered$classLabels)
-   #  classColors <- 1:length(classNames)
-   #  names(classColors) <- classNames
-   stop("Don't haveing any class Color, you should go back yml file to revise it...")
-
-  }
-
 
   # dim(loaded$originalCountTable)
   # dim(loaded$filteredCountTable)
@@ -86,6 +63,7 @@ if (parameters$compute) {
   loaded$norm <- NormalizeCounts(
     objectFiltered = loaded$filtered,
     classColumn = parameters$classColumn,
+    classColors = parameters$classColor,
     # phenoTable = loaded$filteredExperiment$phenoTable,
     # classLabels = loaded$filteredExperiment$classLabels,
     method = "quantile", quantile=0.75, log2 = FALSE)
@@ -130,9 +108,11 @@ if (parameters$compute) {
   exportTables(loaded$log2norm,
                export.dir = paste(parameters$dir$TSV, parameters$recountID, sep = "/"),
                file.prefix = "log2norm_counts_")
+  plotFigures(loaded$log2norm,
+              plot.dir = file.path(dir.NormImpact),
+              file.prefix = "log2norm")
 
-
-
+  }
   # plot.file <- file.path(dir.NormImpact, "log2normCount_hist.pdf")
   # message("\tlog2(norm counts) histogram\t", plot.file)
   # pdf(plot.file, width=7, height=5)
@@ -145,15 +125,15 @@ if (parameters$compute) {
   #
   # silence <- dev.off()
 
-  if (ncol(loaded$log2norm$countTable) != length(loaded$log2norm$classLabels)){
-    stop(" the Number of samples in log2norm counts should be the same length of classes")
-  }
-
-
-
-} else {
-  message.with.time("Skipping normalisation for count Table with log2 transformation")
-}
+#   if (ncol(loaded$log2norm$countTable) != length(loaded$log2norm$classLabels)){
+#     stop(" the Number of samples in log2norm counts should be the same length of classes")
+#   }
+#
+#
+#
+# } else {
+#   message.with.time("Skipping normalisation for count Table with log2 transformation")
+# }
 
 
 
@@ -164,10 +144,10 @@ message.with.time("finished executing 02_load_and_normalise_counts.R")
 # message.with.time(" plotting some figures to explore distribution for the recount data set ",parameters$recountID)
 # source("misc/11_impact_of_normalization_and_Log2.R")
 
-##### Exhibiting the geo charactiristics for the current project #####
-message.with.time("Exhibit the geo charactiristics for such experiment: ", parameters$recountID, " in order to know the class lable
-                  for such experiment")
-head( geo.characteristics)
-geo.characteristics.file <- file.path("~/RNAseqMVA_workspace", "data", parameters$recountID, "geo.characteristics.tsv")
-write.table( geo.characteristics, file = geo.characteristics.file, quote = FALSE,
-             row.names = FALSE, sep = "\t" )
+# ##### Exhibiting the geo charactiristics for the current project #####
+ # message.with.time("Exhibit the geo charactiristics for such experiment: ", parameters$recountID, " in order to know the class lable
+ #                   for such experiment")
+ # head( geo.characteristics)
+ # geo.characteristics.file <- file.path("~/RNAseqMVA_workspace", "data", parameters$recountID, "geo.characteristics.tsv")
+ # write.table( geo.characteristics, file = geo.characteristics.file, quote = FALSE,
+ #              row.names = FALSE, sep = "\t" )
