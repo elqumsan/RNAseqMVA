@@ -4,8 +4,9 @@
 \alias{NormalizeCounts}
 \title{Normalize RNA-seq count table}
 \usage{
-NormalizeCounts(objectFiltered, method = "quantile", quantile = 0.75,
-  log2 = TRUE, epsilon = 0.1)
+NormalizeCounts(objectFiltered, classColumn = parameters$classColumn,
+  classColors = parameters$classColor, method = "quantile",
+  quantile = 0.75, log2 = TRUE, epsilon = 0.1)
 }
 \arguments{
 \item{counts}{a raw count table, with one column per sample and one row per gene.
