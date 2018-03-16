@@ -49,6 +49,7 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
                                   mergeRuns = parameters$mergeRuns,
                                   sampleIdColumn = parameters$sampleIdColumn, ## Alternative: use "sample"
                                   classColumn = parameters$classColumn,
+                                  classColors = parameters$classColor,
                                   forceDownload = FALSE,
                                   verbose = parameters$verbose,
                                   ...) {
@@ -124,7 +125,8 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
   countsPerRuns <- countTableWithClasses(countTable = countTable,
                                        phenoTable = phenoTable,
                                        classColumn = classColumn,
-                                       dataType = "raw counts per run")
+                                       classColors = classColors,
+                                       dataType = "raw.counts.per.run")
   # class(countsPerRuns)
   summary(countsPerRuns)
 

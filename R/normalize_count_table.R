@@ -28,11 +28,21 @@ NormalizeCounts <- function(objectFiltered,
                             #phenoTable,
                             #classLabels,
                             classColumn = parameters$classColumn,
+                            classColors = parameters$classColor,
                             method="quantile",
                             quantile=0.75,
                             log2=TRUE,
                             epsilon=0.1) {
-  message.with.time("Starting NormalizeCounts() for Recount experiment ID ", parameters$recountID)
+
+  if(log2){
+    message.with.time("Starting log2 NormalizeCounts() for Recount experiment ID ", objectFiltered[["ID"]])
+
+
+  } else{
+
+    message.with.time("Starting NormalizeCounts() for Recount experiment ID ", objectFiltered[["ID"]])
+
+  }
 
   counts <- objectFiltered$countTable
   phenoTable <- objectFiltered$phenoTable
@@ -90,6 +100,7 @@ NormalizeCounts <- function(objectFiltered,
   # Check that all normalised coutns have the same scaling factor
   # apply(normCounts, 2, quantile, probs=quantile)
 
+
   ## Run log2 transformation if required
   if (log2) {
     ## TO BE CHANGED
@@ -97,13 +108,25 @@ NormalizeCounts <- function(objectFiltered,
     ## We should certainly not use na.omit, because this removes any sample that would have any NA value.
     ## Instead, we need to understand why there are NA values in the original count table.
     normCounts <- log2(normCounts + epsilon)
+    result <- countTableWithClasses(countTable = normCounts,
+                                    phenoTable = phenoTable,
+                                    classColumn = classColumn,
+                                    classColors = classColors ,
+                                    dataType = "log2Normalized.counts")
     # dim(normCounts)
     # normCounts <-na.omit(normCounts) ## THIS WAS REDOING THE SAME AS ABOVE
 
+  } else {
+
+    result <- countTableWithClasses(countTable = normCounts,
+                                    phenoTable = phenoTable,
+                                    classColumn = classColumn,
+                                    classColors = classColors,
+                                    dataType = "Normalized.counts")
+
   }
 
- result <- countTableWithClasses(countTable = normCounts, phenoTable = phenoTable, classColumn = classColumn,
-                      dataType = "Normalized counts")
+
   # hist(unlist(normCounts), breaks=100)
 
   ## Build the result list
@@ -159,9 +182,17 @@ NormalizeCounts <- function(objectFiltered,
 #
 # }
 
+  if(log2){
 
-  message("\tDimensions of the normalized count table: ", result$nb.genes, " genes x ", result$nb.samples, " samples. ")
-  message.with.time("Finished NormalizeCounts() for Recount experiment ID ", parameters$recountID)
+    message("\tDimensions of the log2 normalized count table: ", result$nbGenes, " genes x ", result$nbSamples, " samples. ")
+    message.with.time("Finished log2 NormalizeCounts() for Recount experiment ID ", result[["ID"]])
+  } else{
+
+    message("\tDimensions of the normalized count table: ", result$nbGenes, " genes x ", result$nbSamples, " samples. ")
+    message.with.time("Finished NormalizeCounts() for Recount experiment ID ", result[["ID"]])
+
+  }
+
 
   return(result)
 }
