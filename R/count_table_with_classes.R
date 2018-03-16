@@ -18,6 +18,7 @@
 countTableWithClasses <- function(countTable,
                                   phenoTable,
                                   classColumn,
+                                  classColors = parameters$classColor,
                                   ID = parameters$recountID,
                                   sampleNames = colnames(countTable),
                                   geneNames = rownames(countTable),
@@ -83,6 +84,35 @@ message.with.time("\tCreate object has the countTableWithClasses attribute" )
   object$nbClasses <- length(object$classNames)
   object$samplesPerClass <- (as.data.frame.table(table(object$classLabels)))
   colnames(object$samplesPerClass) <- c("Class", "nbSamples")
+
+   classColors <-1:length(object$classNames)
+   names(classColors)<- object$classNames
+   #classColors <- unlist(classColors)
+   object$sampleColors <-classColors[object$classLabels]
+
+  # ## Class colors may be defined in the yaml parameters
+  # if (!is.null(parameters$classColor)) {
+  #   #  parameters$classColor[["astrocytes"]]
+  #   ## Convert the yaml-imported list into a named vector
+    # convert list to a vector
+
+    #classColors <- 1:length(loaded$filtered$classColors)
+    #names(loaded$filtered$classColors) <- loaded$filtered$classNames
+
+
+    #names(sampleColors) <- rownames(loaded$filtered$phenoTable)
+    # names(classColors) # check vector names
+
+    # classColors["astrocytes"]
+  #
+  # } else {
+  #   # # loaded$filtered$classNames <- unique(loaded$filtered$classLabels)
+  #   #  classColors <- 1:length(classNames)
+  #   #  names(classColors) <- classNames
+  #   stop("Don't haveing any class Color, you should go back yml file to revise it...")
+  #
+  # }
+
 
   message("\t\tfinishing from creating the object with countTablewithClasses attribute")
   return(object)
