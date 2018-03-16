@@ -126,6 +126,10 @@ loadCounts <- function(recountID = parameters$recountID,
   experiment$originalCounts$geo.characteristics <- geo_characteristics(experiment$originalCounts$phenoTable)
   experiment$filtered$geo.characteristics <- geo_characteristics(experiment$filtered$phenoTable)
 
+
+
+
+
   message.with.time("Finished loadCounts() for Recount experiment ID ", parameters$recountID)
   # experiment$countsPerRun <- NULL
   # experiment$runPhenoTable <- NULL
