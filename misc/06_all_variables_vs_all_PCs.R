@@ -19,11 +19,12 @@ image.file <- file.path(image.dir,  paste(sep="","train_test_all_variables_", pa
 
 
 if (parameters$identicalTrainTest) {
-  ## New option: define all the train indices for all the iterations, in order to use the same training/testing sets between dfferent classifiers and data types
+  ## Define all the train indices for all the iterations, in order to use the
+  ## same training/testing sets between dfferent classifiers and data types
   trainIndices <- list()
+  n <- nrow(log2norm$Counts)
+  train.size <- round(parameters$trainingProportion * n)
   for(i in 1:parameters$iterations) {
-    n <- nrow(log2norm$Counts)
-    train.size <- round(parameters$trainingProportion * n)
     trainIndices [[i]] <- sample(1:n, size = train.size, replace = FALSE)
   }
 } else {
