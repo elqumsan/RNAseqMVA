@@ -25,24 +25,6 @@ if (parameters$compute) {
                file.prefix = "filtered_counts_")
 
 
-
-  # dim(loaded$originalCountTable)
-  # dim(loaded$filteredCountTable)
-
-
-#
-#
-#   ## Assign a specific color to each sammple according to its class
-#   countTable <- loaded$filtered$countTable
-#   pheno <- loaded$filtered$phenoTable
-#   classes <- loaded$filtered$classLabels
-#   geo.characteristics <- loaded$filtered$geo.characteristics
-#   # table(classes)
-#   # length(classes)
-#   # length(unique(classes))
-#   distinct.classes <- as.vector(unique(classes))
-
-
 } else {
   message.with.time("Skipping load the count Table from recount experiment, merge count per sample and filter it\n","
                     from zero and near-zero variance")
@@ -72,7 +54,7 @@ if (parameters$compute) {
   # loaded$norm$nb.genes
 
 
-#  hist(unlist(loaded$loaded$norm$counts), main="Normalised count distribution", breaks=1000)
+  #  hist(unlist(loaded$loaded$norm$counts), main="Normalised count distribution", breaks=1000)
 
 } else {
   message.with.time("Skipping normalisation for the count Table  and log2 trasformation")
@@ -108,22 +90,24 @@ if (parameters$compute) {
   exportTables(loaded$log2norm,
                export.dir = paste(parameters$dir$TSV, parameters$recountID, sep = "/"),
                file.prefix = "log2norm_counts_")
+
+  ## STILL IN CONSTRUCTION (2018-03-19)
   plotFigures(loaded$log2norm,
               plot.dir = file.path(dir.NormImpact),
               file.prefix = "log2norm")
 
-  }
-  # plot.file <- file.path(dir.NormImpact, "log2normCount_hist.pdf")
-  # message("\tlog2(norm counts) histogram\t", plot.file)
-  # pdf(plot.file, width=7, height=5)
-  # hist(unlist(loaded$log2norm$counts), breaks=100,
-  #      col="grey",
-  #      main=paste("log2(norm counts) distrib;", recountID),
-  #      las=1,
-  #      xlab="log2(norm counts)",
-  #      ylab="Frequency")
-  #
-  # silence <- dev.off()
+}
+# plot.file <- file.path(dir.NormImpact, "log2normCount_hist.pdf")
+# message("\tlog2(norm counts) histogram\t", plot.file)
+# pdf(plot.file, width=7, height=5)
+# hist(unlist(loaded$log2norm$counts), breaks=100,
+#      col="grey",
+#      main=paste("log2(norm counts) distrib;", recountID),
+#      las=1,
+#      xlab="log2(norm counts)",
+#      ylab="Frequency")
+#
+# silence <- dev.off()
 
 #   if (ncol(loaded$log2norm$countTable) != length(loaded$log2norm$classLabels)){
 #     stop(" the Number of samples in log2norm counts should be the same length of classes")
@@ -145,9 +129,9 @@ message.with.time("finished executing 02_load_and_normalise_counts.R")
 # source("misc/11_impact_of_normalization_and_Log2.R")
 
 # ##### Exhibiting the geo charactiristics for the current project #####
- # message.with.time("Exhibit the geo charactiristics for such experiment: ", parameters$recountID, " in order to know the class lable
- #                   for such experiment")
- # head( geo.characteristics)
- # geo.characteristics.file <- file.path("~/RNAseqMVA_workspace", "data", parameters$recountID, "geo.characteristics.tsv")
- # write.table( geo.characteristics, file = geo.characteristics.file, quote = FALSE,
- #              row.names = FALSE, sep = "\t" )
+# message.with.time("Exhibit the geo charactiristics for such experiment: ", parameters$recountID, " in order to know the class lable
+#                   for such experiment")
+# head( geo.characteristics)
+# geo.characteristics.file <- file.path("~/RNAseqMVA_workspace", "data", parameters$recountID, "geo.characteristics.tsv")
+# write.table( geo.characteristics, file = geo.characteristics.file, quote = FALSE,
+#              row.names = FALSE, sep = "\t" )
