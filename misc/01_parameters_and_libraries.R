@@ -47,6 +47,7 @@ if (is.null(selected.parameters)) {
   message("Using specific parameters specfied in yaml file for recount ID ", recountID)
   parameters[names(selected.parameters)] <- project.parameters[[recountID]]
   names(parameters$data.types)<-parameters$data.types
+  names(parameters$variable.type)<-parameters$variable.type
 }
 
 
