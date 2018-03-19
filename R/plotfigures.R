@@ -215,7 +215,7 @@ plotFigures.countTableWithClasses <- function( self,
        col=self$sampleColors,
        las=1,
        panel.first=grid())
-  legend("topleft", legend=names( classColors), col=self$sampleColors, pch=1, cex=0.8)
+  legend("topleft", legend=self$classNames, col=self$sampleColors, pch=1, cex=0.8)
   silence <- dev.off()
 
   ######  interpretation the difference between the mean and the third quartile log2counts #####
