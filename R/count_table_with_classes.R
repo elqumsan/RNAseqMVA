@@ -82,13 +82,24 @@ message.with.time("\tCreate object has the countTableWithClasses attribute" )
   # table(classLabels)
   object$classNames <- unique(sort(object$classLabels))
   object$nbClasses <- length(object$classNames)
-  object$samplesPerClass <- (as.data.frame.table(table(object$classLabels)))
-  colnames(object$samplesPerClass) <- c("Class", "nbSamples")
 
-   classColors <-1:length(object$classNames)
-   names(classColors)<- object$classNames
-   #classColors <- unlist(classColors)
-   object$sampleColors <-classColors[object$classLabels]
+  ## Build a table with class properties (size, color, ...)
+  object$classProperties <- (as.data.frame.table(table(object$classLabels)))
+  colnames(object$classProperties) <- c("Class", "nbSamples")
+
+  ## Build a vector with the number of samples per class
+  object$samplesPerClass <- as.vector(as.matrix(object$classProperties$nbSamples))
+  names(object$samplesPerClass) <- as.vector(as.matrix(object$classProperties$Class))
+
+  ## Define class colors
+  classColors <-1:length(object$classNames)
+  names(classColors)<- object$classNames
+  #classColors <- unlist(classColors)
+  object$classProperties$color<- classColors
+
+  ## Assign colors to samples
+  object$sampleColors <- classColors[object$classLabels]
+  names(object$sampleColors) <- object$sampleNames
 
   # ## Class colors may be defined in the yaml parameters
   # if (!is.null(parameters$classColor)) {
@@ -126,8 +137,8 @@ summary.countTableWithClasses <- function(x) {
   cat("\tNumber of genes   \t", x$nbGenes, "\n")
   cat("\tNumber of samples \t", x$nbSamples, "\n")
   cat("\tNumber of classes \t", x$nbClasses, "\n")
-  cat("\tSamples per classes \n")
-  print(x$samplesPerClass)
+  cat("\tClass properties\n")
+  print(x$classProperties)
   cat("\n")
 }
 
@@ -135,3 +146,89 @@ print.countTableWithClasses <- function(x) {
   summary.countTableWithClasses(x)
 }
 
+## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ##
+## TEMPORARILY HERE
+## We define a method for stratified selection of training and testing sets,
+## In a second time we will creat a new class names TrainTestCounttable, and this
+## method will be attached to this class.
+
+#' @title Random sampling of n training sets in a CountTableWithClasses.
+#' @author Jacques van Helden and Mustafa AbuElQumsan
+#' @description Select n random subsets for training. among the biological samples from a CountTableWithClasses.
+#' @param self an object of the class CountTableWithClasses
+#' @paraam stratified=TRUE if true, sampling is done in each class separately in order to preserve the relative frequencies of classes in training and testing sets.
+#' @param iterations=parameters$iterations number of  train/test  iterations, which defines the number of independent sampled subsets
+#' @param trainingProportion=parameters$trainingProportion proportion of samples to sample for each training set
+#'
+#' @export
+
+selectTrainingSets <- function(countTable,
+                               stratified=TRUE,
+                               iterations = parameters$iterations,
+                               trainingProportion = parameters$trainingProportion) {
+  message.with.time("Selecting ", iterations, " training sets, with training proportion = ", trainingProportion)
+
+  #### Check validity of the paraemters ####
+
+  ## Check the class of input object
+  if (!is(countTable, "countTableWithClasses")) {
+    stop("selectStratifiedTrainingSets(): countTable parameter should belong to class countTableWithClasses. ")
+  }
+  ##  STRANGE: THIS RETURNS FALSE WHEREAS IT SHOULD B TRUE
+  # isClass("countTableWithClasses")
+
+
+  ## Trainng Proportion
+  if ((trainingProportion < 0) || (trainingProportion > 1)) {
+    stop("Training proportion must be a real number comprised between 0 and 1")
+  }
+
+  ## Instantiate the list with training indices
+  trainIndices <- list()
+
+  if (stratified) {
+    ## Get class sizes
+    trainSizePerClass <- round(countTable$samplesPerClass * trainingProportion)
+    message("Stratified sampling among classes")
+    print(as.data.frame(trainSizePerClass))
+    for (i in 1:parameters$iterations) {
+      trainIndices[[i]] <- vector()
+      # c <- 2
+      for (c in 1:countTable$nbClasses) {
+        currentClass <- countTable$classNames[[c]]
+        classSamples <- which (countTable$classLabels == currentClass)
+        classTrain <- sample(classSamples, size = trainSizePerClass[[currentClass]], replace = FALSE)
+        trainIndices[[i]] <- append(trainIndices[[i]], classTrain)
+        ## Check that the stratification  was correct
+        ## table(countTable$classLabels[trainIndices[[i]]]) == trainSizePerClass
+      }
+    }
+  } else {
+    ## Sample the training sets irrespective of class membership
+    n <- countTable$nbSamples
+    train.size <- round(trainingProportion * n)
+    message("Class-independent sampling of training sets")
+    for (i in 1:parameters$iterations) {
+      trainIndices [[i]] <- sample(1:n, size = train.size, replace = FALSE)
+    #  View(as.data.frame.list(trainIndices))
+    }
+  }
+
+
+  ## Select testIndices as the complement of train indices
+  testIndices <- list()
+  for (i in 1:parameters$iterations) {
+    ## MUTSAFA: DO IT
+  }
+
+
+  ## Add the attributes
+  countTable$iterations <- iterations
+  countTable$trainingProportion <- trainingProportion
+  countTable$trainIndices <- trainIndices
+
+
+
+  # return(countTable)
+  message.with.time("Stratified training set selection done")
+}
