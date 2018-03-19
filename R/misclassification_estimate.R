@@ -17,27 +17,24 @@
 #'
 #' @import doMC
 #' @export
-MisclassificationEstimate <- function(countTable,
-                                      classes,
-                                      trainingProportion = 2/3,
-                                      trainIndex = NULL, #
+MisclassificationEstimate <- function(self,
+                                      trainIndex,
+                                      testIndex,
                                       classifier = "knn",
                                       verbose = FALSE,
                                       k= 3) {
   result <- list()
-  # countTable <- t(countTable)
-  # classes <-na.omit(classes)
-  # countTable <-countTable[classes,]
-
-  n <- nrow(countTable) ## Number of observations (samples)
-  train.size <- round(n * trainingProportion)
-
-  if (is.null(trainIndex)) {
-    ## Random selection of indices for the training set
-    trainIndex <- sort(sample(1:n, size=train.size))
-  }
-  ## Use remaining indices for the testing set
-  testIndex <- setdiff(1:n, trainIndex)
+  countTable <- self$countTable
+  classes <-self$classLabels
+  # n <- nrow(countTable) ## Number of observations (samples)
+  # train.size <- round(n * trainingProportion)
+  #
+  # if (is.null(self$trainIndex)) {
+  #   ## Random selection of indices for the training set
+  #   trainIndex <- sort(sample(1:n, size=train.size))
+  # }
+  # ## Use remaining indices for the testing set
+  # testIndex <- setdiff(1:n, trainIndex)
 
    # trainIndex <- sample(trainIndex)
    # testIndex <- sample(testIndex)

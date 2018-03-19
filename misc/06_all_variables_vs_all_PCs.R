@@ -17,20 +17,21 @@ image.file <- file.path(image.dir,  paste(sep="","train_test_all_variables_", pa
 # data.type <- "log2norm.prcomp.centred"
 # data.type <- "log2norm"
 
+#
+# if (parameters$identicalTrainTest) {
+#   ## Define all the train indices for all the iterations, in order to use the
+#   ## same training/testing sets between dfferent classifiers and data types
+#   trainIndices <- list()
+#   n <- nrow(log2norm$Counts)
+#   train.size <- round(parameters$trainingProportion * n)
+#   for(i in 1:parameters$iterations) {
+#     trainIndices [[i]] <- sample(1:n, size = train.size, replace = FALSE)
+#   }
+# } else {
+#   ## First option: select different indices at each experiment
+#   trainIndices = NULL
+# }
 
-if (parameters$identicalTrainTest) {
-  ## Define all the train indices for all the iterations, in order to use the
-  ## same training/testing sets between dfferent classifiers and data types
-  trainIndices <- list()
-  n <- nrow(log2norm$Counts)
-  train.size <- round(parameters$trainingProportion * n)
-  for(i in 1:parameters$iterations) {
-    trainIndices [[i]] <- sample(1:n, size = train.size, replace = FALSE)
-  }
-} else {
-  ## First option: select different indices at each experiment
-  trainIndices = NULL
-}
 
 
 
@@ -84,22 +85,36 @@ if (parameters$compute) {
         exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
       }# end if permuted class
 
-      train.test.results.all.variables[[exp.prefix]] <-
-        one.experiment (
-          countTable = as.data.frame(log2norm$Counts),
-          classes = classes,
-          trainIndices = trainIndices,
-          # trainIndex = sample(log2norm$trainIndex),
-          # testIndex = sample(log2norm$testIndex),
-          data.type = parameters$data.types["log2norm"],
-          classifier = classifier,
-          #variable.type = variable.type,
-          trainingProportion = parameters$trainingProportion,
-          file.prefix = exp.prefix,
-          permute = permute,
-          k = parameters$knn$k,
-          verbose = parameters$verbose
-        )
+      # i <- 1
+      if(!is.null(self$trainIndices)){
+        for( i in 1:length(self$trainIndices)){
+          trainIndex <-self$trainIndices[[i]]
+          testIndex <- self$testIndices[[i]]
+
+
+          train.test.results.all.variables[[exp.prefix]] <-
+            one.experiment (
+              self,
+              trainIndex ,
+              testIndex ,
+
+              classifier = classifier,
+              #variable.type = variable.type,
+
+              file.prefix = exp.prefix,
+              permute = permute,
+              k = parameters$knn$k,
+              verbose = parameters$verbose
+            )
+
+          }
+
+      } else {
+
+        stop("/tyou don't have train/test sets to play with classifier ")
+      }
+
+
 
       #### Run classifier with all the principal components ####
       #first.pcs <- data.frame(counts)

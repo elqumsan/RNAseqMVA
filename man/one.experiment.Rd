@@ -4,25 +4,16 @@
 \alias{one.experiment}
 \title{Iterate training/testing procedures with a given classifier and a given data type}
 \usage{
-one.experiment(countTable, classes, classifier, data.type,
-  iterations = parameters$iterations, variable.type = "all",
-  trainingProportion, trainIndices = NULL, permute = FALSE,
-  file.prefix = NULL, verbose = FALSE, k = 3)
+one.experiment(self, classifier, iterations = parameters$iterations,
+  variable.type = parameters$variable.type["all"], trainingProportion,
+  permute = FALSE, file.prefix = NULL, verbose = FALSE, k = 3)
 }
 \arguments{
-\item{countTable}{is the passed count data for the iterative process.}
-
-\item{classes}{is the classes lable for the cout data.}
-
 \item{classifier}{is the type of classifier that is used with repeated process.}
-
-\item{data.type}{is data type that is used with iterative process, supported "raw","log2", "log2norm" and "log2norm.prcomp.centred"}
 
 \item{variable.type}{this indicate for the number of variables that will used with iterative procedure.}
 
 \item{trainingProportion}{is the ratio of trianing proportion.}
-
-\item{trainIndices}{a list of vectors providing training sample indices that will be used at each iteration. The length of the list must correspond to the number of iteractions. This enables to compare different methods wilt using exactly the same training/testing sets between methods.}
 
 \item{permute}{is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier}
 
@@ -32,7 +23,15 @@ one.experiment(countTable, classes, classifier, data.type,
 
 \item{k}{this parameter for the knn classifier to identify the number of neighbour in classification process.}
 
+\item{countTable}{is the passed count data for the iterative process.}
+
+\item{classes}{is the classes lable for the cout data.}
+
+\item{data.type}{is data type that is used with iterative process, supported "raw","log2", "log2norm" and "log2norm.prcomp.centred"}
+
 \item{iteration}{is the how much number it will be repeated the process.}
+
+\item{trainIndices}{a list of vectors providing training sample indices that will be used at each iteration. The length of the list must correspond to the number of iteractions. This enables to compare different methods wilt using exactly the same training/testing sets between methods.}
 }
 \description{
 for sake of the accuracy and due to the error rate have computed from sampleing from the origin count data,

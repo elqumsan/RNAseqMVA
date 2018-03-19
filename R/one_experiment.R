@@ -20,14 +20,13 @@
 #' @export
 ################################################################
 ## Define a function to iterate over one classifier with one particular data type.
-one.experiment <- function (countTable, # count table (may be normalized or not, log2 or not)
-                            classes, ## Class labels attached to each sample
+one.experiment <- function ( self,
                             classifier, # supported: knn or rf
-                            data.type, # e.g. "raw", "normP75", "log2normP75"
+
                             iterations = parameters$iterations,
-                            variable.type = "all", ## e.g;. "all", "top20", "top200", ...
+                            variable.type = parameters$variable.type["all"], ## e.g;. "all", "top20", "top200", ...
                             trainingProportion, # ratio of training proportion
-                            trainIndices = NULL,
+
                           #  trainIndex, testIndex,
                             permute = FALSE, # permute the class labels before running the test
                             file.prefix = NULL, # prefix for the saved files. If not provided, will be automatically generated
@@ -39,21 +38,21 @@ one.experiment <- function (countTable, # count table (may be normalized or not,
   startTime <- Sys.time();
 
   ## Check the consistency between trainIndices and iterations
-  if (!is.null(trainIndices)) {
+  if (!is.null(self$trainIndices)) {
       if (length(trainIndices) != iterations) {
         stop("Invalid specification of trainIndices: should be a list of vectors, with the same number of vectors as the iterations. ")
       }
   }
 
 
-  message(format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", classifier, " classifier (train vs test), ", data.type, " counts, ", variable.type, " variables, ", parameters$iterations, " iterations.")
+  message(format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", classifier, " classifier (train vs test), ", self[["dataType"]], self[["varaible.type"]],  ",  ",variable.type, " variables, ",   parameters$iterations, " iterations.")
   testTable <- data.frame()
   # i <- 1
 
 
   ## Define file prefix is not specified in paramters
   if (is.null(file.prefix)) {
-    file.prefix <- paste(sep="_", classifier, parameters$recountID, data.type, variable.type)
+    file.prefix <- paste(sep="_", classifier, parameters$recountID, self[["dataType"]], variable.type)
     if (permute) {
       file.prefix <- paste(sep="_", file.prefix, "permLabels")
     }
@@ -83,10 +82,10 @@ one.experiment <- function (countTable, # count table (may be normalized or not,
     }
     message("\t", format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", classifier, " training/testing evaluation, iteration ", i , "/", iterations)
 
-    oneTest <- MisclassificationEstimate(countTable, classes , trainingProportion,
-                                         trainIndex= trainIndex,
-                                         #trainIndex, testIndex ,
-                                         classifier = classifier, k=k, verbose=verbose)
+    oneTest <- MisclassificationEstimate(self,
+                                          classifier = classifier,
+                                          k=k,
+                                          verbose=verbose)
 
     testTable <- rbind (testTable, oneTest$stats)
   }
