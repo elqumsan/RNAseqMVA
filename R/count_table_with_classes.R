@@ -153,7 +153,7 @@ print.countTableWithClasses <- function(x) {
 #' @param self which much belong to the countTableWithClasses class.
 #'
 #' @export
-selecTrainingSets <- function(self, ...){
+selectTrainingSets <- function(self, ...){
   message("\tExporting the object class", class(self), "object with train/test sets")
   UseMethod("selectTrainingSets", self)
 }
@@ -174,17 +174,18 @@ selecTrainingSets <- function(self, ...){
 #'
 #' @export
 
-selectTrainingSets.countTableWithClasses <- function(countTable,
-                               stratified=TRUE,
-                               iterations = parameters$iterations,
-                               trainingProportion = parameters$trainingProportion) {
+selectTrainingSets.countTableWithClasses <- function(
+  self,
+  stratified=TRUE,
+  iterations = parameters$iterations,
+  trainingProportion = parameters$trainingProportion) {
   message.with.time("Selecting ", iterations, " training sets, with training proportion = ", trainingProportion)
 
   #### Check validity of the paraemters ####
 
   ## Check the class of input object
-  if (!is(countTable, "countTableWithClasses")) {
-    stop("selectStratifiedTrainingSets(): countTable parameter should belong to class countTableWithClasses. ")
+  if (!is(self, "countTableWithClasses")) {
+    stop("selectStratifiedTrainingSets(): self parameter should belong to class countTableWithClasses. ")
   }
   ##  STRANGE: THIS RETURNS FALSE WHEREAS IT SHOULD B TRUE
   # isClass("countTableWithClasses")
@@ -201,8 +202,9 @@ selectTrainingSets.countTableWithClasses <- function(countTable,
 
   if (stratified) {
     ## Get class sizes
-    trainSizePerClass <- round(countTable$samplesPerClass * trainingProportion)
-    # testSizePerClass <- countTable$samplesPerClass - trainSizePerClass
+    trainSizePerClass <- round(self$samplesPerClass * trainingProportion)
+    self$trainSizePerClass <- trainSizePerClass
+    # testSizePerClass <- self$samplesPerClass - trainSizePerClass
     message("Stratified sampling among classes")
     print(as.data.frame(trainSizePerClass))
     # i <- 1
@@ -211,26 +213,27 @@ selectTrainingSets.countTableWithClasses <- function(countTable,
       testIndices[[i]] <- vector()
       # c <- 1
 
-      for (c in 1:countTable$nbClasses) {
-        currentClass <- countTable$classNames[[c]]
-        classSamples <- which (countTable$classLabels == currentClass)
+      for (c in 1:self$nbClasses) {
+        currentClass <- self$classNames[[c]]
+        classSamples <- which (self$classLabels == currentClass)
         classTrain <- sample(classSamples, size = trainSizePerClass[[currentClass]], replace = FALSE)
-        classTest <- setdiff(1:countTable$samplesPerClass[[c]],classTrain)
+        classTest <- setdiff(1:self$samplesPerClass[[c]],classTrain)
         trainIndices[[i]] <- append(trainIndices[[i]], classTrain)
         testIndices[[i]] <- append(testIndices[[i]], classTest)
         ## Check that the stratification  was correct
-        ## table(countTable$classLabels[trainIndices[[i]]]) == trainSizePerClass
+        ## table(self$classLabels[trainIndices[[i]]]) == trainSizePerClass
 
-        #classTest <- setdiff(countTable$samplesPerClass[[c]], classTrain)
+        #classTest <- setdiff(self$samplesPerClass[[c]], classTrain)
       }
     }
   } else {
     ## Sample the training sets irrespective of class membership
-    n <- countTable$nbSamples
-    train.size <- round(trainingProportion * n)
+    n <- self$nbSamples
+    trainSize <- round(trainingProportion * n)
+    self$trainSize <- trainSize
     message("Class-independent sampling of training sets")
     for (i in 1:parameters$iterations) {
-      trainIndices [[i]] <- sample(1:n, size = train.size, replace = FALSE)
+      trainIndices [[i]] <- sample(1:n, size = trainSize, replace = FALSE)
       testIndices [[i]] <- setdiff(1:n, trainIndices[[i]])
     #  View(as.data.frame.list(trainIndices))
     }
@@ -246,13 +249,13 @@ selectTrainingSets.countTableWithClasses <- function(countTable,
 
 
   ## Add the attributes
-  countTable$iterations <- iterations
-  countTable$trainingProportion <- trainingProportion
-  countTable$trainIndices <- trainIndices
-  countTable$testIndices <- testIndices
+  self$iterations <- iterations
+  self$trainingProportion <- trainingProportion
+  self$trainIndices <- trainIndices
+  self$testIndices <- testIndices
 
+  class(self) <- unique(c(class(self), "countTableWithTrainTestSets"))
 
-
-  # return(countTable)
-  message.with.time("Stratified training set selection done")
+  return(self)
+  message.with.time("Training set selection done")
 }
