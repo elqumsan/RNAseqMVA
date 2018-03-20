@@ -7,7 +7,6 @@ exportTables <- function (self, ...) {
   message("Exporting object of class ", class(self), " to tables")
   #  message("Looking for a function named ", paste("exportTables", class(self), sep="."))
   UseMethod("exportTables", self)
-
 }
 
 
@@ -24,23 +23,23 @@ exportTables.countTableWithClasses <- function (self,
                                                 export.dir,
                                                 file.prefix,
                                                 extension=".tsv") {
-  message("Exporting countTableWithClasses object ", self[["ID"]], " to tables")
-  message("\tExport directory\t", export.dir)
-  message("\tFile prefix\t", file.prefix)
+  message("\tExporting countTableWithClasses object ", self[["ID"]], " to tables")
+  message("\t\tExport directory\t", export.dir)
+  message("\t\tFile prefix\t", file.prefix)
 
   ############## Exporting the count table ####################
   count.file <- file.path(export.dir, paste(file.prefix, self[["ID"]], "_count_table", extension, sep = ""))
-  message("\tExporting count table in TSV file\t", count.file)
+  message("\t\tExporting count table in TSV file\t", count.file)
   write.table(self$countTable, file = count.file, row.names = FALSE, quote=FALSE, sep = "\t")
 
   ############## Exporting the  Pheno Table ####################
   pheno.file <- file.path(export.dir, paste(file.prefix, self[["ID"]], "_pheno_table", extension, sep = ""))
-  message("\tExporting  pheno table in TSV file\t", pheno.file)
+  message("\t\tExporting  pheno table in TSV file\t", pheno.file)
   write.table(self$phenoTable, file = pheno.file, row.names = FALSE, quote=FALSE, sep = "\t")
 
   ############## Exporting the class labels ####################
   classLabel.file <- file.path(export.dir, paste(file.prefix, self[["ID"]], "_class_labels", extension, sep = ""))
-  message("\tExporting class labels in TSV file\t", classLabel.file)
+  message("\t\tExporting class labels in TSV file\t", classLabel.file)
   write.table(data.frame(sampleName = self$sampleNames, classLabel = self$classLabels),
               file = classLabel.file, row.names = FALSE, quote=FALSE, sep = "\t")
 
