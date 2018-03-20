@@ -5,7 +5,8 @@
 \title{constructor of the countTableWithClasses class}
 \usage{
 countTableWithClasses(countTable, phenoTable, classColumn,
-  classColors = parameters$classColor, ID = parameters$recountID,
+  classesColors = parameters$classesColors,
+  variableType = parameters$variable.type, ID = parameters$recountID,
   sampleNames = colnames(countTable), geneNames = rownames(countTable),
   dataType = "raw counts")
 }
