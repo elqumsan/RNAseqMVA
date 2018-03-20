@@ -45,7 +45,7 @@ SRP042620:
   geoSeries: "GSE58135"
   description: "Multi-group breast cancer"
   classColumn: "tissue"
-  classColor:
+  classesColors:
       Breast.Cancer.Cell.Line: "red"
       ER..Breast.Cancer.Primary.Tumor: "darkblue"
       Triple.Negative.Breast.Cancer.Primary.Tumor: "purple"
@@ -117,7 +117,7 @@ SRP006574:
 SRP057196:
   description: "individual cells into all of the major neuronal, glial, and vascular cell types in the brain"
   classColumn: "cell.type"
-  classColor:
+  classesColors:
       fetal_quiescent: "red"
       fetal_replicating: "darkblue"
       astrocytes: "purple"

@@ -3,12 +3,11 @@
 #' @author Mustafa AbuElQumsan and Jacques van Helden
 #' @param self an object, which must belong to a compatible class
 #' @export
-exportTables <- function (self, ...) {
-  message("Exporting object of class ", class(self), " to tables")
-  #  message("Looking for a function named ", paste("exportTables", class(self), sep="."))
-  UseMethod("exportTables", self)
-}
-
+ exportTables <- function (self, ...) {
+   message("Exporting object of class ", class(self), " to tables")
+   #  message("Looking for a function named ", paste("exportTables", class(self), sep="."))
+   UseMethod("exportTables", self)
+ }
 
 
 
@@ -26,6 +25,7 @@ exportTables.countTableWithClasses <- function (self,
   message("\tExporting countTableWithClasses object ", self[["ID"]], " to tables")
   message("\t\tExport directory\t", export.dir)
   message("\t\tFile prefix\t", file.prefix)
+ # UseMethod("exportTables", self)
 
   ############## Exporting the count table ####################
   count.file <- file.path(export.dir, paste(file.prefix, self[["ID"]], "_count_table", extension, sep = ""))

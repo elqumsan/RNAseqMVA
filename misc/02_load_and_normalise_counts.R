@@ -12,7 +12,7 @@ if (parameters$compute) {
 
   ## Select training and testing sets on the filtered table with raw counts
   ## These wil then be passed to all the derived count tables (normalised, DGE, ...)
-  loaded$filtered <- selectTrainingSets(loaded$filtered)
+  loaded$filtered <- countTableWithTrainTestSets(loaded$filtered)
   # class(loaded$filtered)
   # loaded$filtered$testIndices
   # names(loaded)
@@ -59,7 +59,7 @@ if (parameters$compute) {
   # loaded$norm$nb.samples
   # loaded$norm$nb.genes
 
-
+loaded$norm <- countTableWithTrainTestSets(loaded$norm)
   #  hist(unlist(loaded$loaded$norm$counts), main="Normalised count distribution", breaks=1000)
 
 } else {
@@ -91,6 +91,7 @@ if (parameters$compute) {
     method = "quantile", quantile=0.75,
     log2 = TRUE, epsilon=0.1)
 
+  loaded$log2norm  <- countTableWithTrainTestSets(loaded$log2norm)
   #dim(loaded$log2norm$countTable)
   ## Export the log2 trasformation plus Normalized count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files
   exportTables(loaded$log2norm,
