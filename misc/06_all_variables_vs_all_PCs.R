@@ -7,11 +7,6 @@
 ## choose the data.type in return we will pass the data.type for each experiment.
 ## Choice of the classifier
 
-## define the file to store memory image for the "all variables" test
-image.dir <- file.path (parameters$dir$memoryImages, parameters$recountID)
-dir.create(image.dir, showWarnings = FALSE, recursive = TRUE)
-image.file <- file.path(image.dir,  paste(sep="","train_test_all_variables_", parameters$recountID,".Rdata"))
-
 # classifier <- "svm" ## Default classifier for quick testing and debugging
 ## Choice of the Counts
 # data.type <- "log2norm.prcomp.centred"
@@ -41,6 +36,7 @@ image.file <- file.path(image.dir,  paste(sep="","train_test_all_variables_", pa
 ## Default for quick test without iterating over all cases
 permute <- FALSE
 
+
 if (parameters$compute) {
 
   train.test.results.all.variables.per.classifier <- list()
@@ -49,42 +45,24 @@ if (parameters$compute) {
 
     ## List to store all results
     train.test.results.all.variables <- list()
-#    train.test.results.all.PCs <- list()
+    #    train.test.results.all.PCs <- list()
 
-    message.with.time("Train/test all computations with constant training proportion :",
+    message.with.time("Train/test all computations with constant training proportion: ",
                       signif(parameters$trainingProportion, digits = 3) )
-    message.with.time("\tTrain/test, k=", parameters$knn$k, "; classifier=", classifier)
+    #message.with.time("\tTrain/test, k=", parameters$knn$k, "; classifier=", classifier)
 
-    ## Select the counts depending on the data type
-    # if (data.type == "raw") {
-    #   counts <- rawCounts
-    # } else if (data.type == "norm") {
-    #   counts <- normCounts
-    # } else if (data.type == "log2norm") {
-    #   counts <- log2norm
-    # } else if (grepl("prc", data.type)) {
-    #   ## If we are not in the cases above, we assume that the data type is a
-    #   ## PCA results, and we need to get the components.
-    #   ##
-    #   ## Create a variable name "counts" with the content of the variable whose
-    #   ## name is given in "data.type"
-    #   counts <- get(data.type)[["x"]]
-    #
-    # } else {
-    #   stop(data.type, " is not a valid type, Supported: raw, norm, log2, and *pcr*")
-    # } # end else of other data.type
 
 
     #### Associate each analysis of real data with a permutation test ####
     for (permute in c(FALSE, TRUE)) {
 
-      #### Run classifier with all variables (log2-transformed log counts) ####
-      exp.prefix <-
-        paste(sep = "_", classifier, parameters$recountID , parameters$data.type["log2norm"] , "allvars")
-      if (permute) {
-        exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
-      }# end if permuted class
-
+      # #### Run classifier with all variables (log2-transformed log counts) ####
+      # exp.prefix <-
+      #   paste(sep = "_", classifier, parameters$recountID , parameters$data.type["log2norm"] , "allvars")
+      # if (permute) {
+      #   exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
+      # }# end if permuted class
+      #
       # i <- 1
       if(!is.null(self$trainIndices)){
         for( i in 1:length(self$trainIndices)){
@@ -107,7 +85,7 @@ if (parameters$compute) {
               verbose = parameters$verbose
             )
 
-          }
+        }
 
       } else {
 
@@ -252,20 +230,20 @@ if (parameters$compute) {
 
   } # end of loop over classifiers
 
-  #### Save an image of the results to enable reloading them withouht recomputing everything ####
-  if (parameters$save.image) {
-    save.image(file = image.file)
-  }
+  # #### Save an image of the results to enable reloading them withouht recomputing everything ####
+  # if (parameters$save.image) {
+  #   save.image(file = image.file)
+  # }
 
   ##### if compution not required, you can load the image file without any computations ####
-} else {
-  # reload previous results if exist
-  if (file.exists(image.file)) {
-    message ("Reloading memory image ", image.file)
-    load(image.file)
-  } else {
-    stop("Cannot reload memory image file ", image.file)
-  }
+  # } else {
+  #   # reload previous results if exist
+  #   if (file.exists(image.file)) {
+  #     message ("Reloading memory image ", image.file)
+  #     load(image.file)
+  #   } else {
+  #     stop("Cannot reload memory image file ", image.file)
+  #   }
 
 } # end else if compute statment
 
