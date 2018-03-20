@@ -4,7 +4,7 @@
 \alias{selectTrainingSets.countTableWithClasses}
 \title{Random sampling of n training sets in a CountTableWithClasses.}
 \usage{
-selectTrainingSets.countTableWithClasses(countTable, stratified = TRUE,
+\method{selectTrainingSets}{countTableWithClasses}(self, stratified = TRUE,
   iterations = parameters$iterations,
   trainingProportion = parameters$trainingProportion)
 }

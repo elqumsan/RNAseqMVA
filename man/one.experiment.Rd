@@ -5,8 +5,8 @@
 \title{Iterate training/testing procedures with a given classifier and a given data type}
 \usage{
 one.experiment(self, classifier, iterations = parameters$iterations,
-  variable.type = parameters$variable.type["all"], trainingProportion,
-  permute = FALSE, file.prefix = NULL, verbose = FALSE, k = 3)
+  variable.type = "all", trainingProportion, permute = FALSE,
+  file.prefix = NULL, verbose = TRUE, k = parameters$knn$k)
 }
 \arguments{
 \item{classifier}{is the type of classifier that is used with repeated process.}
