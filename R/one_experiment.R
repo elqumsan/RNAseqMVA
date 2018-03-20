@@ -20,22 +20,26 @@
 #' @export
 ################################################################
 ## Define a function to iterate over one classifier with one particular data type.
-one.experiment <- function ( self,
+one.experiment <- function (self,
                             classifier, # supported: knn or rf
-
                             iterations = parameters$iterations,
-                            variable.type = parameters$variable.type["all"], ## e.g;. "all", "top20", "top200", ...
+                            variable.type = "all", ## e.g;. "all", "top20", "top200", ...
                             trainingProportion, # ratio of training proportion
-
                           #  trainIndex, testIndex,
                             permute = FALSE, # permute the class labels before running the test
                             file.prefix = NULL, # prefix for the saved files. If not provided, will be automatically generated
-                            verbose=FALSE,
-                            k = 3 ## For KNN only
+                            verbose=TRUE,
+                            k = parameters$knn$k ## For KNN only
 ) {
 
 
-  startTime <- Sys.time();
+  startTime <- Sys.time()
+
+
+  ## Check the class of the object
+  if (!is(object = self, class2 = "countTableWithClasses")) {
+    stop("one.experiment() only accepts objects of class countTableWithClasses")
+  }
 
   ## Check the consistency between trainIndices and iterations
   if (!is.null(self$trainIndices)) {
@@ -44,15 +48,19 @@ one.experiment <- function ( self,
       }
   }
 
+  if (!is(object = self, class2 = "countTableWithClasses")) {
+    stop("one.experiment() only accepts objects of class countTableWithClasses")
+  }
 
   message(format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", classifier, " classifier (train vs test), ", self[["dataType"]], self[["varaible.type"]],  ",  ",variable.type, " variables, ",   parameters$iterations, " iterations.")
   testTable <- data.frame()
   # i <- 1
 
 
+
   ## Define file prefix is not specified in paramters
   if (is.null(file.prefix)) {
-    file.prefix <- paste(sep="_", classifier, parameters$recountID, self[["dataType"]], variable.type)
+    file.prefix <- paste(sep="_", classifier, self$ID,  self$dataType, variable.type)
     if (permute) {
       file.prefix <- paste(sep="_", file.prefix, "permLabels")
     }
