@@ -108,24 +108,26 @@ NormalizeCounts <- function(objectFiltered,
     ## We should certainly not use na.omit, because this removes any sample that would have any NA value.
     ## Instead, we need to understand why there are NA values in the original count table.
     normCounts <- log2(normCounts + epsilon)
-    result <- countTableWithClasses(countTable = normCounts,
-                                    phenoTable = phenoTable,
-                                    classColumn = classColumn,
-                                    classColors = classColors ,
-                                    dataType = "log2Normalized.counts")
+    # result <- countTableWithClasses(countTable = normCounts,
+    #                                 phenoTable = phenoTable,
+    #                                 classColumn = classColumn,
+    #                                 classColors = classColors ,
+    #                                 dataType = "log2Normalized.counts")
     # dim(normCounts)
     # normCounts <-na.omit(normCounts) ## THIS WAS REDOING THE SAME AS ABOVE
 
   } else {
 
-    result <- countTableWithClasses(countTable = normCounts,
-                                    phenoTable = phenoTable,
-                                    classColumn = classColumn,
-                                    classColors = classColors,
-                                    dataType = "Normalized.counts")
+    # result <- countTableWithClasses(countTable = normCounts,
+    #                                 phenoTable = phenoTable,
+    #                                 classColumn = classColumn,
+    #                                 classColors = classColors,
+    #                                 dataType = "Normalized.counts")
 
   }
 
+  result <- objectFiltered
+  result$countTable <- normCounts
 
   # hist(unlist(normCounts), breaks=100)
 
