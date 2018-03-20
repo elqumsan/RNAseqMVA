@@ -9,6 +9,12 @@ if (parameters$compute) {
                        minSamplesPerClass = parameters$minSamplesPerClass,
                        na.rm = parameters$na.rm)
 
+
+  ## Select training and testing sets on the filtered table with raw counts
+  ## These wil then be passed to all the derived count tables (normalised, DGE, ...)
+  loaded$filtered <- selectTrainingSets(loaded$filtered)
+  # class(loaded$filtered)
+  # loaded$filtered$testIndices
   # names(loaded)
 
   #### Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files ###
