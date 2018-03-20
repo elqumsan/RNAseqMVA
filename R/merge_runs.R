@@ -74,7 +74,8 @@ MergeRuns <- function(runs,
   mergedRuns <- countTableWithClasses(countTable = countTable,
                                     phenoTable = phenoTable,
                                     classColumn = classColumn,
-                                    classColors = classColors,
+                                    classesColors = runs$classesColors,
+                                    variableType = runs$variableType,
                                     dataType = "raw.counts.per.sample")
   # class(mergedRuns)
   if (verbose) {
