@@ -4,19 +4,17 @@
 \alias{MisclassificationEstimate}
 \title{RNA-Seq classifier evaluation to assesse the performance of the classifier}
 \usage{
-MisclassificationEstimate(self, trainIndex, testIndex, classifier = "knn",
-  verbose = FALSE, k = 3)
+MisclassificationEstimate(self, iteration, classifier, verbose = FALSE,
+  k = parameters$knn$k)
 }
 \arguments{
+\item{self}{an object of class countTableWithTrainTestSets}
+
 \item{classifier}{is a type of the classifier}
 
 \item{k}{is number of neighbours passed to classifier}
 
-\item{countTable}{this data frame for RNA-Seq data which contains one row for indiviual and one column for variable}
-
 \item{classes}{such is vector for our cases for classes,}
-
-\item{trainingproportion}{is the ratio of the training subset from the whole data set}
 
 \item{trainIndex=NULL}{vector providing training sample indices. if NULL, training indices are sampled randomly}
 }

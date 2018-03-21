@@ -4,10 +4,9 @@
 #' @description  this script to evaluate and assesse the performance of the RNA-Seq classifier by
 #' # Random sampling (random partitioning) estimation of the misclassification rate.
 #'
-#' @param countTable  this data frame for RNA-Seq data which contains one row for indiviual and one column for variable
+#' @param self  an object of class countTableWithTrainTestSets
 #' @param classes  such is vector for our cases for classes,
 #' @param k is number of neighbours passed to classifier
-#' @param trainingproportion is the ratio of the training subset from the whole data set
 #' @param trainIndex=NULL vector providing training sample indices. if NULL, training indices are sampled randomly
 #' @param classifier is a type of the classifier
 #' @example
@@ -18,20 +17,25 @@
 #' @import doMC
 #' @export
 MisclassificationEstimate <- function(self,
-                                      trainIndex,
-                                      testIndex,
-                                      classifier = "knn",
+                                      iteration,
+                                      classifier,
                                       verbose = FALSE,
-                                      k= 3) {
+                                      k= parameters$knn$k) {
+
+  # require(doMC)
+  # registerDoMC(cores = 5)
+
   result <- list()
   countTable <- self$countTable
   classes <-self$classLabels
+  trainIndex <- self$trainTestProperties$trainIndices[[iteration]]
+  testIndex <- self$trainTestProperties$testIndices[[iteration]]
   # n <- nrow(countTable) ## Number of observations (samples)
-  # train.size <- round(n * trainingProportion)
+  # trainSize <- round(n * trainingProportion)
   #
   # if (is.null(self$trainIndex)) {
   #   ## Random selection of indices for the training set
-  #   trainIndex <- sort(sample(1:n, size=train.size))
+  #   trainIndex <- sort(sample(1:n, size=trainSize))
   # }
   # ## Use remaining indices for the testing set
   # testIndex <- setdiff(1:n, trainIndex)
@@ -44,7 +48,6 @@ MisclassificationEstimate <- function(self,
     ## we need to tune our predictive model by using multiple workers "cores", such step to run our code through parallel
     ##  rather than sequentially technologies
 #        library(doMC)
-        registerDoMC(cores = 5)
     ## Compute testing errors
     randsampling.fit <- knn(train = countTable[trainIndex, ],
                             test = countTable[testIndex, ],
@@ -78,7 +81,7 @@ MisclassificationEstimate <- function(self,
     ##  rather than sequentially technologies
 
     #library(doMC)
-    registerDoMC(cores = 5)
+    #registerDoMC(cores = 5)
 
     ## Computing Testing errors for Random Forest
 
@@ -131,8 +134,7 @@ MisclassificationEstimate <- function(self,
     ## we need to tune our predictive model by using multiple workers "cores", such step to run our code through parallel
     ##  rather than sequentially technologies
 
-    library(doMC)
-    registerDoMC(cores = 5)
+#    registerDoMC(cores = 5)
 
     library("MASS")
 
@@ -172,8 +174,7 @@ MisclassificationEstimate <- function(self,
 
   ## we need to tune our predictive model by using multiple workers "cores", such step to run our code through parallel
   ##  rather than sequentially technologies
-    library(doMC)
-    registerDoMC(cores = 5)
+    #registerDoMC(cores = 5)
 
     require("e1071")
 
@@ -184,7 +185,7 @@ MisclassificationEstimate <- function(self,
 
 
     ## Train the classifier with the training suset
-    svm.trained <- svm(x = countTable[trainIndex,] ,
+    svm.trained <- svm(x = countTable[trainIndex,],
                        y = as.factor(classes[trainIndex]),
                        type = parameters$svm$type,
                        scale = parameters$svm$scale,
@@ -222,9 +223,9 @@ MisclassificationEstimate <- function(self,
 
 
   ## Gather single-value stats in a vector
-  result$stats <- data.frame(n = n,
-                             train.size = train.size,
-                             trainingProportion = trainingProportion,
+  result$stats <- data.frame(n = iteration,
+                             trainSize =  length(trainIndex),
+                             trainingProportion = self$trainTestProperties$trainingProportion,
                              testing.error.nb = testing.error.nb,
                              testing.error.rate = testing.error.rate,
                              training.error.nb= training.error.nb,
@@ -238,7 +239,8 @@ MisclassificationEstimate <- function(self,
   # colnames(result$stats) <- c(cn, cont.names )
   # result$test.contingency <- test.contingencytest.contingency
 
-  result$trainingProportion <- trainingProportion
+  result$trainingProportion <- self$trainTestProperties$trainingProportion
+  result$trainSize <-length(trainIndex)
   result$testing.error.nb <- testing.error.nb
   result$testing.error.rate <-   testing.error.rate
 

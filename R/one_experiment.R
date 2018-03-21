@@ -24,11 +24,11 @@ one.experiment <- function (self,
                             classifier, # supported: knn or rf
                             iterations = parameters$iterations,
                             variable.type = "all", ## e.g;. "all", "top20", "top200", ...
-                            trainingProportion, # ratio of training proportion
+                          #  trainingProportion, # ratio of training proportion
                           #  trainIndex, testIndex,
                             permute = FALSE, # permute the class labels before running the test
                             file.prefix = NULL, # prefix for the saved files. If not provided, will be automatically generated
-                            verbose=TRUE,
+                            verbose = TRUE,
                             k = parameters$knn$k ## For KNN only
 ) {
 
@@ -37,42 +37,46 @@ one.experiment <- function (self,
 
 
   ## Check the class of the object
-  if (!is(object = self, class2 = "countTableWithClasses")) {
-    stop("one.experiment() only accepts objects of class countTableWithClasses")
+  if (!is(object = self, class2 = "countTableWithTrainTestSets")) {
+    stop("one.experiment() only accepts objects of class countTableWithTrainTestSets")
   }
 
   ## Check the consistency between trainIndices and iterations
-  if (!is.null(self$trainIndices)) {
-      if (length(trainIndices) != iterations) {
-        stop("Invalid specification of trainIndices: should be a list of vectors, with the same number of vectors as the iterations. ")
-      }
+  if (is.null(self$trainTestProperties$trainIndices)) {
+    stop("one.experiment()  train indices are not defined")
+  } else {
+    trainIndices <- self$trainTestProperties$trainIndices
   }
 
-  if (!is(object = self, class2 = "countTableWithClasses")) {
-    stop("one.experiment() only accepts objects of class countTableWithClasses")
+
+  ## Check that number of vectors in trainIndices corresponds to number of iterations
+  if (length(trainIndices) != iterations) {
+    stop("Invalid specification of trainIndices: should be a list of vectors, with the same number of vectors as the iterations (", iterations, ").")
   }
 
-  message(format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", classifier, " classifier (train vs test), ", self[["dataType"]], self[["varaible.type"]],  ",  ",variable.type, " variables, ",   parameters$iterations, " iterations.")
-  testTable <- data.frame()
-  # i <- 1
+
+  message.with.time("\t", classifier, " classifier (train vs test), ", self[["dataType"]], self[["varaible.type"]],  ",  ",variable.type, " variables, ",   parameters$iterations, " iterations.")
+
 
 
 
   ## Define file prefix is not specified in paramters
   if (is.null(file.prefix)) {
     file.prefix <- paste(sep="_", classifier, self$ID,  self$dataType, variable.type)
+    file.prefix <- sub(pattern = " ", replacement = "_", x = file.prefix) ## Avoid spaces in file names
     if (permute) {
       file.prefix <- paste(sep="_", file.prefix, "permLabels")
     }
   }
 
   ## Define directory based on the method
-  outDirectory <- table.dirs[classifier]
-  dir.create(outDirectory, recursive = TRUE, showWarnings = F)
-  message("Output directory: ", outDirectory)
+  dir.create(table.dirs[classifier], recursive = TRUE, showWarnings = F)
+  message("Output directory for result tables: ", table.dirs[classifier])
 
 
-  ## Iterate traint/test cycles
+  ## Iterate train/test cycles
+  testTable <- data.frame() ## Instantiate the test table
+  i <- 1 #iterations
   for (i in 1:iterations) {
     ## Permute class labels if required
     if (permute) {
@@ -82,18 +86,14 @@ one.experiment <- function (self,
     # testIndex <- sample(testIndex)
 
     # computing the testing errors rate for the KNN classfier
-    if (is.null(trainIndices)) {
-      trainIndex <- NULL
-    } else {
-      trainIndex <- trainIndices[[i]]
-    #  message("\t\ttrainIndex from trainIndices")
-    }
+    # trainIndex <- trainIndices[[i]]
     message("\t", format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", classifier, " training/testing evaluation, iteration ", i , "/", iterations)
 
-    oneTest <- MisclassificationEstimate(self,
-                                          classifier = classifier,
-                                          k=k,
-                                          verbose=verbose)
+    oneTest <- MisclassificationEstimate(self = self,
+                                         iteration = i,
+                                         classifier = classifier,
+                                         k=k,
+                                         verbose=verbose)
 
     testTable <- rbind (testTable, oneTest$stats)
   }
