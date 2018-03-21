@@ -118,12 +118,14 @@
 summary.countTableWithTrainTestSets <- function(x){
   cat("\t\t countTableWithTrainTestSEts \n")
   cat("\tData Type       \t", x$dataType,"\n")
-  cat("\tVariable Type      \t", x$variableType["all"], "\n")
+  cat("\tVariables Type      \t", x$variablesType, "\n")
   cat("\titeration          \t", x$trainTestProperties$iterations, "\n")
   cat("\ttraining Proportion   \t", x$trainTestProperties$trainingProportion, "\n")
   cat("\ttrain Size Per Class \t", x$trainTestProperties$trainSizePerClass, "\n")
   cat("\tstratified      \t", x$trainTestProperties$stratified, "\n")
   cat("\tclass     \t", class(x), "\n")
+  #print(x$trainTestProperties)
+  cat("\n")
 
   #print()
 }

@@ -75,8 +75,8 @@ MergeRuns <- function(runs,
                                     phenoTable = phenoTable,
                                     classColumn = classColumn,
                                     classesColors = runs$classesColors,
-                                    variableType = runs$variableType,
-                                    dataType = "raw.counts.per.sample")
+                                    variablesType = parameters$variables.type[["all"]],
+                                    dataType = "raw_counts_per_sample")
   # class(mergedRuns)
   if (verbose) {
     summary(mergedRuns)

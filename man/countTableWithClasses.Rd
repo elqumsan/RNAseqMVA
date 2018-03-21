@@ -5,10 +5,9 @@
 \title{constructor of the countTableWithClasses class}
 \usage{
 countTableWithClasses(countTable, phenoTable, classColumn,
-  classesColors = parameters$classesColors,
-  variableType = parameters$variable.type, ID = parameters$recountID,
+  classesColors = parameters$classesColors, ID = parameters$recountID,
   sampleNames = colnames(countTable), geneNames = rownames(countTable),
-  dataType = "raw counts")
+  variablesType = variablesType, dataType = "raw_counts")
 }
 \arguments{
 \item{countTable}{a data.frame with one row per feature (e.g. gene) and

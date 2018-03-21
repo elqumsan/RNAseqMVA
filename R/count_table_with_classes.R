@@ -19,11 +19,11 @@ countTableWithClasses <- function(countTable,
                                   phenoTable,
                                   classColumn,
                                   classesColors = parameters$classesColors,
-                                  variableType = parameters$variable.type,
                                   ID = parameters$recountID,
                                   sampleNames = colnames(countTable),
                                   geneNames = rownames(countTable),
-                                  dataType = "raw counts"
+                                  variablesType= variablesType,
+                                  dataType = "raw_counts"
 ) {
 
   ## Built a list from the input parameters
@@ -38,6 +38,7 @@ message.with.time("\tCreate object has the countTableWithClasses attribute" )
       nbSamples = ncol(countTable),
       geneNames = geneNames,
       nbGenes = nrow(countTable),
+      variablesType = variablesType,
       dataType = dataType
     ),
     class="countTableWithClasses")
@@ -102,7 +103,7 @@ message.with.time("\tCreate object has the countTableWithClasses attribute" )
   object$sampleColors <- classesColors[object$classLabels]
   names(object$sampleColors) <- object$sampleNames
 
-  object$variableType <-  variableType
+  object$variablesType <-  variablesType
 
   message("\t\tfinishing from creating the object with countTablewithClasses attribute")
   return(object)
@@ -113,6 +114,7 @@ summary.countTableWithClasses <- function(x) {
 #  message("\t\t\n giving the summary of the created object")
   cat("countTableWithClasses\n")
   cat("\tData type         \t", x$dataType, "\n")
+  cat("\tVaraibles type         \t", x$variablesType, "\n")
   cat("\tNumber of genes   \t", x$nbGenes, "\n")
   cat("\tNumber of samples \t", x$nbSamples, "\n")
   cat("\tNumber of classes \t", x$nbClasses, "\n")
