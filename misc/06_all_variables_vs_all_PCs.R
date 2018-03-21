@@ -35,7 +35,7 @@
 
 ## Default for quick test without iterating over all cases
 permute <- FALSE
-
+classifier <- "svm"
 
 if (parameters$compute) {
 
@@ -63,27 +63,26 @@ if (parameters$compute) {
       #   exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
       # }# end if permuted class
       #
-      # i <- 1
+      i <- 1 ## Iteration number
       if(!is.null(self$trainIndices)){
-        for( i in 1:length(self$trainIndices)){
-          trainIndex <-self$trainIndices[[i]]
-          testIndex <- self$testIndices[[i]]
+
+        # for( i in 1:self$trainTestProperties$iterations){
+        #   trainIndex <-self$trainIndices[[i]]
+        #   testIndex <- self$testIndices[[i]]
 
 
-          train.test.results.all.variables[[exp.prefix]] <-
-            one.experiment (
-              self,
-              trainIndex ,
-              testIndex ,
-
-              classifier = classifier,
-              #variable.type = variable.type,
-
-              file.prefix = exp.prefix,
-              permute = permute,
-              k = parameters$knn$k,
-              verbose = parameters$verbose
-            )
+        train.test.results.all.variables[[exp.prefix]] <-
+          one.experiment (
+            self,
+            # trainIndex ,
+            # testIndex ,
+            classifier = classifier,
+            #variable.type = variable.type,
+            #file.prefix = exp.prefix,
+            permute = permute,
+            k = parameters$knn$k,
+            verbose = parameters$verbose
+          )
 
         }
 
