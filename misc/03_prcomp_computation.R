@@ -1,26 +1,141 @@
-
-#### Compute principal components for normalized log2 counts ####
-message.with.time("Pre-processing by Principal Component analysis (PCA)")
-loaded$log2norm.prcomp.centred <- prcomp( t(na.omit(loaded$log2norm$counts)), center = TRUE, scale. = FALSE)
-loaded$log2norm.prcomp.centred.scaled <- prcomp(t(na.omit(loaded$log2norm$counts)), center = TRUE, scale. = TRUE)
-
-# ######### sptiting the log2norm.prcomp.centres.scaled[["x"]] dataset for the train set and test set #########
 #
-# n <- nrow(log2norm.prcomp.centred.scaled$x) ## Number of observations (samples)
-# train.size <- round(n * parameters$trainingProportion)
+# #loaded$log2norm.prcomp.centred.scaled <- prcomp(t(na.omit(loaded$log2norm$countTable)), center = TRUE, scale. = TRUE)
 #
-# ## Random selection of indices for the training set
-# trainIndex <- sort(sample(1:n, size=train.size))
-# ## Use remaining indices for the testing set
-# testIndex <- setdiff(1:n, trainIndex)
 #
-# log2norm.prcomp.centred.scaled$trainIndex <- trainIndex
-# log2norm.prcomp.centred.scaled$testIndex <- testIndex
-## Indicate that this principal components analysis for log2 count has finished running
-message.with.time("finished running Principal Component analysis (PCA) for normalized log2 counts")
-
-##### Visualization of the Principal Component analysis (PCA) to showcase impact of PCs #####
-message.with.time("Visualization of the Principal Component analysis (PCA) to showcase impact of PCs")
-source("misc/12_visualization_prcomp_analysis.R")
+#
+# message.with.time("finished running Principal Component analysis (PCA) for normalized log2 counts")
+#
+# ##### Visualization of the Principal Component analysis (PCA) to showcase impact of PCs #####
+# message.with.time("Visualization of the Principal Component analysis (PCA) to showcase impact of PCs")
+# source("misc/12_visualization_prcomp_analysis.R")
 
 
+## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ##
+## TEMPORARILY HERE
+## We define a method for stratified selection of training and testing sets,
+## In a second time we will creat a new class names TrainTestCounttable, and this
+## method will be attached to this class.
+
+#' @title Shorthand the real varaibles sets to the principal component.
+#' @author Jacques van Helden and Mustafa AbuElQumsan
+#' @description reduction all real varaibles in count Table to the n numbers from Principal component. among the biological samples from a CountTableWithClasses.
+#' @param self an object of the class CountTableWithClasses
+
+#' @export
+
+PCsWithTrainTestSets <- function( self,
+                                         stratified=TRUE,
+                                         iterations = parameters$iterations,
+                                         trainingProportion = parameters$trainingProportion) {
+
+  message.with.time("Selecting ", iterations, " training sets, with training proportion = ", trainingProportion)
+
+  #### Check validity of the paraemters ####
+
+  ## Check the class of input object
+  if (!is(self, "countTableWithTrainTestSets")  ) {
+    stop("PCsWithTrainTestSets(): self parameter should belong to class countTableWithTrainTestSets. ")
+  }
+  ##  STRANGE: THIS RETURNS FALSE WHEREAS IT SHOULD B TRUE
+  # isClass("countTableWithClasses")
+
+
+  ## Trainng Proportion
+  if ((trainingProportion < 0) || (trainingProportion > 1)) {
+    stop("Training proportion must be a real number comprised between 0 and 1")
+  }
+
+
+  #### Compute principal components for normalized log2 counts ####
+  message.with.time("Pre-processing by Principal Component analysis (PCA)")
+  self$PCsProperties<- list()
+  self$PCsProperties <- prcomp( t(na.omit(self$countTable)), center = TRUE, scale. = FALSE)
+  self$PCsProperties$PCs <- self$PCsProperties$x
+
+  ## Instantiate the list with training indices
+  trainIndices <- list()
+  testIndices <- list()
+
+  if (stratified) {
+    ## Get class sizes
+    trainSizePerClass <- round(self$samplesPerClass * trainingProportion)
+
+    # testSizePerClass <- self$samplesPerClass - trainSizePerClass
+    message("Stratified sampling among classes")
+    print(as.data.frame(trainSizePerClass))
+    # i <- 1
+    for (i in 1:parameters$iterations) {
+      trainIndices[[i]] <- vector()
+      testIndices[[i]] <- vector()
+      # c <- 1
+
+      for (c in 1:self$nbClasses) {
+        currentClass <- self$classNames[[c]]
+        classSamples <- which (self$classLabels == currentClass)
+        classTrain <- sample(classSamples, size = trainSizePerClass[[currentClass]], replace = FALSE)
+        classTest <- setdiff(1:self$samplesPerClass[[c]],classTrain)
+        trainIndices[[i]] <- append(trainIndices[[i]], classTrain)
+        testIndices[[i]] <- append(testIndices[[i]], classTest)
+        ## Check that the stratification  was correct
+        ## table(self$classLabels[trainIndices[[i]]]) == trainSizePerClass
+
+        #classTest <- setdiff(self$samplesPerClass[[c]], classTrain)
+      }
+    }
+  } else {
+    ## Sample the training sets irrespective of class membership
+    n <- self$nbSamples
+    trainSize <- round(trainingProportion * n)
+    self$trainSize <- trainSize
+    message("Class-independent sampling of training sets")
+    for (i in 1:parameters$iterations) {
+      trainIndices [[i]] <- sample(1:n, size = trainSize, replace = FALSE)
+      testIndices [[i]] <- setdiff(1:n, trainIndices[[i]])
+      #  View(as.data.frame.list(trainIndices))
+    }
+  }
+
+
+  # ## Select testIndices as the complement of train indices
+  # testIndices <- list()
+  # for (i in 1:parameters$iterations) {
+  #   ## MUTSAFA: DO IT
+  #   setdiff()
+  # }
+
+
+  ## Add the attributes
+  #self$PCsProperties<- list()
+  # self$PCsProperties$PCs <- self$PCsProperties$log2norm.prcomp.centred
+  # self$PCsProperties$sdev <- sdev
+  # self$PCsProperties$rotation <- trainingProportion
+  # self$PCsProperties$center <- trainSizePerClass
+  # self$PCsProperties$scale <- trainIndices
+
+  #self$trainTestProperties$stratified <- stratified
+
+  #class(self) <- unique(c( "countTableWithTrainTestSets", class(self)))
+  class(self) <- unique(c( "PCsWithTrainTestSets", class(self)))
+
+  return(self)
+  message.with.time("PCs Training set selection done")
+}
+
+summary.PCsWithTrainTestSets  <- function(x){
+  cat("\t\t PCsWithTrainTestSets  \n")
+  cat("\tData Type       \t", x$dataType,"\n")
+  cat("\tVariables Type      \t", x$variablesType, "\n")
+  cat("\titeration          \t", x$trainTestProperties$iterations, "\n")
+  cat("\ttraining Proportion   \t", x$trainTestProperties$trainingProportion, "\n")
+  cat("\ttrain Size Per Class \t", x$trainTestProperties$trainSizePerClass, "\n")
+  cat("\tstratified      \t", x$trainTestProperties$stratified, "\n")
+  cat("\tclass     \t", class(x), "\n")
+  #print(x$trainTestProperties)
+  cat("\n")
+
+  #print()
+}
+
+print.countTableWithTrainTestSets <- function(x){
+  summary.countTableWithTrainTestSets(x)
+}
