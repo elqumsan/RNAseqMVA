@@ -23,7 +23,7 @@
 one.experiment <- function (self,
                             classifier, # supported: knn or rf
                             iterations = parameters$iterations,
-                            variable.type = "all", ## e.g;. "all", "top20", "top200", ...
+                          #  variable.type = "all", ## e.g;. "all", "top20", "top200", ...
                           #  trainingProportion, # ratio of training proportion
                           #  trainIndex, testIndex,
                             permute = FALSE, # permute the class labels before running the test
@@ -55,14 +55,14 @@ one.experiment <- function (self,
   }
 
 
-  message.with.time("\t", classifier, " classifier (train vs test), ", self[["dataType"]], self[["varaible.type"]],  ",  ",variable.type, " variables, ",   parameters$iterations, " iterations.")
+  message.with.time("\t", classifier, " classifier (train vs test), ", self[["dataType"]], self[["varaible.type"]],  ",  ",self$variablesType, " variables, ",   parameters$iterations, " iterations.")
 
 
 
 
   ## Define file prefix is not specified in paramters
   if (is.null(file.prefix)) {
-    file.prefix <- paste(sep="_", classifier, self$ID,  self$dataType, variable.type)
+    file.prefix <- paste(sep="_", classifier, self$ID,  self$dataType, self$variablesType)
     file.prefix <- sub(pattern = " ", replacement = "_", x = file.prefix) ## Avoid spaces in file names
     if (permute) {
       file.prefix <- paste(sep="_", file.prefix, "permLabels")
@@ -99,25 +99,25 @@ one.experiment <- function (self,
   }
 
   ## Save the result table for KNN training/testing evaluation
-  testTable.file <- file.path(outDirectory, paste(sep="", file.prefix, ".tsv"))
+  testTable.file <- file.path(table.dirs[classifier], paste(sep="", file.prefix, ".tsv"))
 
   write.table(file=testTable.file,
               x = testTable,
               row.names = TRUE, col.names = NA, sep="\t", quote=FALSE)
 
   ## Export a summary about the error rate
-  errorSummary.file <- file.path(outDirectory, paste(sep="", file.prefix, "_summary.tsv"))
+  errorSummary.file <- file.path(table.dirs[classifier], paste(sep="", file.prefix, "_summary.tsv"))
   write.table(tidy(summary(testTable$testing.error.rate)),
               quote=FALSE, sep="\t", row.names=TRUE, col.names = NA,
               file = errorSummary.file)
 
   ## Plot a box plot of training versus testing error
   boxplot.file <- file.path(
-    outDirectory,
+    figure.dirs[classifier],
     paste(sep="", file.prefix, "_R", iterations, "_learning_vs_test_error_boxplot.pdf"))
 
   pdf(file=boxplot.file, width = 7, height = 5)
-  main <- paste(sep="", classifier, "; ", data.type, " counts; ", variable.type, " variables")
+  main <- paste(sep="", classifier, "; ", self$dataType, " counts; ", self$variablesType, " variables")
   if (permute) {
     main <- paste(sep="", main, "; permuted labels")
   }
@@ -129,7 +129,7 @@ one.experiment <- function (self,
     ## Compute elapsed time
   endTime <- Sys.time();
   elapsedTime <- endTime - startTime
-  elapsedTimeFile <- file.path(outDirectory, paste(sep="", file.prefix, "_elapsed_time.txt"))
+  elapsedTimeFile <- file.path(table.dirs[classifier], paste(sep="", file.prefix, "_elapsed_time.txt"))
   write(file = elapsedTimeFile, x = paste(startTime, endTime, elapsedTime))
   message("Elapsed Time file: ", elapsedTimeFile)
   return(testTable)

@@ -36,10 +36,11 @@
 ## Default for quick test without iterating over all cases
 permute <- FALSE
 classifier <- "svm"
+self <- loaded$log2norm
 
 if (parameters$compute) {
 
-  train.test.results.all.variables.per.classifier <- list()
+ # train.test.results.all.variables.per.classifier <- list()
 
   for (classifier in parameters$classifiers) {
 
@@ -56,15 +57,15 @@ if (parameters$compute) {
     #### Associate each analysis of real data with a permutation test ####
     for (permute in c(FALSE, TRUE)) {
 
-      # #### Run classifier with all variables (log2-transformed log counts) ####
-      # exp.prefix <-
-      #   paste(sep = "_", classifier, parameters$recountID , parameters$data.type["log2norm"] , "allvars")
-      # if (permute) {
-      #   exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
-      # }# end if permuted class
-      #
+      #### Run classifier with all variables (log2-transformed log counts) ####
+      exp.prefix <-
+        paste(sep = "_", classifier, parameters$recountID , parameters$data.type["log2norm"] , parameters$variable.type[["all"]])
+      if (permute) {
+        exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
+      }# end if permuted class
+
       i <- 1 ## Iteration number
-      if(!is.null(self$trainIndices)){
+      if(!is.null(self$trainTestProperties$trainIndices)){
 
         # for( i in 1:self$trainTestProperties$iterations){
         #   trainIndex <-self$trainIndices[[i]]
