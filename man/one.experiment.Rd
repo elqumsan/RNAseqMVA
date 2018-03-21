@@ -5,13 +5,11 @@
 \title{Iterate training/testing procedures with a given classifier and a given data type}
 \usage{
 one.experiment(self, classifier, iterations = parameters$iterations,
-  variable.type = "all", permute = FALSE, file.prefix = NULL,
-  verbose = TRUE, k = parameters$knn$k)
+  permute = FALSE, file.prefix = NULL, verbose = TRUE,
+  k = parameters$knn$k)
 }
 \arguments{
 \item{classifier}{is the type of classifier that is used with repeated process.}
-
-\item{variable.type}{this indicate for the number of variables that will used with iterative procedure.}
 
 \item{permute}{is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier}
 
@@ -28,6 +26,8 @@ one.experiment(self, classifier, iterations = parameters$iterations,
 \item{data.type}{is data type that is used with iterative process, supported "raw","log2", "log2norm" and "log2norm.prcomp.centred"}
 
 \item{iteration}{is the how much number it will be repeated the process.}
+
+\item{variable.type}{this indicate for the number of variables that will used with iterative procedure.}
 
 \item{trainingProportion}{is the ratio of trianing proportion.}
 

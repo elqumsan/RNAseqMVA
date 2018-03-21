@@ -40,7 +40,7 @@ self <- loaded$log2norm
 
 if (parameters$compute) {
 
- # train.test.results.all.variables.per.classifier <- list()
+  train.test.results.all.variables.per.classifier <- list()
 
   for (classifier in parameters$classifiers) {
 
@@ -96,7 +96,9 @@ if (parameters$compute) {
 
       #### Run classifier with all the principal components ####
       #first.pcs <- data.frame(counts)
-      first.pcs <- get("log2norm.prcomp.centred.scaled")
+      #first.pcs <- get("log2norm.prcomp.centred.scaled")
+      first.pcs <- loaded$log2norm.prcomp.centred$x
+
       ## define experiment prefix
       exp.prefix <-
         paste(sep = "_", classifier, parameters$recountID , parameters$data.types["prcomp"])
@@ -106,7 +108,7 @@ if (parameters$compute) {
 
       train.test.results.all.variables[[exp.prefix]] <-
         one.experiment (
-          countTable = first.pcs$x,
+          loaded$log2norm.prcomp.centred,
           classes = classes,
           trainIndices = trainIndices,
           # trainIndex = sample( log2norm.prcomp.centred.scaled$trainIndex),
@@ -214,21 +216,24 @@ if (parameters$compute) {
         )
 
 
-    } # end loop over permutation
 
-    #### Plotting the Miscalssification Error rate using all diverse data type all variables with KNN classifier? ####
-    ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
-                     classifier = classifier,
-                     data.type = "diverse_data_type",
-                     main = paste(sep="",
-                                  classifier, ": all variables vs all PCs,", "\n",
-                                  parameters$recountID, ", ",
-                                  parameters$iterations, " iterations, ","\n",
-                                  data.type = "diverse data type"))
+      #### Plotting the Miscalssification Error rate using all diverse data type all variables with KNN classifier? ####
+      ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
+                       classifier = classifier,
+                       data.type = "diverse_data_type",
+                       main = paste(sep="",
+                                    classifier, ": all variables vs all PCs,", "\n",
+                                    parameters$recountID, ", ",
+                                    parameters$iterations, " iterations, ","\n",
+                                    data.type = "diverse_data_type"),
+                                    variablesType = self$variablesType)
 
-    train.test.results.all.variables.per.classifier[[classifier]] <- train.test.results.all.variables
+      train.test.results.all.variables.per.classifier[[classifier]] <- train.test.results.all.variables
 
-  } # end of loop over classifiers
+    } # end loop over classifier
+
+
+  }  # end of computation
 
   # #### Save an image of the results to enable reloading them withouht recomputing everything ####
   # if (parameters$save.image) {
@@ -245,7 +250,7 @@ if (parameters$compute) {
   #     stop("Cannot reload memory image file ", image.file)
   #   }
 
-} # end else if compute statment
+#} # end else if compute statment
 
 
 ###############################################################################################
