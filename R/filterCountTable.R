@@ -249,7 +249,7 @@ filterCountTable <- function(rawCounts,
                                   phenoTable =  filteredPhenoTable ,
                                   classColumn = classColumn,
                                   classesColors = classesColors,
-                                  dataType = "filtered.Counts")
+                                  dataType = "filtered_counts")
 
   class(result)
   summary(result)
