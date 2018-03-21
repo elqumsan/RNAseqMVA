@@ -5,10 +5,11 @@
 \title{Function for boxplot the error rate}
 \usage{
 ErrorRateBoxPlot(experimentList, classifier,
-  main = paste("Misclassification rates", "\\n", parameters$iterations,
-  "iterations"), expColor = "#00BBFF", permColor = "grey",
+  main = paste("Misclassification rates", "\\n", "all varaiables vs all PCs",
+  parameters$recountID, parameters$iterations, "iterations",
+  self[["dataType"]]), expColor = "#00BBFF", permColor = "grey",
   expLegend = "Train/test", permLegend = "Permuted labels", data.type,
-  variable.type = "all.variables", ....)
+  variablesType = variablesType, ....)
 }
 \arguments{
 \item{experimentList}{this is list of experiment where each cell of list error rate of the single experiment with special parameters}
@@ -27,7 +28,7 @@ ErrorRateBoxPlot(experimentList, classifier,
 
 \item{data.type}{which is any data type used for testing the error rate form the specified classifier}
 
-\item{variable.type}{this indicate for the knid and amount of the viariable that are used in analysis}
+\item{variablesType}{this indicate for the knid and amount of the viariable that are used in analysis}
 }
 \description{
 this function takes the experiment List from the error rate that are collected from the experiment.

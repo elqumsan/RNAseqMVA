@@ -11,7 +11,7 @@
 #' @param expLegend is the legend for the real class lable train/test experiment.
 #' @param  permLegend legend for the one experiment with permuted class lables.
 #' @param data.type which is any data type used for testing the error rate form the specified classifier
-#' @param variable.type this indicate for the knid and amount of the viariable that are used in analysis
+#' @param variablesType this indicate for the knid and amount of the viariable that are used in analysis
 #'
 #' @examples
 #' compareExperiments(experimentList = train.test.results)
@@ -22,13 +22,13 @@
 #' @export
 ErrorRateBoxPlot <- function(experimentList,
                              classifier,
-                             main = paste("Misclassification rates", "\n", parameters$iterations, "iterations"),
+                             main = paste("Misclassification rates", "\n", "all varaiables vs all PCs",parameters$recountID,parameters$iterations, "iterations", self[["dataType"]]),
                              expColor = "#00BBFF",
                              permColor = "grey",
                              expLegend = "Train/test",
                              permLegend = "Permuted labels",
                              data.type, # = "log2norm.prcomp.centred",
-                             variable.type = "all.variables", ....) {
+                             variablesType = variablesType, ....) {
 
 
   # ## Define file to store the boxplot
@@ -62,7 +62,7 @@ ErrorRateBoxPlot <- function(experimentList,
     file.prefix <- paste(sep="_",
                          classifier,
                          data.type,
-                         variable.type,
+                         variablesType,
                          "iteration",
                          parameters$iterations)
     if (permute) {
@@ -89,6 +89,7 @@ ErrorRateBoxPlot <- function(experimentList,
     boxplot(testing.error.rates,
             horizontal = FALSE ,
             ylab = "Misclassification rate", ylim=c(0,1),
+
             main = main,
             las=2 , cex.axis = 0.7,
             col = testTable.colors
