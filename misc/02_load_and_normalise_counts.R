@@ -13,9 +13,6 @@ if (parameters$compute) {
   ## Select training and testing sets on the filtered table with raw counts
   ## These wil then be passed to all the derived count tables (normalised, DGE, ...)
   loaded$filtered <- countTableWithTrainTestSets(loaded$filtered)
-  # class(loaded$filtered)
-  # loaded$filtered$testIndices
-  # names(loaded)
 
   #### Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files ###
   exportTables(loaded$countsPerRun,
@@ -59,18 +56,21 @@ if (parameters$compute) {
   # loaded$norm$nb.samples
   # loaded$norm$nb.genes
 
-loaded$norm <- countTableWithTrainTestSets(loaded$norm)
+  class(loaded$norm)
+
+  # loaded$norm <- countTableWithTrainTestSets(loaded$norm)
   #  hist(unlist(loaded$loaded$norm$counts), main="Normalised count distribution", breaks=1000)
+
+  ## Export the Normalized count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files
+  exportTables(loaded$norm,
+               export.dir = paste(parameters$dir$TSV, parameters$recountID, sep = "/"),
+               file.prefix = "norm_counts_")
+
 
 } else {
   message.with.time("Skipping normalisation for the count Table  and log2 trasformation")
 }
 
-
-## Export the Normalized count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files
-exportTables(loaded$norm,
-             export.dir = paste(parameters$dir$TSV, parameters$recountID, sep = "/"),
-             file.prefix = "norm_counts_")
 
 
 
@@ -91,9 +91,9 @@ if (parameters$compute) {
     method = "quantile", quantile=0.75,
     log2 = TRUE, epsilon=0.1)
 
-  loaded$log2norm  <- countTableWithTrainTestSets(loaded$log2norm)
-  #dim(loaded$log2norm$countTable)
-  ## Export the log2 trasformation plus Normalized count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files
+  class(loaded$log2norm)
+
+  ## Export tables
   exportTables(loaded$log2norm,
                export.dir = paste(parameters$dir$TSV, parameters$recountID, sep = "/"),
                file.prefix = "log2norm_counts_")
@@ -104,6 +104,10 @@ if (parameters$compute) {
               file.prefix = "log2norm")
 
 }
+
+
+## TO DO LATER: CHECK IF THESE FIGURES ARE WELL GENERATED, AND INCOROPORATE THEM IN THE plot.figure methods
+
 # plot.file <- file.path(dir.NormImpact, "log2normCount_hist.pdf")
 # message("\tlog2(norm counts) histogram\t", plot.file)
 # pdf(plot.file, width=7, height=5)
