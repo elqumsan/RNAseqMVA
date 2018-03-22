@@ -85,8 +85,14 @@
     self$trainSize <- trainSize
     message("Class-independent sampling of training sets")
     for (i in 1:parameters$iterations) {
-      trainIndices [[i]] <- sample(1:n, size = trainSize, replace = FALSE)
-      testIndices [[i]] <- setdiff(1:n, trainIndices[[i]])
+      trainIndices[[i]] <- vector()
+      testIndices[[i]] <- vector()
+      trainSet <- sample(1:n, size = trainSize, replace = FALSE)
+      testSet <- setdiff(1:n, trainSet)
+      trainIndices[[i]] <-append(trainIndices[[i]], trainSet)
+      testIndices[[i]] <- append(testIndices[[i]], testSet)
+
+
       #  View(as.data.frame.list(trainIndices))
     }
   }
