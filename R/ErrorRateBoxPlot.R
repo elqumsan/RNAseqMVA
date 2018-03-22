@@ -89,7 +89,7 @@ ErrorRateBoxPlot <- function(experimentList,
     boxplot(testing.error.rates,
             horizontal = FALSE ,
             ylab = "Misclassification rate", ylim=c(0,1),
-
+           # xlab = experimentNames,
             main = main,
             las=2 , cex.axis = 0.7,
             col = testTable.colors
