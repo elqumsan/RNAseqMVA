@@ -36,7 +36,7 @@
 ## Default for quick test without iterating over all cases
 permute <- FALSE
 classifier <- "svm"
-self <- loaded$log2norm
+# self <- loaded$log2norm
 
 if (parameters$compute) {
 
@@ -57,9 +57,10 @@ if (parameters$compute) {
     #### Associate each analysis of real data with a permutation test ####
     for (permute in c(FALSE, TRUE)) {
 
+      self <- loaded$log2norm
       #### Run classifier with all variables (log2-transformed log counts) ####
       exp.prefix <-
-        paste(sep = "_", classifier, parameters$recountID , parameters$data.type["log2norm"] , parameters$variable.type[["all"]])
+        paste(sep = "_", classifier, self$ID , self$dataType , self$variablesType)
       if (permute) {
         exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
       }# end if permuted class
@@ -97,26 +98,26 @@ if (parameters$compute) {
       #### Run classifier with all the principal components ####
       #first.pcs <- data.frame(counts)
       #first.pcs <- get("log2norm.prcomp.centred.scaled")
-      first.pcs <- loaded$log2norm.prcomp.centred$x
+      first.pcs <- PCsWithTrainTestSets(loaded$log2norm)
 
       ## define experiment prefix
       exp.prefix <-
-        paste(sep = "_", classifier, parameters$recountID , parameters$data.types["prcomp"])
+        paste(sep = "_", classifier, first.pcs$ID , first.pcs$dataType)
       if (permute) {
         exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
       }# end if permuted class
 
       train.test.results.all.variables[[exp.prefix]] <-
         one.experiment (
-          loaded$log2norm.prcomp.centred,
-          classes = classes,
-          trainIndices = trainIndices,
+          first.pcs,
+          # classes = classes,
+          # trainIndices = trainIndices,
           # trainIndex = sample( log2norm.prcomp.centred.scaled$trainIndex),
           # testIndex = sample(log2norm.prcomp.centred.scaled$testIndex),
-          data.type = parameters$data.types["prcomp"],
+          # data.type = parameters$data.types["prcomp"],
           classifier = classifier,
-          variable.type = "all_PCs",
-          trainingProportion = parameters$trainingProportion,
+          # variable.type = "all_PCs",
+          # trainingProportion = parameters$trainingProportion,
 
           file.prefix = exp.prefix,
           permute = permute,
@@ -127,7 +128,7 @@ if (parameters$compute) {
 
       #### Run classifier with raw counts (no normalization) ####
       ## we looking here to notice the ipmact of normalization into classifiers
-      rawCounts1 <- na.omit(as.data.frame(rawCounts$Counts))
+      self2 <- loaded$filtered
       # dim(rawCounts1)
 
       ## define experiment prefix
@@ -139,15 +140,15 @@ if (parameters$compute) {
 
       train.test.results.all.variables[[exp.prefix]] <-
         one.experiment (
-          countTable = rawCounts1,
-          classes = classes,
-          trainIndices = trainIndices,
+          self2,
+          # classes = classes,
+          # trainIndices = trainIndices,
           # trainIndex= sample( rawCounts$trainIndex),
           # testIndex = sample(rawCounts$testIndex),
-          data.type = parameters$data.types["raw"],
+          # data.type = parameters$data.types["raw"],
           classifier = classifier,
-          variable.type = "raw",
-          trainingProportion = parameters$trainingProportion,
+          # variable.type = "raw",
+          # trainingProportion = parameters$trainingProportion,
 
           file.prefix = exp.prefix,
           permute = permute,
