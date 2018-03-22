@@ -48,8 +48,8 @@ PCsWithTrainTestSets <- function( self,
 
   #### Compute principal components for normalized log2 counts ####
   message.with.time("Pre-processing by Principal Component analysis (PCA)")
-  self$PCsProperties<- list()
-  self$PCsProperties <- prcomp( t(na.omit(self$countTable)), center = TRUE, scale. = FALSE)
+  PCsProperties<- list()
+  PCsProperties <- prcomp( t(na.omit(self$countTable)), center = TRUE, scale. = FALSE)
   self$PCsProperties$PCs <- self$PCsProperties$x
 
   ## Instantiate the list with training indices
@@ -89,35 +89,38 @@ PCsWithTrainTestSets <- function( self,
     self$trainSize <- trainSize
     message("Class-independent sampling of training sets")
     for (i in 1:parameters$iterations) {
-      trainIndices [[i]] <- sample(1:n, size = trainSize, replace = FALSE)
-      testIndices [[i]] <- setdiff(1:n, trainIndices[[i]])
+      # trainIndices [[i]] <- sample(1:n, size = trainSize, replace = FALSE)
+      # testIndices [[i]] <- setdiff(1:n, trainIndices[[i]])
+      #
+      trainSet <- sample(1:n, size = trainSize, replace = FALSE)
+      testSet <- setdiff(1:n, trainSet)
+      trainIndices[[i]] <-append(trainIndices[[i]], trainSet)
+      testIndices[[i]] <- append(testIndices[[i]], testSet)
+
       #  View(as.data.frame.list(trainIndices))
     }
   }
 
 
-  # ## Select testIndices as the complement of train indices
-  # testIndices <- list()
-  # for (i in 1:parameters$iterations) {
-  #   ## MUTSAFA: DO IT
-  #   setdiff()
-  # }
+  PCsProperties$ID <- self$ID
+  PCsProperties$trainTestProperties <- self$trainTestProperties
+  PCsProperties$sampleNames <- self$sampleNames
+  PCsProperties$nbSamples<- self$nbSamples
+  PCsProperties$variablesType <- "all"
+  PCsProperties$dataType <-  "PCs_data"
+  PCsProperties$classLabels <- self$classLabels
+  PCsProperties$classNames <- self$classNames
+  PCsProperties$nbClasses <- self$nbClasses
+  PCsProperties$samplesPerClass <- self$samplesPerClass
+  PCsProperties$sampleColors <- self$sampleColors
 
-
-  ## Add the attributes
-  #self$PCsProperties<- list()
-  # self$PCsProperties$PCs <- self$PCsProperties$log2norm.prcomp.centred
-  # self$PCsProperties$sdev <- sdev
-  # self$PCsProperties$rotation <- trainingProportion
-  # self$PCsProperties$center <- trainSizePerClass
-  # self$PCsProperties$scale <- trainIndices
 
   #self$trainTestProperties$stratified <- stratified
 
   #class(self) <- unique(c( "countTableWithTrainTestSets", class(self)))
-  class(self) <- unique(c( "PCsWithTrainTestSets", class(self)))
+  class(PCsProperties) <- unique(c( "PCsWithTrainTestSets", class(self)))
 
-  return(self)
+  return(PCsProperties)
   message.with.time("PCs Training set selection done")
 }
 
