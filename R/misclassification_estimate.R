@@ -26,7 +26,14 @@ MisclassificationEstimate <- function(self,
   # registerDoMC(cores = 5)
 
   result <- list()
-  countTable <- self$countTable
+  if( is(self,class2 = "PCsWithTrainTestSets") ){
+    message("\t\tpassing  PCs object")
+    countTable <- self$x
+  } else {
+    message("\t\tpassing  countTable object")
+    countTable <- self$countTable
+
+  }
   classes <-self$classLabels
   trainIndex <- self$trainTestProperties$trainIndices[[iteration]]
   testIndex <- self$trainTestProperties$testIndices[[iteration]]
