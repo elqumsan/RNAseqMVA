@@ -79,12 +79,6 @@ one.experiment <- function (self,
   i <- 1 #iterations
   for (i in 1:iterations) {
     ## Permute class labels if required
-    if (permute) {
-      classes <- sample(classes)
-    }
-    # trainIndex <- sample(trainIndex)
-    # testIndex <- sample(testIndex)
-
     # computing the testing errors rate for the KNN classfier
     # trainIndex <- trainIndices[[i]]
     message("\t", format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", classifier, " training/testing evaluation, iteration ", i , "/", iterations)
@@ -93,6 +87,7 @@ one.experiment <- function (self,
     oneTest <- MisclassificationEstimate(self = self,
                                          iteration = i,
                                          classifier = classifier,
+                                         permute = permute,
                                          k=k,
                                          verbose=verbose)
 

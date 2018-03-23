@@ -4,7 +4,7 @@
 \alias{NormalizeCounts}
 \title{Normalize RNA-seq count table}
 \usage{
-NormalizeCounts(objectFiltered, classColumn = parameters$classColumn,
+NormalizeCounts(self, classColumn = parameters$classColumn,
   classColors = parameters$classColor, method = "quantile",
   quantile = 0.75, log2 = TRUE, epsilon = 0.1)
 }
