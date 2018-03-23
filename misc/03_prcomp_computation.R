@@ -50,11 +50,15 @@ PCsWithTrainTestSets <- function( self,
   message.with.time("Pre-processing by Principal Component analysis (PCA)")
   PCsProperties<- list()
   PCsProperties <- prcomp( t(na.omit(self$countTable)), center = TRUE, scale. = FALSE)
-  self$PCsProperties$PCs <- self$PCsProperties$x
+  PCsProperties$PCs <- PCsProperties$x
 
   ## Instantiate the list with training indices
   trainIndices <- list()
   testIndices <- list()
+
+  #### iterate over permutation status ####
+  pc.numbers <- c(2, 3, 4, 5, 6, 7,
+                  seq(from=10, to=ncol(PCsProperties$PCs)-1, by = 10), ncol(PCsProperties$PCs))
 
   if (stratified) {
     ## Get class sizes
@@ -113,6 +117,8 @@ PCsWithTrainTestSets <- function( self,
   PCsProperties$nbClasses <- self$nbClasses
   PCsProperties$samplesPerClass <- self$samplesPerClass
   PCsProperties$sampleColors <- self$sampleColors
+  PCsProperties$pc.numbers <- pc.numbers
+  PCsProperties$variablesType <- "top_var"
 
 
   #self$trainTestProperties$stratified <- stratified
