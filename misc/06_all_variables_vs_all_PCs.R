@@ -78,7 +78,7 @@ if (parameters$compute) {
         }# end if permuted class
         # print(exp.prefix)
 
-        i <- 1 ## Iteration number
+       #i <- 1 ## Iteration number
 
 
         train.test.results.all.variables[[exp.prefix]] <-
@@ -90,8 +90,8 @@ if (parameters$compute) {
             verbose = parameters$verbose
           )
 
-      }
-    }
+      } # End iterations over datasets
+    } # End iterations ovr permutetion
 
 
     # #### Run classifier with all the principal components ####
