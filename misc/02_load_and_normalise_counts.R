@@ -46,7 +46,7 @@ if (parameters$compute) {
   # dim(loaded$loaded$norm$counts)
   message.with.time("Normalizing counts based on 75th percentile")
   loaded$norm <- NormalizeCounts(
-    objectFiltered = loaded$filtered,
+    self = loaded$filtered,
     classColumn = parameters$classColumn,
     classColors = parameters$classColor,
     # phenoTable = loaded$filteredExperiment$phenoTable,
@@ -56,7 +56,8 @@ if (parameters$compute) {
   # loaded$norm$nb.samples
   # loaded$norm$nb.genes
 
-  class(loaded$norm)
+  # class(loaded$norm)
+  # loaded$norm$dataType
 
   # loaded$norm <- countTableWithTrainTestSets(loaded$norm)
   #  hist(unlist(loaded$loaded$norm$counts), main="Normalised count distribution", breaks=1000)
@@ -83,7 +84,7 @@ if (parameters$compute) {
 if (parameters$compute) {
   message.with.time("Normalizing counts based on 75th percentile + log2 transformation")
   loaded$log2norm <- NormalizeCounts(
-    objectFiltered = loaded$filtered,
+    self = loaded$filtered,
     classColumn = parameters$classColumn,
     # counts =loaded$filteredExperiment$countTable,
     # phenoTable = loaded$filteredExperiment$phenoTable,
@@ -91,7 +92,8 @@ if (parameters$compute) {
     method = "quantile", quantile=0.75,
     log2 = TRUE, epsilon=0.1)
 
-  class(loaded$log2norm)
+  # class(loaded$log2norm)
+  print(loaded$log2norm$dataType)
 
   ## Export tables
   exportTables(loaded$log2norm,
