@@ -23,7 +23,7 @@
 #' @examples
 #'
 #' @export
-NormalizeCounts <- function(objectFiltered,
+NormalizeCounts <- function(self,
                             # counts,
                             #phenoTable,
                             #classLabels,
@@ -35,19 +35,19 @@ NormalizeCounts <- function(objectFiltered,
                             epsilon=0.1) {
 
   if(log2){
-    message.with.time("Starting log2 NormalizeCounts() for Recount experiment ID ", objectFiltered[["ID"]])
+    message.with.time("Starting log2 NormalizeCounts() for Recount experiment ID ", self[["ID"]])
 
 
   } else{
 
-    message.with.time("Starting NormalizeCounts() for Recount experiment ID ", objectFiltered[["ID"]])
+    message.with.time("Starting NormalizeCounts() for Recount experiment ID ", self[["ID"]])
 
   }
 
-  counts <- objectFiltered$countTable
-  phenoTable <- objectFiltered$phenoTable
+  counts <- self$countTable
+  phenoTable <- self$phenoTable
 
-  classLabels  <- objectFiltered$classLabels
+  classLabels  <- self$classLabels
 
 
   #dim(counts)
@@ -126,7 +126,7 @@ NormalizeCounts <- function(objectFiltered,
 
   }
 
-  result <- objectFiltered
+  result <- self
   result$countTable <- normCounts
 
   # hist(unlist(normCounts), breaks=100)
@@ -184,12 +184,12 @@ NormalizeCounts <- function(objectFiltered,
 #
 # }
 
-  if(log2){
-
+  if (log2) {
+    result$dataType <- "log2norm_counts"
     message("\tDimensions of the log2 normalized count table: ", result$nbGenes, " genes x ", result$nbSamples, " samples. ")
     message.with.time("Finished log2 NormalizeCounts() for Recount experiment ID ", result[["ID"]])
   } else{
-
+    result$dataType <- "norm_counts"
     message("\tDimensions of the normalized count table: ", result$nbGenes, " genes x ", result$nbSamples, " samples. ")
     message.with.time("Finished NormalizeCounts() for Recount experiment ID ", result[["ID"]])
 
