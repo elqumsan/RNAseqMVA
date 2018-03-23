@@ -4,8 +4,8 @@
 \alias{MisclassificationEstimate}
 \title{RNA-Seq classifier evaluation to assesse the performance of the classifier}
 \usage{
-MisclassificationEstimate(self, iteration, classifier, verbose = FALSE,
-  k = parameters$knn$k)
+MisclassificationEstimate(self, iteration, classifier, permute = FALSE,
+  verbose = FALSE, k = parameters$knn$k)
 }
 \arguments{
 \item{self}{an object of class countTableWithTrainTestSets}
@@ -17,6 +17,8 @@ MisclassificationEstimate(self, iteration, classifier, verbose = FALSE,
 \item{classes}{such is vector for our cases for classes,}
 
 \item{trainIndex=NULL}{vector providing training sample indices. if NULL, training indices are sampled randomly}
+
+\item{permute=FALSE}{permute the calss labels to measure misclassifciation rate without relevant learning}
 }
 \description{
 this script to evaluate and assesse the performance of the RNA-Seq classifier by

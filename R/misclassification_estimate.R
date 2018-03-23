@@ -26,6 +26,7 @@ MisclassificationEstimate <- function(self,
 
   # require(doMC)
   # registerDoMC(cores = 5)
+  result <- list()
 
   if (is(self, class2 = "PCsWithTrainTestSets") ){
     # message("\t\tUsing PCs as features for object of class ", paste(collapse=", ", class(self)))
