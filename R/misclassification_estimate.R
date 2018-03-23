@@ -9,6 +9,7 @@
 #' @param k is number of neighbours passed to classifier
 #' @param trainIndex=NULL vector providing training sample indices. if NULL, training indices are sampled randomly
 #' @param classifier is a type of the classifier
+#' @param permute=FALSE permute the calss labels to measure misclassifciation rate without relevant learning
 #' @example
 #' oneTest <- MisclassificationEstimate(countTable, classes, trainingProportion = 2/3, classifier = "rf")
 #'
@@ -19,22 +20,27 @@
 MisclassificationEstimate <- function(self,
                                       iteration,
                                       classifier,
+                                      permute=FALSE,
                                       verbose = FALSE,
                                       k= parameters$knn$k) {
 
   # require(doMC)
   # registerDoMC(cores = 5)
 
-  result <- list()
-  if( is(self,class2 = "PCsWithTrainTestSets") ){
-    message("\t\tpassing  PCs object")
+  if (is(self, class2 = "PCsWithTrainTestSets") ){
+    # message("\t\tUsing PCs as features for object of class ", paste(collapse=", ", class(self)))
     countTable <- self$x
   } else {
-    message("\t\tpassing  countTable object")
+    # message("\t\tUsing countTable as features for object of class ", paste(collapse=", ", class(self)))
     countTable <- self$countTable
 
   }
+
   classes <-self$classLabels
+  if (permute) {
+    classes <- sample(classes, replace = FALSE)
+  }
+
   trainIndex <- self$trainTestProperties$trainIndices[[iteration]]
   testIndex <- self$trainTestProperties$testIndices[[iteration]]
   # n <- nrow(countTable) ## Number of observations (samples)
@@ -223,7 +229,7 @@ MisclassificationEstimate <- function(self,
   }
 
   if (verbose) {
-    message(classifier,
+    message("\t\t\t", classifier,
             "; training error rate = ", signif(digits=3, training.error.rate ),
             "; testing error rate = ", signif(digits=3, testing.error.rate ))
   }
