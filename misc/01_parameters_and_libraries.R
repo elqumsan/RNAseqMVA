@@ -100,13 +100,24 @@ dir.classifier <- file.path(dir.results, classifiers)
 classifier.dirs <- vector()
 table.dirs <- vector()
 figure.dirs <- vector()
+
+detailFigures.dir <- vector()
+detailTables.dir <- vector()
+
 for (classifier in classifiers) {
   classifier.dirs[classifier] <- file.path(dir.results, classifier)
   dir.create(classifier.dirs[classifier], showWarnings = F, recursive = T)
   table.dirs[classifier] <- file.path(classifier.dirs[classifier], "tables")
   dir.create(table.dirs[classifier], showWarnings = F, recursive = T)
+
+  detailTables.dir[classifier] <- file.path(table.dirs[classifier], "detailTables")
+  dir.create(detailTables.dir[classifier],showWarnings = F, recursive = T)
+
   figure.dirs[classifier] <- file.path(classifier.dirs[classifier], "figures")
   dir.create(figure.dirs[classifier], showWarnings = F, recursive = T)
+
+  detailFigures.dir[classifier] <- file.path(figure.dirs[classifier], "detailFigures")
+  dir.create(detailFigures.dir[classifier] ,showWarnings = F, recursive = T)
 }
 
 ## File to store a memory image
