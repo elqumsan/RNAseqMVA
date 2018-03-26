@@ -52,7 +52,7 @@ DEGordering <- function( countTable,
   if (method == "DESeq2") {
 
     ## Create a DESeqDataset object from the count table
-    dds <- DESeqDataSetFromMatrix(t(countTable), as.data.frame(classes), ~ classes  )
+    dds <- DESeqDataSetFromMatrix((countTable), as.data.frame(classes), ~ classes  )
 
     ## Run  differential expression analysis with DESeq2
     dds <- DESeq(dds)
@@ -65,16 +65,21 @@ DEGordering <- function( countTable,
     if (na.padj > 0) {
       message("Beware: DESeq2 reported ", na.padj, " NA for the adjusted p-value.")
       message("we will revome all genes that heve NA values",na.padj,  "to avoid the some problimatics when we passing it for the classifiers")
-      DEGtable$padj <- na.omit(DEGtable$padj)
-    }
+      #DEGtable$padj <- na.omit( DEGtable$padj)
+      DEGtable <- na.omit( DEGtable)
 
+      # filtered.DEGtable <- as.vector(na.omit( as.data.frame( DEGtable$padj)))
+      # truepadj <- DEGtable$padj[filtered.DEGtable]
+      # rownames(filtered.DEGtable) <-rownames(DEGtable)[DEGtable$padj == filtered.DEGtable ]
+    }
+    #as.data.frame(DEGtable)
     ## Notes: we have some NA values for adjusted p-value so that we will choose the p Value for ordering
     geneOrderIndex <- order(na.omit( DEGtable$padj), decreasing = FALSE)
-    result$geneOrder <- colnames(na.omit(as.data.frame(countTable)))[geneOrderIndex]
+    result$geneOrder <- rownames(na.omit(as.data.frame(countTable)))[geneOrderIndex]
 
     ## Sort the genes (columns) of the count table by increasing p-value
-    result$orderedCountTable <- countTable[ ,result$geneOrder]
-    result$DEGtable <- DEGtable[result$geneOrder,]
+    result$orderedCountTable <- countTable[result$geneOrder,]
+    result$DEGtable <-  DEGtable[result$geneOrder,]
     names(result$DEGtable) <- c(
       "baseMean",
       "log2FC",
@@ -92,7 +97,7 @@ DEGordering <- function( countTable,
     #dim(countTable)
 
     ## Build dgList object which is required to run edgeR DE analysis
-    dgList <- DGEList(counts = t(na.omit(as.data.frame(countTable))))
+    dgList <- DGEList(counts = (na.omit(as.data.frame(countTable))))
     #dim(dgList)
 
     ## Estimate the dispersion parameter for our model. The edgeR method uses
@@ -135,12 +140,12 @@ DEGordering <- function( countTable,
       lrt$table$PValue <- na.omit(lrt$table$PValue)
     }
     geneOrderIndex <- order(lrt$table$PValue, decreasing = FALSE)
-    result$geneOrder <- as.vector(colnames(na.omit(as.data.frame(countTable)))[geneOrderIndex])
+    result$geneOrder <- as.vector(rownames(na.omit(as.data.frame(countTable)))[geneOrderIndex])
 
     result$DEGtable <- lrt$table[result$geneOrder,]
     names(result$DEGtable) <- c("log2FC", "logCPM", "LR", "padj")
 
-    result$orderedCountTable <- countTable[, result$geneOrder]
+    result$orderedCountTable <- countTable[result$geneOrder, ]
 
     ## end of the if edgeR
   } else {
