@@ -10,31 +10,33 @@ image.file <- file.path(image.dir, paste(sep = "", "train_test_no._of_PCs_",para
 #data.type <- "log2norm.prcomp.centred"
 #data.type <- "log2norm"
 #data.type <- parameters$data.types["prcomp"]
-data.type <- "log2norm.prcomp.centred.scaled"
+#data.type <- "log2norm.prcomp.centred.scaled"
 
 ##### Define all the train indices for all the iterations, in order to using the same training\testing parts with different classifiers and data type. #####
-if (parameters$identicalTrainTest) {
-  ## New option: define all the train indices for all the iterations, in order to use the same training/testing sets between dfferent classifiers and data types
-  trainIndices <- list()
-  for(i in 1:parameters$iterations) {
-    n <- nrow(log2norm$Counts)
-    train.size <- round(parameters$trainingProportion * n)
-    trainIndices [[i]] <- sample(1:n, size = train.size, replace = FALSE)
-  }
-} else {
-  ## First option: select different indices at each experiment
-  trainIndices = NULL
-}
+# if (parameters$identicalTrainTest) {
+#   ## New option: define all the train indices for all the iterations, in order to use the same training/testing sets between dfferent classifiers and data types
+#   trainIndices <- list()
+#   for(i in 1:parameters$iterations) {
+#     n <- nrow(log2norm$Counts)
+#     train.size <- round(parameters$trainingProportion * n)
+#     trainIndices [[i]] <- sample(1:n, size = train.size, replace = FALSE)
+#   }
+# } else {
+#   ## First option: select different indices at each experiment
+#   trainIndices = NULL
+# }
 
 #### iterate over permutation status ####
-pc.numbers <- c(2, 3, 4, 5, 6, 7,
-                seq(from=10, to=ncol(log2norm.prcomp.centred.scaled$x)-1, by = 10), ncol(log2norm.prcomp.centred.scaled$x))
-pc.nb <- 4 ## Default or quick test
+# pc.numbers <- c(2, 3, 4, 5, 6, 7,
+#                 seq(from=10, to=ncol(log2norm.prcomp.centred.scaled$x)-1, by = 10), ncol(log2norm.prcomp.centred.scaled$x))
+# pc.nb <- 4 ## Default or quick test
 
 
 if (parameters$compute) {
 
   train.test.results.all.PCs.per.classifier <- list()
+  loaded$PCsVar <- PCsWithTrainTestSets(loaded$filtered)
+  dataset <- loaded$PCsVar
 
   for (classifier in parameters$classifiers) {
 
@@ -77,11 +79,11 @@ if (parameters$compute) {
   #### Associate each analysis of real data with a permutation test ####
   for (permute in c(FALSE, TRUE)) {
 
-    datasets <- list(loaded$filtered, loaded$norm ,loaded$log2norm)
+   # datasets <- list(loaded$filtered, loaded$norm ,loaded$log2norm)
 
-    for (dataset in datasets) {
 
-      dataset <- PCsWithTrainTestSets(dataset)
+
+
     ## Run classifier withb all variables (log2-transformed log counts)
     # exp.prefix <-
     #   paste(sep = "_", classifier, "log2norm", "allvars", "K", parameters$knn$k)
@@ -111,7 +113,7 @@ if (parameters$compute) {
       ## Select the first N principal components
       first.pcs <- data.frame(dataset$PCs[,1:pc.nb])
       colnames(first.pcs) <- colnames(dataset$PCs)[1:pc.nb]
-      dataset$first.pcs <- first.pcs
+      dataset$firstPCs[[pc.nb]] <- first.pcs
      # variable.type <- paste(sep="", "PC_1-", pc.nb)
 
       ## define experiment prefix
@@ -136,7 +138,7 @@ if (parameters$compute) {
           verbose = parameters$verbose
         )
       } # end iteration over nb of PCs
-    } # end of iteration over datasets
+
    } # end of permutation
 
   #### Print the results of the effect of the number of PCs on the efficiancy of each classifier classifier ####
@@ -153,6 +155,8 @@ if (parameters$compute) {
 
    }  # end of loop over classifiers
  }  # end of if computation
+
+
 #   #### Save an image of the results to enable reloading them withouht recomputing everything ####
 #   if (parameters$save.image) {
 #     save.image(file = image.file)

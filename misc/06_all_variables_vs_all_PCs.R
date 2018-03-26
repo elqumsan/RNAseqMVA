@@ -34,7 +34,7 @@
 # View(counts)
 
 ## Default for quick test without iterating over all cases
-permute <- FALSE
+#permute <- FALSE
 # dataset <- loaded$log2norm
 
 if (parameters$compute) {
