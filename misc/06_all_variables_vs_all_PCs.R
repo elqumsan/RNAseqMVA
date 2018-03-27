@@ -34,7 +34,7 @@
 # View(counts)
 
 ## Default for quick test without iterating over all cases
-#permute <- FALSE
+permute <- FALSE
 # dataset <- loaded$log2norm
 
 if (parameters$compute) {
@@ -53,22 +53,23 @@ if (parameters$compute) {
 
 
 
-    #### Associate each analysis of real data with a permutation test ####
-    for (permute in c(FALSE, TRUE)) {
+    #### Associate each analysis for each dataset in whole list of different data type
+    datasets <- list(loaded$filtered, loaded$norm ,loaded$log2norm)
 
 
-      datasets <- list(loaded$filtered, loaded$norm ,loaded$log2norm)
+      #### Associate each analysis of real data with a permutation test ####
+      for (permute in parameters$permute) {
 
-      for (dataset in datasets) {
+
         # Check if the dataset belongs to the class countTableWithTrainTestSets
         if (!is(object = dataset, class2 = "countTableWithTrainTestSets"))
 
-        ## Check if the train and test indices  were properly defined
-        if (is.null(dataset$trainTestProperties$trainIndices) || is.null(dataset$trainTestProperties$testIndices)){
-          stop("/tyou don't have train/test sets to play with classifier ")
-        }
+          ## Check if the train and test indices  were properly defined
+          if (is.null(dataset$trainTestProperties$trainIndices) || is.null(dataset$trainTestProperties$testIndices)){
+            stop("/tyou don't have train/test sets to play with classifier ")
+          }
 
-
+        for (dataset in datasets) {
 
         #### Run classifier with all variables (log2-transformed log counts) ####
         exp.prefix <-
@@ -78,7 +79,7 @@ if (parameters$compute) {
         }# end if permuted class
         # print(exp.prefix)
 
-       #i <- 1 ## Iteration number
+        #i <- 1 ## Iteration number
 
 
         train.test.results.all.variables[[exp.prefix]] <-
@@ -90,8 +91,8 @@ if (parameters$compute) {
             verbose = parameters$verbose
           )
 
-      } # End iterations over datasets
-    } # End iterations ovr permutetion
+      } # End iterations over dataset
+    } # End iterations ovr permutation
 
 
     # #### Run classifier with all the principal components ####

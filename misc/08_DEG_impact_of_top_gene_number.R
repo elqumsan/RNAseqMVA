@@ -10,19 +10,19 @@ dir.create(image.dir, showWarnings = FALSE, recursive = TRUE)
 image.file <- file.path(image.dir, paste(sep = "", "train_test_no._of_DEG_ordered_",parameters$recountID , ".Rdata"))
 
 
-##### Define all the train indices for all the iterations, in order to using the same training\testing parts with different classifiers and data type. #####
-if (parameters$identicalTrainTest) {
-  ## New option: define all the train indices for all the iterations, in order to use the same training/testing sets between dfferent classifiers and data types
-  trainIndices <- list()
-  for(i in 1:parameters$iterations) {
-    n <- nrow(log2norm$Counts)
-    train.size <- round(parameters$trainingProportion * n)
-    trainIndices [[i]] <- sample(1:n, size = train.size, replace = FALSE)
-  }
-} else {
-  ## First option: select different indices at each experiment
-  trainIndices = NULL
-}
+# ##### Define all the train indices for all the iterations, in order to using the same training\testing parts with different classifiers and data type. #####
+# if (parameters$identicalTrainTest) {
+#   ## New option: define all the train indices for all the iterations, in order to use the same training/testing sets between dfferent classifiers and data types
+#   trainIndices <- list()
+#   for(i in 1:parameters$iterations) {
+#     n <- nrow(log2norm$Counts)
+#     train.size <- round(parameters$trainingProportion * n)
+#     trainIndices [[i]] <- sample(1:n, size = train.size, replace = FALSE)
+#   }
+# } else {
+#   ## First option: select different indices at each experiment
+#   trainIndices = NULL
+# }
 ## Choice of the coutns
 #data.type <- "log2norm.prcomp.centred"
 #data.type <- "log2norm"
@@ -33,9 +33,10 @@ if (parameters$identicalTrainTest) {
 ## Default for quick test without iterating over all cases
 permute <- FALSE
 
+DEG.object <- countTableWithDEG(loaded$filtered)
 
 if (parameters$compute) {
-  message.with.time("Starting classification")
+  message.with.time("\t\tStarting classification")
 
   train.test.results.all.DEG.ordered.per.classifier <- list()
 
@@ -46,8 +47,9 @@ if (parameters$compute) {
  #### Associate all computation with permuted and not permuted class lables ####
   for (permute in c(FALSE, TRUE)) {
 
-    for (deg.method in parameters$deg.methods) {
-      DEG <- get(paste(sep="", "DEG.", deg.method))
+
+    for (dataset in DEG.object$DEG.datasets) {
+      DEG <- dataset
 
       v  <- 5
       for(v in 1:length(parameters$nb.variables)){
@@ -55,8 +57,9 @@ if (parameters$compute) {
 
         ## For the time being we do this experiment only with log2 normalised counts
         ## since we saw that it improves the result with all variables
-        data.type <- paste("DEG", deg.method, sep = ".")
-        data.table <- na.omit( as.data.frame(get(data.type)[["orderedCountTable"]]))
+        # data.type <- paste(dataset$dataType, dataset$method, sep = "_")
+        # data.table <- na.omit( as.data.frame(get(data.type)[["orderedCountTable"]]))
+        dataset$
         selected.DEG.names <- DEG$geneOrder[1:varnb]
 
         ## Make sure that we select gene names present in the selected data type

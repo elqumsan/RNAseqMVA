@@ -35,6 +35,7 @@
 DEGordering <- function( countTable,
                        classes,
                        method = "DESeq2",
+                       randomized= FALSE,
                        edgeRDispEst="tagwise"){
 
   result <- list()
@@ -50,7 +51,7 @@ DEGordering <- function( countTable,
   RequiredBioconductorPackages(requiredBioconductor)
 
   if (method == "DESeq2") {
-
+    message("\t\tInstantaite DESeq2 object ")
     ## Create a DESeqDataset object from the count table
     dds <- DESeqDataSetFromMatrix((countTable), as.data.frame(classes), ~ classes  )
 
@@ -76,6 +77,7 @@ DEGordering <- function( countTable,
     ## Notes: we have some NA values for adjusted p-value so that we will choose the p Value for ordering
     geneOrderIndex <- order(na.omit( DEGtable$padj), decreasing = FALSE)
     result$geneOrder <- rownames(na.omit(as.data.frame(countTable)))[geneOrderIndex]
+    result$method <- "DESeq2"
 
     ## Sort the genes (columns) of the count table by increasing p-value
     result$orderedCountTable <- countTable[result$geneOrder,]
@@ -87,11 +89,18 @@ DEGordering <- function( countTable,
       "stat",
       "pvalue",
       "padj" )
-
+    if (randomized){
+    #result$DEG.DESeq2.randomized <- result$DEG.DESeq2
+    result$geneRandomized <-sample( result$geneOrder, replace = F)
+    result$randomizedCountTable <- result$orderedCountTable[sample(result$geneRandomized) ,]
+    result$randomized < "randomized-DESeq2"
+    }
 
   } else if (method == "edgeR") {
 
     ## Build a "model matrix" from the class labels
+    message("\t\tInstantaite edgeR object ")
+
     designMat <- model.matrix(~ classes)
     #dim(designMat)
     #dim(countTable)
@@ -120,7 +129,7 @@ DEGordering <- function( countTable,
 #    }
 
     ## Fit edgeR model for differential expression analysis
-    message("edgeR model fitting")
+    message("\t\tedgeR model fitting")
     fit <- glmFit(dgList, designMat)
     lrt <- glmLRT(fit)
 
@@ -137,7 +146,8 @@ DEGordering <- function( countTable,
     if (na.padj > 0) {
       message("Beware: edgR reported ", na.padj, " NA for the adjusted p-value.")
       message("we will revome all genes that heve NA values",na.padj,  "to avoid the some problimatics when we passing it for the classifiers")
-      lrt$table$PValue <- na.omit(lrt$table$PValue)
+      #lrt$table$PValue <- na.omit(lrt$table$PValue)
+      lrt$table <-na.omit(lrt$table)
     }
     geneOrderIndex <- order(lrt$table$PValue, decreasing = FALSE)
     result$geneOrder <- as.vector(rownames(na.omit(as.data.frame(countTable)))[geneOrderIndex])
@@ -146,7 +156,14 @@ DEGordering <- function( countTable,
     names(result$DEGtable) <- c("log2FC", "logCPM", "LR", "padj")
 
     result$orderedCountTable <- countTable[result$geneOrder, ]
+    result$method <- "edgeR"
 
+    if (randomized){
+      #result$DEG.edgeR.randomized <- result$DEG.edgeR
+      result$geneRandomized <- sample( result$geneOrder,replace = F)
+      result$randomizedCountTable <- result$orderedCountTable[ sample(result$geneRandomized),]
+      result$randomized <- "randomaised-edgeR"
+    }
     ## end of the if edgeR
   } else {
     stop(method, " is not a valid method for DEGordering. Supported: edgeR, DESeq2")
