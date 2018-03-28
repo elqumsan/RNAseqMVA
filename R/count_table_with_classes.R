@@ -93,6 +93,11 @@ message.with.time("\tCreate object has the countTableWithClasses attribute" )
   object$samplesPerClass <- as.vector(as.matrix(object$classProperties$nbSamples))
   names(object$samplesPerClass) <- as.vector(as.matrix(object$classProperties$Class))
 
+  ## Relative frequencies of individuals per class
+  object$classFrequencies <- object$samplesPerClass / sum(object$samplesPerClass)
+  object$randExpectedHitRate = object$classFrequencies %*% object$classFrequencies
+  object$randExpectedMisclassificationRate = 1 - object$randExpectedHitRate
+
   ## Define class colors
   classesColors <-1:length(object$classNames)
   names(classesColors)<- object$classNames
