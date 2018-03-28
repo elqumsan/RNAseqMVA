@@ -54,7 +54,7 @@ if (parameters$compute) {
 
 
     #### Associate each analysis for each dataset in whole list of different data type
-    datasets <- list(loaded$filtered, loaded$norm ,loaded$log2norm)
+    datasets <- list(loaded$log2norm, loaded$filtered, loaded$norm)
     dataset <- loaded$log2norm ## Choose a dataset just for testing and debugging, not necessary for the loop below
 
     #### Associate each analysis of real data with a permutation test ####
