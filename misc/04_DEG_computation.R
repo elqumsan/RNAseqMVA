@@ -13,16 +13,27 @@ countTableWithDEG <- function(self,
   if(parameters$compute){
     result <-countTableWithTrainTestSets(self)
 
-for(method in DEGmethods){
-  DEGdatasets.types <- list()
+    for(method in DEGmethods){
+      DEGdatasets.types[[method]] <- list()
 
-  message.with.time("\tRunning ", method," to define variable ordering","randomized parameter", randomized)
-  DEG.datasets  <- DEGordering(self$countTable, self$classLabels, method = method, randomized =randomized )
-  DEGdatasets.types[[method]] <- append(DEGdatasets.types, DEG.datasets  )
-  message.with.time("\t\tDone ",method,"  DEG analysis","randomized parameter", randomized)
+      message.with.time("\tRunning ", method," to define variable ordering","randomized parameter", randomized)
+      DEG.datasets  <- DEGordering(self$countTable, self$classLabels, method = method, randomized = TRUE )
+      DEGdatasets.types[[method]] <- append(DEGdatasets.types[[method]], DEG.datasets  )
+      message.with.time("\t\tDone ",method,"  DEG analysis","randomized parameter", randomized)
 
-}
-  #  if (method == "edgeR"){
+    }
+    result$DEGdataSetsType <- DEGdatasets.types
+    result$dataType <- "DEG_order"
+    result$variablesType <- "top_DEG"
+    message.with.time("Finishing from Processing for instantiate DEG object")
+    class(result) <- unique(c("countTableWithDEG","countTableWithTrainTestSets"))
+    return(result)
+
+
+  } # end of computation
+} # end of the constructor function
+
+      #  if (method == "edgeR"){
       #### Run differential analysis with edgeR to define variable order ####
       message.with.time("\tRunning edgeR to define variable ordering")
       result$DEG.edgeR  <- DEGordering(self$countTable, self$classLabels, method = "edgeR")
@@ -46,15 +57,15 @@ for(method in DEGmethods){
     # } else {
 
 
-      #### Run differential analysis with DESeq2 to define variable order ####
-      message.with.time("\tRunning DESeq2 to define variable ordering")
-      result$DEG.DESeq2 <- DEGordering(self$countTable, self$classLabels, method = "DESeq2")
-    # result$DEG.DESeq2$method <- "DESeq2"
-      message.with.time("\t\tDone DESeq2 DEG analysis")
-      # sorted.log2.transformed.DESeq2 <- loaded$countTable[, DEG.edgeR$geneOrder]
-
-      message.with.time("\tGenerating a fake DEG.DESeq2 result by random gene ordering")
-      DEG.DESeq2.randomized <- list()
+    #   #### Run differential analysis with DESeq2 to define variable order ####
+    #   message.with.time("\tRunning DESeq2 to define variable ordering")
+    #   result$DEG.DESeq2 <- DEGordering(self$countTable, self$classLabels, method = "DESeq2")
+    # # result$DEG.DESeq2$method <- "DESeq2"
+    #   message.with.time("\t\tDone DESeq2 DEG analysis")
+    #   # sorted.log2.transformed.DESeq2 <- loaded$countTable[, DEG.edgeR$geneOrder]
+    #
+    #   message.with.time("\tGenerating a fake DEG.DESeq2 result by random gene ordering")
+    #   DEG.DESeq2.randomized <- list()
       ## such is randomizing the ordered count table by DEG edgeR; BUT be ware we should keep the neme of this variable as
       ## DEG.randomized$orderedCountTable to we can correctly use it in the script (DEG_impact_of_top_gene_number.R) where there
       ## is method to automatically get the name of object under the "$orderedCountTable"; so that you should keep this part
@@ -66,15 +77,10 @@ for(method in DEGmethods){
       # result$DEG.DESeq2.randomized$orderedCountTable <- result$DEG.DESeq2$orderedCountTable[sample(result$DEG.DESeq2.randomized$geneOrder) ,]
       # result$DEG.DESeq2.randomized$method < "randomized-DESeq2"
    # }
-      result$DEG.datasets<- list(result$DEG.edgeR, result$DEG.edgeR.randomized$orderedCountTable, result$DEG.DESeq2, result$DEG.DESeq2.randomized$orderedCountTable)
-    names(result$DEG.datasets) <- c("DEG.edgeR", "DEG.edgeR.randomized","DEG.DESeq2","DEG.DESeq2.randomized")
-    result$dataType <- "DEG_order"
-    result$variablesType <- "top_DEG"
-    message.with.time("Finishing from Processing for instantiate DEG object")
-    class(result) <- unique(c("countTableWithDEG","countTableWithTrainTestSets"))
-    return(result)
-  } # end of computation
-} # end of the constructor function
+    # result$DEG.datasets<- list(result$DEG.edgeR, result$DEG.edgeR.randomized$orderedCountTable, result$DEG.DESeq2, result$DEG.DESeq2.randomized$orderedCountTable)
+    # names(result$DEG.datasets) <- c("DEG.edgeR", "DEG.edgeR.randomized","DEG.DESeq2","DEG.DESeq2.randomized")
+
+
 
 ## define the file to store memory image for the "all DEG Computation" process
 

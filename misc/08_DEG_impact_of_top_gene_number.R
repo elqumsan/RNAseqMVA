@@ -45,11 +45,11 @@ if (parameters$compute) {
   train.test.results.DEG <- list()
 
  #### Associate all computation with permuted and not permuted class lables ####
-  for (permute in c(FALSE, TRUE)) {
+  for (permute in parameters$permute) {
 
 
-    for (dataset in DEG.object$DEG.datasets) {
-      DEG <- dataset
+    for (dataset in names(DEG.object$DEGdataSetsType)) {
+      DEG <- DEG.object$DEGdataSetsType[[dataset]]
 
       v  <- 5
       for(v in 1:length(parameters$nb.variables)){
@@ -59,20 +59,25 @@ if (parameters$compute) {
         ## since we saw that it improves the result with all variables
         # data.type <- paste(dataset$dataType, dataset$method, sep = "_")
         # data.table <- na.omit( as.data.frame(get(data.type)[["orderedCountTable"]]))
-        dataset$
-        selected.DEG.names <- DEG$geneOrder[1:varnb]
+       if (dataset == "DESeq2"){
+         selected.DEG.names <- DEG$geneOrder[1:varnb]
+
+       } else{
+         selected.DEG.names <- DEG$geneOrder[1:varnb]
+
+       }
 
         ## Make sure that we select gene names present in the selected data type
         ## (some genes may be filtered out or technical reasons)
-        valid.DEG.names <- selected.DEG.names[selected.DEG.names %in% colnames(data.table)]
+        valid.DEG.names <- selected.DEG.names[selected.DEG.names %in% rownames(DEG.object$countTable)]
 
-        counts <- data.table[,valid.DEG.names]
+        DEG.object$countTable <- DEG.object$countTable[valid.DEG.names,]
 
 
         ## dim(counts)
 
         #### Define experiment prefix ####
-        variable.type <- paste(sep="_", "DEG", deg.method, "top", varnb)
+        variable.type <- paste(sep="_", DEG.object$dataType, dataset, DEG.object$variablesType, varnb)
         exp.prefix <- paste(sep="_", classifier,  parameters$recountID, variable.type)
         if (permute) {
           exp.prefix <- paste(sep="_", exp.prefix, perm.prefix)
@@ -80,13 +85,14 @@ if (parameters$compute) {
         message (format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", "Experiment prefix: ", exp.prefix)
 
         train.test.results.DEG[[exp.prefix]] <-
-          one.experiment(countTable=counts,
-                         data.type=data.type,
+          one.experiment(DEG.object,
                          classifier=classifier,
-                         classes=classes,
+                         iterations = parameters$iterations,
+                          # data.type=data.type,
+                         # classes=classes,
                         # trainIndex =get( paste(sep = ".", "DEG", deg.method))[["trainIndex"]], testIndex = get( paste(sep = ".","DEG", deg.method))[["testIndex"]],
-                         variable.type = variable.type,
-                         trainingProportion = parameters$trainingProportion,
+                         #variable.type = variable.type,
+                         #trainingProportion = parameters$trainingProportion,
                          permute = permute,
                          file.prefix = exp.prefix)
       } # end of for loop over nb.variables
@@ -96,8 +102,8 @@ if (parameters$compute) {
   #### Print the results of the effect of the number of DEG ordered on the efficiancy of each classifier ####
   ErrorRateBoxPlot(experimentList = train.test.results.DEG,
                    classifier=classifier,
-                   data.type = parameters$data.types["DEG"],
-                   variable.type = "ordered_variables_2",
+                   data.type = DEG.object$dataType,
+                   variable.type = DEG.object$variablesType,
                    main = paste(  "impact of number of variables sorted according DEG", "\n",
                                   parameters$recountID,";",
                                   parameters$iterations,

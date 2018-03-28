@@ -35,7 +35,7 @@
 DEGordering <- function( countTable,
                        classes,
                        method = "DESeq2",
-                       randomized= FALSE,
+                       randomized= TRUE,
                        edgeRDispEst="tagwise"){
 
   result <- list()
@@ -93,7 +93,7 @@ DEGordering <- function( countTable,
     #result$DEG.DESeq2.randomized <- result$DEG.DESeq2
     result$geneRandomized <-sample( result$geneOrder, replace = F)
     result$randomizedCountTable <- result$orderedCountTable[sample(result$geneRandomized) ,]
-    result$randomized < "randomized-DESeq2"
+    result$randomized <- "randomized-DESeq2"
     }
 
   } else if (method == "edgeR") {
@@ -161,7 +161,7 @@ DEGordering <- function( countTable,
     if (randomized){
       #result$DEG.edgeR.randomized <- result$DEG.edgeR
       result$geneRandomized <- sample( result$geneOrder,replace = F)
-      result$randomizedCountTable <- result$orderedCountTable[ sample(result$geneRandomized),]
+      result$randomizedCountTable <- result$orderedCountTable[ sample(result$geneOrder),]
       result$randomized <- "randomaised-edgeR"
     }
     ## end of the if edgeR
