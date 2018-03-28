@@ -4,7 +4,7 @@
 \alias{DEGordering}
 \title{Variable ordering according to the p-values returned by differential expression analysis.}
 \usage{
-DEGordering(countTable, classes, method = "DESeq2",
+DEGordering(countTable, classes, method = "DESeq2", randomized = TRUE,
   edgeRDispEst = "tagwise")
 }
 \arguments{
