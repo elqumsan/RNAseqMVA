@@ -5,7 +5,7 @@
 #' @param self which much belong to the countTableWithClasses class.
 #'
 #' @export
-  selectTrainingSets <- function(self, ...){
+selectTrainingSets <- function(self, ...){
   message("\tExporting the object class  ", class(self), " object with train/test sets")
   UseMethod("selectTrainingSets", self)
 }
@@ -26,10 +26,10 @@
 #'
 #' @export
 
-  countTableWithTrainTestSets <- function( self,
-                                           stratified=TRUE,
-                                          iterations = parameters$iterations,
-                                          trainingProportion = parameters$trainingProportion) {
+countTableWithTrainTestSets <- function(self,
+                                        stratified=TRUE,
+                                        iterations = parameters$iterations,
+                                        trainingProportion = parameters$trainingProportion) {
 
   message.with.time("Selecting ", iterations, " training sets, with training proportion = ", trainingProportion)
 
@@ -58,25 +58,28 @@
 
     # testSizePerClass <- self$samplesPerClass - trainSizePerClass
     message("Stratified sampling among classes")
-    print(as.data.frame(trainSizePerClass))
+    # print(as.data.frame(trainSizePerClass))
     # i <- 1
     for (i in 1:parameters$iterations) {
       trainIndices[[i]] <- vector()
       testIndices[[i]] <- vector()
       # c <- 1
-
       for (c in 1:self$nbClasses) {
         currentClass <- self$classNames[[c]]
         classSamples <- which (self$classLabels == currentClass)
         classTrain <- sample(classSamples, size = trainSizePerClass[[currentClass]], replace = FALSE)
-        classTest <- setdiff(1:self$samplesPerClass[[c]],classTrain)
         trainIndices[[i]] <- append(trainIndices[[i]], classTrain)
+
+        classTest <- setdiff(classSamples, classTrain)
         testIndices[[i]] <- append(testIndices[[i]], classTest)
         ## Check that the stratification  was correct
         ## table(self$classLabels[trainIndices[[i]]]) == trainSizePerClass
 
         #classTest <- setdiff(self$samplesPerClass[[c]], classTrain)
       }
+      length(trainIndices[[i]])
+      length(testIndices[[i]])
+
     }
   } else {
     ## Sample the training sets irrespective of class membership
@@ -84,6 +87,7 @@
     trainSize <- round(trainingProportion * n)
     self$trainSize <- trainSize
     message("Class-independent sampling of training sets")
+    # i <- 1
     for (i in 1:parameters$iterations) {
       trainIndices[[i]] <- vector()
       testIndices[[i]] <- vector()
@@ -91,12 +95,15 @@
       testSet <- setdiff(1:n, trainSet)
       trainIndices[[i]] <-append(trainIndices[[i]], trainSet)
       testIndices[[i]] <- append(testIndices[[i]], testSet)
-
-
       #  View(as.data.frame.list(trainIndices))
     }
   }
 
+
+  ## Check that the sum of lengths for testindices and trainindices sum up to the length of the dataset
+  if (sum(unlist(lapply(trainIndices, length)) + unlist(lapply(testIndices, length)) != self$nbSamples) > 0) {
+    stop("Error with countTableWithTrainTestSets(): incorrect lengths of trainIndices and testIndices ")
+  }
 
   # ## Select testIndices as the complement of train indices
   # testIndices <- list()
@@ -121,6 +128,9 @@
   message.with.time("Training set selection done")
 }
 
+
+#' @title summary for a countTableWithTrainTestSets object
+#' @export
 summary.countTableWithTrainTestSets <- function(x){
   cat("\t\t countTableWithTrainTestSEts \n")
   cat("\tData Type       \t", x$dataType,"\n")
