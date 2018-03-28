@@ -133,6 +133,20 @@ if (parameters$compute) {
 # }
 
 
+# Check loaded objects
+
+# attributes(loaded)
+# class(loaded$countsPerRun)
+# class(loaded$originalCounts)
+# class(loaded$filtered)
+# class(loaded$norm)
+# class(loaded$log2norm)
+#
+#
+# # unlist(lapply(loaded$norm$trainTestProperties$trainIndices, length))
+# length(unlist(loaded$norm$trainTestProperties$trainIndices))
+# sum(unlist(loaded$norm$trainTestProperties$trainIndices) != unlist(loaded$filtered$trainTestProperties$trainIndices))
+# sum(unlist(loaded$norm$trainTestProperties$trainIndices) != unlist(loaded$log2norm$trainTestProperties$trainIndices))
 
 ## Indicate that this script has finished running
 message.with.time("finished executing 02_load_and_normalise_counts.R")
