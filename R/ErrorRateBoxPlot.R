@@ -98,7 +98,14 @@ ErrorRateBoxPlot <- function(experimentList,
     abline(h=seq(from = 0, to = 1, by = 0.1, col="darkgrey", lty="dotted"))
     abline(h=seq(from = 0, to = 1, by= 0.05 ) , lty=2)
     meanPermlabels <- apply(testing.error.rates[permTestExperiments], 1, mean)
+
+    ## Mean misclassification rate for all the label-permuted tests
     abline(h= mean(meanPermlabels), col="red", lwd=3 , lty= 3)
+
+    ## Draw a line with the theoretically computed random expected misclassification rate.
+    ## In principle, this should fit the mean of the permutation tests.
+    ## TO BE ONE BUT WE NEED TO EITHER PASS THE DATASET OR ASSOCIATE THIS METHOD TO THE CLASS.
+    # abline(h = , col="red", lwd=3 , lty= 3)
 
     ## Plot legend
     legend("topright", lwd = 4,

@@ -54,12 +54,13 @@ if (parameters$compute) {
 
 
     #### Associate each analysis for each dataset in whole list of different data type
-    datasets <- list(loaded$filtered, loaded$norm ,loaded$log2norm)
+    datasets <- list(loaded$log2norm, loaded$filtered, loaded$norm)
+    dataset <- loaded$log2norm ## Choose a dataset just for testing and debugging, not necessary for the loop below
 
+    #### Associate each analysis of real data with a permutation test ####
+    for (permute in parameters$permute) {
 
-      #### Associate each analysis of real data with a permutation test ####
-      for (permute in parameters$permute) {
-
+      for (dataset in datasets) {
 
         # Check if the dataset belongs to the class countTableWithTrainTestSets
         if (!is(object = dataset, class2 = "countTableWithTrainTestSets"))
@@ -69,7 +70,6 @@ if (parameters$compute) {
             stop("/tyou don't have train/test sets to play with classifier ")
           }
 
-        for (dataset in datasets) {
 
         #### Run classifier with all variables (log2-transformed log counts) ####
         exp.prefix <-

@@ -122,7 +122,7 @@ one.experiment <- function (self,
           main=main)
   silence <- dev.off()
 
-    ## Compute elapsed time
+  ## Compute elapsed time
   endTime <- Sys.time();
   elapsedTime <- endTime - startTime
   elapsedTimeFile <- file.path(detailTables.dir[classifier], paste(sep="", file.prefix, "_elapsed_time.txt"))

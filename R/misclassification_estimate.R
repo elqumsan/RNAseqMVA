@@ -37,6 +37,7 @@ MisclassificationEstimate <- function(self,
 
   }
 
+  ## AssignGet sample classes from the object
   classes <-self$classLabels
   if (permute) {
     classes <- sample(classes, replace = FALSE)
@@ -102,7 +103,7 @@ MisclassificationEstimate <- function(self,
     ## Train the classifier with the training subset
     rf.trained  <- randomForest(
       x = countTable[trainIndex, ],
-      y =  as.factor( classes[trainIndex]),
+      y =  as.factor(classes[trainIndex]),
       xtest = countTable[testIndex,],  keep.forest = T)
     ## MUSTAFA: I think you don't use the xtest result after this,
     ## since you use predict() to predict the class of the testinf set.
