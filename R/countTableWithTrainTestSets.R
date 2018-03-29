@@ -146,6 +146,8 @@ summary.countTableWithTrainTestSets <- function(x){
   #print()
 }
 
+#' @title print for a countTableWithTrainTestSets object
+#' @export
 print.countTableWithTrainTestSets <- function(x){
   summary.countTableWithTrainTestSets(x)
 }
