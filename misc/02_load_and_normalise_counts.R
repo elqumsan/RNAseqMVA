@@ -1,6 +1,7 @@
 #################### Load counts and pheno ####################
 ## Load a count Table from recount-experiment, merge counts per sample
 ## and apply some pre-filtering (remove zero-variance and near-zero-variance genes).
+loaded <- list()
 
 for (recountID in selectedRecountIDs) {
 
@@ -21,7 +22,7 @@ for (recountID in selectedRecountIDs) {
 
   if (parameters$compute) {
     message.with.time("Loading count table from recount", "; recountID = ", parameters$recountID)
-    loaded <- loadCounts(recountID = parameters$recountID,
+    loaded[[recountID]] <- loadCounts(recountID = parameters$recountID,
                          mergeRuns = TRUE,
                          classColumn = parameters$classColumn,
                          minSamplesPerClass = parameters$minSamplesPerClass,
@@ -30,18 +31,18 @@ for (recountID in selectedRecountIDs) {
 
     ## Select training and testing sets on the filtered table with raw counts
     ## These wil then be passed to all the derived count tables (normalised, DGE, ...)
-    loaded$filtered <- countTableWithTrainTestSets(loaded$filtered)
+    loaded[[recountID]]$filtered <- countTableWithTrainTestSets(loaded[[recountID]]$filtered)
 
     #### Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files ###
-    exportTables(loaded$countsPerRun,
+    exportTables(loaded[[recountID]]$countsPerRun,
                  export.dir = paste(parameters$dir$TSV, parameters$recountID, sep = "/"),
                  file.prefix = "counts_per_run_")
 
-    exportTables(loaded$originalCounts,
+    exportTables(loaded[[recountID]]$originalCounts,
                  export.dir = paste( parameters$dir$TSV, parameters$recountID, sep = "/"),
                  file.prefix = "original_counts_")
 
-    exportTables(loaded$filtered,
+    exportTables(loaded[[recountID]]$filtered,
                  export.dir = paste( parameters$dir$TSV,parameters$recountID, sep = "/"),
                  file.prefix = "filtered_counts_")
 
@@ -61,27 +62,27 @@ for (recountID in selectedRecountIDs) {
 
   ###### Normalization method for the recount Table after merge and filtered it ########
   if (parameters$compute) {
-    # dim(loaded$loaded$norm$counts)
+    # dim(loaded[[recountID]]$loaded$norm$counts)
     message.with.time("Normalizing counts based on 75th percentile")
-    loaded$norm <- NormalizeCounts(
-      self = loaded$filtered,
+    loaded[[recountID]]$norm <- NormalizeCounts(
+      self = loaded[[recountID]]$filtered,
       classColumn = parameters$classColumn,
       classColors = parameters$classColor,
-      # phenoTable = loaded$filteredExperiment$phenoTable,
-      # classLabels = loaded$filteredExperiment$classLabels,
+      # phenoTable = loaded[[recountID]]$filteredExperiment$phenoTable,
+      # classLabels = loaded[[recountID]]$filteredExperiment$classLabels,
       method = "quantile", quantile=0.75, log2 = FALSE)
-    # dim(loaded$normCounts)
-    # loaded$norm$nb.samples
-    # loaded$norm$nb.genes
+    # dim(loaded[[recountID]]$normCounts)
+    # loaded[[recountID]]$norm$nb.samples
+    # loaded[[recountID]]$norm$nb.genes
 
-    # class(loaded$norm)
-    # loaded$norm$dataType
+    # class(loaded[[recountID]]$norm)
+    # loaded[[recountID]]$norm$dataType
 
-    # loaded$norm <- countTableWithTrainTestSets(loaded$norm)
-    #  hist(unlist(loaded$loaded$norm$counts), main="Normalised count distribution", breaks=1000)
+    # loaded[[recountID]]$norm <- countTableWithTrainTestSets(loaded[[recountID]]$norm)
+    #  hist(unlist(loaded[[recountID]]$loaded[[recountID]]$norm$counts), main="Normalised count distribution", breaks=1000)
 
     ## Export the Normalized count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files
-    exportTables(loaded$norm,
+    exportTables(loaded[[recountID]]$norm,
                  export.dir = paste(parameters$dir$TSV, parameters$recountID, sep = "/"),
                  file.prefix = "norm_counts_")
 
@@ -101,8 +102,8 @@ for (recountID in selectedRecountIDs) {
   ## row per gene, we thus have to transpose the raw count table.
   if (parameters$compute) {
     message.with.time("Normalizing counts based on 75th percentile + log2 transformation")
-    loaded$log2norm <- NormalizeCounts(
-      self = loaded$filtered,
+    loaded[[recountID]]$log2norm <- NormalizeCounts(
+      self = loaded[[recountID]]$filtered,
       classColumn = parameters$classColumn,
       # counts =loaded$filteredExperiment$countTable,
       # phenoTable = loaded$filteredExperiment$phenoTable,
@@ -110,18 +111,18 @@ for (recountID in selectedRecountIDs) {
       method = "quantile", quantile=0.75,
       log2 = TRUE, epsilon=0.1)
 
-    # class(loaded$log2norm)
-    print(loaded$log2norm$dataType)
+    # class(loaded[[recountID]]$log2norm)
+    print(loaded[[recountID]]$log2norm$dataType)
 
     ## Export tables
-    exportTables(loaded$log2norm,
+    exportTables(loaded[[recountID]]$log2norm,
                  export.dir = paste(parameters$dir$TSV, parameters$recountID, sep = "/"),
                  file.prefix = "log2norm_counts_")
 
-    ## STILL IN CONSTRUCTION (2018-03-19)
-    plotFigures(loaded$log2norm,
-                plot.dir = file.path(dir.NormImpact),
-                file.prefix = "log2norm")
+    # ## STILL IN CONSTRUCTION (2018-03-19)
+    # plotFigures(loaded[[recountID]]$log2norm,
+    #             plot.dir = file.path(dir.NormImpact),
+    #             file.prefix = "log2norm")
 
   }
 
@@ -131,7 +132,7 @@ for (recountID in selectedRecountIDs) {
   # plot.file <- file.path(dir.NormImpact, "log2normCount_hist.pdf")
   # message("\tlog2(norm counts) histogram\t", plot.file)
   # pdf(plot.file, width=7, height=5)
-  # hist(unlist(loaded$log2norm$counts), breaks=100,
+  # hist(unlist(loaded[[recountID]]$log2norm$counts), breaks=100,
   #      col="grey",
   #      main=paste("log2(norm counts) distrib;", recountID),
   #      las=1,
@@ -140,7 +141,7 @@ for (recountID in selectedRecountIDs) {
   #
   # silence <- dev.off()
 
-  #   if (ncol(loaded$log2norm$countTable) != length(loaded$log2norm$classLabels)){
+  #   if (ncol(loaded[[recountID]]$log2norm$countTable) != length(loaded[[recountID]]$log2norm$classLabels)){
   #     stop(" the Number of samples in log2norm counts should be the same length of classes")
   #   }
   #
@@ -151,20 +152,20 @@ for (recountID in selectedRecountIDs) {
   # }
 
 
-  # Check loaded objects
+  # Check loaded[[recountID]] objects
 
-  # attributes(loaded)
-  # class(loaded$countsPerRun)
-  # class(loaded$originalCounts)
-  # class(loaded$filtered)
-  # class(loaded$norm)
-  # class(loaded$log2norm)
+  # attributes(loaded[[recountID]])
+  # class(loaded[[recountID]]$countsPerRun)
+  # class(loaded[[recountID]]$originalCounts)
+  # class(loaded[[recountID]]$filtered)
+  # class(loaded[[recountID]]$norm)
+  # class(loaded[[recountID]]$log2norm)
   #
   #
-  # # unlist(lapply(loaded$norm$trainTestProperties$trainIndices, length))
-  # length(unlist(loaded$norm$trainTestProperties$trainIndices))
-  # sum(unlist(loaded$norm$trainTestProperties$trainIndices) != unlist(loaded$filtered$trainTestProperties$trainIndices))
-  # sum(unlist(loaded$norm$trainTestProperties$trainIndices) != unlist(loaded$log2norm$trainTestProperties$trainIndices))
+  # # unlist(lapply(loaded[[recountID]]$norm$trainTestProperties$trainIndices, length))
+  # length(unlist(loaded[[recountID]]$norm$trainTestProperties$trainIndices))
+  # sum(unlist(loaded[[recountID]]$norm$trainTestProperties$trainIndices) != unlist(loaded[[recountID]]$filtered$trainTestProperties$trainIndices))
+  # sum(unlist(loaded[[recountID]]$norm$trainTestProperties$trainIndices) != unlist(loaded[[recountID]]$log2norm$trainTestProperties$trainIndices))
 
   ## Indicate that this script has finished running
   message.with.time("finished executing 02_load_and_normalise_counts.R")
