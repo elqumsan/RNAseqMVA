@@ -127,7 +127,7 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
                                        phenoTable = phenoTable,
                                        classColumn = classColumn,
                                        classesColors = classesColors,
-                                       variablesType = parameters$variables.type["all"],
+                                       variablesType = parameters$variables.type[1],
                                        dataType = "raw_counts_per_run")
   # class(countsPerRuns)
   summary(countsPerRuns)
