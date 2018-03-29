@@ -2,6 +2,7 @@
 
 S3method(exportTables,countTableWithClasses)
 S3method(plotFigures,countTableWithClasses)
+S3method(print,countTableWithTrainTestSets)
 export()
 export(DEGordering)
 export(ErrorRateBoxPlot)
