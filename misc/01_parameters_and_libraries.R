@@ -10,6 +10,11 @@ project.parameters <- yaml.load_file("misc/00_project_parameters.yml")
 ## Lad default parameters (must have been defined n the parameter field)
 parameters <- project.parameters$default
 
+## Get all recount IDs
+recountIDs <- grep(pattern = "^SRP", x = names(project.parameters), value = TRUE)
+selectedRecountIDs <- c("SRP042620", "SRP057196")
+#selectedRecountIDs <- recountIDs
+
 recountID <- "SRP042620"   ## Multi-group breast cancer
 # recountID <- "SRP057196"    # individual cells into all of the major neuronal, glial, and vascular cell types in the brain
 
@@ -36,35 +41,20 @@ recountID <- "SRP042620"   ## Multi-group breast cancer
 # recountID <- "SRP008976"   # NOT working properly
 # recountID <- "SRP006575"   # Not working
 
-parameters$recountID <- recountID
-
-## Overwrite default parameters wih project-specific parameters
-selected.parameters <- project.parameters[[recountID]]
-if (is.null(selected.parameters)) {
-  message("No specific parameters for recount ID ", recountID)
-  message("Using generic parameters from the yaml file. ")
-} else {
-  message("Using specific parameters specfied in yaml file for recount ID ", recountID)
-  parameters[names(selected.parameters)] <- project.parameters[[recountID]]
-  names(parameters$data.types)<-parameters$data.types
-  names(parameters$variables.type)<-parameters$variables.type
-}
-
-
 # View(parameters)
 
-
-
-## Parameters for knn
-parameters$knn = list(k=10) # the number of neighbours considered
-
-## Parameters for svm
-parameters$svm = list(
-  kernel="linear",
-  scale=FALSE,
-  type="C-classification" ,
-  gamma = 1,
-  cost = 100)
+#
+#
+# ## Parameters for knn
+# parameters$knn = list(k=10) # the number of neighbours considered
+#
+# ## Parameters for svm
+# parameters$svm = list(
+#   kernel="linear",
+#   scale=FALSE,
+#   type="C-classification" ,
+#   gamma = 1,
+#   cost = 100)
 
 
 ## Prefix for experiments with permuted class labels
