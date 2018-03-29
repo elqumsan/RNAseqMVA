@@ -118,10 +118,10 @@ for (recountID in selectedRecountIDs) {
                  export.dir = paste(parameters$dir$TSV, parameters$recountID, sep = "/"),
                  file.prefix = "log2norm_counts_")
 
-    ## STILL IN CONSTRUCTION (2018-03-19)
-    plotFigures(loaded$log2norm,
-                plot.dir = file.path(dir.NormImpact),
-                file.prefix = "log2norm")
+    # ## STILL IN CONSTRUCTION (2018-03-19)
+    # plotFigures(loaded$log2norm,
+    #             plot.dir = file.path(dir.NormImpact),
+    #             file.prefix = "log2norm")
 
   }
 
