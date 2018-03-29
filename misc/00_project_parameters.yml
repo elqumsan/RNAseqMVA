@@ -39,6 +39,17 @@ default:
   permute: [FALSE, TRUE]
   verbose: TRUE
 
+  knn:
+    k: 10
+
+  svm:
+    kernel: "linear"
+    scale: FALSE
+    type: "C-classification"
+    gamma: 1
+    cost: 100
+
+
 
 ## Project-specific parameters for the analysis of Recount RNA-seq datasets
 SRP042620:
