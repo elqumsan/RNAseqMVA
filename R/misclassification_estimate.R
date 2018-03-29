@@ -30,15 +30,15 @@ MisclassificationEstimate <- function(self,
 
   if (is(self, class2 = "PCsWithTrainTestSets") ){
     # message("\t\tUsing PCs as features for object of class ", paste(collapse=", ", class(self)))
-    countTable <- self$x
+    countTable <- t(self$x)
   } else {
     # message("\t\tUsing countTable as features for object of class ", paste(collapse=", ", class(self)))
-    countTable <- self$countTable
+    countTable <- t(self$countTable)
 
   }
 
   ## AssignGet sample classes from the object
-  classes <-self$classLabels
+  classes <- self$classLabels
   if (permute) {
     classes <- sample(classes, replace = FALSE)
   }
