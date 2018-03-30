@@ -120,11 +120,11 @@ for (recountID in selectedRecountIDs) {
                  file.prefix = "log2norm_counts_")
 
     # ## STILL IN CONSTRUCTION (2018-03-19)
-<<<<<<< HEAD
+
     # plotFigures(loaded[[recountID]]$log2norm,
-=======
+
     # plotFigures(loaded$log2norm,
->>>>>>> b8997655c3222349cccb07732f2f1a89bc71b388
+
     #             plot.dir = file.path(dir.NormImpact),
     #             file.prefix = "log2norm")
 
