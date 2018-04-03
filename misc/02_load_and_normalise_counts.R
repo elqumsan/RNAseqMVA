@@ -47,7 +47,7 @@ for (recountID in selectedRecountIDs) {
   }
 
   ## File to store a memory image
-  image.file <- file.path(dir.results, paste("RNA-seq_classifer_evaluation_", parameters$recountID, ".Rdata", sep = ""))
+  image.file <- file.path(dir.results, paste("RNA-seq_classifer_evaluation_",recountID, ".Rdata", sep = ""))
 
   if (parameters$reload == TRUE) {
     ################################################################################
@@ -93,7 +93,7 @@ for (recountID in selectedRecountIDs) {
 
   if (parameters$compute) {
     message.with.time("Loading count table from recount", "; recountID = ", parameters$recountID)
-    loaded[[recountID]] <- loadCounts(recountID = parameters$recountID,
+    loaded[[recountID]] <- loadCounts(recountID = recountID,
                          mergeRuns = TRUE,
                          classColumn = parameters$classColumn,
                          minSamplesPerClass = parameters$minSamplesPerClass,
@@ -255,12 +255,12 @@ for (recountID in selectedRecountIDs) {
   # write.table( geo.characteristics, file = geo.characteristics.file, quote = FALSE,
   #              row.names = FALSE, sep = "\t" )
 
-}
+} # end loop over recountIDs
 
 
 ## Compute statistics about loaded datasets
 loadedStats <- data.frame()
-for (recountID in recountIDs) {
+for (recountID in selectedRecountIDs) {
   newStats <-
     data.frame(
       recountID = recountID,
@@ -283,3 +283,24 @@ for (recountID in recountIDs) {
 
 ## Indicate that this script has finished running
 message.with.time("finished executing 02_load_and_normalise_counts.R")
+
+#######################################################
+# loadedObjects.dataType <- data.frame()
+#
+# for(recountID in selectedRecountIDs){
+#   loadedDataType <-
+#     data.frame(
+#       "originalCounts" = loaded[[recountID]]$originalCounts ,
+#       "filtere" = loaded[[recountID]]$filtered,
+#       "norm" = loaded[[recountID]]$norm,
+#       "log2norm" = loaded[[recountID]]$log2norm )
+#
+#   if (ncol(loadedDataType)== 0){
+#     loadedObjects.dataType <- loadedDataType
+#   }else {
+#     loadedObjects.dataType <-rbind(loadedObjects.dataType, loadedDataType)
+#
+#   }
+#
+# }
+#

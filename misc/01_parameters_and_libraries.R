@@ -12,7 +12,7 @@ parameters <- project.parameters$default
 
 ## Get all recount IDs
 recountIDs <- grep(pattern = "^SRP", x = names(project.parameters), value = TRUE)
-#selectedRecountIDs <- c("SRP042620", "SRP057196")
+selectedRecountIDs <- c("SRP042620", "SRP057196")
 #selectedRecountIDs <- recountIDs
 message("Selected ", length(recountIDs)," recount IDs.")
 
