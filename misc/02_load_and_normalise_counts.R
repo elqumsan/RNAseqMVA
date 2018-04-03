@@ -89,6 +89,8 @@ for (recountID in selectedRecountIDs) {
   dir.create(dir.visualisePCs, showWarnings = F, recursive = T)
 
 
+  # View(parameters)
+
 
 
   if (parameters$compute) {
