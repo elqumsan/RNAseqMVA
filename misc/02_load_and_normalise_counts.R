@@ -5,7 +5,61 @@ loaded <- list()
 
 for (recountID in selectedRecountIDs) {
 
-  parameters$recountID <- recountID
+#  parameters$recountID <- recountID
+
+  ################################################################
+  ## Define directories
+
+  # Main directory should be adapted to the user's configuration
+  dir.main <- parameters$dir$main
+  tsv.dir <- paste(sep = "" ,parameters$dir$TSV,"/",recountID)
+
+  #classifier <- "knn"
+  ## All other directories should be defined relative to dir.main
+  dir.scripts <- file.path(dir.main, "R")
+  dir.results <- file.path(parameters$dir$workspace, "results", parameters$recountID)
+  classifiers <- c("knn","rf", "svm")
+  dir.classifier <- file.path(dir.results, classifiers)
+
+  ## Define the directories where tables and figures will be stored.
+  ## one directory per classifer, with separate subdirectories for tables and figures.
+  classifier.dirs <- vector()
+  table.dirs <- vector()
+  figure.dirs <- vector()
+
+  detailFigures.dir <- vector()
+  detailTables.dir <- vector()
+
+  for (classifier in classifiers) {
+    classifier.dirs[classifier] <- file.path(dir.results, classifier)
+    dir.create(classifier.dirs[classifier], showWarnings = F, recursive = T)
+    table.dirs[classifier] <- file.path(classifier.dirs[classifier], "tables")
+    dir.create(table.dirs[classifier], showWarnings = F, recursive = T)
+
+    detailTables.dir[classifier] <- file.path(table.dirs[classifier], "detailTables")
+    dir.create(detailTables.dir[classifier],showWarnings = F, recursive = T)
+
+    figure.dirs[classifier] <- file.path(classifier.dirs[classifier], "figures")
+    dir.create(figure.dirs[classifier], showWarnings = F, recursive = T)
+
+    detailFigures.dir[classifier] <- file.path(figure.dirs[classifier], "detailFigures")
+    dir.create(detailFigures.dir[classifier] ,showWarnings = F, recursive = T)
+  }
+
+  ## File to store a memory image
+  image.file <- file.path(dir.results, paste("RNA-seq_classifer_evaluation_", parameters$recountID, ".Rdata", sep = ""))
+
+  if (parameters$reload == TRUE) {
+    ################################################################################
+    ## Save an image of the memory, so I can reload it later to avoid re-running all the analyses
+    parameters.current <- parameters # Keep current parameters to restore them after having loaded a memory image
+    message.with.time("Loading memory image ")
+    load(file = image.file)
+    parameters <- parameters.current ## Reload current parameters (they might have been saved different in the memory image)
+    rm(parameters.current)
+  }
+
+
 
   ## Overwrite default parameters wih project-specific parameters
   selected.parameters <- project.parameters[[recountID]]
@@ -18,6 +72,23 @@ for (recountID in selectedRecountIDs) {
     names(parameters$data.types)<-parameters$data.types
     names(parameters$variables.type)<-parameters$variables.type
   }
+  ## Prefix for experiments with permuted class labels
+  ## (negative controls to estimate random expectation)
+  perm.prefix <- parameters$perm_prefix
+
+
+  ################################################################
+  ## TO CHECK LATER: DO wE STILL NEED THESE VARIABLES ???
+
+  ## Directory for impact of Normalization and log2 into counts (and the study of its impact)
+  dir.NormImpact <- file.path(dir.results , paste("impact_of_normalisation_and_log2", sep = ""))
+  dir.create(dir.NormImpact, showWarnings = F, recursive = T)
+
+  ## Directory for the visualization of Principal component for counts (and the study of its impact)
+  dir.visualisePCs <- file.path(dir.results , paste( "visualization_of_PCs", sep = ""))
+  dir.create(dir.visualisePCs, showWarnings = F, recursive = T)
+
+
 
 
   if (parameters$compute) {
@@ -171,8 +242,6 @@ for (recountID in selectedRecountIDs) {
   # sum(unlist(loaded[[recountID]]$norm$trainTestProperties$trainIndices) != unlist(loaded[[recountID]]$filtered$trainTestProperties$trainIndices))
   # sum(unlist(loaded[[recountID]]$norm$trainTestProperties$trainIndices) != unlist(loaded[[recountID]]$log2norm$trainTestProperties$trainIndices))
 
-  ## Indicate that this script has finished running
-  message.with.time("finished executing 02_load_and_normalise_counts.R")
 
   ##### plotting some figures to explore the nuture of recount data set #####
   # message.with.time(" plotting some figures to explore distribution for the recount data set ",parameters$recountID)
@@ -187,3 +256,30 @@ for (recountID in selectedRecountIDs) {
   #              row.names = FALSE, sep = "\t" )
 
 }
+
+
+## Compute statistics about loaded datasets
+loadedStats <- data.frame()
+for (recountID in recountIDs) {
+  newStats <-
+    data.frame(
+      recountID = recountID,
+      initial.runs = loaded[[recountID]]$countsPerRun$nbSamples,
+      initial.samples = loaded[[recountID]]$originalCounts$nbSamples,
+      initial.genes = loaded[[recountID]]$originalCounts$nbGenes,
+      initial.classes = loaded[[recountID]]$originalCounts$nbClasses,
+      filtered.samples = loaded[[recountID]]$filtered$nbSamples,
+      filtered.genes = loaded[[recountID]]$filtered$nbGenes,
+      filtered.classes = loaded[[recountID]]$filtered$nbClasses
+    )
+
+  if (ncol(loadedStats) == 0) {
+    loadedStats <- newStats
+  } else {
+    loadedStats <- rbind(loadedStats, newStats)
+  }
+
+}
+
+## Indicate that this script has finished running
+message.with.time("finished executing 02_load_and_normalise_counts.R")

@@ -12,10 +12,12 @@ parameters <- project.parameters$default
 
 ## Get all recount IDs
 recountIDs <- grep(pattern = "^SRP", x = names(project.parameters), value = TRUE)
-selectedRecountIDs <- c("SRP042620", "SRP057196")
+#selectedRecountIDs <- c("SRP042620", "SRP057196")
 #selectedRecountIDs <- recountIDs
+message("Selected ", length(recountIDs)," recount IDs.")
 
 recountID <- "SRP042620"   ## Multi-group breast cancer
+message("Default recountID ", recountID)
 # recountID <- "SRP057196"    # individual cells into all of the major neuronal, glial, and vascular cell types in the brain
 
 # recountID <- "SRP003611"   # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
@@ -57,11 +59,6 @@ recountID <- "SRP042620"   ## Multi-group breast cancer
 #   cost = 100)
 
 
-## Prefix for experiments with permuted class labels
-## (negative controls to estimate random expectation)
-perm.prefix <- parameters$perm_prefix
-
-
 ## Temporary, to get quick results
 # parameters$classifiers <- c("knn")
 # parameters$iterations <- 3
@@ -69,58 +66,6 @@ perm.prefix <- parameters$perm_prefix
 
 message.with.time <- function(...) {
   message(format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", ...)
-}
-
-################################################################
-## Define directories
-
-# Main directory should be adapted to the user's configuration
-dir.main <- parameters$dir$main
-tsv.dir <- paste(sep = "" ,parameters$dir$TSV,"/",recountID)
-
-#classifier <- "knn"
-## All other directories should be defined relative to dir.main
-dir.scripts <- file.path(dir.main, "R")
-dir.results <- file.path(parameters$dir$workspace, "results", parameters$recountID)
-classifiers <- c("knn","rf", "svm")
-dir.classifier <- file.path(dir.results, classifiers)
-
-## Define the directories where tables and figures will be stored.
-## one directory per classifer, with separate subdirectories for tables and figures.
-classifier.dirs <- vector()
-table.dirs <- vector()
-figure.dirs <- vector()
-
-detailFigures.dir <- vector()
-detailTables.dir <- vector()
-
-for (classifier in classifiers) {
-  classifier.dirs[classifier] <- file.path(dir.results, classifier)
-  dir.create(classifier.dirs[classifier], showWarnings = F, recursive = T)
-  table.dirs[classifier] <- file.path(classifier.dirs[classifier], "tables")
-  dir.create(table.dirs[classifier], showWarnings = F, recursive = T)
-
-  detailTables.dir[classifier] <- file.path(table.dirs[classifier], "detailTables")
-  dir.create(detailTables.dir[classifier],showWarnings = F, recursive = T)
-
-  figure.dirs[classifier] <- file.path(classifier.dirs[classifier], "figures")
-  dir.create(figure.dirs[classifier], showWarnings = F, recursive = T)
-
-  detailFigures.dir[classifier] <- file.path(figure.dirs[classifier], "detailFigures")
-  dir.create(detailFigures.dir[classifier] ,showWarnings = F, recursive = T)
-}
-
-## File to store a memory image
-image.file <- file.path(dir.results, paste("RNA-seq_classifer_evaluation_", parameters$recountID, ".Rdata", sep = ""))
-
-if (parameters$reload == TRUE) {
-  ################################################################################
-  ## Save an image of the memory, so I can reload it later to avoid re-running all the analyses
-  parameters.current <- parameters # Keep current parameters to restore them after having loaded a memory image
-  message.with.time("Loading memory image ")
-  load(file = image.file)
-  parameters <- parameters.current ## Reload current parameters (they might have been saved different in the memory image)
-  rm(parameters.current)
 }
 
 
@@ -132,18 +77,6 @@ RequiredCRANPackages(requiredCRAN)
 ## JvH: Mustafa, please add the other required packages, in particular recount
 requiredBioconductor <- c("recount")
 RequiredBioconductorPackages(requiredBioconductor)
-
-################################################################
-## TO CHECK LATER: DO wE STILL NEED THESE VARIABLES ???
-
-## Directory for impact of Normalization and log2 into counts (and the study of its impact)
-dir.NormImpact <- file.path(dir.results , paste("impact_of_normalisation_and_log2", sep = ""))
-dir.create(dir.NormImpact, showWarnings = F, recursive = T)
-
-## Directory for the visualization of Principal component for counts (and the study of its impact)
-dir.visualisePCs <- file.path(dir.results , paste( "visualization_of_PCs", sep = ""))
-dir.create(dir.visualisePCs, showWarnings = F, recursive = T)
-
 
 
 ## END OF SCRIPT
