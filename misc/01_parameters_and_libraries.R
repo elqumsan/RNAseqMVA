@@ -12,9 +12,10 @@ parameters <- project.parameters$default
 
 ## Get all recount IDs
 recountIDs <- grep(pattern = "^SRP", x = names(project.parameters), value = TRUE)
+message("YAML config file contains ", length(recountIDs)," recount IDs.")
 selectedRecountIDs <- c("SRP042620", "SRP057196")
+message("Selected ", length(selectedRecountIDs)," recount IDs: ", paste(collapse="; ", selectedRecountIDs))
 #selectedRecountIDs <- recountIDs
-message("Selected ", length(recountIDs)," recount IDs.")
 
 recountID <- "SRP042620"   ## Multi-group breast cancer
 message("Default recountID ", recountID)
@@ -62,11 +63,6 @@ message("Default recountID ", recountID)
 ## Temporary, to get quick results
 # parameters$classifiers <- c("knn")
 # parameters$iterations <- 3
-
-
-message.with.time <- function(...) {
-  message(format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", ...)
-}
 
 
 
