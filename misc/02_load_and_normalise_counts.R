@@ -20,8 +20,8 @@ for (recountID in selectedRecountIDs) {
   ## one directory per classifer, with separate subdirectories for tables and figures.
   classifiers <- parameters$classifiers
 
-#  dir.classifier <- file.path(dir.results, classifiers)
-#  names(dir.classifier) <- classifiers
+  #  dir.classifier <- file.path(dir.results, classifiers)
+  #  names(dir.classifier) <- classifiers
 
   classifier.dirs <- file.path(dir.results, classifiers)
   table.dirs <- file.path(classifier.dirs, "tables")
@@ -30,19 +30,19 @@ for (recountID in selectedRecountIDs) {
   detailTables.dir <- file.path(table.dirs, "detailTables")
 
   for (dir in c(classifier.dirs, table.dirs, figure.dirs, detailFigures.dir, detailTables.dir)) {
-#    classifier.dirs[classifier] <- file.path(dir.results, classifier)
+    #    classifier.dirs[classifier] <- file.path(dir.results, classifier)
     dir.create(dir, showWarnings = F, recursive = T)
-#    table.dirs[classifier] <- file.path(classifier.dirs[classifier], "tables")
+    #    table.dirs[classifier] <- file.path(classifier.dirs[classifier], "tables")
     #dir.create(table.dirs[classifier], showWarnings = F, recursive = T)
 
-#    detailTables.dir[classifier] <- file.path(table.dirs[classifier], "detailTables")
-#    dir.create(detailTables.dir[classifier],showWarnings = F, recursive = T)
+    #    detailTables.dir[classifier] <- file.path(table.dirs[classifier], "detailTables")
+    #    dir.create(detailTables.dir[classifier],showWarnings = F, recursive = T)
 
-#    figure.dirs[classifier] <- file.path(classifier.dirs[classifier], "figures")
+    #    figure.dirs[classifier] <- file.path(classifier.dirs[classifier], "figures")
     #dir.create(figure.dirs[classifier], showWarnings = F, recursive = T)
 
-#    detailFigures.dir[classifier] <- file.path(figure.dirs[classifier], "detailFigures")
-#    dir.create(detailFigures.dir[classifier] ,showWarnings = F, recursive = T)
+    #    detailFigures.dir[classifier] <- file.path(figure.dirs[classifier], "detailFigures")
+    #    dir.create(detailFigures.dir[classifier] ,showWarnings = F, recursive = T)
   }
 
   ## File to store a memory image
@@ -282,8 +282,12 @@ for (recountID in selectedRecountIDs) {
   } else {
     loadedStats <- rbind(loadedStats, newStats)
   }
-
 }
+rownames(loadedStats) <- loadedStats$recountID
+
+## TEMPORARY: print out stats about loaded datasets
+require(knitr)
+kable(t(loadedStats))
 
 ## Indicate that this script has finished running
 message.with.time("finished executing 02_load_and_normalise_counts.R")
