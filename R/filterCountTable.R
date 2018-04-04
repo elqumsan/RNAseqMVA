@@ -39,6 +39,7 @@
 #' @import ggplot2
 #' @export
 filterCountTable <- function(rawCounts,
+                             na.rm = parameters$na.rm,
                              minSamplesPerClass = parameters$minSamplesPerClass,
                              nearZeroVarFilter = parameters$nearZeroVarFilter,
                              classColumn = parameters$classColumn,
@@ -66,8 +67,11 @@ filterCountTable <- function(rawCounts,
     message("\tThis count Table does not contain any NA values. ")
     naGenes <- vector()
   }
-  keptGenes <- setdiff(rawCounts$geneNames, naGenes)
-  message("\tNA filter: discarding ", length(naGenes), " genes out of ", rawCounts$nbGenes, "; keeping ", length(keptGenes))
+
+  if (na.rm) {
+    keptGenes <- setdiff(rawCounts$geneNames, naGenes)
+    message("\tNA filter: discarding ", length(naGenes), " genes out of ", rawCounts$nbGenes, "; keeping ", length(keptGenes))
+  }
   #filteredCountTable <- rawCounts$countTable[, keptGenes]
 
 
@@ -95,11 +99,8 @@ filterCountTable <- function(rawCounts,
     message("\tDetecting genes with near-zero variance using caret::nearZeroVar()")
     nearZeroVarIndices <- nearZeroVar(t(rawCounts$countTable), allowParallel = TRUE, saveMetrics = FALSE)
     nearZeroVarGenes <- rownames(rawCounts$countTable)[nearZeroVarIndices]
-    #length(nearZeroVarGenes)
     keptGenes <- setdiff(keptGenes, nearZeroVarGenes)
     message("\tNear zero var filter: discarding ", length(nearZeroVarGenes)," genes with near-zero variance (poor predictors); kept genes: ", length(keptGenes))
-
-  # dim(filteredCountTable)
   }
 
   ## Extract the table of counts with the subset of kept genes at the end of the different gene filters.
@@ -252,7 +253,7 @@ filterCountTable <- function(rawCounts,
                                   variablesType = "all",
                                   dataType = "filtered_counts")
 
-  class(result)
+  # class(result)
   summary(result)
 
   # result$countTable <- filteredCountTable
@@ -262,12 +263,9 @@ filterCountTable <- function(rawCounts,
   # result$nbGenes <- nrow(filteredCountTable)
 
   ## Include the filtering criteria in the returned list
+  result$naGenes <- naGenes
   result$zeroVarGenes <- zeroVarGenes
-  if (nearZeroVarFilter) {
-    result$nearZeroVarGenes <- nearZeroVarGenes
-  } else {
-    result$nearZeroVarGenes <- NULL
-  }
+  result$nearZeroVarGenes <- nearZeroVarGenes
   result$keptGenes <- keptGenes
   result$keptClasses <- keptClasses
 
