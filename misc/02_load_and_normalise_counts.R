@@ -316,7 +316,7 @@ apply(gene.pc, 1, sum)
 file.prefix <- paste("experiments_sumaries.pdf")
 barPlot.file <- file.path(parameters$dir$results,file.prefix)
 message("Filtering summary barplot: ", barPlot.file)
-pdf(file = barPlot.file, width=7, height=2+1*nrow(gene.proportions))
+pdf(file = barPlot.file, width=7, height=2+1*nrow(loadedStats))
 save.margins <- par("mar")
 par(mar= c(5,9,5,1))
 
