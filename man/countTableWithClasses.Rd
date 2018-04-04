@@ -4,7 +4,8 @@
 \alias{countTableWithClasses}
 \title{constructor of the countTableWithClasses class}
 \usage{
-countTableWithClasses(countTable, phenoTable, classColumn,
+countTableWithClasses(countTable, phenoTable,
+  classColumn = parameters$classColumn,
   classesColors = parameters$classesColors, ID = parameters$recountID,
   sampleNames = colnames(countTable), geneNames = rownames(countTable),
   variablesType = variablesType, dataType = "raw_counts")
