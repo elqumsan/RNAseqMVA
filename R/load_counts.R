@@ -40,7 +40,7 @@ loadCounts <- function(recountID = parameters$recountID,
                        sampleIdColumn = parameters$sampleIdColumn, ## Alternative: use "sample"
                        minSamplesPerClass = parameters$minSamplesPerClass,
                        dir.workspace = parameters$dir$workspace,
-                       na.rm = TRUE,
+                       na.rm = parameters$na.rm,
                        ... ) {
   message.with.time("Starting loadCounts() for Recount ID ", recountID)
 
@@ -53,20 +53,23 @@ loadCounts <- function(recountID = parameters$recountID,
   # loading count Data from recount_experiment, Via our wrapper which will Automatically merge the runs by
   # sample in order to obtain sample-wise count rather than run-wise counts.
   experiment <- loadRecountExperiment(recountID=recountID,
-                                     mergeRuns=mergeRuns,
-                                     sampleIdColumn=parameters$sampleIdColumn,
-                                     dir.workspace = parameters$dir$workspace,
-                                     classColumn = parameters$classColumn,
-                                     na.rm = FALSE,
+                                      mergeRuns=mergeRuns,
+                                      sampleIdColumn=sampleIdColumn,
+                                      dir.workspace = dir.workspace,
+                                      classColumn = classColumn,
+                                      na.rm = na.rm,
                                      ...)
 
 
-  ## If requested, suppress the NA values
-  if (na.rm) {
-    message("\tSuppressing rows (genes) with NA values")
-    countTable <- na.omit(experiment$originalCounts$countTable)
-    # dim(countTable)
-  }
+  ## JhV: I suppress this na filtering from here because we want to keep the NA values in
+  ## the original count table, and anyway wae do eliminate them in the filtering function.
+
+  # ## If requested, suppress the NA values
+  # if (na.rm) {
+  #   message("\tSuppressing rows (genes) with NA values")
+  #   countTable <- na.omit(experiment$originalCounts$countTable)
+  #   # dim(countTable)
+  # }
 
   ##### Check the dimensions of original experiment #####
   if (ncol(experiment$originalCounts$countTable) != length(experiment$originalCounts$classLabels)){
