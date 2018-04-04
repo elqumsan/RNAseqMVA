@@ -58,7 +58,6 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
 
   result <- list()
 
-  studyPath <- file.path(dir.workspace, "data", recountID)
 
   #### Create studyPath directory ####
   if (!file.exists(studyPath)) {
