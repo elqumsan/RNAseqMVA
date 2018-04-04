@@ -12,6 +12,7 @@ RequiredCRANPackages(requiredCRAN)
 requiredBioconductor <- c("recount")
 RequiredBioconductorPackages(requiredBioconductor)
 
+yaml.file <- "~/RNAseqMVA/misc//00_project_parameters.yml"
 message.with.time("Loading parameters from YAM file ", yaml.file)
 
 ## Read project-specific parameters from a yaml-formatted file.
@@ -27,8 +28,8 @@ message("\tYAML config file contains ", length(recountIDs)," recount IDs.")
 
 
 ## Optional: select a subset of the recountIDs
-# selectedRecountIDs <- c("SRP042620", "SRP057196")
-selectedRecountIDs <- recountIDs
+selectedRecountIDs <- c("SRP057196", "SRP042620")
+# selectedRecountIDs <- recountIDs
 
 message("\tSelected ", length(selectedRecountIDs)," recount IDs: ", paste(collapse="; ", selectedRecountIDs))
 #selectedRecountIDs <- recountIDs
