@@ -14,7 +14,7 @@ RequiredCRANPackages(requiredCRAN)
 requiredBioconductor <- c("recount")
 RequiredBioconductorPackages(requiredBioconductor)
 
-yaml.file <- "~/RNAseqMVA/misc//00_project_parameters.yml"
+yaml.file <- "~/RNAseqMVA/misc/00_project_parameters.yml"
 message.with.time("Loading parameters from YAM file ", yaml.file)
 
 ## Read project-specific parameters from a yaml-formatted file.
