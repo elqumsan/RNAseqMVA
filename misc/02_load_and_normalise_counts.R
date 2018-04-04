@@ -17,7 +17,7 @@ for (recountID in selectedRecountIDs) {
   dir.create(path = tsv.dir, recursive = TRUE, showWarnings = FALSE)
 
   ## Directory to store the data downloaded from recountID
-  studyPath <- file.path(dir.workspace, "data", recountID)
+  studyPath <- file.path(parameters$dir$workspace, "data", recountID)
 
   ## Define the directories where tables and figures will be stored.
   ## one directory per classifer, with separate subdirectories for tables and figures.
@@ -268,15 +268,18 @@ for (recountID in selectedRecountIDs) {
   newStats <-
     data.frame(
       recountID = recountID,
-      initial.runs = loaded[[recountID]]$countsPerRun$nbSamples,
-      initial.samples = loaded[[recountID]]$originalCounts$nbSamples,
-      initial.genes = loaded[[recountID]]$originalCounts$nbGenes,
-      initial.classes = loaded[[recountID]]$originalCounts$nbClasses,
-      filtered.samples = loaded[[recountID]]$filtered$nbSamples,
-      filtered.zerovar = length(loaded[[recountID]]$filtered$zeroVarGenes),
-      filtered.nearzerovar = length(loaded[[recountID]]$filtered$nearZeroVarGenes),
-      filtered.genes = loaded[[recountID]]$filtered$nbGenes,
-      filtered.classes = loaded[[recountID]]$filtered$nbClasses
+      runs = loaded[[recountID]]$countsPerRun$nbSamples,
+      samples = loaded[[recountID]]$originalCounts$nbSamples,
+      samples.filtered = loaded[[recountID]]$filtered$nbSamples,
+
+      genes.ori = loaded[[recountID]]$originalCounts$nbGenes,
+      genes.NA = length(loaded[[recountID]]$filtered$naGenes),
+      genes.zerovar = length(loaded[[recountID]]$filtered$zeroVarGenes),
+      genes.nearzerovar = length(loaded[[recountID]]$filtered$nearZeroVarGenes),
+      genes.filtered = loaded[[recountID]]$filtered$nbGenes,
+
+      classes.ori = loaded[[recountID]]$originalCounts$nbClasses,
+      classes.filtered = loaded[[recountID]]$filtered$nbClasses
     )
 
   if (ncol(loadedStats) == 0) {
@@ -287,9 +290,49 @@ for (recountID in selectedRecountIDs) {
 }
 rownames(loadedStats) <- loadedStats$recountID
 
+
+loadedStats$genes.NA + loadedStats$genes.zerovar + loadedStats$genes.nearzerovar + loadedStats$genes.filtered
+loadedStats$genes.ori
+
+loadedStats$pc.NA <-100*loadedStats$genes.NA / loadedStats$genes.ori
+loadedStats$pc.zeroVar <- 100*loadedStats$genes.zerovar / loadedStats$genes.ori
+loadedStats$pc.nearZeroVar <- 100*loadedStats$genes.nearzerovar / loadedStats$genes.ori
+loadedStats$pc.kept <-  100*loadedStats$genes.filtered / loadedStats$genes.ori
+
 ## TEMPORARY: print out stats about loaded datasets
 require(knitr)
 kable(t(loadedStats))
+
+write.table(x = t(loadedStats), file = file.path(parameters$dir$results, "experiment_summaries.tsv"),
+            quote = FALSE, sep = "\t", row.names = TRUE, col.names = FALSE)
+
+## YOUR MISSION: GENERATE A BARPLOT or a set of piecharts SHOWING THE FOLLOWING NUMBERS for the different study cases
+## - NA(to be added to the result of filtering)
+## - zero var
+## - near zero var
+## - kept genes
+## The total shoud give the same result as initial.genes
+
+gene.pc <- loadedStats[, c("pc.NA", "pc.zeroVar", "pc.nearZeroVar", "pc.kept")]
+apply(gene.pc, 1, sum)
+
+file.prefix <- paste("experiments_sumaries.pdf")
+barPlot.file <- file.path(parameters$dir$results,file.prefix)
+message("Filtering summary barplot: ", barPlot.file)
+pdf(file = barPlot.file, width=7, height=2+1*nrow(gene.proportions))
+save.margins <- par("mar")
+par(mar= c(5,7,5,1))
+
+barplot(t(gene.proportions),las=1, horiz = TRUE,
+        col = c("red", "orange", "#44DD44"),
+        legend.text = c("Zero var", "near Zero var", "kept"),
+        main = "Filtering impact on study cases",
+        xlab = "Proportions of genes",
+        xlim=c(0, 1.7))
+
+par(mar = save.margins)
+silence<- dev.off()
+
 
 ## Indicate that this script has finished running
 message.with.time("finished executing 02_load_and_normalise_counts.R")
