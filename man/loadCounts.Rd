@@ -8,7 +8,7 @@ loadCounts(recountID = parameters$recountID,
   classColumn = parameters$classColumn, mergeRuns = parameters$mergeRuns,
   sampleIdColumn = parameters$sampleIdColumn,
   minSamplesPerClass = parameters$minSamplesPerClass,
-  dir.workspace = parameters$dir$workspace, na.rm = TRUE, ...)
+  dir.workspace = parameters$dir$workspace, na.rm = parameters$na.rm, ...)
 }
 \arguments{
 \item{recountID}{number of experiment}
