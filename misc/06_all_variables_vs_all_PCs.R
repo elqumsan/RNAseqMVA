@@ -33,8 +33,6 @@
 # dim(counts)
 # View(counts)
 
-## Default for quick test without iterating over all cases
-permute <- FALSE
 # dataset <- loaded$log2norm
 
 
@@ -46,6 +44,7 @@ if (parameters$compute) {
   for (recountID in selectedRecountIDs) {
 
     ## Loop over classifiers
+    classifier <- "svm" ## For quick test
     for (classifier in parameters$classifiers) {
 
       ## List to store all results
@@ -60,24 +59,24 @@ if (parameters$compute) {
 
 
       #### Associate each analysis of real data with a permutation test ####
+      permute <- FALSE ## Default for quick test without iterating over all cases
       for (permute in parameters$permute) {
 
         ## Loop over data types
-        data.type <- "log2norm"
+        data.type <- "log2norm" ## For test
         for (data.type in parameters$data.types.to.test) {
           dataset <- loaded[[recountID]][[data.type]]
-          # class(loaded$log2norm)
           # class(dataset)
           # summary(dataset)
 
           # Check if the dataset belongs to the class countTableWithTrainTestSets
-          if (!is(object = dataset, class2 = "countTableWithTrainTestSets"))
+          if (!is(object = dataset, class2 = "countTableWithTrainTestSets")) {
 
             ## Check if the train and test indices  were properly defined
-            if (is.null(dataset$trainTestProperties$trainIndices) || is.null(dataset$trainTestProperties$testIndices)){
-              stop("/tyou don't have train/test sets to play with classifier ")
+            if (is.null(dataset$trainTestProperties$trainIndices) || is.null(dataset$trainTestProperties$testIndices)) {
+              stop("you don't have train/test sets to play with classifier ")
             }
-
+          }
 
           #### Run classifier with all variables (log2-transformed log counts) ####
           exp.prefix <-
