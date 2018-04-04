@@ -12,7 +12,6 @@ RequiredCRANPackages(requiredCRAN)
 requiredBioconductor <- c("recount")
 RequiredBioconductorPackages(requiredBioconductor)
 
-yaml.file <- "misc/00_project_parameters.yml"
 message.with.time("Loading parameters from YAM file ", yaml.file)
 
 ## Read project-specific parameters from a yaml-formatted file.
@@ -25,7 +24,12 @@ parameters <- project.parameters$default
 ## Get all recount IDs
 recountIDs <- grep(pattern = "^SRP", x = names(project.parameters), value = TRUE)
 message("\tYAML config file contains ", length(recountIDs)," recount IDs.")
-selectedRecountIDs <- c("SRP042620", "SRP057196")
+
+
+## Optional: select a subset of the recountIDs
+# selectedRecountIDs <- c("SRP042620", "SRP057196")
+selectedRecountIDs <- recountIDs
+
 message("\tSelected ", length(selectedRecountIDs)," recount IDs: ", paste(collapse="; ", selectedRecountIDs))
 #selectedRecountIDs <- recountIDs
 
@@ -55,6 +59,17 @@ message("\tDefault recountID ", recountID)
 # recountID <-  "SRP039694"  # Not working: hepatocellular carcinoma
 # recountID <- "SRP008976"   # NOT working properly
 # recountID <- "SRP006575"   # Not working
+
+################################################################
+## Define general directories.
+## Dataset-specific directories are defined later.
+
+# Main directory should be adapted to the user's configuration
+dir.main <- parameters$dir$main
+
+
+## All other directories should be defined relative to dir.main
+dir.scripts <- file.path(dir.main, "R")
 
 ## END OF SCRIPT
 #################################################################
