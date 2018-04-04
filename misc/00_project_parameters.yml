@@ -66,17 +66,6 @@ SRP042620:
 
 #      description:  "Multi-group breast cancer"
 
-#SRP057196:
-#  description: ""
-#  classColumn: ["tissue", "cell.type"]
-#  classColumn: c("tissue", "cell.type")
-  ## Running parameters for SRP057196
-  ## NOTE FOR MUSTAFA: For this dataset, the groups are defined
-  ## based on a combination of two columns of the pheno table:
-  ## "tissue" and "cell.type".
-  ## I improved filterCountTable() in order to support combinations of columns.
-  ## If several columns are specified in classColumn, the classes
-  ## are built by pasting the specified columns.
 
 SRP056295: ## 525 runs, human leukemia
   description: "525 runs, human leukemia"
@@ -128,7 +117,6 @@ SRP006574:
 
 SRP057196:
   description: "individual cells into all of the major neuronal, glial, and vascular cell types in the brain"
-#  classColumn: "cell.type"
   classColumn: ["tissue", "cell.type"] ## MUSTAFA: IT IS IMPORTANT TO COMBINE THE TWO COLUMNS, THIS IS THE ESSENCE OF THIS DATASET !!!
   classesColors:
       fetal_quiescent: "red"
