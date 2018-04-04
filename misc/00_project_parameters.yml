@@ -128,7 +128,8 @@ SRP006574:
 
 SRP057196:
   description: "individual cells into all of the major neuronal, glial, and vascular cell types in the brain"
-  classColumn: "cell.type"
+#  classColumn: "cell.type"
+  classColumn: ["tissue", "cell.type"] ## MUSTAFA: IT IS IMPORTANT TO COMBINE THE TWO COLUMNS, THIS IS THE ESSENCE OF THIS DATASET !!!
   classesColors:
       fetal_quiescent: "red"
       fetal_replicating: "darkblue"
