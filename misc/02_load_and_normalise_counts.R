@@ -28,10 +28,15 @@ for (recountID in selectedRecountIDs) {
   figure.dirs <- file.path(classifier.dirs, "figures")
   detailFigures.dir <- file.path(figure.dirs, "detailFigures")
   detailTables.dir <- file.path(table.dirs, "detailTables")
+  names(detailTables.dir)<- classifiers
+  names(detailFigures.dir)<- classifiers
 
   for (dir in c(classifier.dirs, table.dirs, figure.dirs, detailFigures.dir, detailTables.dir)) {
     #    classifier.dirs[classifier] <- file.path(dir.results, classifier)
-    dir.create(dir, showWarnings = F, recursive = T)
+
+      dir.create(dir, showWarnings = F, recursive = T)
+
+
     #    table.dirs[classifier] <- file.path(classifier.dirs[classifier], "tables")
     #dir.create(table.dirs[classifier], showWarnings = F, recursive = T)
 
@@ -43,7 +48,7 @@ for (recountID in selectedRecountIDs) {
 
     #    detailFigures.dir[classifier] <- file.path(figure.dirs[classifier], "detailFigures")
     #    dir.create(detailFigures.dir[classifier] ,showWarnings = F, recursive = T)
-  }
+  } # end loop over the dir
 
   ## File to store a memory image
   image.file <- file.path(dir.results, paste("RNA-seq_classifer_evaluation_", recountID, ".Rdata", sep = ""))
