@@ -29,7 +29,7 @@ default:
   draw.plot : TRUE
   #  classifiers: c("lda"),
   classifiers: ["knn","rf","svm"]
-  data.types: ["raw", "filtered", "norm", "log2norm", "prcomp", "DEG", "V.importance"]
+  data.types: ["countsPerRun", "originalCounts", "filtered", "norm", "log2norm", "prcomp", "DEG", "V.importance"]
   data.types.to.test: ["filtered", "norm", "log2norm"]
   variables.type: ["all", "top_ordered"]
   deg.methods: ["DESeq2", "edgeR"]
