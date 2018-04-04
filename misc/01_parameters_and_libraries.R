@@ -1,8 +1,10 @@
-message.with.time("Loading required libraries")
-require("roxygen2")
-require("devtools")
 require("RNAseqMVA")
+
+message.with.time("Loading required libraries")
+
 require("yaml")
+require("roxygen2") ## MUSTAFA: do we really required roxygen2 and devtools to run the scripts ? They are required for building the package, but maybe not for running the analyses
+require("devtools") ## MUSTAFA: do we really required roxygen2 and devtools to run the scripts ? They are required for building the package, but maybe not for running the analyses
 
 # loading required libraries
 requiredCRAN <- c('devtools', 'class', "randomForest","broom", "roxygen2","scatterplot3d","e1071")
