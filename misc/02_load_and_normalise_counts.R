@@ -58,9 +58,6 @@ for (recountID in selectedRecountIDs) {
   dir.create(dir.visualisePCs, showWarnings = F, recursive = T)
 
 
-  ## File to store a memory image
-  image.file <- file.path(dir.results, paste("RNA-seq_classifer_evaluation_", recountID, ".Rdata", sep = ""))
-
   if (parameters$reload == TRUE) {
     ################################################################################
     ## Save an image of the memory, so I can reload it later to avoid re-running all the analyses
@@ -336,6 +333,13 @@ text(x = 100 - loadedStats$pc.kept/2, kept.label, y = 1:nrow(loadedStats))
 par(mar = save.margins)
 silence<- dev.off()
 
+## Save a memory image that can be re-loaded next time to avoid re-computing all the normalisation and so on.
+if (parameters$save.image) {
+  dir.create(parameters$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
+  loaded.mem.image <- file.path(parameters$dir$memoryImages, "data_loaded.Rdata")
+  message.with.time("Saving memory image after loading: ", loaded.mem.image)
+  save.image(file = loaded.mem.image)
+}
 
 ## Indicate that this script has finished running
 message.with.time("finished executing 02_load_and_normalise_counts.R")
