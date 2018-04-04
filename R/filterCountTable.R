@@ -90,6 +90,7 @@ filterCountTable <- function(rawCounts,
 
   ## Use caret::nearZeroVar() to discard supposedly bad predictor genes.
   ## This includes zero variance genes (already filtered above) but also less trivial cases, see nearZeroVar() doc for details.
+  nearZeroVarGenes <- NULL
   if (nearZeroVarFilter) {
     message("\tDetecting genes with near-zero variance using caret::nearZeroVar()")
     nearZeroVarIndices <- nearZeroVar(t(rawCounts$countTable), allowParallel = TRUE, saveMetrics = FALSE)
@@ -265,6 +266,8 @@ filterCountTable <- function(rawCounts,
   result$zeroVarGenes <- zeroVarGenes
   if (nearZeroVarFilter) {
     result$nearZeroVarGenes <- nearZeroVarGenes
+  } else {
+    result$nearZeroVarGenes <- NULL
   }
   result$keptGenes <- keptGenes
   result$keptClasses <- keptClasses
