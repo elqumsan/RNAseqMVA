@@ -10,11 +10,14 @@ for (recountID in selectedRecountIDs) {
   ## Result directory
   dir.results <- file.path(parameters$dir$workspace, "results", parameters$recountID)
 
+
   ## Directory to exprt the tab-separate value files
   # tsv.dir <- paste(sep = "" , parameters$dir$TSV,"/",recountID)
   tsv.dir <- file.path(dir.results, "TSV")
   dir.create(path = tsv.dir, recursive = TRUE, showWarnings = FALSE)
 
+  ## Directory to store the data downloaded from recountID
+  studyPath <- file.path(dir.workspace, "data", recountID)
 
   ## Define the directories where tables and figures will be stored.
   ## one directory per classifer, with separate subdirectories for tables and figures.
@@ -24,31 +27,36 @@ for (recountID in selectedRecountIDs) {
   #  names(dir.classifier) <- classifiers
 
   classifier.dirs <- file.path(dir.results, classifiers)
+  names(classifier.dirs) <- classifiers
+
   table.dirs <- file.path(classifier.dirs, "tables")
+  names(table.dirs) <- classifiers
+
   figure.dirs <- file.path(classifier.dirs, "figures")
+  names(figure.dirs) <- classifiers
+
   detailFigures.dir <- file.path(figure.dirs, "detailFigures")
+  names(detailFigures.dir) <- classifiers
+
   detailTables.dir <- file.path(table.dirs, "detailTables")
-  names(detailTables.dir)<- classifiers
-  names(detailFigures.dir)<- classifiers
+  names(detailTables.dir) <- classifiers
 
+  ## Create all the recountID-specific sub-directories
   for (dir in c(classifier.dirs, table.dirs, figure.dirs, detailFigures.dir, detailTables.dir)) {
-    #    classifier.dirs[classifier] <- file.path(dir.results, classifier)
-
       dir.create(dir, showWarnings = F, recursive = T)
-
-
-    #    table.dirs[classifier] <- file.path(classifier.dirs[classifier], "tables")
-    #dir.create(table.dirs[classifier], showWarnings = F, recursive = T)
-
-    #    detailTables.dir[classifier] <- file.path(table.dirs[classifier], "detailTables")
-    #    dir.create(detailTables.dir[classifier],showWarnings = F, recursive = T)
-
-    #    figure.dirs[classifier] <- file.path(classifier.dirs[classifier], "figures")
-    #dir.create(figure.dirs[classifier], showWarnings = F, recursive = T)
-
-    #    detailFigures.dir[classifier] <- file.path(figure.dirs[classifier], "detailFigures")
-    #    dir.create(detailFigures.dir[classifier] ,showWarnings = F, recursive = T)
   } # end loop over the dir
+
+  ################################################################
+  ## TO CHECK LATER: DO wE STILL NEED THESE VARIABLES ???
+
+  ## Directory for impact of Normalization and log2 into counts (and the study of its impact)
+  dir.NormImpact <- file.path(dir.results , paste("impact_of_normalisation_and_log2", sep = ""))
+  dir.create(dir.NormImpact, showWarnings = F, recursive = T)
+
+  ## Directory for the visualization of Principal component for counts (and the study of its impact)
+  dir.visualisePCs <- file.path(dir.results , paste( "visualization_of_PCs", sep = ""))
+  dir.create(dir.visualisePCs, showWarnings = F, recursive = T)
+
 
   ## File to store a memory image
   image.file <- file.path(dir.results, paste("RNA-seq_classifer_evaluation_", recountID, ".Rdata", sep = ""))
@@ -82,17 +90,6 @@ for (recountID in selectedRecountIDs) {
   perm.prefix <- parameters$perm_prefix
 
 
-  ################################################################
-  ## TO CHECK LATER: DO wE STILL NEED THESE VARIABLES ???
-
-  ## Directory for impact of Normalization and log2 into counts (and the study of its impact)
-  dir.NormImpact <- file.path(dir.results , paste("impact_of_normalisation_and_log2", sep = ""))
-  dir.create(dir.NormImpact, showWarnings = F, recursive = T)
-
-  ## Directory for the visualization of Principal component for counts (and the study of its impact)
-  dir.visualisePCs <- file.path(dir.results , paste( "visualization_of_PCs", sep = ""))
-  dir.create(dir.visualisePCs, showWarnings = F, recursive = T)
-
 
   # View(parameters)
 
@@ -101,7 +98,7 @@ for (recountID in selectedRecountIDs) {
   if (parameters$compute) {
     message.with.time("Loading count table from recount", "; recountID = ", parameters$recountID)
     loaded[[recountID]] <- loadCounts(recountID = recountID,
-                                      mergeRuns = TRUE,
+                                      mergeRuns = parameters$mergeRuns,
                                       classColumn = parameters$classColumn,
                                       minSamplesPerClass = parameters$minSamplesPerClass,
                                       na.rm = parameters$na.rm)
