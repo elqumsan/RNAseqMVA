@@ -5,49 +5,48 @@ loaded <- list()
 
 for (recountID in selectedRecountIDs) {
 
-#  parameters$recountID <- recountID
+  parameters$recountID <- recountID
 
-  ################################################################
-  ## Define directories
-
-  # Main directory should be adapted to the user's configuration
-  dir.main <- parameters$dir$main
-  tsv.dir <- paste(sep = "" ,parameters$dir$TSV,"/",recountID)
-
-  #classifier <- "knn"
-  ## All other directories should be defined relative to dir.main
-  dir.scripts <- file.path(dir.main, "R")
+  ## Result directory
   dir.results <- file.path(parameters$dir$workspace, "results", parameters$recountID)
-  classifiers <- c("knn","rf", "svm")
-  dir.classifier <- file.path(dir.results, classifiers)
+
+  ## Directory to exprt the tab-separate value files
+  # tsv.dir <- paste(sep = "" , parameters$dir$TSV,"/",recountID)
+  tsv.dir <- file.path(dir.results, "TSV")
+  dir.create(path = tsv.dir, recursive = TRUE, showWarnings = FALSE)
+
 
   ## Define the directories where tables and figures will be stored.
   ## one directory per classifer, with separate subdirectories for tables and figures.
-  classifier.dirs <- vector()
-  table.dirs <- vector()
-  figure.dirs <- vector()
+  classifiers <- parameters$classifiers
 
-  detailFigures.dir <- vector()
-  detailTables.dir <- vector()
+#  dir.classifier <- file.path(dir.results, classifiers)
+#  names(dir.classifier) <- classifiers
 
-  for (classifier in classifiers) {
-    classifier.dirs[classifier] <- file.path(dir.results, classifier)
-    dir.create(classifier.dirs[classifier], showWarnings = F, recursive = T)
-    table.dirs[classifier] <- file.path(classifier.dirs[classifier], "tables")
-    dir.create(table.dirs[classifier], showWarnings = F, recursive = T)
+  classifier.dirs <- file.path(dir.results, classifiers)
+  table.dirs <- file.path(classifier.dirs, "tables")
+  figure.dirs <- file.path(classifier.dirs, "figures")
+  detailFigures.dir <- file.path(figure.dirs, "detailFigures")
+  detailTables.dir <- file.path(table.dirs, "detailTables")
 
-    detailTables.dir[classifier] <- file.path(table.dirs[classifier], "detailTables")
-    dir.create(detailTables.dir[classifier],showWarnings = F, recursive = T)
+  for (dir in c(classifier.dirs, table.dirs, figure.dirs, detailFigures.dir, detailTables.dir)) {
+#    classifier.dirs[classifier] <- file.path(dir.results, classifier)
+    dir.create(dir, showWarnings = F, recursive = T)
+#    table.dirs[classifier] <- file.path(classifier.dirs[classifier], "tables")
+    #dir.create(table.dirs[classifier], showWarnings = F, recursive = T)
 
-    figure.dirs[classifier] <- file.path(classifier.dirs[classifier], "figures")
-    dir.create(figure.dirs[classifier], showWarnings = F, recursive = T)
+#    detailTables.dir[classifier] <- file.path(table.dirs[classifier], "detailTables")
+#    dir.create(detailTables.dir[classifier],showWarnings = F, recursive = T)
 
-    detailFigures.dir[classifier] <- file.path(figure.dirs[classifier], "detailFigures")
-    dir.create(detailFigures.dir[classifier] ,showWarnings = F, recursive = T)
+#    figure.dirs[classifier] <- file.path(classifier.dirs[classifier], "figures")
+    #dir.create(figure.dirs[classifier], showWarnings = F, recursive = T)
+
+#    detailFigures.dir[classifier] <- file.path(figure.dirs[classifier], "detailFigures")
+#    dir.create(detailFigures.dir[classifier] ,showWarnings = F, recursive = T)
   }
 
   ## File to store a memory image
-  image.file <- file.path(dir.results, paste("RNA-seq_classifer_evaluation_",recountID, ".Rdata", sep = ""))
+  image.file <- file.path(dir.results, paste("RNA-seq_classifer_evaluation_", recountID, ".Rdata", sep = ""))
 
   if (parameters$reload == TRUE) {
     ################################################################################
@@ -72,6 +71,7 @@ for (recountID in selectedRecountIDs) {
     names(parameters$data.types)<-parameters$data.types
     names(parameters$variables.type)<-parameters$variables.type
   }
+
   ## Prefix for experiments with permuted class labels
   ## (negative controls to estimate random expectation)
   perm.prefix <- parameters$perm_prefix
@@ -96,10 +96,10 @@ for (recountID in selectedRecountIDs) {
   if (parameters$compute) {
     message.with.time("Loading count table from recount", "; recountID = ", parameters$recountID)
     loaded[[recountID]] <- loadCounts(recountID = recountID,
-                         mergeRuns = TRUE,
-                         classColumn = parameters$classColumn,
-                         minSamplesPerClass = parameters$minSamplesPerClass,
-                         na.rm = parameters$na.rm)
+                                      mergeRuns = TRUE,
+                                      classColumn = parameters$classColumn,
+                                      minSamplesPerClass = parameters$minSamplesPerClass,
+                                      na.rm = parameters$na.rm)
 
 
     ## Select training and testing sets on the filtered table with raw counts
@@ -185,7 +185,7 @@ for (recountID in selectedRecountIDs) {
       log2 = TRUE, epsilon=0.1)
 
     # class(loaded[[recountID]]$log2norm)
-    print(loaded[[recountID]]$log2norm$dataType)
+    # print(loaded[[recountID]]$log2norm$dataType)
 
     ## Export tables
     exportTables(loaded[[recountID]]$log2norm,
@@ -271,6 +271,8 @@ for (recountID in selectedRecountIDs) {
       initial.genes = loaded[[recountID]]$originalCounts$nbGenes,
       initial.classes = loaded[[recountID]]$originalCounts$nbClasses,
       filtered.samples = loaded[[recountID]]$filtered$nbSamples,
+      filtered.zerovar = length(loaded[[recountID]]$filtered$zeroVarGenes),
+      filtered.nearzerovar = length(loaded[[recountID]]$filtered$nearZeroVarGenes),
       filtered.genes = loaded[[recountID]]$filtered$nbGenes,
       filtered.classes = loaded[[recountID]]$filtered$nbClasses
     )
