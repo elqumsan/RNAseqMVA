@@ -192,9 +192,6 @@ NormalizeCounts <- function(self,
     result$dataType <- "norm_counts"
     message("\tDimensions of the normalized count table: ", result$nbGenes, " genes x ", result$nbSamples, " samples. ")
     message.with.time("Finished NormalizeCounts() for Recount experiment ID ", result[["ID"]])
-
   }
-
-
   return(result)
 }
