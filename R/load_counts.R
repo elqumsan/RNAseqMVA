@@ -71,10 +71,11 @@ loadCounts <- function(recountID = parameters$recountID,
   #   # dim(countTable)
   # }
 
-  ##### Check the dimensions of original experiment #####
-  if (ncol(experiment$originalCounts$countTable) != length(experiment$originalCounts$classLabels)){
-    stop("The number of samples (", ncol(experiment$original$countTable), ") differs from the number class labels (", length(experiment$original$classLabels),")")
-  }
+  ## This control is not necessary anymore since this is done when building the countTableWithClasses object.
+  # ##### Check the dimensions of original experiment #####
+  # if (experiment$originalCounts$nbSamples != length(experiment$originalCounts$classLabels)){
+  #   stop("The number of samples (", experiment$originalCounts$nbSamples, ") differs from the number class labels (", length(experiment$original$classLabels),")")
+  # }
 
 
   message("\toriginal countTable contains ",
@@ -110,7 +111,7 @@ loadCounts <- function(recountID = parameters$recountID,
   ################################################
   #### Filter zero-variance and near-zero variance variables from the count table #####
   experiment$filtered <- filterCountTable(rawCounts = experiment$originalCounts,
-                                          nearZeroVarFilter = FALSE,
+                                          nearZeroVarFilter = parameters$nearZeroVarFilter,
                                           minSamplesPerClass = parameters$minSamplesPerClass,
                                           classColumn = classColumn )
   # class(experiment$filtered)
