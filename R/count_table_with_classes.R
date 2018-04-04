@@ -120,6 +120,7 @@ message.with.time("\tCreating object of class countTableWithClasses" )
   return(object)
 }
 
+#' @export
 
 summary.countTableWithClasses <- function(x) {
 #  message("\t\t\n giving the summary of the created object")
@@ -134,6 +135,7 @@ summary.countTableWithClasses <- function(x) {
   cat("\n")
 }
 
+#' @export
 print.countTableWithClasses <- function(x) {
   summary.countTableWithClasses(x)
 }
