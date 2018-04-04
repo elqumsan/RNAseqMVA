@@ -58,7 +58,6 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
 
   result <- list()
 
-
   #### Create studyPath directory ####
   if (!file.exists(studyPath)) {
     message("\tCreating directory to store Recount dataset ", recountID," in ", studyPath)
