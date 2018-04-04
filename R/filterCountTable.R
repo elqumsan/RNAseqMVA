@@ -52,6 +52,10 @@ filterCountTable <- function(rawCounts,
     stop("filterCountTable() requires an object of class raw counts per sample")
   }
 
+  ## Initialise a vector with the genes that will be kept through the different filtering stpes.
+  keptGenes <- rawCounts$geneNames
+
+
 #  result <- list()
   # class(rawCounts)
   # class(result) <- "CountTableWithClasses"
@@ -99,6 +103,7 @@ filterCountTable <- function(rawCounts,
     message("\tDetecting genes with near-zero variance using caret::nearZeroVar()")
     nearZeroVarIndices <- nearZeroVar(t(rawCounts$countTable), allowParallel = TRUE, saveMetrics = FALSE)
     nearZeroVarGenes <- rownames(rawCounts$countTable)[nearZeroVarIndices]
+    nearZeroVarGenes <- setdiff(nearZeroVarGenes, zeroVarGenes)
     keptGenes <- setdiff(keptGenes, nearZeroVarGenes)
     message("\tNear zero var filter: discarding ", length(nearZeroVarGenes)," genes with near-zero variance (poor predictors); kept genes: ", length(keptGenes))
   }
