@@ -17,7 +17,7 @@
 
 countTableWithClasses <- function(countTable,
                                   phenoTable,
-                                  classColumn,
+                                  classColumn = parameters$classColumn,
                                   classesColors = parameters$classesColors,
                                   ID = parameters$recountID,
                                   sampleNames = colnames(countTable),
@@ -27,7 +27,7 @@ countTableWithClasses <- function(countTable,
 ) {
 
   ## Built a list from the input parameters
-message.with.time("\tCreate object has the countTableWithClasses attribute" )
+message.with.time("\tCreating object of class countTableWithClasses" )
 
   object <- structure(
     list(
@@ -70,6 +70,12 @@ message.with.time("\tCreate object has the countTableWithClasses attribute" )
          nrow(countTable), " columns).")
   }
 
+
+  ## Check if the pheno table contains a column corresponding to the indication
+  if (sum(!classColumn %in% names(object$phenoTable)) > 1) {
+    stop("\n\tMissing column(s) in the pheno table ", paste(collapse=", ", setdiff(classColumn, names(phenoTable))),
+         "\n\tColumns found in the pheno table: ", paste(collapse=", ", names(object$phenoTable)))
+  }
 
   ################################################################
   ## Specify sample classes (classLabels) by extracting information about specified class columns
