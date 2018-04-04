@@ -216,7 +216,6 @@ filterCountTable <- function(rawCounts,
     filteredPhenoTable<- rawCounts$phenoTable
     filteredClassLabels <- rawCounts$classLabels
   }
-  filterdSampleNb <- nrow(filteredCountTable)
 
   ################################################################
   ## Select classess for which we dispose of at least 10 samples
