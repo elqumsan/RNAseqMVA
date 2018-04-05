@@ -311,25 +311,46 @@ write.table(x = t(loadedStats), file = file.path(parameters$dir$results, "experi
 ## The total shoud give the same result as initial.genes
 
 gene.pc <- loadedStats[, c("pc.NA", "pc.zeroVar", "pc.NZfilter", "pc.kept")]
-apply(gene.pc, 1, sum)
+row.names(gene.pc) <- loadedStats$recountID
+## Order experiments by increasing percentof kept genes (so that the highest come on top of the barplot)
+gene.pc <- gene.pc[order(gene.pc$pc.kept, decreasing = FALSE), ]
+## apply(gene.pc, 1, sum) ## The sums must give 100 for each experiment
 
 file.prefix <- paste("experiments_sumaries.pdf")
 barPlot.file <- file.path(parameters$dir$results,file.prefix)
 message("Filtering summary barplot: ", barPlot.file)
 pdf(file = barPlot.file, width=7, height=2+1*nrow(loadedStats))
 save.margins <- par("mar")
-par(mar= c(5,9,5,1))
+par(mar= c(5,7,5,1))
 
-kept.label <- paste(sep="", round(digits=0, loadedStats$pc.kept), "%")
-barplot(t(gene.pc),las=1, horiz = TRUE,
-        col = c("black", "red", "orange", "#44DD44"),
-        legend.text = c("NA values", "Zero var", "NZ filter", "kept"),
-        main = "Filtering impact on study cases",
-        xlab = "Proportions of genes",
-        names.arg = paste(sep="", loadedStats$recountID, " (", kept.label, ")"),
-        xlim=c(0, 170))
-text(x = 100 - loadedStats$pc.kept/2, kept.label, y = 1:nrow(loadedStats))
+#kept.label <- paste(sep="",round(digits=0, gene.pc$pc.kept), "%")
+ypos <- barplot(t(gene.pc),las=1, horiz = TRUE,
+                 col = c("black", "red", "orange", "#44DD44"),
+                 legend.text = c("NA values", "Zero var", "NZ filter", "kept"),
+                 main = "Filtering impact on study cases",
+                 xlab = "Proportions of genes",
+#                 names.arg = paste(sep="", rownames(gene.pc), " (", kept.label, ")"),
+                 xlim=c(0, 170))
+text(x = 100, kept.label, y = ypos, pos = 2)
 
+par(mar = save.margins)
+silence<- dev.off()
+
+#### Draw a barplot with the number of samples per class ####
+file.prefix <- paste("samples_per_classes.pdf")
+barPlot.file <- file.path(parameters$dir$results,file.prefix)
+message("Filtering summary barplot: ", barPlot.file)
+pdf(file = barPlot.file, width=8, height=12)
+save.margins <- par("mar")
+par(mfrow=c(4,2))
+par(mar=c(4,15,5,1))
+for (recountID in names(loaded)) {
+  heights <- barplot(sort(loaded[[recountID]]$original$samplesPerClass, decreasing = TRUE),
+          horiz = TRUE, las=1, cex.names = 0.7, main=recountID, xlab="Samples per class")
+  barplot(sort(loaded[[recountID]]$filtered$samplesPerClass, decreasing = TRUE), add=TRUE,
+          horiz = TRUE, las=1, cex.names = 0.7, main=recountID, xlab="Samples per class", col="#00BB00")
+}
+par(mfrow=c(1,1))
 par(mar = save.margins)
 silence<- dev.off()
 
