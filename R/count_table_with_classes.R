@@ -1,3 +1,4 @@
+
 #' @title constructor of the countTableWithClasses class
 #' @author Mustafa AbuElQumsan and Jacques van helden
 #' @description This class contains count tables
@@ -18,7 +19,7 @@
 countTableWithClasses <- function(countTable,
                                   phenoTable,
                                   classColumn = parameters$classColumn,
-                                  classesColors = parameters$classesColors,
+                                  classColors = parameters$classColors,
                                   ID = parameters$recountID,
                                   sampleNames = colnames(countTable),
                                   geneNames = rownames(countTable),
@@ -27,7 +28,7 @@ countTableWithClasses <- function(countTable,
 ) {
 
   ## Built a list from the input parameters
-message.with.time("\tCreating object of class countTableWithClasses" )
+  message.with.time("\tCreating object of class countTableWithClasses" )
 
   object <- structure(
     list(
@@ -39,7 +40,9 @@ message.with.time("\tCreating object of class countTableWithClasses" )
       geneNames = geneNames,
       nbGenes = nrow(countTable),
       variablesType = variablesType,
-      dataType = dataType
+      dataType = dataType,
+      classColumn = classColumn,
+      classColors = classColors
     ),
     class="countTableWithClasses")
   # names(object)
@@ -70,53 +73,10 @@ message.with.time("\tCreating object of class countTableWithClasses" )
          nrow(countTable), " columns).")
   }
 
+  ## Define sample classes and all the derived attributes from the pheno table
+  object <- defineSampleClasses(object)
 
-  ## Check if the pheno table contains a column corresponding to the indication
-  if (sum(!classColumn %in% names(object$phenoTable)) > 1) {
-    stop("\n\tMissing column(s) in the pheno table ", paste(collapse=", ", setdiff(classColumn, names(phenoTable))),
-         "\n\tColumns found in the pheno table: ", paste(collapse=", ", names(object$phenoTable)))
-  }
-
-  ################################################################
-  ## Specify sample classes (classLabels) by extracting information about specified class columns
-  if (is.null(classColumn) || (length(classColumn) < 1)) {
-    stop("classColumn must be defined. ")
-  } else if (length(classColumn) == 1) {
-    object$classLabels <-  as.vector(object$phenoTable[, classColumn])
-  } else {
-    ## Combine several columns to establish the classLabels
-    object$classLabels <- apply(object$phenoTable[, classColumn], 1, paste, collapse="_")
-  }
-  # table(classLabels)
-  object$classNames <- unique(sort(object$classLabels))
-  object$nbClasses <- length(object$classNames)
-
-  ## Build a table with class properties (size, color, ...)
-  object$classProperties <- (as.data.frame.table(table(object$classLabels)))
-  colnames(object$classProperties) <- c("Class", "nbSamples")
-
-  ## Build a vector with the number of samples per class
-  object$samplesPerClass <- as.vector(as.matrix(object$classProperties$nbSamples))
-  names(object$samplesPerClass) <- as.vector(as.matrix(object$classProperties$Class))
-
-  ## Relative frequencies of individuals per class
-  object$classFrequencies <- object$samplesPerClass / sum(object$samplesPerClass)
-  object$randExpectedHitRate = object$classFrequencies %*% object$classFrequencies
-  object$randExpectedMisclassificationRate = 1 - object$randExpectedHitRate
-
-  ## Define class colors
-  classesColors <-1:length(object$classNames)
-  names(classesColors)<- object$classNames
-  #classesColors <- unlist(classesColors)
-  object$classProperties$color<- classesColors
-
-  ## Assign colors to samples
-  object$sampleColors <- classesColors[object$classLabels]
-  names(object$sampleColors) <- object$sampleNames
-
-  object$variablesType <-  variablesType
-
-  message("\t\tfinishing from creating the object with countTablewithClasses attribute")
+  message("\t\tInstantiated an object of class countTablewithClasses for recountID\t", recountID)
   return(object)
 }
 
@@ -140,3 +100,77 @@ print.countTableWithClasses <- function(x) {
   summary.countTableWithClasses(x)
 }
 
+
+#' @title define sample classes and all the related attributes (class sizes, nb classes, class colors, class-based sample colors, ...)
+#' @author Jacques van Helden and Mustafa AbuElQumsan
+#' @parameters self an object of class countTableWithClasses
+#' @return the same object with added fields to describe sample classes and derived
+#' attributes. Sample classes are extracted from the phenoTable, using column(s)
+#' specified in self$classColumn.
+#' @export
+defineSampleClasses <- function(self) {
+  message("\tDefining sample classes",
+          "\n\t\tID", self$ID,
+          "\n\t\tID", self$classColors
+  )
+  ## Check if the pheno table contains a column corresponding to the indication
+  if (sum(!self$classColumn %in% names(self$phenoTable)) > 1) {
+    stop("\n\tMissing column(s) in the pheno table ", paste(collapse=", ", setdiff(classColumn, names(phenoTable))),
+         "\n\tColumns found in the pheno table: ", paste(collapse=", ", names(self$phenoTable)))
+  }
+
+  ################################################################
+  ## Specify sample classes (classLabels) and all the derived attributes
+  ## (classNames, nbClasses, ...) by extracting information about
+  ## specified class columns
+  if (is.null(self$classColumn) || (length(self$classColumn) < 1)) {
+    stop("classColumn must be defined. ")
+  } else if (length(self$classColumn) == 1) {
+    self$classLabels <-  as.vector(self$phenoTable[, self$classColumn])
+  } else {
+    ## Combine several columns to establish the classLabels
+    self$classLabels <- apply(self$phenoTable[, self$classColumn], 1, paste, collapse="_")
+  }
+  # table(classLabels)
+  self$classNames <- unique(sort(self$classLabels))
+  self$nbClasses <- length(self$classNames)
+
+  ## Build a table with class properties (size, color, ...)
+  self$classProperties <- (as.data.frame.table(table(self$classLabels)))
+  colnames(self$classProperties) <- c("Class", "nbSamples")
+  rownames(self$classProperties) <- as.vector(self$classProperties$Class)
+
+  ## Build a vector with the number of samples per class
+  self$samplesPerClass <- as.vector(as.matrix(self$classProperties$nbSamples))
+  names(self$samplesPerClass) <- as.vector(as.matrix(self$classProperties$Class))
+
+  ## Relative frequencies of individuals per class
+  self$classFrequencies <- self$samplesPerClass / sum(self$samplesPerClass)
+  self$randExpectedHitRate = self$classFrequencies %*% self$classFrequencies
+  self$randExpectedMisclassificationRate = 1 - self$randExpectedHitRate
+
+  ## Define class colors
+  if (is.null(self$classColors)) {
+    self$classColors <-1:length(self$classNames)
+    names(self$classColors) <- self$classNames
+    #classColors <- unlist(classColors)
+  } else {
+    if (class(self$classColors) == "list") {
+      ## Convert list (like the one parsed  from the YAML file) to a named vector
+      self$classColors <- unlist(self$classColors)
+    }
+    ##    self$classNames %in% names(self$classColors)
+  }
+
+  ## Assign class-specific colors if they were defined in the parameters
+  self$classProperties$color <- self$classColors[rownames(self$classProperties)]
+
+  ## Assign automatic colors (numbers starting from 1) for classes with no defined color in the parameters
+  missing.color <- is.na(self$classProperties$color)
+  self$classProperties$color[missing.color] <- 1:length(missing.color)
+
+  ## Assign colors to samples
+  self$sampleColors <- self$classColors[self$classLabels]
+  names(self$sampleColors) <- self$sampleNames
+  return (self)
+}
