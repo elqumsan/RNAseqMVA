@@ -8,15 +8,12 @@ default:
     memoryImages: "~/RNAseqMVA_workspace/memory_images"
 
   perm_prefix: "permLabels"
-
-
-  recountID: recountID ## ID of the selected dataset  in Recount
   classColumn: "tissue" ## Characteristics to be used as class label
   mergeRuns: TRUE ## Whether or not to merge runs per sample
   sampleIdColumn: "geo_accession"
 
   ## Filtering options
-  minSamplesPerClass: 20 ## THERE IS A BUG TO FIX: if we set this parameter to 10 (for example) the class labels must be adapted by suppressing the
+  minSamplesPerClass: 15 ## THERE IS A BUG TO FIX: if we set this parameter to 10 (for example) the class labels must be adapted by suppressing the
   nearZeroVarFilter: TRUE
   na.rm: FALSE
 
@@ -57,7 +54,7 @@ SRP042620:
   geoSeries: "GSE58135"
   description: "Multi-group breast cancer"
   classColumn: "tissue"
-  classesColors:
+  classColors:
       Breast.Cancer.Cell.Line: "red"
       ER..Breast.Cancer.Primary.Tumor: "darkblue"
       Triple.Negative.Breast.Cancer.Primary.Tumor: "purple"
@@ -69,16 +66,16 @@ SRP042620:
 SRP057196:
   description: "individual cells into all of the major neuronal, glial, and vascular cell types in the brain"
   classColumn: ["tissue", "cell.type"] ## MUSTAFA: IT IS IMPORTANT TO COMBINE THE TWO COLUMNS, THIS IS THE ESSENCE OF THIS DATASET !!!
-  classesColors:
-      fetal_quiescent: "red"
-      fetal_replicating: "darkblue"
-      astrocytes: "purple"
-      neurons: "green"
-      hybrid: "black"
-      oligodendrocytes: "cyan"
-      endothelial: "darkgoldenrod1"
-      microglia: "aquamarine4"
-      OPC: "burlywood4"
+  classColors:
+      cortex_fetal_quiescent: "red"
+      cortex_fetal_replicating: "darkblue"
+      cortex_astrocytes: "purple"
+      cortex_neurons: "green"
+      cortex_hybrid: "black"
+      cortex_oligodendrocytes: "cyan"
+      cortex_endothelial: "darkgoldenrod1"
+      cortex_microglia: "aquamarine4"
+      cortex_OPC: "burlywood4"
 
 
 SRP056295: ## 525 runs, human leukemia
