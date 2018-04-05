@@ -316,8 +316,8 @@ row.names(gene.pc) <- loadedStats$recountID
 gene.pc <- gene.pc[order(gene.pc$pc.kept, decreasing = FALSE), ]
 ## apply(gene.pc, 1, sum) ## The sums must give 100 for each experiment
 
-file.prefix <- paste("experiments_sumaries.pdf")
-barPlot.file <- file.path(parameters$dir$results,file.prefix)
+figure.file <- paste("experiments_sumaries.pdf")
+barPlot.file <- file.path(parameters$dir$results,figure.file)
 message("Filtering summary barplot: ", barPlot.file)
 pdf(file = barPlot.file, width=7, height=2+1*nrow(loadedStats))
 save.margins <- par("mar")
@@ -337,8 +337,8 @@ par(mar = save.margins)
 silence<- dev.off()
 
 #### Draw a barplot with the number of samples per class ####
-file.prefix <- paste("samples_per_classes.pdf")
-barPlot.file <- file.path(parameters$dir$results,file.prefix)
+figure.file <- paste("samples_per_classes.pdf")
+barPlot.file <- file.path(parameters$dir$results,figure.file)
 message("Filtering summary barplot: ", barPlot.file)
 pdf(file = barPlot.file, width=8, height=12)
 save.margins <- par("mar")
