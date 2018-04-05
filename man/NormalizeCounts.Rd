@@ -5,14 +5,15 @@
 \title{Normalize RNA-seq count table}
 \usage{
 NormalizeCounts(self, classColumn = parameters$classColumn,
-  classColors = parameters$classColor, method = "quantile",
+  classColors = parameters$classColors, method = "quantile",
   quantile = 0.75, log2 = TRUE, epsilon = 0.1)
 }
 \arguments{
-\item{counts}{a raw count table, with one column per sample and one row per gene.
-Normalization will be done by samples (columns).}
+\item{self}{an object belonging to the class countTableWithClasses
+This input object contains a count table, with one column per sample and
+one row per gene + a phenoTable + sample class specifications.
 
-\item{phenoTable}{the pheno table associated to the count table. Should be provided in order to adapt it in case samples would be suppressed because they have a scaling factor of 0.}
+The phenoTable of the input object may be filtered out adapted it in case samples would be suppressed because they have a scaling factor of 0.}
 
 \item{classLabels}{the class labels associated each sample of the count table. Should be provided in order to adapt it in case samples would be suppressed because they have a scaling factor of 0.}
 
@@ -31,10 +32,18 @@ Note that median is the same as quantile 0.5.}
 in order to avoid zero counts.}
 }
 \value{
-a list with the normalized count table + a table providing sample-wise statistics
+the function returns an object of class countTableWithClasses, where the countTable
+coontains the normalised counts. Note that the normalized count table may have a smaller
+number of samples than the input count table because if some samples have a scaling
+factor of 0 they will be filtered out. In such case, the phenoTable and classLabels will
+be filtered out in the same way to ensure consistency  of the attributes of the
+returned countTableWithClass object.
 }
 \description{
-Normalize a table of raw counts from RNA-seq
+normalisation of RNA-seq count table.
+More precisely this function runs a sample-wise scaling so that all the samples
+have the same value for auser-defined scaling parameter.
+By default, we use the quantile 0.75 as scaling factor.
 }
 \examples{
 

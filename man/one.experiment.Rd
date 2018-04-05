@@ -5,7 +5,7 @@
 \title{Iterate training/testing procedures with a given classifier and a given data type}
 \usage{
 one.experiment(self, classifier, iterations = parameters$iterations,
-  permute = FALSE, file.prefix = NULL, verbose = TRUE,
+  permute = FALSE, file.prefix = NULL, verbose = parameters$verbose,
   k = parameters$knn$k)
 }
 \arguments{

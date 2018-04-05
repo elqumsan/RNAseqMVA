@@ -6,7 +6,7 @@
 \usage{
 countTableWithClasses(countTable, phenoTable,
   classColumn = parameters$classColumn,
-  classesColors = parameters$classesColors, ID = parameters$recountID,
+  classColors = parameters$classColors, ID = parameters$recountID,
   sampleNames = colnames(countTable), geneNames = rownames(countTable),
   variablesType = variablesType, dataType = "raw_counts")
 }
