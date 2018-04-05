@@ -33,7 +33,7 @@ recountIDs.with.problems <- c("SRP003611" = "the number of samples drops after r
 
 ## Optional: select a subset of the recountIDs
 #selectedRecountIDs <- c("SRP057196", "SRP042620")
-selectedRecountIDs <- setdiff(recountIDs, recountIDs.with.problems)
+selectedRecountIDs <- setdiff(recountIDs, names(recountIDs.with.problems))
 
 message("\tSelected ", length(selectedRecountIDs)," recount IDs: ", paste(collapse="; ", selectedRecountIDs))
 #selectedRecountIDs <- recountIDs
