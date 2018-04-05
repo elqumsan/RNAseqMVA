@@ -63,7 +63,7 @@ if (parameters$compute) {
       for (permute in parameters$permute) {
 
         ## Loop over data types
-        data.type <- "log2norm" ## For test
+        data.type <- "norm" ## For test
         for (data.type in parameters$data.types.to.test) {
           dataset <- loaded[[recountID]][[data.type]]
           # class(dataset)
