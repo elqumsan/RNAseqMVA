@@ -9,7 +9,7 @@
 #' @export
 MergeRuns <- function(runs,
                       sampleIdColumn = "geo_accession",
-                      classColumn  = parameters$classColumn ,
+                      classColumn  = parameters$classColumn,
                       verbose=FALSE) {
   message.with.time("MergeRuns()\t", "recountID = ", parameters$recountID)
 
@@ -74,7 +74,7 @@ MergeRuns <- function(runs,
   mergedRuns <- countTableWithClasses(countTable = countTable,
                                     phenoTable = phenoTable,
                                     classColumn = classColumn,
-                                    classesColors = runs$classesColors,
+                                    classColors = runs$classColors,
                                     variablesType = parameters$variables.type[1],
                                     dataType = "raw_counts_per_sample")
   # class(mergedRuns)
