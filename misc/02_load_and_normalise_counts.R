@@ -5,11 +5,62 @@ loaded <- list()
 
 for (recountID in selectedRecountIDs) {
 
+  #### Specify generic and recountID-specific parameters ####
+
+  ## Load default parameters for each new recountID
+  ## (was previously parsed from the YAML file)
+  parameters <- project.parameters$default
+
+  ## Specify the current recountID in parameters
   parameters$recountID <- recountID
+
+  ## Overwrite default parameters wih project-specific parameters
+  selected.parameters <- project.parameters[[recountID]]
+  if (is.null(selected.parameters)) {
+    message("No specific parameters for recount ID ", recountID)
+    message("Using generic parameters from the yaml file. ")
+  } else {
+    message("Using specific parameters specfied in yaml file for recount ID ", recountID)
+    parameters[names(selected.parameters)] <- project.parameters[[recountID]]
+    names(parameters$data.types)<-parameters$data.types
+    names(parameters$variables.type)<-parameters$variables.type
+  }
+
+  ## Convert list-formatted class colors to named vector (YAML does not allow to specify named vectors)
+  if (!is.null(parameters$classColors)) {
+    if (class(parameters$classColors) == "list") {
+      parameters$classColors <- unlist(parameters$classColors)
+    }
+  }
+
+  ## BEWARE: NOT SURE THIS IS FUNCTIONAL, RELOADING MEMORY IMAGES WILL BE TREATED LATER
+  # if (parameters$reload == TRUE) {
+  #   ## Save an image of the memory, so I can reload it later to avoid re-running all the analyses
+  #   parameters.current <- parameters # Keep current parameters to restore them after having loaded a memory image
+  #   message.with.time("Loading memory image ")
+  #   load(file = image.file)
+  #   parameters <- parameters.current ## Reload current parameters (they might have been saved different in the memory image)
+  #   rm(parameters.current)
+  # }
+
+
+  ## Prefix for experiments with permuted class labels
+  ## (negative controls to estimate random expectation)
+  perm.prefix <- parameters$perm_prefix
+
+
+  #### Specification of the directories   ####
+
+  ## MUSTAFA: TO DO SOME DAY: THE DIRECTORIES SHOULD BE ATTRIBUTES OF THE OBJECTS RATHER THAN GLOBAL VARIABLES
+
+  # Main directory should be adapted to the user's configuration
+  dir.main <- parameters$dir$main
+
+  ## All other directories should be defined relative to dir.main
+  dir.scripts <- file.path(dir.main, "R")
 
   ## Result directory
   dir.results <- file.path(parameters$dir$workspace, "results", parameters$recountID)
-
 
   ## Directory to exprt the tab-separate value files
   # tsv.dir <- paste(sep = "" , parameters$dir$TSV,"/",recountID)
@@ -56,35 +107,6 @@ for (recountID in selectedRecountIDs) {
   ## Directory for the visualization of Principal component for counts (and the study of its impact)
   dir.visualisePCs <- file.path(dir.results , paste( "visualization_of_PCs", sep = ""))
   dir.create(dir.visualisePCs, showWarnings = F, recursive = T)
-
-
-  if (parameters$reload == TRUE) {
-    ################################################################################
-    ## Save an image of the memory, so I can reload it later to avoid re-running all the analyses
-    parameters.current <- parameters # Keep current parameters to restore them after having loaded a memory image
-    message.with.time("Loading memory image ")
-    load(file = image.file)
-    parameters <- parameters.current ## Reload current parameters (they might have been saved different in the memory image)
-    rm(parameters.current)
-  }
-
-
-
-  ## Overwrite default parameters wih project-specific parameters
-  selected.parameters <- project.parameters[[recountID]]
-  if (is.null(selected.parameters)) {
-    message("No specific parameters for recount ID ", recountID)
-    message("Using generic parameters from the yaml file. ")
-  } else {
-    message("Using specific parameters specfied in yaml file for recount ID ", recountID)
-    parameters[names(selected.parameters)] <- project.parameters[[recountID]]
-    names(parameters$data.types)<-parameters$data.types
-    names(parameters$variables.type)<-parameters$variables.type
-  }
-
-  ## Prefix for experiments with permuted class labels
-  ## (negative controls to estimate random expectation)
-  perm.prefix <- parameters$perm_prefix
 
 
 

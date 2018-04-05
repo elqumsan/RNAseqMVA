@@ -21,8 +21,6 @@ message.with.time("Loading parameters from YAM file ", yaml.file)
 ## These parameters will then be used to overwrite the default parameters.
 project.parameters <- yaml.load_file(yaml.file)
 
-## Lad default parameters (must have been defined n the parameter field)
-parameters <- project.parameters$default
 
 ## Get all recount IDs
 recountIDs <- grep(pattern = "^SRP", x = names(project.parameters), value = TRUE)
@@ -32,15 +30,14 @@ message("\tYAML config file contains ", length(recountIDs)," recount IDs.")
 recountIDs.with.problems <- c("SRP003611" = "the number of samples drops after run merging")
 
 ## Optional: select a subset of the recountIDs
-#selectedRecountIDs <- c("SRP057196", "SRP042620")
-selectedRecountIDs <- setdiff(recountIDs, names(recountIDs.with.problems))
+selectedRecountIDs <- c("SRP057196", "SRP042620")
+# selectedRecountIDs <- setdiff(recountIDs, names(recountIDs.with.problems))
 
 message("\tSelected ", length(selectedRecountIDs)," recount IDs: ", paste(collapse="; ", selectedRecountIDs))
 #selectedRecountIDs <- recountIDs
 
-recountID <- "SRP042620"   ## Multi-group breast cancer
-message("\tDefault recountID ", recountID)
-# recountID <- "SRP057196"    # individual cells into all of the major neuronal, glial, and vascular cell types in the brain
+# recountID <- "SRP042620"   ## Multi-group breast cancer
+recountID <- "SRP057196"    # individual cells into all of the major neuronal, glial, and vascular cell types in the brain
 
 # recountID <- "SRP003611"   # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
 # recountID <- "SRP061240"   # several types from cancer (pancreatic, colorectal, prostat cancer) against Healthy control
@@ -65,16 +62,13 @@ message("\tDefault recountID ", recountID)
 # recountID <- "SRP008976"   # NOT working properly
 # recountID <- "SRP006575"   # Not working
 
+
+message("\tDefault recountID ", recountID)
+
 ################################################################
 ## Define general directories.
 ## Dataset-specific directories are defined later.
 
-# Main directory should be adapted to the user's configuration
-dir.main <- parameters$dir$main
-
-
-## All other directories should be defined relative to dir.main
-dir.scripts <- file.path(dir.main, "R")
 
 ## END OF SCRIPT
 #################################################################
