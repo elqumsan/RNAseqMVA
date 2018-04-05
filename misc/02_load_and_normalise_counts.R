@@ -1,8 +1,8 @@
 #################### Load counts and pheno ####################
 ## Load a count Table from recount-experiment, merge counts per sample
 ## and apply some pre-filtering (remove zero-variance and near-zero-variance genes).
-loaded <- list()
 
+loaded <- list() ## a list containing all the loaded datasets + their pre-processed data
 for (recountID in selectedRecountIDs) {
 
   #### Specify generic and recountID-specific parameters ####
@@ -94,7 +94,7 @@ for (recountID in selectedRecountIDs) {
 
   ## Create all the recountID-specific sub-directories
   for (dir in c(classifier.dirs, table.dirs, figure.dirs, detailFigures.dir, detailTables.dir)) {
-      dir.create(dir, showWarnings = F, recursive = T)
+    dir.create(dir, showWarnings = F, recursive = T)
   } # end loop over the dir
 
   ################################################################
@@ -345,14 +345,14 @@ pdf(file = barPlot.file, width=7, height=2+1*nrow(loadedStats))
 save.margins <- par("mar")
 par(mar= c(5,7,5,1))
 
-#kept.label <- paste(sep="",round(digits=0, gene.pc$pc.kept), "%")
+kept.label <- paste(sep="",round(digits=0, gene.pc$pc.kept), "%")
 ypos <- barplot(t(gene.pc),las=1, horiz = TRUE,
-                 col = c("black", "red", "orange", "#44DD44"),
-                 legend.text = c("NA values", "Zero var", "NZ filter", "kept"),
-                 main = "Filtering impact on study cases",
-                 xlab = "Proportions of genes",
-#                 names.arg = paste(sep="", rownames(gene.pc), " (", kept.label, ")"),
-                 xlim=c(0, 170))
+                col = c("black", "red", "orange", "#44DD44"),
+                legend.text = c("NA values", "Zero var", "NZ filter", "kept"),
+                main = "Filtering impact on study cases",
+                xlab = "Proportions of genes",
+                #                 names.arg = paste(sep="", rownames(gene.pc), " (", kept.label, ")"),
+                xlim=c(0, 170))
 text(x = 100, kept.label, y = ypos, pos = 2)
 
 par(mar = save.margins)
@@ -368,7 +368,7 @@ par(mfrow=c(4,2))
 par(mar=c(4,15,5,1))
 for (recountID in names(loaded)) {
   heights <- barplot(sort(loaded[[recountID]]$original$samplesPerClass, decreasing = TRUE),
-          horiz = TRUE, las=1, cex.names = 0.7, main=recountID, xlab="Samples per class")
+                     horiz = TRUE, las=1, cex.names = 0.7, main=recountID, xlab="Samples per class")
   barplot(sort(loaded[[recountID]]$filtered$samplesPerClass, decreasing = TRUE), add=TRUE,
           horiz = TRUE, las=1, cex.names = 0.7, main=recountID, xlab="Samples per class", col="#00BB00")
 }
