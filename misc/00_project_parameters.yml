@@ -66,6 +66,20 @@ SRP042620:
 
 #      description:  "Multi-group breast cancer"
 
+SRP057196:
+  description: "individual cells into all of the major neuronal, glial, and vascular cell types in the brain"
+  classColumn: ["tissue", "cell.type"] ## MUSTAFA: IT IS IMPORTANT TO COMBINE THE TWO COLUMNS, THIS IS THE ESSENCE OF THIS DATASET !!!
+  classesColors:
+      fetal_quiescent: "red"
+      fetal_replicating: "darkblue"
+      astrocytes: "purple"
+      neurons: "green"
+      hybrid: "black"
+      oligodendrocytes: "cyan"
+      endothelial: "darkgoldenrod1"
+      microglia: "aquamarine4"
+      OPC: "burlywood4"
+
 
 SRP056295: ## 525 runs, human leukemia
   description: "525 runs, human leukemia"
@@ -73,11 +87,6 @@ SRP056295: ## 525 runs, human leukemia
 
 # crash                "SRP042161", ## 875 runs, 430 single glioblastoma cells isolated from 5 individual tumors and 102 single cells from gliomasphere cells lines generated using SMART-seq
 
-SRP041736: #
-  description: "transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)"
-  sampleIdColumn: "sample"
-  classColumn: NA
-  problem: "We cannot analyse this dataset because the pheno table does not contain any info about the sample classes"
 
 SRP035988:  ## Psoriasis
   description: "Psoriasis"
@@ -95,9 +104,11 @@ SRP062966:
   descrition: "blood disease"
   classColumn: "disease.status"
 
-SRP003611:
-  description: "transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)"
-  classColumn: "subtype"
+## PROBLEM: after run merging, there are only  a handful of samples left.
+## TO DO: Check the original publication.
+## SRP003611:
+##  description: "transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)"
+##  classColumn: "subtype"
 
 SRP066834:
   description: "cerebral cancer type"
@@ -115,16 +126,8 @@ SRP006574:
   description: ""
   classColumn: "disease.status"
 
-SRP057196:
-  description: "individual cells into all of the major neuronal, glial, and vascular cell types in the brain"
-  classColumn: ["tissue", "cell.type"] ## MUSTAFA: IT IS IMPORTANT TO COMBINE THE TWO COLUMNS, THIS IS THE ESSENCE OF THIS DATASET !!!
-  classesColors:
-      fetal_quiescent: "red"
-      fetal_replicating: "darkblue"
-      astrocytes: "purple"
-      neurons: "green"
-      hybrid: "black"
-      oligodendrocytes: "cyan"
-      endothelial: "darkgoldenrod1"
-      microglia: "aquamarine4"
-      OPC: "burlywood4"
+SRP041736: # PROBLEM
+  description: "transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)"
+  sampleIdColumn: "sample"
+  classColumn: NA
+  problem: "We cannot analyse this dataset because the pheno table does not contain any info about the sample classes"
