@@ -32,8 +32,8 @@ message("\tYAML config file contains ", length(recountIDs)," recount IDs.")
 recountIDs.with.problems <- c("SRP003611" = "the number of samples drops after run merging")
 
 ## Optional: select a subset of the recountIDs
-#selectedRecountIDs <- c("SRP057196", "SRP042620")
-selectedRecountIDs <- setdiff(recountIDs, recountIDs.with.problems)
+selectedRecountIDs <- c("SRP057196", "SRP042620")
+#selectedRecountIDs <- setdiff(recountIDs, recountIDs.with.problems)
 
 message("\tSelected ", length(selectedRecountIDs)," recount IDs: ", paste(collapse="; ", selectedRecountIDs))
 #selectedRecountIDs <- recountIDs
