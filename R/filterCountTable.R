@@ -42,7 +42,6 @@ filterCountTable <- function(rawCounts,
                              na.rm = parameters$na.rm,
                              minSamplesPerClass = parameters$minSamplesPerClass,
                              nearZeroVarFilter = parameters$nearZeroVarFilter,
-                             classColumn = parameters$classColumn,
                              draw.plot = TRUE) {
 
   message.with.time("Filtering count table")
@@ -252,9 +251,9 @@ filterCountTable <- function(rawCounts,
 
   ## Return unfiltered count table + phenotable + countsWithClasses$classLabels
   result <- countTableWithClasses(countTable= filteredCountTable,
-                                  phenoTable =  filteredPhenoTable ,
-                                  classColumn = classColumn,
-                                  classesColors = classesColors,
+                                  phenoTable =  filteredPhenoTable,
+                                  classColumn = rawCounts$classColumn,
+                                  classColors = rawCounts$classColors,
                                   variablesType = "all",
                                   dataType = "filtered_counts")
 
