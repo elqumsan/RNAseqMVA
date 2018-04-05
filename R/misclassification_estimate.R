@@ -28,13 +28,13 @@ MisclassificationEstimate <- function(self,
   # registerDoMC(cores = 5)
   result <- list()
 
+  ##
   if (is(self, class2 = "PCsWithTrainTestSets") ){
     # message("\t\tUsing PCs as features for object of class ", paste(collapse=", ", class(self)))
     countTable <- t(self$x)
   } else {
     # message("\t\tUsing countTable as features for object of class ", paste(collapse=", ", class(self)))
     countTable <- t(self$countTable)
-
   }
 
   ## AssignGet sample classes from the object
@@ -45,25 +45,19 @@ MisclassificationEstimate <- function(self,
 
   trainIndex <- self$trainTestProperties$trainIndices[[iteration]]
   testIndex <- self$trainTestProperties$testIndices[[iteration]]
-  # n <- nrow(countTable) ## Number of observations (samples)
-  # trainSize <- round(n * trainingProportion)
+  # intersect(trainIndex, testIndex)
   #
-  # if (is.null(self$trainIndex)) {
-  #   ## Random selection of indices for the training set
-  #   trainIndex <- sort(sample(1:n, size=trainSize))
-  # }
-  # ## Use remaining indices for the testing set
-  # testIndex <- setdiff(1:n, trainIndex)
+  if (sum(1:self$nbSamples != sort(union(trainIndex, testIndex))) > 0) {
+    stop("Inconsistent training and testing indices: the union differs from Nb sample (",self$nbSamples,"). ")
+  }
 
-   # trainIndex <- sample(trainIndex)
-   # testIndex <- sample(testIndex)
 
   if (classifier == "knn"){
 
     ## we need to tune our predictive model by using multiple workers "cores", such step to run our code through parallel
     ##  rather than sequentially technologies
-#        library(doMC)
     ## Compute testing errors
+    # dim(countTable)
     randsampling.fit <- knn(train = countTable[trainIndex, ],
                             test = countTable[testIndex, ],
                             cl = classes[trainIndex],
