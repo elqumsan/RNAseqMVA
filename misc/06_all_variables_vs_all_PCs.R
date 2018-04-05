@@ -43,6 +43,7 @@ if (parameters$compute) {
   ## Loop over recountIDs
   for (recountID in selectedRecountIDs) {
 
+    message.with.time("Running train/test with all variables for recountID\t", recountID)
     ## Loop over classifiers
     classifier <- "svm" ## For quick test
     for (classifier in parameters$classifiers) {
@@ -51,11 +52,7 @@ if (parameters$compute) {
       train.test.results.all.variables <- list()
       #    train.test.results.all.PCs <- list()
 
-      message.with.time("Train/test all computations with fixed training proportion: ",
-                        signif(parameters$trainingProportion, digits = 3) )
       #message.with.time("\tTrain/test, k=", parameters$knn$k, "; classifier=", classifier)
-
-
 
 
       #### Associate each analysis of real data with a permutation test ####
@@ -63,8 +60,13 @@ if (parameters$compute) {
       for (permute in parameters$permute) {
 
         ## Loop over data types
-        data.type <- "log2norm" ## For test
+        data.type <- "norm" ## For test
         for (data.type in parameters$data.types.to.test) {
+          message.with.time("\tRunning train/test with all variables",
+                            "\n\trecountID: ", recountID,
+                            "\n\tClassifier: ", classifier,
+                            "\n\tpermuted class labels: ", permute,
+                            "\n\tData type: ", data.type)
           dataset <- loaded[[recountID]][[data.type]]
           # class(dataset)
           # summary(dataset)
@@ -85,9 +87,6 @@ if (parameters$compute) {
             exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
           }# end if permuted class
           # print(exp.prefix)
-
-          #i <- 1 ## Iteration number
-
 
           train.test.results.all.variables[[exp.prefix]] <-
             one.experiment (
