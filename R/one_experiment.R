@@ -28,7 +28,7 @@ one.experiment <- function (self,
                           #  trainIndex, testIndex,
                             permute = FALSE, # permute the class labels before running the test
                             file.prefix = NULL, # prefix for the saved files. If not provided, will be automatically generated
-                            verbose = TRUE,
+                            verbose = parameters$verbose,
                             k = parameters$knn$k ## For KNN only
 ) {
 
@@ -55,9 +55,12 @@ one.experiment <- function (self,
   }
 
 
-  message.with.time("\t", classifier, " classifier (train vs test), ", self[["dataType"]], self[["varaible.type"]],  ",  ",self$variablesType, " variables, ",   parameters$iterations, " iterations.")
-
-
+  message.with.time("\t", "one.experiment()",
+                    "\n\tID: ", self$ID,
+                    "\n\tclassifier: ", classifier,
+                    "\n\tdata type: ", self$dataType,
+                    "\n\tvariable type: ", self$variablesType,
+                    "\n\tTrain/test iterations: ",   parameters$iterations)
 
 
   ## Define file prefix is not specified in paramters
