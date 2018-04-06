@@ -148,7 +148,7 @@ NormalizeCounts <- function(self,
     result$sampleNames <- self$sampleNames[!zeroScaledSamples]
     result$nbSamples <- length(result$sampleNames)
 
-    ## Update class-relatd parameters
+    ## Re-build class-related parameters
     result <- buildAttributes(result)
 
     ## TO DO !!!!
