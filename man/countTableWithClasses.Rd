@@ -7,8 +7,7 @@
 countTableWithClasses(countTable, phenoTable,
   classColumn = parameters$classColumn,
   classColors = parameters$classColors, ID = parameters$recountID,
-  sampleNames = colnames(countTable), geneNames = rownames(countTable),
-  variablesType = variablesType, dataType = "raw_counts")
+  variablesType, dataType = "raw_counts")
 }
 \arguments{
 \item{countTable}{a data.frame with one row per feature (e.g. gene) and

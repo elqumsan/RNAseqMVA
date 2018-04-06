@@ -149,7 +149,7 @@ NormalizeCounts <- function(self,
     result$nbSamples <- length(result$sampleNames)
 
     ## Update class-relatd parameters
-    defineSampleClasses(result)
+    result <- buildAttributes(result)
 
     ## TO DO !!!!
     ## AFTER HAVING DISCARDD SAMPLES, WE NEED TO CHECK THAT THE NB OF SAMPLES PER CLAS IS STILL ABOVE THE THRESHOLD

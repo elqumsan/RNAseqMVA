@@ -21,24 +21,19 @@ countTableWithClasses <- function(countTable,
                                   classColumn = parameters$classColumn,
                                   classColors = parameters$classColors,
                                   ID = parameters$recountID,
-                                  sampleNames = colnames(countTable),
-                                  geneNames = rownames(countTable),
-                                  variablesType= variablesType,
+                                  variablesType,
                                   dataType = "raw_counts"
 ) {
 
   ## Built a list from the input parameters
   message.with.time("\tCreating object of class countTableWithClasses" )
 
+  ## Build a first version of the object based on passed parameters
   object <- structure(
     list(
       ID = ID,
       countTable = countTable,
       phenoTable = phenoTable,
-      sampleNames = sampleNames,
-      nbSamples = ncol(countTable),
-      geneNames = geneNames,
-      nbGenes = nrow(countTable),
       variablesType = variablesType,
       dataType = dataType,
       classColumn = classColumn,
@@ -48,40 +43,19 @@ countTableWithClasses <- function(countTable,
   # names(object)
   # class(object)
   # attributes(object)
-  #UseMethod("exportTables", self)
+  # UseMethod("exportTables", self)
 
-  #### Check consistency of input parameters ####
+  ## Define all the derived attributes from the count table and pheno table
+  object <- buildAttributes(object)
 
-  ## Check rows of pheno table
-  if (nrow(object$phenoTable) != ncol(object$countTable)) {
-    stop("countTableWithClasses(): inconsistent dimensions of phenoTable (",
-         nrow(phenoTable), " rows) and countTable (",
-         ncol(countTable), " columns).")
-  }
-
-  ## Check sample names
-  if (length(object$sampleNames) != ncol(countTable)) {
-    stop("countTableWithClasses(): inconsistent dimensions of sampleNames (",
-         length(object$sampleNames), " names) and countTable (",
-         ncol(countTable), " columns).")
-  }
-
-  ## Check gene names
-  if (length(object$geneNames) != nrow(countTable)) {
-    stop("countTableWithClasses(): inconsistent dimensions of geneNames (",
-         length(object$geneNames), " names) and countTable (",
-         nrow(countTable), " columns).")
-  }
-
-  ## Define sample classes and all the derived attributes from the pheno table
-  object <- defineSampleClasses(object)
 
   message("\t\tInstantiated an object of class countTablewithClasses for recountID\t", recountID)
   return(object)
 }
 
+#' @title print a summary of an object belonging to class countTableWithClasses
+#' @author Mustafa AubElQumsan and Jacques van Helden
 #' @export
-
 summary.countTableWithClasses <- function(x) {
 #  message("\t\t\n giving the summary of the created object")
   cat("countTableWithClasses\n")
@@ -101,23 +75,45 @@ print.countTableWithClasses <- function(x) {
 }
 
 
-#' @title define sample classes and all the related attributes (class sizes, nb classes, class colors, class-based sample colors, ...)
+#' @title build the attributes of an object based on the count table and pheno table.
+#'
 #' @author Jacques van Helden and Mustafa AbuElQumsan
+#'
+#' @description Derive the attributes of an object from the count table and pheno table.
+#' This includes the definition of sample and gene names, as well as the association of
+#' classes to samples, based on the classColumn(s) specified in the parameters.
+#'
 #' @parameters self an object of class countTableWithClasses
+#'
 #' @return the same object with added fields to describe sample classes and derived
 #' attributes. Sample classes are extracted from the phenoTable, using column(s)
 #' specified in self$classColumn.
+#'
 #' @export
-defineSampleClasses <- function(self) {
+buildAttributes <- function(self) {
   message("\tDefining sample classes",
           "\n\t\tID", self$ID,
           "\n\t\tID", self$classColors
   )
+
+  ## Check rows of pheno table
+  if (nrow(object$phenoTable) != ncol(object$countTable)) {
+    stop("countTableWithClasses(): inconsistent dimensions of phenoTable (",
+         nrow(phenoTable), " rows) and countTable (",
+         ncol(countTable), " columns).")
+  }
+
   ## Check if the pheno table contains a column corresponding to the indication
   if (sum(!self$classColumn %in% names(self$phenoTable)) > 1) {
     stop("\n\tMissing column(s) in the pheno table ", paste(collapse=", ", setdiff(classColumn, names(phenoTable))),
          "\n\tColumns found in the pheno table: ", paste(collapse=", ", names(self$phenoTable)))
   }
+
+  ## Count table-derived paraemters
+  self$nbSamples = ncol(self$countTable)
+  self$sampleNames = colnames(self$countTable)
+  self$geneNames = rownames(self$countTable)
+  self$nbGenes = nrow(self$countTable)
 
   ################################################################
   ## Specify sample classes (classLabels) and all the derived attributes
@@ -172,5 +168,24 @@ defineSampleClasses <- function(self) {
   ## Assign colors to samples
   self$sampleColors <- self$classColors[self$classLabels]
   names(self$sampleColors) <- self$sampleNames
+
+  #### Check consistency of  parameters ####
+
+
+  ## Check sample names
+  if (length(object$sampleNames) != ncol(countTable)) {
+    stop("countTableWithClasses(): inconsistent dimensions of sampleNames (",
+         length(object$sampleNames), " names) and countTable (",
+         ncol(countTable), " columns).")
+  }
+
+  ## Check gene names
+  if (length(object$geneNames) != nrow(countTable)) {
+    stop("countTableWithClasses(): inconsistent dimensions of geneNames (",
+         length(object$geneNames), " names) and countTable (",
+         nrow(countTable), " columns).")
+  }
+
+
   return (self)
 }
