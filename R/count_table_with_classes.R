@@ -70,24 +70,17 @@ summary.countTableWithClasses <- function(x) {
   NextMethod("buildAttributes", self)
 }
 
+
+#' @title finish summary
+#' @author Mustafa AubElQumsan and Jacques van Helden
+#' @export
+summary.default <- function(self) {
+  cat("Summary printed. ")
+}
+
 #' @export
 print.countTableWithClasses <- function(x) {
   summary.countTableWithClasses(x)
-}
-
-#' @title build attributes for an object depending on its class
-#' @export
-buildAttributes <- function(self) {
-  message("\tBuilding attributes for object of class ", paste(collapse=",", class(self)))
-  UseMethod("buildAttributes", self)
-}
-
-#' @title default method to build attributes for an object.
-#' @description Just send message with object classes. The class-specific builders should have been be called before.
-#' @export
-buildAttributes.default <- function(self) {
-  message("\tBuilt attributes for object of class ", paste(collapse=",", class(self)))
-  return(self)
 }
 
 
@@ -107,7 +100,7 @@ buildAttributes.default <- function(self) {
 #'
 #' @export
 buildAttributes.countTableWithClasses <- function(self) {
-  message("\tBuilding attributes for class countTableWithClasses\t", self$ID)
+  message("\tBuilding class-specific attributes for countTableWithClasses\t", self$ID)
 
   ## Check rows of pheno table
   if (nrow(self$phenoTable) != ncol(self$countTable)) {
@@ -124,9 +117,9 @@ buildAttributes.countTableWithClasses <- function(self) {
 
   ## Count table-derived paraemters
   self$nbSamples = ncol(self$countTable)
+  self$nbGenes = nrow(self$countTable)
   self$sampleNames = colnames(self$countTable)
   self$geneNames = rownames(self$countTable)
-  self$nbGenes = nrow(self$countTable)
 
   ################################################################
   ## Specify sample classes (classLabels) and all the derived attributes
@@ -200,5 +193,6 @@ buildAttributes.countTableWithClasses <- function(self) {
   }
 
   NextMethod("buildAttributes", self)
+  message("returning from countTableWithTraingTestSets")
   return (self)
 }

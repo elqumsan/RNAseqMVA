@@ -44,8 +44,8 @@ countTableWithTrainTestSets <- function(self,
   ## Build the attributes of the new object
   self <- buildAttributes(self = self)
 
+  message.with.time("\tTraining set selection done")
   return(self)
-  message.with.time("Training set selection done")
 }
 
 
@@ -90,7 +90,7 @@ print.countTableWithTrainTestSets <- function(x){
 #' @title build the attributes that depend on the count table
 #' @export
 buildAttributes.countTableWithTrainTestSets <- function(self) {
-  message("\tBuilding attributes for class countTableWithTrainTestSets\t", self$ID)
+  message("\tBuilding class-specific attributes for countTableWithTrainTestSets\t", self$ID)
 
   ## Check stratified
   stratified <- self$trainTestProperties$stratified
@@ -113,18 +113,14 @@ buildAttributes.countTableWithTrainTestSets <- function(self) {
   if (is.null(trainingProportion)) {
     stop("Cannot build attributes for countTableWithTrainTestSets because the attribute 'trainingProportion' is null (should be a Real number)")
   }
-  if (!is.numeric(iterations) || (trainingProportion <= 0) || (trainingProportion >= 1)) {
+  if (!is.numeric(trainingProportion) || (trainingProportion <= 0) || (trainingProportion >= 1)) {
     stop("Invalid value for trainingProportion (", trainingProportion, "). Must be a Real number between 0 and 1. ")
 
   }
 
-  ## Trainng Proportion
-  if ((trainingProportion < 0) || (trainingProportion > 1)) {
-    stop("Training proportion must be a real number comprised between 0 and 1")
-  }
 
   ## Instantiate the list with training indices
-  message("\tSelecting ", iterations, " training sets, with training proportion = ", trainingProportion)
+  message("\t\tSelecting ", iterations, " training sets, with training proportion = ", trainingProportion)
   trainIndices <- list()
   testIndices <- list()
 
@@ -133,7 +129,7 @@ buildAttributes.countTableWithTrainTestSets <- function(self) {
     trainSizePerClass <- round(self$samplesPerClass * trainingProportion)
 
     # testSizePerClass <- self$samplesPerClass - trainSizePerClass
-    message("\tStratified sampling among classes")
+    message("\t\tStratified sampling among classes")
     # print(as.data.frame(trainSizePerClass))
     # i <- 1
     for (i in 1:parameters$iterations) {
@@ -162,7 +158,7 @@ buildAttributes.countTableWithTrainTestSets <- function(self) {
     n <- self$nbSamples
     trainSize <- round(trainingProportion * n)
     self$trainSize <- trainSize
-    message("Class-independent sampling of training sets")
+    message("\t\tClass-independent sampling of training sets")
     # i <- 1
     for (i in 1:parameters$iterations) {
       trainIndices[[i]] <- vector()
@@ -194,6 +190,10 @@ buildAttributes.countTableWithTrainTestSets <- function(self) {
   self$trainTestProperties$trainIndices <- trainIndices
   self$trainTestProperties$testIndices <- testIndices
 
+#  print (self$trainTestProperties)
   NextMethod("buildAttributes", self)
+
+
+  message("returning from countTableWithTraingTestSets")
   return(self)
 }
