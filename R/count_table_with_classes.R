@@ -67,6 +67,7 @@ summary.countTableWithClasses <- function(x) {
   cat("\tClass properties\n")
   print(x$classProperties)
   cat("\n")
+  NextMethod("buildAttributes", self)
 }
 
 #' @export
@@ -74,8 +75,23 @@ print.countTableWithClasses <- function(x) {
   summary.countTableWithClasses(x)
 }
 
+#' @title build attributes for an object depending on its class
+#' @export
+buildAttributes <- function(self) {
+  message("\tBuilding attributes for object of class ", paste(collapse=",", class(self)))
+  UseMethod("buildAttributes", self)
+}
 
-#' @title build the attributes of an object based on the count table and pheno table.
+#' @title default method to build attributes for an object.
+#' @description Just send message with object classes. The class-specific builders should have been be called before.
+#' @export
+buildAttributes.default <- function(self) {
+  message("\tBuilt attributes for object of class ", paste(collapse=",", class(self)))
+  return(self)
+}
+
+
+#' @title build the attributes of an object of class countTableWithClasses based on the count table and pheno table.
 #'
 #' @author Jacques van Helden and Mustafa AbuElQumsan
 #'
@@ -90,11 +106,8 @@ print.countTableWithClasses <- function(x) {
 #' specified in self$classColumn.
 #'
 #' @export
-buildAttributes <- function(self) {
-  message("\tDefining sample classes",
-          "\n\t\tID", self$ID,
-          "\n\t\tID", self$classColors
-  )
+buildAttributes.countTableWithClasses <- function(self) {
+  message("\tBuilding attributes for class countTableWithClasses\t", self$ID)
 
   ## Check rows of pheno table
   if (nrow(self$phenoTable) != ncol(self$countTable)) {
@@ -186,6 +199,6 @@ buildAttributes <- function(self) {
          nrow(self$countTable), " columns).")
   }
 
-
+  NextMethod("buildAttributes", self)
   return (self)
 }

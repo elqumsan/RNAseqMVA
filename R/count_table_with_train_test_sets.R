@@ -1,14 +1,4 @@
-#################### Builde constractor for the selecting Training Sets #########
-#' @title Export the object with train/test sets by stratification sampling
-#' @author Mustafa ABUELQUMSAN and Jacques van Helden
-#' @description sampling is done in each class separately in order to preserve the relative frequencies of classes in training and testing sets
-#' @param self which much belong to the countTableWithClasses class.
-#'
-#' @export
-selectTrainingSets <- function(self, ...){
-  message("\tExporting the object class  ", class(self), " object with train/test sets")
-  UseMethod("selectTrainingSets", self)
-}
+
 
 ## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ##
 ## TEMPORARILY HERE
@@ -31,7 +21,7 @@ countTableWithTrainTestSets <- function(self,
                                         iterations = parameters$iterations,
                                         trainingProportion = parameters$trainingProportion) {
 
-  message.with.time("Selecting ", iterations, " training sets, with training proportion = ", trainingProportion)
+  message.with.time("Building object of class countTableWithTrainTestSets")
 
   #### Check validity of the paraemters ####
 
@@ -42,6 +32,91 @@ countTableWithTrainTestSets <- function(self,
   ##  STRANGE: THIS RETURNS FALSE WHEREAS IT SHOULD B TRUE
   # isClass("countTableWithClasses")
 
+  ## Assign test/train selection parameters as attributes of the object (to be passed to the attribute builder)
+  self$trainTestProperties <- list()
+  self$trainTestProperties$iterations <- iterations
+  self$trainTestProperties$trainingProportion <- trainingProportion
+  self$trainTestProperties$stratified <- stratified
+
+  ## Add the class countTableWithTrainTestSets
+  class(self) <- unique(c(class(self), "countTableWithTrainTestSets"))
+
+  ## Build the attributes of the new object
+  self <- buildAttributes(self = self)
+
+  return(self)
+  message.with.time("Training set selection done")
+}
+
+
+#' @title summary for a countTableWithTrainTestSets object
+#' @export
+summary.countTableWithTrainTestSets <- function(x){
+  cat("\t\t countTableWithTrainTestSEts \n")
+  cat("\tData Type       \t", x$dataType,"\n")
+  cat("\tVariables Type      \t", x$variablesType, "\n")
+  cat("\titeration          \t", x$trainTestProperties$iterations, "\n")
+  cat("\ttraining Proportion   \t", x$trainTestProperties$trainingProportion, "\n")
+  cat("\ttrain Size Per Class \t", x$trainTestProperties$trainSizePerClass, "\n")
+  cat("\tstratified      \t", x$trainTestProperties$stratified, "\n")
+  cat("\tclass     \t", class(x), "\n")
+  #print(x$trainTestProperties)
+  cat("\n")
+
+  NextMethod("buildAttributes", self)
+  #print()
+}
+
+#' @title print for a countTableWithTrainTestSets object
+#' @export
+print.countTableWithTrainTestSets <- function(x){
+  summary.countTableWithTrainTestSets(x)
+}
+
+
+#### THIS IS APPARENTLY NOT USED. TO BE CHECKED ####
+#' #################### Builde constractor for the selecting Training Sets #########
+#' #' @title Export the object with train/test sets by stratification sampling
+#' #' @author Mustafa ABUELQUMSAN and Jacques van Helden
+#' #' @description sampling is done in each class separately in order to preserve the relative frequencies of classes in training and testing sets
+#' #' @param self which much belong to the countTableWithClasses class.
+#' #'
+#' #' @export
+#' selectTrainingSets <- function(self, ...){
+#'   message("\tExporting the object class  ", class(self), " object with train/test sets")
+#'   UseMethod("selectTrainingSets", self)
+#' }
+
+#' @title build the attributes that depend on the count table
+#' @export
+buildAttributes.countTableWithTrainTestSets <- function(self) {
+  message("\tBuilding attributes for class countTableWithTrainTestSets\t", self$ID)
+
+  ## Check stratified
+  stratified <- self$trainTestProperties$stratified
+  if (is.null(stratified)) {
+    stop("Cannot build attributes for countTableWithTrainTestSets because the attribute 'stratified' is null (should be Boolean)")
+  }
+
+  ## Check iterations
+  iterations <- self$trainTestProperties$iterations
+  if (is.null(iterations)) {
+    stop("Cannot build attributes for countTableWithTrainTestSets because the attribute 'iterations' is null (should be a strictly positive Natural)")
+  }
+  if (!is.integer(iterations) || (iterations < 1)) {
+    stop("Invalid value for iterations (", iterations, "). Must be a strictly positive Natural number. ")
+
+  }
+
+  ## Check training proportion
+  trainingProportion <- self$trainTestProperties$trainingProportion
+  if (is.null(trainingProportion)) {
+    stop("Cannot build attributes for countTableWithTrainTestSets because the attribute 'trainingProportion' is null (should be a Real number)")
+  }
+  if (!is.numeric(iterations) || (trainingProportion <= 0) || (trainingProportion >= 1)) {
+    stop("Invalid value for trainingProportion (", trainingProportion, "). Must be a Real number between 0 and 1. ")
+
+  }
 
   ## Trainng Proportion
   if ((trainingProportion < 0) || (trainingProportion > 1)) {
@@ -49,6 +124,7 @@ countTableWithTrainTestSets <- function(self,
   }
 
   ## Instantiate the list with training indices
+  message("\tSelecting ", iterations, " training sets, with training proportion = ", trainingProportion)
   trainIndices <- list()
   testIndices <- list()
 
@@ -57,7 +133,7 @@ countTableWithTrainTestSets <- function(self,
     trainSizePerClass <- round(self$samplesPerClass * trainingProportion)
 
     # testSizePerClass <- self$samplesPerClass - trainSizePerClass
-    message("Stratified sampling among classes")
+    message("\tStratified sampling among classes")
     # print(as.data.frame(trainSizePerClass))
     # i <- 1
     for (i in 1:parameters$iterations) {
@@ -114,40 +190,10 @@ countTableWithTrainTestSets <- function(self,
 
 
   ## Add the attributes
-  self$trainTestProperties <- list()
-  self$trainTestProperties$iterations <- iterations
-  self$trainTestProperties$trainingProportion <- trainingProportion
   self$trainTestProperties$trainSizePerClass <- trainSizePerClass
   self$trainTestProperties$trainIndices <- trainIndices
   self$trainTestProperties$testIndices <- testIndices
-  self$trainTestProperties$stratified <- stratified
 
-  class(self) <- unique(c( "countTableWithTrainTestSets", class(self)))
-
+  NextMethod("buildAttributes", self)
   return(self)
-  message.with.time("Training set selection done")
-}
-
-
-#' @title summary for a countTableWithTrainTestSets object
-#' @export
-summary.countTableWithTrainTestSets <- function(x){
-  cat("\t\t countTableWithTrainTestSEts \n")
-  cat("\tData Type       \t", x$dataType,"\n")
-  cat("\tVariables Type      \t", x$variablesType, "\n")
-  cat("\titeration          \t", x$trainTestProperties$iterations, "\n")
-  cat("\ttraining Proportion   \t", x$trainTestProperties$trainingProportion, "\n")
-  cat("\ttrain Size Per Class \t", x$trainTestProperties$trainSizePerClass, "\n")
-  cat("\tstratified      \t", x$trainTestProperties$stratified, "\n")
-  cat("\tclass     \t", class(x), "\n")
-  #print(x$trainTestProperties)
-  cat("\n")
-
-  #print()
-}
-
-#' @title print for a countTableWithTrainTestSets object
-#' @export
-print.countTableWithTrainTestSets <- function(x){
-  summary.countTableWithTrainTestSets(x)
 }
