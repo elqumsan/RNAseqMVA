@@ -97,7 +97,7 @@ buildAttributes <- function(self) {
   )
 
   ## Check rows of pheno table
-  if (nrow(object$phenoTable) != ncol(object$countTable)) {
+  if (nrow(self$phenoTable) != ncol(self$countTable)) {
     stop("countTableWithClasses(): inconsistent dimensions of phenoTable (",
          nrow(phenoTable), " rows) and countTable (",
          ncol(countTable), " columns).")
@@ -173,16 +173,16 @@ buildAttributes <- function(self) {
 
 
   ## Check sample names
-  if (length(object$sampleNames) != ncol(countTable)) {
+  if (length(self$sampleNames) != ncol(countTable)) {
     stop("countTableWithClasses(): inconsistent dimensions of sampleNames (",
-         length(object$sampleNames), " names) and countTable (",
+         length(self$sampleNames), " names) and countTable (",
          ncol(countTable), " columns).")
   }
 
   ## Check gene names
-  if (length(object$geneNames) != nrow(countTable)) {
+  if (length(self$geneNames) != nrow(countTable)) {
     stop("countTableWithClasses(): inconsistent dimensions of geneNames (",
-         length(object$geneNames), " names) and countTable (",
+         length(self$geneNames), " names) and countTable (",
          nrow(countTable), " columns).")
   }
 
