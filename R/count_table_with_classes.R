@@ -173,17 +173,17 @@ buildAttributes <- function(self) {
 
 
   ## Check sample names
-  if (length(self$sampleNames) != ncol(countTable)) {
+  if (length(self$sampleNames) != ncol(self$countTable)) {
     stop("countTableWithClasses(): inconsistent dimensions of sampleNames (",
          length(self$sampleNames), " names) and countTable (",
-         ncol(countTable), " columns).")
+         ncol(self$countTable), " columns).")
   }
 
   ## Check gene names
-  if (length(self$geneNames) != nrow(countTable)) {
+  if (length(self$geneNames) != nrow(self$countTable)) {
     stop("countTableWithClasses(): inconsistent dimensions of geneNames (",
          length(self$geneNames), " names) and countTable (",
-         nrow(countTable), " columns).")
+         nrow(self$countTable), " columns).")
   }
 
 
