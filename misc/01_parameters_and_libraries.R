@@ -27,11 +27,21 @@ recountIDs <- grep(pattern = "^SRP", x = names(project.parameters), value = TRUE
 message("\tYAML config file contains ", length(recountIDs)," recount IDs.")
 
 
-recountIDs.with.problems <- c("SRP003611" = "the number of samples drops after run merging")
+recountIDs.with.problems <- c("SRP003611" = "the number of samples drops after run merging",
+                              "SRP039694" = '	Building class-specific attributes for countTableWithClasses	SRP039694
+Error in `colnames<-`(`*tmp*`, value = c("Class", "nbSamples")) :
+  "names" attribute [2] must be the same length as the vector [1]',
+                              "SRP008976" = "",
+                              "SRP006574" = "	Building pheno table\nError in rbind(deparse.level, ...) : numbers of columns of arguments do not match",
+                              "SRP041736" = "2018-04-07_093304		Creating object of class countTableWithClasses
+	Building attributes for object of class countTableWithClasses
+                              Building class-specific attributes for countTableWithClasses	SRP041736
+                              Error: subscript contains invalid names
+                              ")
 
 ## Optional: select a subset of the recountIDs
-selectedRecountIDs <- c("SRP057196", "SRP042620")
-# selectedRecountIDs <- setdiff(recountIDs, names(recountIDs.with.problems))
+#selectedRecountIDs <- c("SRP057196", "SRP042620")
+selectedRecountIDs <- setdiff(recountIDs, names(recountIDs.with.problems))
 
 message("\tSelected ", length(selectedRecountIDs)," recount IDs: ", paste(collapse="; ", selectedRecountIDs))
 #selectedRecountIDs <- recountIDs
