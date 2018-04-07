@@ -7,35 +7,11 @@
 ## choose the data.type in return we will pass the data.type for each experiment.
 ## Choice of the classifier
 
-# classifier <- "svm" ## Default classifier for quick testing and debugging
-## Choice of the Counts
-# data.type <- "log2norm.prcomp.centred"
-# data.type <- "log2norm"
+## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
+memory.image.file <- file.path(parameters$dir$memoryImages, "classifier_eval_with_all_variables.Rdata")
 
-#
-# if (parameters$identicalTrainTest) {
-#   ## Define all the train indices for all the iterations, in order to use the
-#   ## same training/testing sets between dfferent classifiers and data types
-#   trainIndices <- list()
-#   n <- nrow(log2norm$Counts)
-#   train.size <- round(parameters$trainingProportion * n)
-#   for(i in 1:parameters$iterations) {
-#     trainIndices [[i]] <- sample(1:n, size = train.size, replace = FALSE)
-#   }
-# } else {
-#   ## First option: select different indices at each experiment
-#   trainIndices = NULL
-# }
-
-
-
-
-# dim(counts)
-# View(counts)
-
-# dataset <- loaded$log2norm
-
-
+## Run the whole computation if required
+## (this can take several hours depending on the number of datasets and classifier methods)
 if (parameters$compute) {
 
   train.test.results.all.variables.per.classifier <- list()
@@ -98,7 +74,7 @@ if (parameters$compute) {
             )
 
         } # End iterations over dataset
-      } # End iterations ovr permutation
+      } # End iterations over permutation
 
 
       # #### Run classifier with all the principal components ####
@@ -240,22 +216,26 @@ if (parameters$compute) {
 
     } # end loop over classifier
   } # end loop over recountIDs
-}  # end of computation
 
-  # #### Save an image of the results to enable reloading them withouht recomputing everything ####
-  # if (parameters$save.image) {
-  #   save.image(file = image.file)
-  # }
+  ## Save a memory image that can be re-loaded next time to avoid re-computing all the normalisation and so on.
+  if (parameters$save.image) {
+    dir.create(parameters$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
+    message.with.time("Saving memory image after eval of all variables: ", memory.image.file)
+    save.image(file = memory.image.file)
+  }
 
-  ##### if compution not required, you can load the image file without any computations ####
+  ##### if computation not required, you can load the image file without any computations ####
   # } else {
   #   # reload previous results if exist
-  #   if (file.exists(image.file)) {
-  #     message ("Reloading memory image ", image.file)
-  #     load(image.file)
+  #   if (file.exists(memory.image.file)) {
+  #     message ("Reloading memory image ", memory.image.file)
+  #     load(memory.image.file)
   #   } else {
-  #     stop("Cannot reload memory image file ", image.file)
+  #     stop("Cannot reload memory image file ", memory.image.file)
   #   }
+
+}  # end of "if compute"
+
 
   #} # end else if compute statment
 
