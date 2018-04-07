@@ -42,9 +42,10 @@ countTableWithTrainTestSets <- function(self,
   class(self) <- unique(c(class(self), "countTableWithTrainTestSets"))
 
   ## Build the attributes of the new object
-  self <- buildAttributes(self = self)
+  self <- buildAttributes(self)
 
-  message.with.time("\tTraining set selection done")
+  message("trainIndices length : ", length(self$trainTestProperties$trainIndices))
+  message("\t\t returning from countTableWithTrainTestSets()")
   return(self)
 }
 
@@ -176,6 +177,7 @@ buildAttributes.countTableWithTrainTestSets <- function(self) {
   if (sum(unlist(lapply(trainIndices, length)) + unlist(lapply(testIndices, length)) != self$nbSamples) > 0) {
     stop("Error with countTableWithTrainTestSets(): incorrect lengths of trainIndices and testIndices ")
   }
+  message.with.time("\tTraining set selection done")
 
   # ## Select testIndices as the complement of train indices
   # testIndices <- list()
@@ -191,9 +193,10 @@ buildAttributes.countTableWithTrainTestSets <- function(self) {
   self$trainTestProperties$testIndices <- testIndices
 
 #  print (self$trainTestProperties)
-  NextMethod("buildAttributes", self)
+  self <- NextMethod("buildAttributes", self)
 
 
-  message("returning from countTableWithTraingTestSets")
+#  message("trainIndices length : ", length(self$trainTestProperties$trainIndices))
+#  message("\t\treturning from buildAttributes.countTableWithTrainTestSets()")
   return(self)
 }

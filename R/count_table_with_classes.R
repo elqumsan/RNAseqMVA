@@ -192,7 +192,8 @@ buildAttributes.countTableWithClasses <- function(self) {
          nrow(self$countTable), " columns).")
   }
 
-  NextMethod("buildAttributes", self)
-  message("returning from countTableWithTraingTestSets")
+  self <- NextMethod("buildAttributes", self)
+#  message("trainIndices length : ", length(self$trainTestProperties$trainIndices))
+#  message("\t\treturning from buildAttributes.countTableWithClasses()")
   return (self)
 }

@@ -3,7 +3,8 @@
 buildAttributes <- function(self) {
   message("\tBuilding attributes for object of class ", paste(collapse=", ", class(self)))
   UseMethod("buildAttributes", self)
-  message("returning from buildAttributes")
+#  message("trainIndices length : ", length(self$trainTestProperties$trainIndices))
+#  message("\t\treturning from buildAttributes()")
   return(self)
 }
 
@@ -13,7 +14,8 @@ buildAttributes <- function(self) {
 buildAttributes.default <- function(self) {
   message("\tFinished building attributes for object of class ", paste(collapse=",", class(self)))
 #  print (self$trainTestProperties)
-  message("returning from buildAttributes.default")
+#  message("trainIndices length : ", length(self$trainTestProperties$trainIndices))
+#  message("\t\treturning from buildAttributes.default()")
   return(self)
 }
 

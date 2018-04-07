@@ -172,11 +172,11 @@ filterCountTable <- function(rawCounts,
     if (nearZeroVarFilter) {
       hist(zerosPerGene[union(nearZeroVarGenes, zeroVarGenes)],
          breaks = zerobreaks,
-         add=TRUE, col="orange", border="orange")
+         add = TRUE, col="orange", border="orange")
     }
     hist(zerosPerGene[zeroVarGenes],
          breaks = zerobreaks,
-         add=TRUE, col="red", border="red")
+         add = TRUE, col = "red", border = "red")
     if (nearZeroVarFilter) {
       legend("topleft",
              legend=paste(
