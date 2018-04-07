@@ -165,50 +165,6 @@ NormalizeCounts <- function(self,
   }
   result$sampleStats <- sampleStats
   result$discaredSampleNames <- discaredSampleNames
-  #result$norm
-
-  # result$nb.samples <- ncol(normCounts)
-  # result$nb.genes <- nrow(normCounts)
-  # result$counts <- normCounts
-  # result$phenoTable <- phenoTable[!zeroScaledSamples,]
-  # result$classLabels <- classLabels[!zeroScaledSamples]
-
-# if(log2){
-#
-#
-#   #### Export log2-transformed normalized counts ####
-#   dir.create(dir.NormImpact, recursive = TRUE, showWarnings = FALSE)
-#   log2normCounts.file <- file.path(dir.NormImpact, paste(sep="", parameters$recountID, "_log2_normalized_counts.tsv"))
-#   message.with.time("\t\tExporting log2 normalised counts to file ", "\n", log2normCounts.file)
-#   if (parameters$save.tables) {
-#     write.table(sep="\t", quote=FALSE, row.names = TRUE, col.names=NA,
-#                 x = round(digits=3, normCounts ),
-#                 file = log2normCounts.file)
-#   } else {
-#     message(" Skipping saving of the log2norm count table")
-#   }
-#
-#
-# } else{
-#
-#   #### Export normalized counts ####
-#   dir.create(dir.NormImpact, recursive = TRUE, showWarnings = FALSE)
-#   # list.files(dir.NormImpact)
-#   normCounts.file <- file.path(dir.NormImpact, paste(sep="", parameters$recountID, "_normalized_counts.tsv"))
-#   message.with.time("\t\tExporting normalised counts to file ", "\n", normCounts.file)
-#   if (parameters$save.tables) {
-#     write.table(sep="\t", quote=FALSE, row.names = TRUE, col.names=NA,
-#                 x = round(normCounts, digits=2),
-#                 file = normCounts.file)
-#     # write.table(x = round(t(loaded$normCounts), digits = 3),
-#     #             file = paste(tsv.dir,"/NormCounts_",parameters$recountID,".tsv", sep = ""),
-#     #             row.names = FALSE, quote=FALSE, sep = "\t")
-#
-#   } else {
-#     message.with.time("Skipping saving of normalized counts table")
-#   }
-#
-# }
 
   if (log2) {
     result$dataType <- "log2norm_counts"
