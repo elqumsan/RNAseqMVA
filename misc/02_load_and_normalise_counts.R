@@ -3,6 +3,7 @@
 ## and apply some pre-filtering (remove zero-variance and near-zero-variance genes).
 
 loaded <- list() ## a list containing all the loaded datasets + their pre-processed data
+
 for (recountID in selectedRecountIDs) {
 
   #### Specify generic and recountID-specific parameters ####
@@ -283,6 +284,7 @@ for (recountID in selectedRecountIDs) {
 
 ## Compute statistics about loaded datasets
 loadedStats <- data.frame()
+
 for (recountID in selectedRecountIDs) {
   newStats <-
     data.frame(
@@ -346,14 +348,14 @@ save.margins <- par("mar")
 par(mar= c(5,7,5,1))
 
 kept.label <- paste(sep="",round(digits=0, gene.pc$pc.kept), "%")
-ypos <- barplot(t(gene.pc),las=1, horiz = TRUE,
+ypos <- barplot(t(gene.pc), las=1, horiz = TRUE,
                 col = c("black", "red", "orange", "#44DD44"),
                 legend.text = c("NA values", "Zero var", "NZ filter", "kept"),
                 main = "Filtering impact on study cases",
                 xlab = "Proportions of genes",
                 #                 names.arg = paste(sep="", rownames(gene.pc), " (", kept.label, ")"),
                 xlim=c(0, 170))
-text(x = 100, kept.label, y = ypos, pos = 2)
+text(x = 100, kept.label, y = ypos, pos = 4)
 
 par(mar = save.margins)
 silence<- dev.off()
@@ -407,3 +409,4 @@ message.with.time("finished executing 02_load_and_normalise_counts.R")
 #
 # }
 #
+
