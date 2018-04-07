@@ -9,7 +9,7 @@
 
 
 # How to laod the raw count table in conventional format as data.frame
-rawCount.dataframe <-as.data.frame( read.delim(paste( tsv.dir,"/rawCounts_", parameters$recountID,".tsv", sep = "")))
+rawCount.dataframe <-as.data.frame( read.delim(paste( parameters$dir$tsv,"/rawCounts_", parameters$recountID,".tsv", sep = "")))
 dim(rawCount.dataframe)
 
 # How to load the Phento table in conventional format as data.frame

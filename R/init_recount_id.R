@@ -39,14 +39,33 @@ initRecountID <- function(recountID, configFile) {
     parameters$dir <- list()
   }
 
+  ## Check required directories
   if (is.null(parameters$dir$main)) {
     stop("Main directory must be specified in the config file. ")
   }
+
+  ## Workspace
+  if (is.null(parameters$dir$workspace)) {
+    stop("Workspace directory must be specified in the config file. ")
+  }
+
+
+  parameters$dir$results <- file.path(parameters$dir$workspace, "results", recountID)
+
 
   # ## Directory with R scripts
   # if (is.null(parameters$dir$scripts)) {
   #   parameters$dir$scripts <- file.path(dir.main, "R")
   # }
+
+
+  ## Result directory
+  parameters$dir$results <- file.path(parameters$dir$workspace, "results", parameters$recountID)
+
+  ## Sub-directory to save the tab-separated value (TSV) files
+  parameters$dir$tsv <- file.path(parameters$dir$results, "TSV")
+  dir.create(path = tsv.dir, recursive = TRUE, showWarnings = FALSE)
+
 
   return(parameters)
 }
