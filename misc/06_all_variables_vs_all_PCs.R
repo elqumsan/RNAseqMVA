@@ -1,4 +1,4 @@
-
+#
 ##### All variables versus all PCs. #####
 ##
 ## QUESTION: is it better to use the PCAs-transformed data, and, if so, is it better to use a subset of the first components or all the components ?
