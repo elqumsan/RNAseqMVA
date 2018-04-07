@@ -234,36 +234,12 @@ message.with.time(" finishing from drawing plots describing count table statisti
 #   reload = TRUE
 # )
 
-################################################################
-## Define directories
-
-## Main directory should be adapted to the user's configuration
-# dir.main <- "~/thesis_mustafa_abuelqumsan/RNA-seq_multivariate_analyis"
-
-
-## All other directories should be defined relative to dir.main
-# dir.scripts <- file.path(dir.main, "R_code")
-# dir.results <- file.path(dir.main, "results")
-# dir.create(dir.results, recursive = TRUE, showWarnings = FALSE)
-# dir.figures <- file.path(dir.main, "figures")
-# dir.create(dir.figures, recursive = TRUE, showWarnings = FALSE)
-
-## File to store a memory image
-# image.file <- file.path(dir.results, "RNA-seq_classifer_evaluation.RData")
-
 # if (parameters$reload == TRUE) {
 #   ################################################################################
 #   ## Save an image of the memory, so I can reload it later to avoid re-running all the analyses
 #   message("Loading memory image ")
 #   load(file = image.file)
 # }
-
-## Load custom librarires
-# source(file.path(dir.scripts, "misclassification_estimate.R") )
-# source(file.path(dir.scripts, "load_counts.R"))
-# source(file.path(dir.scripts, "required_libraries.R"))
-# source(file.path(dir.scripts, "normalize_count_table.R"))
-# source(file.path(dir.scripts, "deg_ordering.R"))
 
 
 # loading required libraries
