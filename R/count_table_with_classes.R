@@ -75,7 +75,7 @@ summary.countTableWithClasses <- function(x) {
 #' @author Mustafa AubElQumsan and Jacques van Helden
 #' @export
 summary.default <- function(self) {
-  cat("Summary printed. ")
+#  cat("Summary printed. \n")
 }
 
 #' @export
