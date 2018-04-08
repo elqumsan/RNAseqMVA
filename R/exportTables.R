@@ -77,11 +77,11 @@ exportTables.countTableWithTrainTestSets <- function (self,
 
   ############## Exporting train and test indices ####################
   trainIndices.file <- file.path(export.dir, paste(file.prefix, self$ID, "_trainindices.tsv", extension, sep = ""))
-  message("\t\tExporting count table in TSV file\t", count.file)
+  message("\t\tExporting count table in TSV file\t", trainIndices.file)
   write.table(as.data.frame(self$trainTestProperties$trainIndices), file = trainIndices.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
 
   testIndices.file <- file.path(export.dir, paste(file.prefix, self$ID, "_testindices.tsv", extension, sep = ""))
-  message("\t\tExporting count table in TSV file\t", count.file)
+  message("\t\tExporting count table in TSV file\t", testIndices.file)
   write.table(as.data.frame(self$testTestProperties$testIndices), file = testIndices.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
 
 
