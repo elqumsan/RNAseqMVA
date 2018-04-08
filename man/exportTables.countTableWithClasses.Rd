@@ -14,7 +14,7 @@
 
 \item{file.prefix}{file prefix to build the different tables}
 
-\item{extension=".tsv"}{extension for the expodrted files (tab-separated value)}
+\item{extension=".tsv"}{extension for the exported files (tab-separated values)}
 }
 \author{
 Mustafa AbuElQumsan and Jacques van Helden
