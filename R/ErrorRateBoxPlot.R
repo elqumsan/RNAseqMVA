@@ -32,7 +32,7 @@ ErrorRateBoxPlot <- function(experimentList,
 
 
   # ## Define file to store the boxplot
-  output.dir <- figure.dirs[classifier]
+#  output.dir <- figure.dirs[classifier]
   testing.error.rates <- data.frame()
   experimentNames <- names(experimentList)
 
@@ -68,7 +68,7 @@ ErrorRateBoxPlot <- function(experimentList,
     if (permute) {
       file.prefix <- paste(sep = "_", file.prefix, perm.prefix)
     }# end if permuted class
-    boxplot.file <- file.path(output.dir, paste(sep = "", file.prefix, "_boxplot.pdf"))
+    boxplot.file <- file.path(parameters$dir$figures[classifier], paste(sep = "", file.prefix, "_boxplot.pdf"))
     message.with.time("Boxplot file:", boxplot.file)
     pdf(file = boxplot.file, width = 3 + 0.2*length(experimentNames), height = 12)
 
