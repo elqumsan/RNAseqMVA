@@ -113,7 +113,7 @@ filterCountTable <- function(rawCounts,
 
   ## Plot an histogram to compare variance distribution  between all genes and those with  near-zero variance
   if (draw.plot) {
-    plot.file <- file.path(dir.NormImpact, "var_per_gene_hist.pdf")
+    plot.file <- file.path(parameters$dir$NormalizationImpact, "var_per_gene_hist.pdf")
     message("\tVariance per gene histograms\t", plot.file)
     pdf(plot.file, width=7, height=12)
 

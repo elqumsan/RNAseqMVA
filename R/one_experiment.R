@@ -73,8 +73,8 @@ one.experiment <- function (self,
   }
 
   ## Define directory based on the method
-  dir.create(detailTables.dir[classifier], recursive = TRUE, showWarnings = F)
-  message("Output directory for result tables: ", detailTables.dir[classifier])
+  dir.create(parameters$dir$tablesDetail[classifier], recursive = TRUE, showWarnings = F)
+  message("Output directory for result tables: ", parameters$dir$tablesDetail[classifier])
 
 
   ## Iterate train/test cycles
@@ -98,21 +98,21 @@ one.experiment <- function (self,
   }
 
   ## Save the result table for KNN training/testing evaluation
-  testTable.file <- file.path(detailTables.dir[classifier], paste(sep="", file.prefix, ".tsv"))
+  testTable.file <- file.path(parameters$dir$tablesDetail[classifier], paste(sep="", file.prefix, ".tsv"))
 
   write.table(file=testTable.file,
               x = testTable,
               row.names = TRUE, col.names = NA, sep="\t", quote=FALSE)
 
   ## Export a summary about the error rate
-  errorSummary.file <- file.path(detailTables.dir[classifier], paste(sep="", file.prefix, "_summary.tsv"))
+  errorSummary.file <- file.path(parameters$dir$tablesDetail[classifier], paste(sep="", file.prefix, "_summary.tsv"))
   write.table(tidy(summary(testTable$testing.error.rate)),
               quote=FALSE, sep="\t", row.names=TRUE, col.names = NA,
               file = errorSummary.file)
 
   ## Plot a box plot of training versus testing error
   boxplot.file <- file.path(
-    detailFigures.dir[classifier],
+    parameters$dir$figuresDetail[classifier],
     paste(sep="", file.prefix, "_R", iterations, "_learning_vs_test_error_boxplot.pdf"))
 
   pdf(file=boxplot.file, width = 7, height = 5)
@@ -128,7 +128,7 @@ one.experiment <- function (self,
   ## Compute elapsed time
   endTime <- Sys.time();
   elapsedTime <- endTime - startTime
-  elapsedTimeFile <- file.path(detailTables.dir[classifier], paste(sep="", file.prefix, "_elapsed_time.txt"))
+  elapsedTimeFile <- file.path(parameters$dir$tablesDetail[classifier], paste(sep="", file.prefix, "_elapsed_time.txt"))
   write(file = elapsedTimeFile, x = paste(startTime, endTime, elapsedTime))
   message("Elapsed Time file: ", elapsedTimeFile)
   return(testTable)

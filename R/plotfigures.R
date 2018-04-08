@@ -100,7 +100,7 @@ plotFigures.countTableWithClasses <- function( self,
   # message.with.time("Drawing plots describing log2norm table statistics")
   #
   # file.prefix <- paste("main_stat.log2norm_",parameters$recountID,sep = "")
-  # boxplot.file <- file.path(dir.NormImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
+  # boxplot.file <- file.path(parameters$dir$NormalizationImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
   # pdf(file = boxplot.file)
   # boxplot(cbind(stat.log2norm$min, stat.log2norm$fQuan, stat.log2norm$median, stat.log2norm$tQaun, stat.log2norm$max, stat.log2norm$mean, stat.log2norm$sd) ,
   #         ylim= c(0,100), names=c("min","F.Qaunt","median","T.Qaunt","max","mean","sd"), las=1, cex.axis = 0.7,
@@ -108,7 +108,7 @@ plotFigures.countTableWithClasses <- function( self,
   # silence <- dev.off()
   #
   # file.prefix <- paste("diff_bet_stat.log2norm_", parameters$recountID, sep = "")
-  # boxplot.file <- file.path(dir.NormImpact, paste(file.prefix, "boxplot.pdf", sep = "_"))
+  # boxplot.file <- file.path(parameters$dir$NormalizationImpact, paste(file.prefix, "boxplot.pdf", sep = "_"))
   # pdf(file = boxplot.file)
   # boxplot(cbind(stat.log2norm$fQuan - stat.log2norm$min, stat.log2norm$median - stat.log2norm$min, stat.log2norm$tQaun - stat.log2norm$min, stat.log2norm$max - stat.log2norm$tQaun) , ylim= c(0,100),
   #         names= c("fQaun-min", "median-min", "tQuan-min", "max-tQuan"), cex.axis = 0.7,
@@ -130,7 +130,7 @@ plotFigures.countTableWithClasses <- function( self,
   #
   #
   # file.prefix <- paste("libsum.log2norm_",parameters$recountID,sep = "")
-  # boxplot.file <- file.path(dir.NormImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
+  # boxplot.file <- file.path(parameters$dir$NormalizationImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
   # pdf(file = boxplot.file)
   # save.margins <- par("mar")
   # par(mar = c(14,5,5,1))
