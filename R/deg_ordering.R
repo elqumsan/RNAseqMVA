@@ -25,8 +25,8 @@
 #' RequiredBioconductorPackages(packages = c("DESeq2","edgeR"))
 #'
 #' recountID <- "SRP048759"
-#' loaded <- loadCounts(recountID = recountID, mergeRuns = T, classColumn = "tissue")
-#' degOrderdPValues <- DEGordering(countTable = loaded$countTable, classes =  loaded$classes, method = "edgeR")
+#' studyCases <- loadCounts(recountID = recountID, mergeRuns = T, classColumn = "tissue")
+#' degOrderdPValues <- DEGordering(countTable = studyCases$countTable, classes =  studyCases$classes, method = "edgeR")
 #' ## degPValues<- degPValues[order(degPValues$padj) ,]
 #'
 #' choose the method of differential expression analysis
