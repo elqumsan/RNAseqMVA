@@ -1,11 +1,3 @@
-
-
-## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ##
-## TEMPORARILY HERE
-## We define a method for stratified selection of training and testing sets,
-## In a second time we will creat a new class names TrainTestCounttable, and this
-## method will be attached to this class.
-
 #' @title Random sampling of n training sets in a CountTableWithClasses.
 #' @author Jacques van Helden and Mustafa AbuElQumsan
 #' @description Select n random subsets for training. among the biological samples from a CountTableWithClasses.
@@ -141,7 +133,7 @@ buildAttributes.countTableWithTrainTestSets <- function(self) {
         currentClass <- self$classNames[[c]]
         classSamples <- which (self$classLabels == currentClass)
         classTrain <- sample(classSamples, size = trainSizePerClass[[currentClass]], replace = FALSE)
-        trainIndices[[i]] <- append(trainIndices[[i]], classTrain)
+        trainIndices[[i]] <- as.vector(append(trainIndices[[i]], classTrain))
 
         classTest <- setdiff(classSamples, classTrain)
         testIndices[[i]] <- append(testIndices[[i]], classTest)
@@ -150,9 +142,8 @@ buildAttributes.countTableWithTrainTestSets <- function(self) {
 
         #classTest <- setdiff(self$samplesPerClass[[c]], classTrain)
       }
-      length(trainIndices[[i]])
-      length(testIndices[[i]])
-
+      # length(trainIndices[[i]])
+      # length(testIndices[[i]])
     }
   } else {
     ## Sample the training sets irrespective of class membership
@@ -172,12 +163,26 @@ buildAttributes.countTableWithTrainTestSets <- function(self) {
     }
   }
 
+  ## Sort train ant test indices (for the sake of readability)
+  for (i in 1:parameters$iterations) {
+    trainIndices[[i]] <- sort (trainIndices[[i]])
+    testIndices[[i]] <- sort (testIndices[[i]])
+  }
 
   ## Check that the sum of lengths for testindices and trainindices sum up to the length of the dataset
   if (sum(unlist(lapply(trainIndices, length)) + unlist(lapply(testIndices, length)) != self$nbSamples) > 0) {
     stop("Error with countTableWithTrainTestSets(): incorrect lengths of trainIndices and testIndices ")
   }
   message.with.time("\tTraining set selection done")
+
+  ## Convert trainIndices and testIndices from lists to
+  ## data frames, in order to facilitate their further usage.
+  # trainIndices <- as.data.frame.list(trainIndices)
+  # colnames(trainIndices) <- 1:ncol(trainIndices)
+  # rownames(trainIndices) <- 1:nrow(trainIndices)
+  # testIndices <- as.data.frame.list(testIndices)
+  # colnames(testIndicesgf) <- 1:ncol(testIndices)
+  # rownames(testIndices) <- 1:nrow(testIndices)
 
   # ## Select testIndices as the complement of train indices
   # testIndices <- list()
