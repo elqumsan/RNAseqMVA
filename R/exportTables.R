@@ -39,17 +39,17 @@ exportTables.countTableWithClasses <- function (self,
   # UseMethod("exportTables", self)
 
   ############## Exporting the count table ####################
-  count.file <- file.path(export.dir, paste(file.prefix, self$ID, "_count_table.tsv", extension, sep = ""))
+  count.file <- file.path(export.dir, paste(file.prefix, self$ID, "_count_table", extension, sep = ""))
   message("\t\tExporting count table in TSV file\t", count.file)
   write.table(self$countTable, file = count.file, row.names = FALSE, quote=FALSE, sep = "\t")
 
   ############## Exporting the  Pheno Table ####################
-  pheno.file <- file.path(export.dir, paste(file.prefix, self$ID, "_pheno_table.tsv", extension, sep = ""))
+  pheno.file <- file.path(export.dir, paste(file.prefix, self$ID, "_pheno_table", extension, sep = ""))
   message("\t\tExporting  pheno table in TSV file\t", pheno.file)
   write.table(self$phenoTable, file = pheno.file, row.names = FALSE, quote=FALSE, sep = "\t")
 
   ############## Exporting the class labels ####################
-  classLabel.file <- file.path(export.dir, paste(file.prefix, self$ID, "_class_labels.tsv", extension, sep = ""))
+  classLabel.file <- file.path(export.dir, paste(file.prefix, self$ID, "_class_labels", extension, sep = ""))
   message("\t\tExporting class labels in TSV file\t", classLabel.file)
   write.table(data.frame(sampleName = self$sampleNames, classLabel = self$classLabels),
               file = classLabel.file, row.names = FALSE, quote=FALSE, sep = "\t")
@@ -76,11 +76,11 @@ exportTables.countTableWithTrainTestSets <- function (self,
   # UseMethod("exportTables", self)
 
   ############## Exporting train and test indices ####################
-  trainIndices.file <- file.path(export.dir, paste(file.prefix, self$ID, "_trainindices.tsv", extension, sep = ""))
+  trainIndices.file <- file.path(export.dir, paste(file.prefix, self$ID, "_trainindices", extension, sep = ""))
   message("\t\tExporting count table in TSV file\t", trainIndices.file)
   write.table(as.data.frame(self$trainTestProperties$trainIndices), file = trainIndices.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
 
-  testIndices.file <- file.path(export.dir, paste(file.prefix, self$ID, "_testindices.tsv", extension, sep = ""))
+  testIndices.file <- file.path(export.dir, paste(file.prefix, self$ID, "_testindices", extension, sep = ""))
   message("\t\tExporting count table in TSV file\t", testIndices.file)
   write.table(as.data.frame(self$testTestProperties$testIndices), file = testIndices.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
 
