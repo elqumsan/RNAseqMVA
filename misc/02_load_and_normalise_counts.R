@@ -334,10 +334,16 @@ save.margins <- par("mar")
 par(mfrow=c(4,2))
 par(mar=c(4,15,5,1))
 for (recountID in names(studyCases)) {
-  heights <- barplot(sort(studyCases[[recountID]]$original$samplesPerClass, decreasing = TRUE),
-                     horiz = TRUE, las=1, cex.names = 0.7, main=recountID, xlab="Samples per class")
-  barplot(sort(studyCases[[recountID]]$filtered$samplesPerClass, decreasing = TRUE), add=TRUE,
-          horiz = TRUE, las=1, cex.names = 0.7, main=recountID, xlab="Samples per class", col="#00BB00")
+  heights <- barplot(
+    sort(studyCases[[recountID]]$original$samplesPerClass, decreasing = TRUE),
+    horiz = TRUE, las=1, cex.names = 0.7, main=recountID,
+    xlab="Samples per class", col="white")
+  barplot(sort(studyCases[[recountID]]$filtered$samplesPerClass, decreasing = TRUE),
+          add=TRUE, horiz = TRUE, las=1, cex.names = 0.7,
+          main=recountID, xlab="Samples per class",
+          col = studyCases[[recountID]]$filtered$classColors)
+#          col="#00BB00")
+  abline(v = studyCases[[recountID]]$parameters$minSamplesPerClass, col="red")
 }
 par(mfrow=c(1,1))
 par(mar = save.margins)
