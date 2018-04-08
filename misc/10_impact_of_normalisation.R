@@ -38,7 +38,7 @@ message.with.time("Drawing plots describing count table statistics")
 #postscript(paste(parameters$recountID, "counts_norm-perc75_hist", ".eps", sep = ""))
 #postscript(paste(" The normalisation count", ".eps", sep = ""))
 pdf(file=file.path(
-  dir.NormImpact,
+  parameters$dir$NormalizationImpact,
   paste(parameters$recountID, "_counts_norm-perc75_hist", ".pdf", sep = "")),
   width = 8, height = 8)
 hist(unlist(normCounts), breaks=100000, las=1,
@@ -211,11 +211,11 @@ if (parameters$compute) {
 if (parameters$compute) {
   ## Run differential analysis with DESeq2 and edgeR to define variable order
   message.with.time("Running DESeq2 and edgeR to define variable ordering")
-  DEG.DESeq2 <- DEGordering(loaded$countTable, loaded$classes, method = "DESeq2")
-  DEG.edgeR  <- DEGordering(loaded$countTable, loaded$classes, method = "edgeR")
+  DEG.DESeq2 <- DEGordering(studyCases$countTable, studyCases$classes, method = "DESeq2")
+  DEG.edgeR  <- DEGordering(studyCases$countTable, studyCases$classes, method = "edgeR")
 
-  sorted.log2.transformed.edgeR <- loaded$countTable[, DEG.DESeq2$geneOrder]
-  sorted.log2.transformed.DESeq2 <- loaded$countTable[, DEG.edgeR$geneOrder]
+  sorted.log2.transformed.edgeR <- studyCases$countTable[, DEG.DESeq2$geneOrder]
+  sorted.log2.transformed.DESeq2 <- studyCases$countTable[, DEG.edgeR$geneOrder]
 } else {
   message.with.time("Skipping DEG detection with edgeR and DESeq2. ")
 }
@@ -515,16 +515,16 @@ second.experiment <- function( countTable = rawCounts,
   ## extracting the results for the testing and learning error rate in tables and figures
   testTable.prefix <- paste(sep = "_", classifier, data.type, variable.type, deg.method)
   if(classifier == "knn"){
-    testTable.file <- file.path(table.dirs[classifier], paste(sep="", testTable.prefix, ".tsv"))
-    errorSummary.file <- file.path(table.dirs[classifier], paste(sep="", testTable.prefix, "_summary.tsv"))
+    testTable.file <- file.path(parameters$dir$tables[classifier], paste(sep="", testTable.prefix, ".tsv"))
+    errorSummary.file <- file.path(parameters$dir$tables[classifier], paste(sep="", testTable.prefix, "_summary.tsv"))
     boxplot.file <- file.path(
-      figure.dirs[classifier],
+      parameters$dir$figures[classifier],
       paste(sep="", testTable.prefix, "_R", parameters$iterations, "_learning_vs_test_error_boxplot.pdf"))
   }else {
-    testTable.file <- file.path(table.dirs[classifier], paste(sep="", testTable.prefix, ".tsv"))
-    errorSummary.file <- file.path(table.dirs[classifier], paste(sep="", testTable.prefix, "_summary.tsv"))
+    testTable.file <- file.path(parameters$dir$tables[classifier], paste(sep="", testTable.prefix, ".tsv"))
+    errorSummary.file <- file.path(parameters$dir$tables[classifier], paste(sep="", testTable.prefix, "_summary.tsv"))
     boxplot.file <- file.path(
-      figure.dirs[classifier],
+      parameters$dir$figures[classifier],
       paste(sep = "", testTable.prefix , "_R", parameters$iterations, "_learning_vs_test_error_boxplot.pdf"))
   }
 
@@ -665,11 +665,11 @@ if (parameters$compute) {
 if(parameters$compute){
   message.with.time("KNN classifier with DESeq2 and edgeR ordaring real data set , ", parameters$iterations, " iterations.")
 
-  DEG.DESeq2 <- DEGordering(loaded$countTable , loaded$classes, method = "DESeq2")
-  DEG.edgeR  <- DEGordering(loaded$countTable, loaded$classes, method = "edgeR")
+  DEG.DESeq2 <- DEGordering(studyCases$countTable , studyCases$classes, method = "DESeq2")
+  DEG.edgeR  <- DEGordering(studyCases$countTable, studyCases$classes, method = "edgeR")
 
-  sorted.log2.transformed.edgeR <- loaded$countTable[, DEG.DESeq2$geneOrder]
-  sorted.log2.transformed.DESeq2 <- loaded$countTable[, DEG.edgeR$geneOrder]
+  sorted.log2.transformed.edgeR <- studyCases$countTable[, DEG.DESeq2$geneOrder]
+  sorted.log2.transformed.DESeq2 <- studyCases$countTable[, DEG.edgeR$geneOrder]
 
   iteratedKnn.test.edgeR.allVariables <- data.frame()
   iteratedKnn.test.DESeq2.allVariables <- data.frame()
@@ -709,20 +709,20 @@ if(parameters$compute){
 ### Results of KNN real data set with edgeR ordaring variables
 if (parameters$save.tables) {
 
-  write.table(file = file.path(table.dirs[classifier], "testing_KNN_with_edgeR_ordered_variables_for_real_dataset.tsv"),
+  write.table(file = file.path(parameters$dir$tables[classifier], "testing_KNN_with_edgeR_ordered_variables_for_real_dataset.tsv"),
               quote=FALSE, sep="\t", row.names=TRUE, col.names = NA,
               x = iteratedKnn.test.edgeR)
 }
 
 summaryKnnedgeRTidy <- tidy(summary(iteratedKnn.test.edgeR$testing.error.rate))
 if (parameters$save.tables) {
-  write.table(file = file.path(table.dirs[classifier], "KNN_Summary_with_edgeR_ordered_valriable_for_real_dataset.tsv"),
+  write.table(file = file.path(parameters$dir$tables[classifier], "KNN_Summary_with_edgeR_ordered_valriable_for_real_dataset.tsv"),
               quote=FALSE, sep="\t", row.names=TRUE, col.names = NA,
               x = summaryKnnedgeRTidy)
 }
 
 
-pdf(file = file.path(figure.dirs[classifier], paste("KNN_testing_with_edgeR_ordered_variables_for_real_dataset", ".pdf", sep = "")),
+pdf(file = file.path(parameters$dir$figures[classifier], paste("KNN_testing_with_edgeR_ordered_variables_for_real_dataset", ".pdf", sep = "")),
     width =9 , height = 5 )
 boxplot(iteratedKnn.test.edgeR[,c("training.error.rate", "testing.error.rate")],
         ylim = c(0,1),
@@ -735,19 +735,19 @@ silence <- dev.off()
 
 #### Results of KNN real data set with DESseq2 ordaring variables
 if (parameters$save.tables) {
-  write.table(file = file.path(table.dirs[classifier], "Testing_KNN_classifier_DESeq2_ordered_variables_for_real_dataset.tsv"),
+  write.table(file = file.path(parameters$dir$tables[classifier], "Testing_KNN_classifier_DESeq2_ordered_variables_for_real_dataset.tsv"),
               quote=FALSE, sep="\t", row.names=TRUE, col.names = NA,
               x = iteratedKnn.test.DESeq2)
 }
 
 summaryKnnDESeq2Tidy <- tidy(summary(iteratedKnn.test.DESeq2$testing.error.rate))
 if (parameters$save.tables) {
-  write.table(file = file.path(figure.dirs[classifier], "testing_KNN_with_DESeq2_ordered_variables_for_real_dataset.tsv"),
+  write.table(file = file.path(parameters$dir$figures[classifier], "testing_KNN_with_DESeq2_ordered_variables_for_real_dataset.tsv"),
               quote=FALSE, sep="\t", row.names=TRUE, col.names = NA,
               x = summaryKnnDESeq2Tidy)
 }
 
-pdf(file = file.path(figure.dirs[classifier], paste( "KNN_testing_with_DESeq2_ordered_for_real_dataset", ".pdf", sep = "")),
+pdf(file = file.path(parameters$dir$figures[classifier], paste( "KNN_testing_with_DESeq2_ordered_for_real_dataset", ".pdf", sep = "")),
     width =9 , height = 5 )
 boxplot(iteratedKnn.test.DESeq2[,c("training.error.rate", "testing.error.rate")],
         ylim = c(0,1),
@@ -764,8 +764,8 @@ silence <- dev.off()
 if(parameters$compute) {
   message.with.time("KNN classifier with DESeq2 and edgeR ordaring real data set , ", parameters$iterations, " iterations.")
 
-  DEG.DESeq2 <-  DEGordering(loaded$countTable , loaded$classes, method = "DESeq2")
-  DEG.edgeR  <- DEGordering(loaded$countTable, loaded$classes, method = "edgeR")
+  DEG.DESeq2 <-  DEGordering(studyCases$countTable , studyCases$classes, method = "DESeq2")
+  DEG.edgeR  <- DEGordering(studyCases$countTable, studyCases$classes, method = "edgeR")
 
   sorted.log2.transformed.edgeR <-log2norm$Counts[, DEG.DESeq2$geneOrder]
   sorted.log2.transformed.DESeq2 <- log2norm$Counts[, DEG.edgeR$geneOrder]
@@ -844,25 +844,25 @@ if(parameters$compute) {
 ## process
 
 ### Results of KNN permuted with edgeR ordaring variables
-write.table(file = file.path(table.dirs[classifier], "KNN_testing_with_edgeR_ordered_variables_for_permuted_dataset.tsv"),
+write.table(file = file.path(parameters$dir$tables[classifier], "KNN_testing_with_edgeR_ordered_variables_for_permuted_dataset.tsv"),
             quote=FALSE, sep="\t", row.names=TRUE, col.names = NA,
             x = iteratedKnn.test.edgeRPermuted )
 summaryedgeRPermutedTidy <- tidy(summary(iteratedKnn.test.edgeRPermuted$testing.error.rate))
-write.table(file = file.path(figure.dirs[classifier], "KNN_testing_edgeR_with_ordered_variables_for_permuted_dataset.tsv"),
+write.table(file = file.path(parameters$dir$figures[classifier], "KNN_testing_edgeR_with_ordered_variables_for_permuted_dataset.tsv"),
             quote=FALSE, sep="\t", row.names=TRUE, col.names = NA,
             x = summaryedgeRPermutedTidy)
-pdf(file = file.path(table.dirs[classifier], paste( "KNN_testing_with_edgeR_ordered_variables_for_permuted_dataset", parameters$iterations,
+pdf(file = file.path(parameters$dir$tables[classifier], paste( "KNN_testing_with_edgeR_ordered_variables_for_permuted_dataset", parameters$iterations,
                                            ".pdf")), width = 9 , height = 5)
 boxplot(iteratedKnn.test.edgeRPermuted[, c("training.error.rate", "testing.error.rate")],
         ylim= c(0,1), main="Testing KNN classifier with edgeR ordered variables for permuted dataset")
 silence <- dev.off()
 
 ### Results of KNN permuted with DESeq2 ordaring variables
-write.table(file = file.path(table.dirs[classifier], "KNN_testing_with_DESeq2_ordered_variables_for_permuted_dataset.tsv"),
+write.table(file = file.path(parameters$dir$tables[classifier], "KNN_testing_with_DESeq2_ordered_variables_for_permuted_dataset.tsv"),
             quote=FALSE, sep="\t", row.names=TRUE, col.names = NA,
             x = iteratedKnn.test.DESeq2Permuted)
 summaryDESeq2PermutedTidy <- tidy(summary(iteratedKnn.test.DESeq2Permuted$testing.error.rate))
-write.table(file = file.path(figure.dirs[classifier], "KNN_testing_DESeq2_ordered_varailes_for_permuted_dataset.tsv"),
+write.table(file = file.path(parameters$dir$figures[classifier], "KNN_testing_DESeq2_ordered_varailes_for_permuted_dataset.tsv"),
             quote=FALSE, sep="\t", row.names=TRUE, col.names = NA,
             x = summaryDESeq2PermutedTidy)
 pdf(file = file.path(dir.figures, paste( "KNN_testing_DESeq2_ordered_varibles_for_permuted_real_dataset", parameters$iterations,
@@ -881,8 +881,8 @@ silence <- dev.off()
 if(parameters$compute){
   message.with.time("analysis RF classifier with DESeq2 and edgeR ordaring real data set , ", parameters$iterations, " iterations.")
 
-  # DEG.DESeq2 <- DEGordering(loaded$countTable , loaded$classes, method = "DESeq2")
-  # DEG.edgeR  <- DEGordering(loaded$countTable, loaded$classes, method = "edgeR")
+  # DEG.DESeq2 <- DEGordering(studyCases$countTable , studyCases$classes, method = "DESeq2")
+  # DEG.edgeR  <- DEGordering(studyCases$countTable, studyCases$classes, method = "edgeR")
 
   sorted.log2.transformed.edgeR <-log2norm$Counts[, DEG.DESeq2$geneOrder]
   sorted.log2.transformed.DESeq2 <- log2norm$Counts[, DEG.edgeR$geneOrder]
@@ -917,11 +917,11 @@ if(parameters$compute){
 #iterated.test.edgeR
 
 ### Results of FR real data set with edgeR ordaring variables
-write.table(file = file.path(table.dirs[classifier], "Testing_RF_with_log2-nrmalised_edgeR_ordered_variables_for_real_dataset.tsv"),
+write.table(file = file.path(parameters$dir$tables[classifier], "Testing_RF_with_log2-nrmalised_edgeR_ordered_variables_for_real_dataset.tsv"),
             quote=FALSE, sep="\t", row.names=TRUE, col.names = NA,
             x = iteratedRf.test.edgeR)
 summaryRFedgeRTidy <- tidy(summary(iteratedRf.test.edgeR$testing.error.rate))
-write.table(file = file.path(table.dirs[classifier], "RF_testing_for_edger_ordered_log2-normalised_variables_with_real_dataset.tsv"),
+write.table(file = file.path(parameters$dir$tables[classifier], "RF_testing_for_edger_ordered_log2-normalised_variables_with_real_dataset.tsv"),
             quote=FALSE, sep="\t", row.names=TRUE, col.names = NA,
             x = summaryRFedgeRTidy)
 pdf(file = file.path(dir.rFsubFigures, paste("RF_testing_with_edgeR_odered_with_log2-normalised_for_real_dataset", ".pdf", sep = "")),
@@ -936,11 +936,11 @@ silence <- dev.off()
 ## the effect of such ordering onto the efficaincy of the RF classifier.
 
 #### Results of RF real data set with DESseq2 ordaring variables
-write.table(file = file.path(table.dirs[classifier], "Testing_RF_with_DESeq2_ordered_variables_with_log2-normalised_for_real_dataset.tsv"),
+write.table(file = file.path(parameters$dir$tables[classifier], "Testing_RF_with_DESeq2_ordered_variables_with_log2-normalised_for_real_dataset.tsv"),
             quote=FALSE, sep="\t", row.names=TRUE, col.names = NA,
             x = iterated.test.DESeq2)
 summaryRFDESeq2Tidy <- tidy(summary(iterated.test.DESeq2$testing.error.rate))
-write.table(file = file.path(figure.dirs[classifier], "RF_summary_testing_with_DESeq2_ordered_variables_log2_normalised_for_real_dataset.tsv"),
+write.table(file = file.path(parameters$dir$figures[classifier], "RF_summary_testing_with_DESeq2_ordered_variables_log2_normalised_for_real_dataset.tsv"),
             quote=FALSE, sep="\t", row.names=TRUE, col.names = NA,
             x = summaryRFDESeq2Tidy)
 pdf(file = file.path(dir.figures, paste("RF_testing_with_DESeq2_ordered_variables_log2_normalised_for_real_dataset", ".pdf", sep = "")),
@@ -960,8 +960,8 @@ silence <- dev.off()
 if(parameters$compute){
   message.with.time("analysis RF classifier with DESeq2 and edgeR ordaring permuted data set , ", parameters$iterations, " iterations.")
 
-  # DEG.DESeq2 <- DEGordering(loaded$countTable , loaded$classes, method = "DESeq2")
-  # DEG.edgeR  <- DEGordering(loaded$countTable, loaded$classes, method = "edgeR")
+  # DEG.DESeq2 <- DEGordering(studyCases$countTable , studyCases$classes, method = "DESeq2")
+  # DEG.edgeR  <- DEGordering(studyCases$countTable, studyCases$classes, method = "edgeR")
 
   sorted.log2.transformed.edgeR <-log2norm$Counts[, DEG.DESeq2$geneOrder]
   sorted.log2.transformed.DESeq2 <- log2norm$Counts[, DEG.edgeR$geneOrder]
@@ -997,14 +997,14 @@ if(parameters$compute){
 #iterated.test.edgeR
 
 ### Results of FR with permuted data set with edgeR ordaring variables
-write.table(file = file.path(table.dirs[classifier], "Testing_RF_with_edgeR_ordered_with_log2-normalised_permuted_dataset.tsv"),
+write.table(file = file.path(parameters$dir$tables[classifier], "Testing_RF_with_edgeR_ordered_with_log2-normalised_permuted_dataset.tsv"),
             quote=FALSE, sep="\t", row.names=TRUE, col.names = NA,
             x = iteratedRf.test.edgeRPermuted)
 summaryRFedgeRTidy <- tidy(summary(iteratedRf.test.edgeRPermuted$testing.error.rate))
-write.table(file = file.path(table.dirs[classifier], "Testing_RF_with_edgeR_ordered_with_log2-normalised_permuted_dataset.tsv"),
+write.table(file = file.path(parameters$dir$tables[classifier], "Testing_RF_with_edgeR_ordered_with_log2-normalised_permuted_dataset.tsv"),
             quote=FALSE, sep="\t", row.names=TRUE, col.names = NA,
             x = summaryRFedgeRTidy)
-pdf(file = file.path(figure.dirs[classifier], paste( "Testing_RF_with_edgeR_ordered_with_log2-normalised_permuted_dataset", ".pdf", sep = "")),
+pdf(file = file.path(parameters$dir$figures[classifier], paste( "Testing_RF_with_edgeR_ordered_with_log2-normalised_permuted_dataset", ".pdf", sep = "")),
     width =9 , height = 7 )
 boxplot(iteratedRf.test.edgeRPermuted[,c("training.error.rate", "testing.error.rate")],
         ylim = c(0,1),
@@ -1016,14 +1016,14 @@ silence <- dev.off()
 ## the effect of such ordering onto the efficaincy of the RF classifier.
 
 #### Results of RF permuted data set with DESseq2 ordaring variables
-write.table(file = file.path(table.dirs[classifier], "Testing_RF_with_DESeq2_ordered_with_log2-normalised_permuted_dataset.tsv"),
+write.table(file = file.path(parameters$dir$tables[classifier], "Testing_RF_with_DESeq2_ordered_with_log2-normalised_permuted_dataset.tsv"),
             quote=FALSE, sep="\t", row.names=TRUE, col.names = NA,
             x = iteratedRf.test.DESeq2Permuted)
 summaryRFDESeq2Tidy <- tidy(summary(iteratedRf.test.DESeq2Permuted$testing.error.rate))
-write.table(file = file.path(table.dirs[classifier], "Testing_RF_with_DESeq2_ordered_with_log2-normalised_permuted_dataset.tsv"),
+write.table(file = file.path(parameters$dir$tables[classifier], "Testing_RF_with_DESeq2_ordered_with_log2-normalised_permuted_dataset.tsv"),
             quote=FALSE, sep="\t", row.names=TRUE, col.names = NA,
             x = summaryRFDESeq2Tidy)
-pdf(file = file.path(figure.dirs[classifier], paste("Testing_RF_with_DESeq2_ordered_with_log2-normalised_permuted_dataset", ".pdf", sep = "")),
+pdf(file = file.path(parameters$dir$figures[classifier], paste("Testing_RF_with_DESeq2_ordered_with_log2-normalised_permuted_dataset", ".pdf", sep = "")),
     width =9 , height = 7 )
 boxplot(iteratedRf.test.DESeq2Permuted[,c("training.error.rate", "testing.error.rate")],
         ylim = c(0,1),

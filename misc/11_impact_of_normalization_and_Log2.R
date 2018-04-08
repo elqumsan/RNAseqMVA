@@ -14,7 +14,7 @@
 #'
 #'
 
-rawTable <- loaded$originalExperiment$countTable
+rawTable <- studyCases$originalExperiment$countTable
 stat.raw <- list()
 
 # M = data.frame(matrix(rnorm(100000),nrow=500))
@@ -33,7 +33,7 @@ stat.raw$sd = apply(rawTable,2,sd)
 message.with.time("\t\tDrawing plots describing original count table statistics")
 
 file.prefix <- paste("main_stat.raw_",parameters$recountID,sep = "")
-boxplot.file <- file.path(dir.NormImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
+boxplot.file <- file.path(parameters$dir$NormalizationImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
 pdf(file = boxplot.file)
 boxplot(cbind(stat.raw$min, stat.raw$fQuan, stat.raw$median, stat.raw$tQaun, stat.raw$max, stat.raw$mean, stat.raw$sd) ,
         ylim= c(0,50000), names=c("min","F.Qaunt","median","T.Qaunt","max","mean","sd"), las=1, cex.axis = 0.7,
@@ -41,7 +41,7 @@ boxplot(cbind(stat.raw$min, stat.raw$fQuan, stat.raw$median, stat.raw$tQaun, sta
 silence <- dev.off()
 
 file.prefix <- paste("diff_bet_stat.raw_", parameters$recountID, sep = "")
-boxplot.file <- file.path(dir.NormImpact, paste(file.prefix, "boxplot.pdf", sep = "_"))
+boxplot.file <- file.path(parameters$dir$NormalizationImpact, paste(file.prefix, "boxplot.pdf", sep = "_"))
 pdf(file = boxplot.file)
 boxplot(cbind(stat.raw$fQuan - stat.raw$min, stat.raw$median - stat.raw$min, stat.raw$tQaun - stat.raw$min, stat.raw$max - stat.raw$tQaun) , ylim= c(0,50000),
         names= c("fQaun-min", "median-min", "tQuan-min", "max-tQuan"), cex.axis = 0.7,
@@ -50,20 +50,20 @@ silence <- dev.off()
 
 ##### cheking the No. libsum for each classes in the Raw Table  ##################
 
-# data.frame(libsum=apply(loaded$countTable, 1, sum), class=loaded$classes)
+# data.frame(libsum=apply(studyCases$countTable, 1, sum), class=studyCases$classes)
 
-# x <- data.frame(q3 = apply(rawCounts$Counts, 1, quantile, q=0.75), sum = apply(rawCounts$Counts, 1, sum), class=loaded$classes)
+# x <- data.frame(q3 = apply(rawCounts$Counts, 1, quantile, q=0.75), sum = apply(rawCounts$Counts, 1, sum), class=studyCases$classes)
 #
-# x <- data.frame(q3 = apply(rawCounts$Counts, 1, quantile, q=0.75), sum = apply(rawCounts$Counts, 1, sum), class=loaded$classes)
+# x <- data.frame(q3 = apply(rawCounts$Counts, 1, quantile, q=0.75), sum = apply(rawCounts$Counts, 1, sum), class=studyCases$classes)
 
-libsum=apply(loaded$originalExperiment$countTable, 2, sum)
-x <- data.frame(libsum=apply(loaded$originalExperiment$countTable, 2, sum), class=loaded$originalExperiment$classLabels)
+libsum=apply(studyCases$originalExperiment$countTable, 2, sum)
+x <- data.frame(libsum=apply(studyCases$originalExperiment$countTable, 2, sum), class=studyCases$originalExperiment$classLabels)
 
 head(x)
 
 
 file.prefix <- paste("libsum.raw_",parameters$recountID,sep = "")
-boxplot.file <- file.path(dir.NormImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
+boxplot.file <- file.path(parameters$dir$NormalizationImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
 pdf(file = boxplot.file)
 save.margins <- par("mar")
 par(mar = c(14,5,5,1))
@@ -74,7 +74,7 @@ silence <- dev.off()
 
 
 ##### some basic statistics to exhibit the nature of the log2norm data #####
-log2normTable <- loaded$log2norm$counts
+log2normTable <- studyCases$log2norm$counts
 stat.log2norm <- list()
 
 stat.log2norm$min = apply(log2normTable,2,min)
@@ -90,7 +90,7 @@ stat.log2norm$sd = apply(log2normTable,2,sd)
 message.with.time("Drawing plots describing log2norm table statistics")
 
 file.prefix <- paste("main_stat.log2norm_",parameters$recountID,sep = "")
-boxplot.file <- file.path(dir.NormImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
+boxplot.file <- file.path(parameters$dir$NormalizationImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
 pdf(file = boxplot.file)
 boxplot(cbind(stat.log2norm$min, stat.log2norm$fQuan, stat.log2norm$median, stat.log2norm$tQaun, stat.log2norm$max, stat.log2norm$mean, stat.log2norm$sd) ,
         ylim= c(0,100), names=c("min","F.Qaunt","median","T.Qaunt","max","mean","sd"), las=1, cex.axis = 0.7,
@@ -98,7 +98,7 @@ boxplot(cbind(stat.log2norm$min, stat.log2norm$fQuan, stat.log2norm$median, stat
 silence <- dev.off()
 
 file.prefix <- paste("diff_bet_stat.log2norm_", parameters$recountID, sep = "")
-boxplot.file <- file.path(dir.NormImpact, paste(file.prefix, "boxplot.pdf", sep = "_"))
+boxplot.file <- file.path(parameters$dir$NormalizationImpact, paste(file.prefix, "boxplot.pdf", sep = "_"))
 pdf(file = boxplot.file)
 boxplot(cbind(stat.log2norm$fQuan - stat.log2norm$min, stat.log2norm$median - stat.log2norm$min, stat.log2norm$tQaun - stat.log2norm$min, stat.log2norm$max - stat.log2norm$tQaun) , ylim= c(0,100),
         names= c("fQaun-min", "median-min", "tQuan-min", "max-tQuan"), cex.axis = 0.7,
@@ -107,20 +107,20 @@ silence <- dev.off()
 
 ##### cheking the No. libsum for each classes in the log2norm Table  ##################
 
-# data.frame(libsum=apply(loaded$countTable, 1, sum), class=loaded$classes)
+# data.frame(libsum=apply(studyCases$countTable, 1, sum), class=studyCases$classes)
 
-# x <- data.frame(q3 = apply(log2norm$Counts, 1, quantile, q=0.75), sum = apply(log2norm$Counts, 1, sum), class=loaded$classes)
+# x <- data.frame(q3 = apply(log2norm$Counts, 1, quantile, q=0.75), sum = apply(log2norm$Counts, 1, sum), class=studyCases$classes)
 #
-# x <- data.frame(q3 = apply(rawCounts1, 1, quantile, q=0.75), sum = apply(rawCounts1, 1, sum), class=loaded$classes)
+# x <- data.frame(q3 = apply(rawCounts1, 1, quantile, q=0.75), sum = apply(rawCounts1, 1, sum), class=studyCases$classes)
 
-x <- data.frame(libsum=apply(loaded$log2norm$counts, 2, sum), class=loaded$log2norm$classLabels)
+x <- data.frame(libsum=apply(studyCases$log2norm$counts, 2, sum), class=studyCases$log2norm$classLabels)
 
 head(x)
 
 #
 
 file.prefix <- paste("libsum.log2norm_",parameters$recountID,sep = "")
-boxplot.file <- file.path(dir.NormImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
+boxplot.file <- file.path(parameters$dir$NormalizationImpact, paste(file.prefix,"boxplot.pdf", sep = "_"))
 pdf(file = boxplot.file)
 save.margins <- par("mar")
 par(mar = c(14,5,5,1))
@@ -138,7 +138,7 @@ message.with.time("\tDrawing plots describing count table statistics and distrib
 #### Compute a trimmed mean: suppress the 5% top and bottom values ####
 if (parameters$compute) {
   message.with.time("Computing trimmed mean of normalized counts")
-  x <- unlist(loaded$norm$counts)
+  x <- unlist(studyCases$norm$counts)
   q0.05 <- quantile(x = x, probs = 0.05, na.rm=TRUE)
   q0.95 <- quantile(x = x, probs = 0.95, na.rm=TRUE)
   trimmed <- (x[x > q0.05 & x < q0.95])
@@ -152,15 +152,15 @@ if (parameters$compute) {
 
 
 ## histogram of normalized counts. Zoom on the representative part of the histogram
-file.prefix <- file.path(dir.NormImpact, paste(parameters$recountID, "_counts_norm_perc75_hist.pdf", sep = ""))
+file.prefix <- file.path(parameters$dir$NormalizationImpact, paste(parameters$recountID, "_counts_norm_perc75_hist.pdf", sep = ""))
 
 pdf(file=file.prefix,
   width = 8, height = 8)
-hist(unlist(loaded$norm$counts), breaks=10, las=1,
+hist(unlist(studyCases$norm$counts), breaks=10, las=1,
      xlab="normalized counts", ylab="Occurrences", col="grey",
      main=paste(parameters$recountID, "Normalised count distrib"))
-abline(v=mean(unlist(loaded$norm$counts)), lwd=1, col="darkgreen") # mark the mean
-abline(v=median(unlist(loaded$norm$counts)), lwd=1, col="blue") # mark the median
+abline(v=mean(unlist(studyCases$norm$counts)), lwd=1, col="darkgreen") # mark the mean
+abline(v=median(unlist(studyCases$norm$counts)), lwd=1, col="blue") # mark the median
 abline(v=mean(unlist(trimmed)), lwd=1, col="purple") # mark the trimmed mean
 legend("topright",lwd=2,
        legend=c("mean", "median", "trimmed mean"),
@@ -171,7 +171,7 @@ silence <- dev.off()
 #### Compute a trimmed mean: suppress the 5% top and bottom values ####
 if (parameters$compute) {
   message.with.time("Computing trimmed mean of log2normalized counts")
-  x <- unlist(loaded$log2norm$counts)
+  x <- unlist(studyCases$log2norm$counts)
   q0.05 <- quantile(x = x, probs = 0.05, na.rm=TRUE)
   q0.95 <- quantile(x = x, probs = 0.95, na.rm=TRUE)
   log2.trimmed <- (x[x > q0.05 & x < q0.95])
@@ -180,15 +180,15 @@ if (parameters$compute) {
   message.with.time("Skipping a trimmed mean")
 }
 
-file.prefix <- file.path(dir.NormImpact, paste(parameters$recountID, "_counts_norm_perc75_and_log2_hist.pdf", sep = ""))
+file.prefix <- file.path(parameters$dir$NormalizationImpact, paste(parameters$recountID, "_counts_norm_perc75_and_log2_hist.pdf", sep = ""))
 
 pdf(file=file.prefix,
     width = 8, height = 8)
-hist(unlist(loaded$log2norm$counts), breaks=100, las=1,
+hist(unlist(studyCases$log2norm$counts), breaks=100, las=1,
      xlab="log2 Normalized counts", ylab="Occurrences", col="grey",
      main=paste(parameters$recountID, " log 2 Normalised count distribution"))
-abline(v=mean(unlist(loaded$log2norm$counts)), lwd=1, col="darkgreen") # mark the mean
-abline(v=median(unlist(loaded$log2norm$counts)), lwd=1, col="blue") # mark the median
+abline(v=mean(unlist(studyCases$log2norm$counts)), lwd=1, col="darkgreen") # mark the mean
+abline(v=median(unlist(studyCases$log2norm$counts)), lwd=1, col="blue") # mark the median
 abline(v=mean(unlist(log2.trimmed)), lwd=1, col="purple") # mark the trimmed mean
 legend("topright",lwd=2,
        legend=c("mean", "median", "trimmed mean"),
@@ -197,11 +197,11 @@ silence <- dev.off()
 
 
 ######  interpretation the difference between the mean and the third quartile raw count #####
-file.prefix <- file.path(dir.NormImpact, paste(parameters$recountID, "_rawcounts_mean_vs_Q3.pdf", sep = ""))
+file.prefix <- file.path(parameters$dir$NormalizationImpact, paste(parameters$recountID, "_rawcounts_mean_vs_Q3.pdf", sep = ""))
 pdf(file= file.prefix,
   width = 8, height = 8)
-plot(x=apply(loaded$originalExperiment$countTable, 2, mean),
-     y=signif(digits=3, apply(loaded$originalExperiment$countTable, 2, quantile, 0.75)),
+plot(x=apply(studyCases$originalExperiment$countTable, 2, mean),
+     y=signif(digits=3, apply(studyCases$originalExperiment$countTable, 2, quantile, 0.75)),
      main="raw counts: Percentile 75 versus mean",
      xlab="Mean counts per sample",
      ylab="Percentile 75",
@@ -212,11 +212,11 @@ legend("topleft", legend=names(classColors), col=classColors, pch=1, cex=0.8)
 silence <- dev.off()
 
 ######  interpretation the difference between the mean and the third quartile log2counts #####
-file.prefix <- file.path(dir.NormImpact, paste(parameters$recountID, "_log2norm_mean_vs_Q3.pdf", sep = ""))
+file.prefix <- file.path(parameters$dir$NormalizationImpact, paste(parameters$recountID, "_log2norm_mean_vs_Q3.pdf", sep = ""))
 pdf(file= file.prefix,
     width = 8, height = 8)
-plot(x=apply(loaded$log2norm$counts, 1, mean),
-     y=signif(digits=3, apply(loaded$log2norm$counts, 1, quantile, 0.75)),
+plot(x=apply(studyCases$log2norm$counts, 1, mean),
+     y=signif(digits=3, apply(studyCases$log2norm$counts, 1, quantile, 0.75)),
      main="log2norm counts: Percentile 75 versus mean",
      xlab="Mean counts per sample",
      ylab="Percentile 75",
@@ -255,15 +255,15 @@ message.with.time(" finishing from drawing plots describing count table statisti
 # recountID <- "SRP048759"
 
 # message("Loading count table from recount", "; recountID = ", recountID)
-# loaded <- loadCounts(recountID = recountID, mergeRuns = T, classColumn = "tissue")
-# rawCounts <- loaded$countTable ## Note: one row per sample, one column per gene
+# studyCases <- loadCounts(recountID = recountID, mergeRuns = T, classColumn = "tissue")
+# rawCounts <- studyCases$countTable ## Note: one row per sample, one column per gene
 # dim(rawCounts)
 
 ################################################################
 ## Assign a specific color to each sammple according to its class
-# pheno <- loaded$phenoTable
-# classes <- loaded$classes
-# distinct.classes <- as.vector(unique(loaded$classes))
+# pheno <- studyCases$phenoTable
+# classes <- studyCases$classes
+# distinct.classes <- as.vector(unique(studyCases$classes))
 
 
 ##########################################################################################
@@ -275,7 +275,7 @@ message.with.time(" finishing from drawing plots describing count table statisti
 # iteratedKnnTestingErrorRatesLog2Norm <- data.frame()
 # for (i in 1:parameters$iterations) {
 #   # computing the testing errors rate for the KNN classfier
-#   oneTestKnn <- MisclassificationEstimate(log2normCounts , loaded$classes ,trainingProportion = 2/3, classifier = "knn" )
+#   oneTestKnn <- MisclassificationEstimate(log2normCounts , studyCases$classes ,trainingProportion = 2/3, classifier = "knn" )
 #   iteratedKnnTestingErrorRatesLog2Norm <- rbind(iteratedKnnTestingErrorRatesLog2Norm, oneTestKnn$stats)
 # }
 #
@@ -291,8 +291,8 @@ message.with.time(" finishing from drawing plots describing count table statisti
 
 #message("KNN classifier with DESeq2 and edgeR ordaring real data set , ", parameters$iterations, " iterations.")
 
-#DEG.DESeq <-  DEGordering(loaded$countTable , loaded$classes, method = "DESeq2")
-#DEG.edgeR  <- DEGordering(loaded$countTable, loaded$classes, method = "edgeR")
+#DEG.DESeq <-  DEGordering(studyCases$countTable , studyCases$classes, method = "DESeq2")
+#DEG.edgeR  <- DEGordering(studyCases$countTable, studyCases$classes, method = "edgeR")
 
 # sorted.log2.transformed.edgeR <-log2normCounts[, DEG.DESeq$geneOrder]
 # sorted.log2.transformed.DESeq <- log2normCounts[, DEG.edgeR$geneOrder]
@@ -349,10 +349,10 @@ message.with.time(" finishing from drawing plots describing count table statisti
 #
 # ################################################################################
 # #### Ploting the Miscalssification error rate with log2-transformed
-# write.table(file = file.path(table.dirs[classifier], paste(parameters$recountID, "Impact_of_Log2_transformed_onto_ordering_variables.tsv")),
+# write.table(file = file.path(parameters$dir$tables[classifier], paste(parameters$recountID, "Impact_of_Log2_transformed_onto_ordering_variables.tsv")),
 #             x = orderediteratedKnn.test.DESeq.log2Norm.err )
 #
-# pdf(file = file.path(figure.dirs[classifier], paste(parameters$recountID, "Impact_of_Log2_transformed_onto_ordering_variables", ".pdf")),
+# pdf(file = file.path(parameters$dir$figures[classifier], paste(parameters$recountID, "Impact_of_Log2_transformed_onto_ordering_variables", ".pdf")),
 #     width = 9, height = 7 )
 # save.margins <- par("mar")
 # par(mar = c(3, 10, 7, 1))
@@ -379,7 +379,7 @@ message.with.time(" finishing from drawing plots describing count table statisti
 # iteratedKnnTestingErrorRatesLog2Norm <- data.frame()
 # for (i in 1:parameters$iterations) {
 #   # computing the testing errors rate for the KNN classfier
-#   oneTestKnn <- MisclassificationEstimate(log2normCounts , sample(loaded$classes) ,trainingProportion = 2/3, classifier = "knn" )
+#   oneTestKnn <- MisclassificationEstimate(log2normCounts , sample(studyCases$classes) ,trainingProportion = 2/3, classifier = "knn" )
 #   iteratedKnnTestingErrorRatesLog2NormPermuted <- rbind(iteratedKnnTestingErrorRatesLog2NormPermuted, oneTestKnn$stats)
 # }
 #
@@ -408,7 +408,7 @@ message.with.time(" finishing from drawing plots describing count table statisti
 #   var.label <- paste("DESeq2_top", varnb, sep = "_")
 #   message("DESeq2-ordered- Permuted ", v, "/", length(nb.variables), ": ",varnb," variables")
 #   for(i in parameters$iterations){
-#     oneTestlog2Normalised <-MisclassificationEstimate(countTable = sorted.log2.transformed.DESeq[, 1:varnb], classes = sample(loaded$classes), classifier = "knn")
+#     oneTestlog2Normalised <-MisclassificationEstimate(countTable = sorted.log2.transformed.DESeq[, 1:varnb], classes = sample(studyCases$classes), classifier = "knn")
 #     iteratedKnn.test.DESeq.Log2NormPermuted <- rbind(iteratedKnn.test.edgeR.Log2NormPermuted , oneTestlog2Normalised$stats)
 #   }
 #   iteratedKnn.test.DESeq.Log2NormPermuted.by.varnb[[var.label]] <- iteratedKnn.test.DESeq.Log2NormPermuted
@@ -430,9 +430,9 @@ message.with.time(" finishing from drawing plots describing count table statisti
 #   data.frame(iteratedKnnTestingErrorRatesLog2NormPermuted$testing.error.rate )
 # ################################################################################
 # #### Ploting the Miscalssification error rate with log2-transformed
-# write.table(file = file.path(table.dirs[classifier], paste(parameters$recountID,"Impact_of_Log2_transformed_onto_ordering_variables_permuted.tsv")),
+# write.table(file = file.path(parameters$dir$tables[classifier], paste(parameters$recountID,"Impact_of_Log2_transformed_onto_ordering_variables_permuted.tsv")),
 #             x = orderediteratedKnn.testDESeq.log2Norm.error )
-# pdf(file = file.path(figure.dirs[classifier], paste("Impact_of_Log2_transformed_onto_ordering_variables_permuted", ".pdf")),
+# pdf(file = file.path(parameters$dir$figures[classifier], paste("Impact_of_Log2_transformed_onto_ordering_variables_permuted", ".pdf")),
 #     width = 9, height = 7)
 # save.margins <- par("mar")
 # par(mar = c(3, 10, 7, 1))

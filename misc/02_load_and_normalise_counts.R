@@ -2,12 +2,13 @@
 ## Load a count Table from recount-experiment, merge counts per sample
 ## and apply some pre-filtering (remove zero-variance and near-zero-variance genes).
 
-loaded <- list() ## a list containing all the loaded datasets + their pre-processed data
+studyCases <- list() ## a list containing all the loaded datasets + their pre-processed data
 
 for (recountID in selectedRecountIDs) {
 
   #### Specify generic and recountID-specific parameters ####
   parameters <- initRecountID(recountID, configFile)
+
   # ## Load default parameters for each new recountID
   # ## (was previously parsed from the YAML file)
   # parameters <- project.parameters$default
@@ -58,56 +59,18 @@ for (recountID in selectedRecountIDs) {
   dir.main <- parameters$dir$main
 
   ## All other directories should be defined relative to dir.main
-  dir.scripts <- file.path(dir.main, "R")
+  # dir.scripts <- file.path(dir.main, "R")
 
-  ## Result directory
-  dir.results <- file.path(parameters$dir$workspace, "results", parameters$recountID)
-
+  # ## Result directory
+  # parameters$dir$results <- file.path(parameters$dir$workspace, "results", parameters$recountID)
+  #
   ## Directory to exprt the tab-separate value files
-  # tsv.dir <- paste(sep = "" , parameters$dir$TSV,"/",recountID)
-  tsv.dir <- file.path(dir.results, "TSV")
-  dir.create(path = tsv.dir, recursive = TRUE, showWarnings = FALSE)
+  # parameters$dir$tsv <- paste(sep = "" , parameters$dir$tsv,"/",recountID)
+  # parameters$dir$tsv <- file.path(parameters$dir$results, "TSV")
+  # dir.create(path = parameters$dir$tsv, recursive = TRUE, showWarnings = FALSE)
 
   ## Directory to store the data downloaded from recountID
   studyPath <- file.path(parameters$dir$workspace, "data", recountID)
-
-  ## Define the directories where tables and figures will be stored.
-  ## one directory per classifer, with separate subdirectories for tables and figures.
-  classifiers <- parameters$classifiers
-
-  #  dir.classifier <- file.path(dir.results, classifiers)
-  #  names(dir.classifier) <- classifiers
-
-  classifier.dirs <- file.path(dir.results, classifiers)
-  names(classifier.dirs) <- classifiers
-
-  table.dirs <- file.path(classifier.dirs, "tables")
-  names(table.dirs) <- classifiers
-
-  figure.dirs <- file.path(classifier.dirs, "figures")
-  names(figure.dirs) <- classifiers
-
-  detailFigures.dir <- file.path(figure.dirs, "detailFigures")
-  names(detailFigures.dir) <- classifiers
-
-  detailTables.dir <- file.path(table.dirs, "detailTables")
-  names(detailTables.dir) <- classifiers
-
-  ## Create all the recountID-specific sub-directories
-  for (dir in c(classifier.dirs, table.dirs, figure.dirs, detailFigures.dir, detailTables.dir)) {
-    dir.create(dir, showWarnings = F, recursive = T)
-  } # end loop over the dir
-
-  ################################################################
-  ## TO CHECK LATER: DO wE STILL NEED THESE VARIABLES ???
-
-  ## Directory for impact of Normalization and log2 into counts (and the study of its impact)
-  dir.NormImpact <- file.path(dir.results , paste("impact_of_normalisation_and_log2", sep = ""))
-  dir.create(dir.NormImpact, showWarnings = F, recursive = T)
-
-  ## Directory for the visualization of Principal component for counts (and the study of its impact)
-  dir.visualisePCs <- file.path(dir.results , paste( "visualization_of_PCs", sep = ""))
-  dir.create(dir.visualisePCs, showWarnings = F, recursive = T)
 
 
 
@@ -117,28 +80,30 @@ for (recountID in selectedRecountIDs) {
 
   if (parameters$compute) {
     message.with.time("Loading count table from recount", "; recountID = ", parameters$recountID)
-    loaded[[recountID]] <- loadCounts(recountID = recountID,
+    studyCases[[recountID]] <- loadCounts(recountID = recountID,
                                       mergeRuns = parameters$mergeRuns,
                                       classColumn = parameters$classColumn,
                                       minSamplesPerClass = parameters$minSamplesPerClass,
                                       na.rm = parameters$na.rm)
 
+    ## Attach the recountID-specific parameters to the loaded data.
+    studyCases[[recountID]]$parameters <- parameters
 
     ## Select training and testing sets on the filtered table with raw counts
     ## These wil then be passed to all the derived count tables (normalised, DGE, ...)
-    loaded[[recountID]]$filtered <- countTableWithTrainTestSets(loaded[[recountID]]$filtered)
+    studyCases[[recountID]]$filtered <- countTableWithTrainTestSets(studyCases[[recountID]]$filtered)
 
     #### Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files ###
-    exportTables(loaded[[recountID]]$countsPerRun,
-                 export.dir = paste(parameters$dir$TSV, parameters$recountID, sep = "/"),
+    exportTables(studyCases[[recountID]]$countsPerRun,
+                 export.dir = file.path(parameters$dir$tsv, parameters$recountID),
                  file.prefix = "counts_per_run_")
 
-    exportTables(loaded[[recountID]]$originalCounts,
-                 export.dir = paste( parameters$dir$TSV, parameters$recountID, sep = "/"),
+    exportTables(studyCases[[recountID]]$originalCounts,
+                 export.dir = file.path(parameters$dir$tsv, parameters$recountID),
                  file.prefix = "original_counts_")
 
-    exportTables(loaded[[recountID]]$filtered,
-                 export.dir = paste( parameters$dir$TSV,parameters$recountID, sep = "/"),
+    exportTables(studyCases[[recountID]]$filtered,
+                 export.dir = file.path(parameters$dir$tsv,parameters$recountID),
                  file.prefix = "filtered_counts_")
 
 
@@ -157,28 +122,28 @@ for (recountID in selectedRecountIDs) {
 
   ###### Normalization method for the recount Table after merge and filtered it ########
   if (parameters$compute) {
-    # dim(loaded[[recountID]]$loaded$norm$counts)
+    # dim(studyCases[[recountID]]$studyCases$norm$counts)
     message.with.time("Normalizing counts based on 75th percentile")
-    loaded[[recountID]]$norm <- NormalizeCounts(
-      self = loaded[[recountID]]$filtered,
+    studyCases[[recountID]]$norm <- NormalizeCounts(
+      self = studyCases[[recountID]]$filtered,
       classColumn = parameters$classColumn,
       classColors = parameters$classColor,
-      # phenoTable = loaded[[recountID]]$filteredExperiment$phenoTable,
-      # classLabels = loaded[[recountID]]$filteredExperiment$classLabels,
+      # phenoTable = studyCases[[recountID]]$filteredExperiment$phenoTable,
+      # classLabels = studyCases[[recountID]]$filteredExperiment$classLabels,
       method = "quantile", quantile=0.75, log2 = FALSE)
-    # dim(loaded[[recountID]]$normCounts)
-    # loaded[[recountID]]$norm$nb.samples
-    # loaded[[recountID]]$norm$nb.genes
+    # dim(studyCases[[recountID]]$normCounts)
+    # studyCases[[recountID]]$norm$nb.samples
+    # studyCases[[recountID]]$norm$nb.genes
 
-    # class(loaded[[recountID]]$norm)
-    # loaded[[recountID]]$norm$dataType
+    # class(studyCases[[recountID]]$norm)
+    # studyCases[[recountID]]$norm$dataType
 
-    # loaded[[recountID]]$norm <- countTableWithTrainTestSets(loaded[[recountID]]$norm)
-    #  hist(unlist(loaded[[recountID]]$loaded[[recountID]]$norm$counts), main="Normalised count distribution", breaks=1000)
+    # studyCases[[recountID]]$norm <- countTableWithTrainTestSets(studyCases[[recountID]]$norm)
+    #  hist(unlist(studyCases[[recountID]]$studyCases[[recountID]]$norm$counts), main="Normalised count distribution", breaks=1000)
 
     ## Export the Normalized count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files
-    exportTables(loaded[[recountID]]$norm,
-                 export.dir = paste(parameters$dir$TSV, parameters$recountID, sep = "/"),
+    exportTables(studyCases[[recountID]]$norm,
+                 export.dir = paste(parameters$dir$tsv, parameters$recountID, sep = "/"),
                  file.prefix = "norm_counts_")
 
 
@@ -197,30 +162,30 @@ for (recountID in selectedRecountIDs) {
   ## row per gene, we thus have to transpose the raw count table.
   if (parameters$compute) {
     message.with.time("Normalizing counts based on 75th percentile + log2 transformation")
-    loaded[[recountID]]$log2norm <- NormalizeCounts(
-      self = loaded[[recountID]]$filtered,
+    studyCases[[recountID]]$log2norm <- NormalizeCounts(
+      self = studyCases[[recountID]]$filtered,
       classColumn = parameters$classColumn,
-      # counts =loaded$filteredExperiment$countTable,
-      # phenoTable = loaded$filteredExperiment$phenoTable,
-      # classLabels = loaded$filteredExperiment$classLabels,
+      # counts =studyCases$filteredExperiment$countTable,
+      # phenoTable = studyCases$filteredExperiment$phenoTable,
+      # classLabels = studyCases$filteredExperiment$classLabels,
       method = "quantile", quantile=0.75,
       log2 = TRUE, epsilon=0.1)
 
-    # class(loaded[[recountID]]$log2norm)
-    # print(loaded[[recountID]]$log2norm$dataType)
+    # class(studyCases[[recountID]]$log2norm)
+    # print(studyCases[[recountID]]$log2norm$dataType)
 
     ## Export tables
-    exportTables(loaded[[recountID]]$log2norm,
-                 export.dir = paste(parameters$dir$TSV, parameters$recountID, sep = "/"),
+    exportTables(studyCases[[recountID]]$log2norm,
+                 export.dir = paste(parameters$dir$tsv, parameters$recountID, sep = "/"),
                  file.prefix = "log2norm_counts_")
 
     # ## STILL IN CONSTRUCTION (2018-03-19)
 
-    # plotFigures(loaded[[recountID]]$log2norm,
+    # plotFigures(studyCases[[recountID]]$log2norm,
 
-    # plotFigures(loaded$log2norm,
+    # plotFigures(studyCases$log2norm,
 
-    #             plot.dir = file.path(dir.NormImpact),
+    #             plot.dir = file.path(parameters$dir$NormalizationImpact),
     #             file.prefix = "log2norm")
 
   }
@@ -228,10 +193,10 @@ for (recountID in selectedRecountIDs) {
 
   ## TO DO LATER: CHECK IF THESE FIGURES ARE WELL GENERATED, AND INCOROPORATE THEM IN THE plot.figure methods
 
-  # plot.file <- file.path(dir.NormImpact, "log2normCount_hist.pdf")
+  # plot.file <- file.path(parameters$dir$NormalizationImpact, "log2normCount_hist.pdf")
   # message("\tlog2(norm counts) histogram\t", plot.file)
   # pdf(plot.file, width=7, height=5)
-  # hist(unlist(loaded[[recountID]]$log2norm$counts), breaks=100,
+  # hist(unlist(studyCases[[recountID]]$log2norm$counts), breaks=100,
   #      col="grey",
   #      main=paste("log2(norm counts) distrib;", recountID),
   #      las=1,
@@ -240,7 +205,7 @@ for (recountID in selectedRecountIDs) {
   #
   # silence <- dev.off()
 
-  #   if (ncol(loaded[[recountID]]$log2norm$countTable) != length(loaded[[recountID]]$log2norm$classLabels)){
+  #   if (ncol(studyCases[[recountID]]$log2norm$countTable) != length(studyCases[[recountID]]$log2norm$classLabels)){
   #     stop(" the Number of samples in log2norm counts should be the same length of classes")
   #   }
   #
@@ -251,20 +216,20 @@ for (recountID in selectedRecountIDs) {
   # }
 
 
-  # Check loaded[[recountID]] objects
+  # Check studyCases[[recountID]] objects
 
-  # attributes(loaded[[recountID]])
-  # class(loaded[[recountID]]$countsPerRun)
-  # class(loaded[[recountID]]$originalCounts)
-  # class(loaded[[recountID]]$filtered)
-  # class(loaded[[recountID]]$norm)
-  # class(loaded[[recountID]]$log2norm)
+  # attributes(studyCases[[recountID]])
+  # class(studyCases[[recountID]]$countsPerRun)
+  # class(studyCases[[recountID]]$originalCounts)
+  # class(studyCases[[recountID]]$filtered)
+  # class(studyCases[[recountID]]$norm)
+  # class(studyCases[[recountID]]$log2norm)
   #
   #
-  # # unlist(lapply(loaded[[recountID]]$norm$trainTestProperties$trainIndices, length))
-  # length(unlist(loaded[[recountID]]$norm$trainTestProperties$trainIndices))
-  # sum(unlist(loaded[[recountID]]$norm$trainTestProperties$trainIndices) != unlist(loaded[[recountID]]$filtered$trainTestProperties$trainIndices))
-  # sum(unlist(loaded[[recountID]]$norm$trainTestProperties$trainIndices) != unlist(loaded[[recountID]]$log2norm$trainTestProperties$trainIndices))
+  # # unlist(lapply(studyCases[[recountID]]$norm$trainTestProperties$trainIndices, length))
+  # length(unlist(studyCases[[recountID]]$norm$trainTestProperties$trainIndices))
+  # sum(unlist(studyCases[[recountID]]$norm$trainTestProperties$trainIndices) != unlist(studyCases[[recountID]]$filtered$trainTestProperties$trainIndices))
+  # sum(unlist(studyCases[[recountID]]$norm$trainTestProperties$trainIndices) != unlist(studyCases[[recountID]]$log2norm$trainTestProperties$trainIndices))
 
 
   ##### plotting some figures to explore the nuture of recount data set #####
@@ -283,48 +248,48 @@ for (recountID in selectedRecountIDs) {
 
 
 ## Compute statistics about loaded datasets
-loadedStats <- data.frame()
+studyCasesStats <- data.frame()
 
 for (recountID in selectedRecountIDs) {
   newStats <-
     data.frame(
       recountID = recountID,
-      runs = loaded[[recountID]]$countsPerRun$nbSamples,
-      samples = loaded[[recountID]]$originalCounts$nbSamples,
-      samples.filtered = loaded[[recountID]]$filtered$nbSamples,
+      runs = studyCases[[recountID]]$countsPerRun$nbSamples,
+      samples = studyCases[[recountID]]$originalCounts$nbSamples,
+      samples.filtered = studyCases[[recountID]]$filtered$nbSamples,
 
-      genes.ori = loaded[[recountID]]$originalCounts$nbGenes,
-      genes.NA = length(loaded[[recountID]]$filtered$naGenes),
-      genes.zeroVar = length(loaded[[recountID]]$filtered$zeroVarGenes),
-      genes.NZfilter = length(loaded[[recountID]]$filtered$nearZeroVarGenes),
-      genes.filtered = loaded[[recountID]]$filtered$nbGenes,
+      genes.ori = studyCases[[recountID]]$originalCounts$nbGenes,
+      genes.NA = length(studyCases[[recountID]]$filtered$naGenes),
+      genes.zeroVar = length(studyCases[[recountID]]$filtered$zeroVarGenes),
+      genes.NZfilter = length(studyCases[[recountID]]$filtered$nearZeroVarGenes),
+      genes.filtered = studyCases[[recountID]]$filtered$nbGenes,
 
-      classes.ori = loaded[[recountID]]$originalCounts$nbClasses,
-      classes.filtered = loaded[[recountID]]$filtered$nbClasses
+      classes.ori = studyCases[[recountID]]$originalCounts$nbClasses,
+      classes.filtered = studyCases[[recountID]]$filtered$nbClasses
     )
 
-  if (ncol(loadedStats) == 0) {
-    loadedStats <- newStats
+  if (ncol(studyCasesStats) == 0) {
+    studyCasesStats <- newStats
   } else {
-    loadedStats <- rbind(loadedStats, newStats)
+    studyCasesStats <- rbind(studyCasesStats, newStats)
   }
 }
-rownames(loadedStats) <- loadedStats$recountID
+rownames(studyCasesStats) <- studyCasesStats$recountID
 
 
-#loadedStats$genes.NA + loadedStats$genes.zeroVar + loadedStats$genes.NZfilter + loadedStats$genes.filtered
-#loadedStats$genes.ori
+#studyCasesStats$genes.NA + studyCasesStats$genes.zeroVar + studyCasesStats$genes.NZfilter + studyCasesStats$genes.filtered
+#studyCasesStats$genes.ori
 
-loadedStats$pc.NA <-100*loadedStats$genes.NA / loadedStats$genes.ori
-loadedStats$pc.zeroVar <- 100*loadedStats$genes.zeroVar / loadedStats$genes.ori
-loadedStats$pc.NZfilter <- 100*loadedStats$genes.NZfilter / loadedStats$genes.ori
-loadedStats$pc.kept <-  100*loadedStats$genes.filtered / loadedStats$genes.ori
+studyCasesStats$pc.NA <-100*studyCasesStats$genes.NA / studyCasesStats$genes.ori
+studyCasesStats$pc.zeroVar <- 100*studyCasesStats$genes.zeroVar / studyCasesStats$genes.ori
+studyCasesStats$pc.NZfilter <- 100*studyCasesStats$genes.NZfilter / studyCasesStats$genes.ori
+studyCasesStats$pc.kept <-  100*studyCasesStats$genes.filtered / studyCasesStats$genes.ori
 
 ## TEMPORARY: print out stats about loaded datasets
 require(knitr)
-kable(t(loadedStats))
+kable(t(studyCasesStats))
 
-write.table(x = t(loadedStats), file = file.path(parameters$dir$results, "experiment_summaries.tsv"),
+write.table(x = t(studyCasesStats), file = file.path(parameters$dir$results, "experiment_summaries.tsv"),
             quote = FALSE, sep = "\t", row.names = TRUE, col.names = FALSE)
 
 ## YOUR MISSION: GENERATE A BARPLOT or a set of piecharts SHOWING THE FOLLOWING NUMBERS for the different study cases
@@ -334,8 +299,8 @@ write.table(x = t(loadedStats), file = file.path(parameters$dir$results, "experi
 ## - kept genes
 ## The total shoud give the same result as initial.genes
 
-gene.pc <- loadedStats[, c("pc.NA", "pc.zeroVar", "pc.NZfilter", "pc.kept")]
-row.names(gene.pc) <- loadedStats$recountID
+gene.pc <- studyCasesStats[, c("pc.NA", "pc.zeroVar", "pc.NZfilter", "pc.kept")]
+row.names(gene.pc) <- studyCasesStats$recountID
 ## Order experiments by increasing percentof kept genes (so that the highest come on top of the barplot)
 gene.pc <- gene.pc[order(gene.pc$pc.kept, decreasing = FALSE), ]
 ## apply(gene.pc, 1, sum) ## The sums must give 100 for each experiment
@@ -343,7 +308,7 @@ gene.pc <- gene.pc[order(gene.pc$pc.kept, decreasing = FALSE), ]
 figure.file <- paste("experiments_sumaries.pdf")
 barPlot.file <- file.path(parameters$dir$results,figure.file)
 message("Filtering summary barplot: ", barPlot.file)
-pdf(file = barPlot.file, width=7, height=2+1*nrow(loadedStats))
+pdf(file = barPlot.file, width=7, height=2+1*nrow(studyCasesStats))
 save.margins <- par("mar")
 par(mar= c(5,7,5,1))
 
@@ -368,10 +333,10 @@ pdf(file = barPlot.file, width=8, height=12)
 save.margins <- par("mar")
 par(mfrow=c(4,2))
 par(mar=c(4,15,5,1))
-for (recountID in names(loaded)) {
-  heights <- barplot(sort(loaded[[recountID]]$original$samplesPerClass, decreasing = TRUE),
+for (recountID in names(studyCases)) {
+  heights <- barplot(sort(studyCases[[recountID]]$original$samplesPerClass, decreasing = TRUE),
                      horiz = TRUE, las=1, cex.names = 0.7, main=recountID, xlab="Samples per class")
-  barplot(sort(loaded[[recountID]]$filtered$samplesPerClass, decreasing = TRUE), add=TRUE,
+  barplot(sort(studyCases[[recountID]]$filtered$samplesPerClass, decreasing = TRUE), add=TRUE,
           horiz = TRUE, las=1, cex.names = 0.7, main=recountID, xlab="Samples per class", col="#00BB00")
 }
 par(mfrow=c(1,1))
@@ -381,9 +346,9 @@ silence<- dev.off()
 ## Save a memory image that can be re-loaded next time to avoid re-computing all the normalisation and so on.
 if (parameters$save.image) {
   dir.create(parameters$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
-  loaded.mem.image <- file.path(parameters$dir$memoryImages, "data_loaded.Rdata")
-  message.with.time("Saving memory image after loading: ", loaded.mem.image)
-  save.image(file = loaded.mem.image)
+  studyCases.mem.image <- file.path(parameters$dir$memoryImages, "data_studyCases.Rdata")
+  message.with.time("Saving memory image after loading: ", studyCases.mem.image)
+  save.image(file = studyCases.mem.image)
 }
 
 ## Indicate that this script has finished running
@@ -395,10 +360,10 @@ message.with.time("finished executing 02_load_and_normalise_counts.R")
 # for(recountID in selectedRecountIDs){
 #   loadedDataType <-
 #     data.frame(
-#       "originalCounts" = loaded[[recountID]]$originalCounts ,
-#       "filtere" = loaded[[recountID]]$filtered,
-#       "norm" = loaded[[recountID]]$norm,
-#       "log2norm" = loaded[[recountID]]$log2norm )
+#       "originalCounts" = studyCases[[recountID]]$originalCounts ,
+#       "filtere" = studyCases[[recountID]]$filtered,
+#       "norm" = studyCases[[recountID]]$norm,
+#       "log2norm" = studyCases[[recountID]]$log2norm )
 #
 #   if (ncol(loadedDataType)== 0){
 #     loadedObjects.dataType <- loadedDataType

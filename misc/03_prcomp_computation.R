@@ -1,5 +1,5 @@
 #
-# #loaded$log2norm.prcomp.centred.scaled <- prcomp(t(na.omit(loaded$log2norm$countTable)), center = TRUE, scale. = TRUE)
+# #studyCases$log2norm.prcomp.centred.scaled <- prcomp(t(na.omit(studyCases$log2norm$countTable)), center = TRUE, scale. = TRUE)
 #
 #
 #

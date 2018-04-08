@@ -35,8 +35,8 @@ image.file <- file.path(image.dir, paste(sep = "", "train_test_no._of_PCs_",para
 if (parameters$compute) {
 
   train.test.results.all.PCs.per.classifier <- list()
-  loaded$PCsVar <- PCsWithTrainTestSets(loaded$filtered)
-  dataset <- loaded$PCsVar
+  studyCases$PCsVar <- PCsWithTrainTestSets(studyCases$filtered)
+  dataset <- studyCases$PCsVar
 
   for (classifier in parameters$classifiers) {
 
@@ -79,7 +79,7 @@ if (parameters$compute) {
   #### Associate each analysis of real data with a permutation test ####
   for (permute in c(FALSE, TRUE)) {
 
-   # datasets <- list(loaded$filtered, loaded$norm ,loaded$log2norm)
+   # datasets <- list(studyCases$filtered, studyCases$norm ,studyCases$log2norm)
 
 
 

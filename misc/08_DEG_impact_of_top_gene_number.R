@@ -33,7 +33,7 @@ image.file <- file.path(image.dir, paste(sep = "", "train_test_no._of_DEG_ordere
 ## Default for quick test without iterating over all cases
 permute <- FALSE
 
-DEG.object <- countTableWithDEG(loaded$filtered)
+DEG.object <- countTableWithDEG(studyCases$filtered)
 
 if (parameters$compute) {
   message.with.time("\t\tStarting classification")

@@ -19,6 +19,9 @@ if (parameters$compute) {
   ## Loop over recountIDs
   for (recountID in selectedRecountIDs) {
 
+    ## Get the recountID-specific parameters from the loaded object
+    parameters <- studyCases[[recountID]]$parameters
+
     message.with.time("Running train/test with all variables for recountID\t", recountID)
     ## Loop over classifiers
     classifier <- "svm" ## For quick test
@@ -43,7 +46,7 @@ if (parameters$compute) {
                             "\n\tClassifier: ", classifier,
                             "\n\tpermuted class labels: ", permute,
                             "\n\tData type: ", data.type)
-          dataset <- loaded[[recountID]][[data.type]]
+          dataset <- studyCases[[recountID]][[data.type]]
           # class(dataset)
           # summary(dataset)
 
@@ -80,7 +83,7 @@ if (parameters$compute) {
       # #### Run classifier with all the principal components ####
       # #first.pcs <- data.frame(counts)
       # #first.pcs <- get("log2norm.prcomp.centred.scaled")
-      # first.pcs <- PCsWithTrainTestSets(loaded$log2norm)
+      # first.pcs <- PCsWithTrainTestSets(studyCases$log2norm)
       #
       # ## define experiment prefix
       # exp.prefix <-
@@ -110,7 +113,7 @@ if (parameters$compute) {
 
       #### Run classifier with raw counts (no normalization) ####
       ## we looking here to notice the ipmact of normalization into classifiers
-      # dataset2 <- loaded$filtered
+      # dataset2 <- studyCases$filtered
       # # dim(rawCounts1)
       #
       # ## define experiment prefix

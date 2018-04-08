@@ -40,7 +40,7 @@ countTableWithDEG <- function(self,
 
       # result$DEG.edgeR$method <-"edgeR"
       message.with.time("\t\tDone edgeR DEG analysis")
-      # sorted.log2.transformed.edgeR <- loaded$countTable[, DEG.DESeq2$geneOrder]
+      # sorted.log2.transformed.edgeR <- studyCases$countTable[, DEG.DESeq2$geneOrder]
 
       #### Order genes at random ####
       message.with.time("\tGenerating a fake DEG.edgeR result by random gene ordering")
@@ -62,7 +62,7 @@ countTableWithDEG <- function(self,
     #   result$DEG.DESeq2 <- DEGordering(self$countTable, self$classLabels, method = "DESeq2")
     # # result$DEG.DESeq2$method <- "DESeq2"
     #   message.with.time("\t\tDone DESeq2 DEG analysis")
-    #   # sorted.log2.transformed.DESeq2 <- loaded$countTable[, DEG.edgeR$geneOrder]
+    #   # sorted.log2.transformed.DESeq2 <- studyCases$countTable[, DEG.edgeR$geneOrder]
     #
     #   message.with.time("\tGenerating a fake DEG.DESeq2 result by random gene ordering")
     #   DEG.DESeq2.randomized <- list()

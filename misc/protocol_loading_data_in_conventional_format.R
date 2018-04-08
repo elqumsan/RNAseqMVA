@@ -13,11 +13,11 @@ rawCount.dataframe <-as.data.frame( read.delim(paste( parameters$dir$tsv,"/rawCo
 dim(rawCount.dataframe)
 
 # How to load the Phento table in conventional format as data.frame
-Pheno.dataframe <- as.data.frame(read.delim(paste(tsv.dir, "/pheno_", parameters$recountID,".tsv", sep = "")))
+Pheno.dataframe <- as.data.frame(read.delim(paste(parameters$dir$tsv, "/pheno_", parameters$recountID,".tsv", sep = "")))
 
 dim(Pheno.dataframe)
 View(Pheno.dataframe)
 
 # How to load Normalized count Table
-normCounts.dataframe <- as.data.frame(read.delim(paste(tsv.dir,"/NormCounts_",parameters$recountID, ".tsv", sep = "")))
+normCounts.dataframe <- as.data.frame(read.delim(paste(parameters$dir$tsv,"/NormCounts_",parameters$recountID, ".tsv", sep = "")))
 dim(normCounts.dataframe)

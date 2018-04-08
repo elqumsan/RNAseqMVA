@@ -1,6 +1,6 @@
 ########### Computation the importace of all vaiables in raw count table and ordered it by the importance ########
 countTable <-  rawCounts$Counts
-classes <- loaded$classes
+classes <- studyCases$classes
 #### The computation of the variables importance by Random forest, and ordered it by the most importance ####
 
 # n <- nrow(rawCounts$Counts) ## Number of observations (samples)
