@@ -18,7 +18,7 @@ countTableWithClasses <- function(countTable,
                                   # classColumn = parameters$classColumn,
                                   # classColors = parameters$classColors,
                                   # ID = parameters$recountID,
-                                  variablesType,
+                                  # variablesType,
                                   dataType,
                                   parameters) {
 
@@ -41,7 +41,7 @@ countTableWithClasses <- function(countTable,
       ID = recountID,
       countTable = countTable,
       phenoTable = phenoTable,
-      variablesType = variablesType,
+      # variablesType = variablesType,
       dataType = dataType,
       classColumn = classColumn,
       classColors = classColors
@@ -67,7 +67,7 @@ summary.countTableWithClasses <- function(x) {
 #  message("\t\t\n giving the summary of the created object")
   cat("countTableWithClasses\n")
   cat("\tData type         \t", x$dataType, "\n")
-  cat("\tVaraibles type         \t", x$variablesType, "\n")
+  # cat("\tVariables type         \t", x$variablesType, "\n")
   cat("\tNumber of genes   \t", x$nbGenes, "\n")
   cat("\tNumber of samples \t", x$nbSamples, "\n")
   cat("\tNumber of classes \t", x$nbClasses, "\n")
