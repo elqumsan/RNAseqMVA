@@ -34,15 +34,33 @@
 #' @import S4Vectors
 #' @import caret
 #' @export
-loadCounts <- function(recountID = parameters$recountID,
-                       classColumn = parameters$classColumn,
-                       mergeRuns = parameters$mergeRuns,
-                       sampleIdColumn = parameters$sampleIdColumn, ## Alternative: use "sample"
-                       minSamplesPerClass = parameters$minSamplesPerClass,
-                       dir.workspace = parameters$dir$workspace,
-                       na.rm = parameters$na.rm,
+loadCounts <- function(recountID,
+                       parameters,
                        ... ) {
   message.with.time("Starting loadCounts() for Recount ID ", recountID)
+
+  ## Check required parameters
+  for (p in c("classColumn", "mergeRuns", "sampleIdColumn", "minSamplesPerClass", "na.rm")) {
+    if (is.null(parameters[[p]])) {
+      stop("Missing required parameter: '", p,
+           "'.\n\tPlease check configuration file. ")
+    } else {
+      assign(p, parameters[[p]])
+    }
+  }
+  # classColumn = parameters$classColumn
+  # mergeRuns = parameters$mergeRuns
+  # sampleIdColumn = parameters$sampleIdColumn
+  # minSamplesPerClass = parameters$minSamplesPerClass
+
+  ## Check required directory
+  if (is.null(parameters$dir$workspace)) {
+    stop("Missing required parameter: 'parameters$dir$workspace'.\n\tPlease check configuration file. ")
+  } else {
+    dir.workspace = parameters$dir$workspace
+    dir.create(dir.workspace, recursive = TRUE, showWarnings = FALSE)
+  }
+
 
   ################################################
   # loading required libraries and install them if required
@@ -52,13 +70,13 @@ loadCounts <- function(recountID = parameters$recountID,
   ################################################
   # loading count Data from recount_experiment, Via our wrapper which will Automatically merge the runs by
   # sample in order to obtain sample-wise count rather than run-wise counts.
-  experiment <- loadRecountExperiment(recountID=recountID,
-                                      mergeRuns=mergeRuns,
-                                      sampleIdColumn=sampleIdColumn,
-                                      dir.workspace = dir.workspace,
-                                      classColumn = classColumn,
-                                      na.rm = na.rm,
-                                     ...)
+  experiment <- loadRecountExperiment(recountID=recountID, parameters, ...)
+                                     #  mergeRuns=mergeRuns,
+                                     #  sampleIdColumn=sampleIdColumn,
+                                     #  dir.workspace = dir.workspace,
+                                     #  classColumn = classColumn,
+                                     #  na.rm = na.rm,
+                                     # ...)
 
 
   ## JhV: I suppress this na filtering from here because we want to keep the NA values in

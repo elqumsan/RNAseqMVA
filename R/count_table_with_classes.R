@@ -8,22 +8,29 @@
 #' @param countTable a data.frame with one row per feature (e.g. gene) and
 #' one column per sample.
 #' @param phenoTable a data frame describing each sample: one row per sample and one column per attribute of a sample.
-#' @param classColumn a vector indicating one or several columns of the pheno table that will define the sample class labels. If umtiple columns are specified, they will be concatenated to build sample labels
-#' @param ID=parameters$recountID identifier associated to the count table (by default, the RecountID, but can be specified with custom identifiers)
-#' @param sampleNames=colnames(countTable) sample names (by default, automatically taken from the column names of the count table)
-#' @param geneNames=rownames(countTable) gene names (by default, automatically taken from the row names of the count table)
 #' @param dataType="raw counts" data type, free text (e.g. raw counts, log2-transformed counts, log2 normalised counts  ...).
+#' @param parameters global and specific parameters for the analysis of this recountID
 #'
 #' @export
 
 countTableWithClasses <- function(countTable,
                                   phenoTable,
-                                  classColumn = parameters$classColumn,
-                                  classColors = parameters$classColors,
-                                  ID = parameters$recountID,
+                                  # classColumn = parameters$classColumn,
+                                  # classColors = parameters$classColors,
+                                  # ID = parameters$recountID,
                                   variablesType,
-                                  dataType = "raw_counts"
-) {
+                                  dataType,
+                                  parameters) {
+
+  ## Check required parameters
+  for (p in c("recountID", "classColumn", "classColors")) {
+    if (is.null(parameters[[p]])) {
+      stop("Missing required parameter: '", p,
+           "'.\n\tPlease check configuration file. ")
+    } else {
+      assign(p, parameters[[p]])
+    }
+  }
 
   ## Built a list from the input parameters
   message.with.time("\tCreating object of class countTableWithClasses" )
@@ -31,7 +38,7 @@ countTableWithClasses <- function(countTable,
   ## Build a first version of the object based on passed parameters
   object <- structure(
     list(
-      ID = ID,
+      ID = recountID,
       countTable = countTable,
       phenoTable = phenoTable,
       variablesType = variablesType,
