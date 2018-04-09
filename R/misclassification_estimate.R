@@ -20,7 +20,7 @@
 MisclassificationEstimate <- function(self,
                                       iteration,
                                       classifier,
-                                      permute=FALSE,
+                                      permute=FALSE#,
                                       # verbose = FALSE #,
                                       # k= parameters$knn$k
                                       ) {
