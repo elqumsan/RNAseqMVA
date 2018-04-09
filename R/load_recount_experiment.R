@@ -54,7 +54,7 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
   message.with.time("loadRecountExperiment()\trecountID = ", recountID)
 
   ## Check required parameters
-  for (p in c("mergeRuns", "sampleIdColumn", "classColumn", "classColors", "verbose", "minSamplesPerClass", "na.rm", "studyPath")) {
+  for (p in c("mergeRuns", "sampleIdColumn", "classColumn", "verbose", "minSamplesPerClass", "na.rm", "studyPath")) {
     if (is.null(parameters[[p]])) {
       stop("Missing required parameter: '", p,
            "'.\n\tPlease check configuration file. ")
