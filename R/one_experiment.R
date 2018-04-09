@@ -24,14 +24,14 @@
 ## Define a function to iterate over one classifier with one particular data type.
 one.experiment <- function (self,
                             classifier, # supported: knn or rf
-                            iterations = parameters$iterations,
+                            # iterations = parameters$iterations,
                           #  variable.type = "all", ## e.g;. "all", "top20", "top200", ...
                           #  trainingProportion, # ratio of training proportion
                           #  trainIndex, testIndex,
                             permute = FALSE, # permute the class labels before running the test
-                            file.prefix = NULL, # prefix for the saved files. If not provided, will be automatically generated
-                            verbose = parameters$verbose,
-                            k = parameters$knn$k ## For KNN only
+                          # verbose = parameters$verbose,
+                          # k = parameters$knn$k, ## For KNN only
+                          file.prefix = NULL # prefix for the saved files. If not provided, will be automatically generated
 ) {
 
 
@@ -42,6 +42,20 @@ one.experiment <- function (self,
   if (!is(object = self, class2 = "countTableWithTrainTestSets")) {
     stop("one.experiment() only accepts objects of class countTableWithTrainTestSets")
   }
+
+  ## Get parameters from the passed object
+  parameters <- self$parameters
+  ## Check required parameters
+  for (p in c("verbose", "iterations")) {
+    if (is.null(parameters[[p]])) {
+      stop("Missing required parameter: '", p,
+           "'.\n\tPlease check configuration file. ")
+    } else {
+      assign(p, parameters[[p]])
+    }
+  }
+
+
 
   ## Check the consistency between trainIndices and iterations
   if (is.null(self$trainTestProperties$trainIndices)) {
@@ -88,7 +102,7 @@ one.experiment <- function (self,
                                 iteration = i,
                                 classifier = classifier,
                                 permute = permute,
-                                k=k,
+#                                k=k,
                                 verbose=verbose)$stats
   } else {
     i <- 1 #iterations
