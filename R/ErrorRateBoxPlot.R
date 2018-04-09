@@ -10,8 +10,8 @@
 #' @param permColor is the coler for the box plot that represent error rate for each experiment with permuted calss lables.
 #' @param expLegend is the legend for the real class lable train/test experiment.
 #' @param  permLegend legend for the one experiment with permuted class lables.
-#' @param data.type which is any data type used for testing the error rate form the specified classifier
-#' @param variablesType this indicate for the knid and amount of the viariable that are used in analysis
+#' @param dataType data type(s), used to build the file prefix
+#' @param variablesType variable types (e.g. all, DEG, ...), used to build the file prefix
 #'
 #' @examples
 #' compareExperiments(experimentList = train.test.results)
@@ -22,13 +22,16 @@
 #' @export
 ErrorRateBoxPlot <- function(experimentList,
                              classifier,
-                             main = paste("Misclassification rates", "\n", "all varaiables vs all PCs",parameters$recountID,parameters$iterations, "iterations", self[["dataType"]]),
+                             data.type, # = "log2norm.prcomp.centred",
+                             variablesType,
+                             main = paste(sep="", parameters$recountID, "; ", classifier,
+                                          "\n", data.type, "; ", variablesType,
+                                          "\n", parameters$iterations, "iterations"),
                              expColor = "#00BBFF",
                              permColor = "grey",
                              expLegend = "Train/test",
                              permLegend = "Permuted labels",
-                             data.type, # = "log2norm.prcomp.centred",
-                             variablesType = variablesType, ....) {
+                             ....) {
 
 
   # ## Define file to store the boxplot
@@ -60,6 +63,7 @@ ErrorRateBoxPlot <- function(experimentList,
 
     ## Define file to store the boxplot
     file.prefix <- paste(sep="_",
+                         parameters$recountID,
                          classifier,
                          data.type,
                          variablesType,
@@ -68,8 +72,9 @@ ErrorRateBoxPlot <- function(experimentList,
     if (permute) {
       file.prefix <- paste(sep = "_", file.prefix, perm.prefix)
     }# end if permuted class
-    boxplot.file <- file.path(parameters$dir$figures[classifier], paste(sep = "", file.prefix, "_boxplot.pdf"))
-    message.with.time("Boxplot file:", boxplot.file)
+    boxplot.file <- file.path(parameters$dir$figures[classifier],
+                              paste(sep = "", file.prefix, "_boxplot.pdf"))
+    message.with.time("Boxplot file:\t", boxplot.file)
     pdf(file = boxplot.file, width = 3 + 0.2*length(experimentNames), height = 12)
 
     ## Define parameters for the boxplot
@@ -95,8 +100,8 @@ ErrorRateBoxPlot <- function(experimentList,
             col = testTable.colors
     )
     ## Draw horizontal grid
-    abline(h=seq(from = 0, to = 1, by = 0.1, col="darkgrey", lty="dotted"))
-    abline(h=seq(from = 0, to = 1, by= 0.05 ) , lty=2)
+    abline(h=seq(from = 0, to = 1, by = 0.1), col="darkgrey", lty="dotted")
+    abline(h=seq(from = 0, to = 1, by= 0.05 ), lty=2)
     meanPermlabels <- apply(testing.error.rates[permTestExperiments], 1, mean)
 
     ## Mean misclassification rate for all the label-permuted tests
