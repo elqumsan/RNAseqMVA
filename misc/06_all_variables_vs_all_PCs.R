@@ -68,7 +68,7 @@ if (parameters$compute) {
 
           #### Run classifier with all variables (log2-transformed log counts) ####
           exp.prefix <-
-            paste(sep = "_", recountID, classifier, dataset$dataType , dataset$variablesType)
+            paste(sep = "_", recountID, classifier, dataset$dataType)
           if (permute) {
             exp.prefix <- paste(sep = "_", exp.prefix, parameters$perm.prefix)
           }# end if permuted class
@@ -214,7 +214,6 @@ if (parameters$compute) {
       ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
                        classifier = classifier,
                        data.type = "diverse-data-types",
-                       variablesType = dataset$variablesType,
                        main = paste(sep="",
                                     parameters$recountID,
                                     "; ", classifier,
