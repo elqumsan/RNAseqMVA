@@ -17,7 +17,7 @@ MergeRuns <- function(runs) {
   ## Check that the run argument belobgs to the class countTableWithClasses
   # class(runs)
   ## Check the class of input object
-  if (!is(self, "countTableWithClasses")) {
+  if (!is(runs, "countTableWithClasses")) {
     stop("MergeRuns(): 'runs' parameter must belong to class countTableWithClasses. ")
   }
 
