@@ -47,14 +47,15 @@ TO DO: detect such cases and stop with explicit message before any analysis.
                               ")
 
 ## Optional: select a subset of the recountIDs
-selectedRecountIDs <- c("SRP057196", "SRP042620")
+selectedRecountIDs <- c("SRP056295")
+# selectedRecountIDs <- c("SRP057196", "SRP042620")
 # selectedRecountIDs <- setdiff(recountIDs, names(recountIDs.with.problems))
 
 message("\tSelected ", length(selectedRecountIDs)," recount IDs: ", paste(collapse="; ", selectedRecountIDs))
 #selectedRecountIDs <- recountIDs
 
 # recountID <- "SRP042620"   ## Multi-group breast cancer
-recountID <- "SRP057196"    # individual cells into all of the major neuronal, glial, and vascular cell types in the brain
+# recountID <- "SRP057196"    # individual cells into all of the major neuronal, glial, and vascular cell types in the brain
 
 # recountID <- "SRP003611"   # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
 # recountID <- "SRP061240"   # several types from cancer (pancreatic, colorectal, prostat cancer) against Healthy control
@@ -80,7 +81,7 @@ recountID <- "SRP057196"    # individual cells into all of the major neuronal, g
 # recountID <- "SRP006575"   # Not working
 
 
-message("\tDefault recountID ", recountID)
+# message("\tDefault recountID ", recountID)
 
 #### Initialise cluster processing ####
 if (!is.null(project.parameters$default$jobs)) {
