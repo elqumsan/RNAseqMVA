@@ -1,12 +1,8 @@
 #' @author: Jacques van Helden and Mustafa Abuelqumsan
 #' @description Load one count table from Recount for a given experiment ID, and optionally
 #' merge the counts in order to avoid redundancy between multipl runs per sample.
-#' @param recountID=parameters$recountID identifier of one study in ReCount database
-#' @param dir.workspace=parameters$dir$workspace path of the folder to store the results (in one separate sub-directory per recountID)
-#' @param mergeRuns=parameters$mergeRuns if TRUE, read counts will be merged for each sample
-#' @param sampleIdColumn=parameters$sampleIdColumn  name of the column of the pheno table which contains the sample IDs.
-#' This information is passed to MergeRuns().
-#' @param verbose=TRUE if TRUE, write messages to indicate the progressing of the tasks
+#' @param recountID identifier of one study in ReCount database
+#' @param parameters global and specific parameters for the analysis of this recountID
 #' @param forceDownload=FALSE by default, the data is downloaded only if it is not found in the studyPath folder.
 #' If forceDownload is TRUE, the data will be downloaded irrespective of existing files.
 #'
@@ -45,20 +41,41 @@
 #'
 #' @export
 loadRecountExperiment <- function(recountID = parameters$recountID,
-                                  dir.workspace = parameters$dir$workspace,
-                                  mergeRuns = parameters$mergeRuns,
-                                  sampleIdColumn = parameters$sampleIdColumn, ## Alternative: use "sample"
-                                  classColumn = parameters$classColumn,
-                                  classColors = parameters$classColors,
-                                  variableType= parameters$variable.type,
+                                  parameters,
+                                  # dir.workspace = parameters$dir$workspace,
+                                  # mergeRuns = parameters$mergeRuns,
+                                  # sampleIdColumn = parameters$sampleIdColumn, ## Alternative: use "sample"
+                                  # classColumn = parameters$classColumn,
+                                  # classColors = parameters$classColors,
+                                  # variableType= parameters$variable.type,
+                                  # verbose = parameters$verbose,
                                   forceDownload = FALSE,
-                                  verbose = parameters$verbose,
                                   ...) {
   message.with.time("loadRecountExperiment()\trecountID = ", recountID)
+
+  ## Check required parameters
+  for (p in c("mergeRuns", "sampleIdColumn", "classColumn", "classColors", "variableType", "verbose", "minSamplesPerClass", "na.rm", "studyPath")) {
+    if (is.null(parameters[[p]])) {
+      stop("Missing required parameter: '", p,
+           "'.\n\tPlease check configuration file. ")
+    } else {
+      assign(p, parameters[[p]])
+    }
+  }
+
+  ## Check required directory
+  if (is.null(parameters$dir$workspace)) {
+    stop("Missing required parameter: 'parameters$dir$workspace'.\n\tPlease check configuration file. ")
+  } else {
+    dir.workspace = parameters$dir$workspace
+    dir.create(dir.workspace, recursive = TRUE, showWarnings = FALSE)
+  }
+
 
   result <- list()
 
   #### Create studyPath directory ####
+  ## NOTE: THIS IS STILL PROVIDED AS A GLOBAL VARIABLE, SHOULD BE A PARAMETER !
   if (!file.exists(studyPath)) {
     message("\tCreating directory to store Recount dataset ", recountID," in ", studyPath)
     dir.create(studyPath, recursive = TRUE, showWarnings = FALSE)
@@ -66,13 +83,15 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
 
   #### Define the file where the downloaded counts will be stored ####
   rseFile <- file.path(studyPath, "rse_gene.Rdata")
+  parameters$rseFile <- rseFile
 
   #### Add parameters to the result ####
-  result$param <-
-    c("recountID" = recountID,
-      "studyPath" = studyPath,
-      "mergeRuns" = mergeRuns,
-      "rseFile" = rseFile)
+  result$parameters <- parameters
+  # result$param <-
+  #   c("recountID" = recountID,
+  #     "studyPath" = studyPath,
+  #     "mergeRuns" = mergeRuns,
+  #     "rseFile" = rseFile)
 
   #### Download the counts if required ####
   if ((forceDownload == TRUE) || (!file.exists(rseFile))) {
@@ -122,11 +141,12 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
 
 
   countsPerRuns <- countTableWithClasses(countTable = countTable,
-                                       phenoTable = phenoTable,
-                                       classColumn = classColumn,
-                                       classColors = classColors,
-                                       variablesType = parameters$variables.type[1],
-                                       dataType = "raw_counts_per_run")
+                                         phenoTable = phenoTable,
+                                         classColumn = classColumn,
+                                         classColors = classColors,
+                                         variablesType = parameters$variables.type[1],
+                                         dataType = "raw_counts_per_run",
+                                         parameters = parameters)
   # class(countsPerRuns)
   summary(countsPerRuns)
 
