@@ -4,17 +4,18 @@
 \alias{ErrorRateBoxPlot}
 \title{Function for boxplot the error rate}
 \usage{
-ErrorRateBoxPlot(experimentList, classifier,
-  main = paste("Misclassification rates", "\\n", "all varaiables vs all PCs",
-  parameters$recountID, parameters$iterations, "iterations",
-  self[["dataType"]]), expColor = "#00BBFF", permColor = "grey",
-  expLegend = "Train/test", permLegend = "Permuted labels", data.type,
-  variablesType = variablesType, ....)
+ErrorRateBoxPlot(experimentList, classifier, data.type, variablesType,
+  main = paste(sep = "", parameters$recountID, "; ", classifier, "\\n",
+  data.type, "; ", variablesType, "\\n", parameters$iterations, "iterations"),
+  expColor = "#00BBFF", permColor = "grey", expLegend = "Train/test",
+  permLegend = "Permuted labels", ....)
 }
 \arguments{
 \item{experimentList}{this is list of experiment where each cell of list error rate of the single experiment with special parameters}
 
 \item{classifier}{such are represent which classifier have been used in the analysis}
+
+\item{variablesType}{variable types (e.g. all, DEG, ...), used to build the file prefix}
 
 \item{main}{is the main title of the boxplot}
 
@@ -26,9 +27,7 @@ ErrorRateBoxPlot(experimentList, classifier,
 
 \item{permLegend}{legend for the one experiment with permuted class lables.}
 
-\item{data.type}{which is any data type used for testing the error rate form the specified classifier}
-
-\item{variablesType}{this indicate for the knid and amount of the viariable that are used in analysis}
+\item{dataType}{data type(s), used to build the file prefix}
 }
 \description{
 this function takes the experiment List from the error rate that are collected from the experiment.

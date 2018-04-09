@@ -4,12 +4,12 @@
 \alias{initRecountID}
 \title{Iintialise parameters and directories for a give recount ID.}
 \usage{
-initRecountID(recountID, configFile)
+initRecountID(recountID, project.parameters)
 }
 \arguments{
 \item{recountID}{must be a valid ID rom Recount2 database (SRP...)}
 
-\item{configFile}{YAML-formatted configuration file specifying global and recountID-specific parameters}
+\item{project.parameters}{project parameters (read from the YAML-formatted file)}
 }
 \author{
 Jacques van Helden and Mustafa AbuElQumsan
