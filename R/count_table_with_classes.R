@@ -33,7 +33,7 @@ countTableWithClasses <- function(countTable,
   }
 
   ## Built a list from the input parameters
-  message.with.time("\tCreating object of class countTableWithClasses" )
+  message.with.time("\tCreating object of class countTableWithClasses\t", parameters$recountID)
 
   ## Build a first version of the object based on passed parameters
   object <- structure(
@@ -63,16 +63,16 @@ countTableWithClasses <- function(countTable,
 #' @title print a summary of an object belonging to class countTableWithClasses
 #' @author Mustafa AubElQumsan and Jacques van Helden
 #' @export
-summary.countTableWithClasses <- function(x) {
+summary.countTableWithClasses <- function(self) {
 #  message("\t\t\n giving the summary of the created object")
   cat("countTableWithClasses\n")
-  cat("\tData type         \t", x$dataType, "\n")
+  cat("\tData type         \t", self$dataType, "\n")
   # cat("\tVariables type         \t", x$variablesType, "\n")
-  cat("\tNumber of genes   \t", x$nbGenes, "\n")
-  cat("\tNumber of samples \t", x$nbSamples, "\n")
-  cat("\tNumber of classes \t", x$nbClasses, "\n")
+  cat("\tNumber of genes   \t", self$nbGenes, "\n")
+  cat("\tNumber of samples \t", self$nbSamples, "\n")
+  cat("\tNumber of classes \t", self$nbClasses, "\n")
   cat("\tClass properties\n")
-  print(x$classProperties)
+  print(self$classProperties)
   cat("\n")
   NextMethod("buildAttributes", self)
 }
@@ -176,7 +176,9 @@ buildAttributes.countTableWithClasses <- function(self) {
 
   ## Assign automatic colors (numbers starting from 1) for classes with no defined color in the parameters
   missing.color <- is.na(self$classProperties$color)
-  self$classProperties$color[missing.color] <- 1:length(missing.color)
+  if (length(missing.color) > 0) {
+    self$classProperties$color[missing.color] <- 1:length(missing.color)
+  }
 
   ## Assign colors to samples
   self$sampleColors <- self$classColors[self$classLabels]
