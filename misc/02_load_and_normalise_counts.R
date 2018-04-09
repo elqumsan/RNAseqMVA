@@ -326,7 +326,7 @@ silence<- dev.off()
 #### Draw a barplot with the number of samples per class ####
 figure.file <- paste("samples_per_classes.pdf")
 barPlot.file <- file.path(parameters$dir$results,figure.file)
-message("Filtering summary barplot: ", barPlot.file)
+message("Samples per classes barplot: ", barPlot.file)
 pdf(file = barPlot.file, width=8, height=12)
 save.margins <- par("mar")
 par(mfrow=c(4,2))
