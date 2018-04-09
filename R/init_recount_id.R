@@ -40,14 +40,12 @@ initRecountID <- function(recountID, project.parameters) {
     stop("The configuration file must specify at least one classifier.")
   }
 
-
   ## Convert list-formatted class colors to named vector (YAML does not allow to specify named vectors)
   if (!is.null(parameters$classColors)) {
     if (class(parameters$classColors) == "list") {
       parameters$classColors <- unlist(parameters$classColors)
     }
   }
-
 
   ##### Specify directories ####
   if (is.null(parameters$dir)) {
