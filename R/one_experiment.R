@@ -101,9 +101,7 @@ one.experiment <- function (self,
       MisclassificationEstimate(self = self,
                                 iteration = i,
                                 classifier = classifier,
-                                permute = permute,
-#                                k=k,
-                                verbose=verbose)$stats
+                                permute = permute)$stats
   } else {
     i <- 1 #iterations
     for (i in 1:iterations) {
@@ -118,9 +116,7 @@ one.experiment <- function (self,
       oneTest <- MisclassificationEstimate(self = self,
                                            iteration = i,
                                            classifier = classifier,
-                                           permute = permute,
-                                           k=k,
-                                           verbose=verbose)
+                                           permute = permute)
 
       testTable <- rbind (testTable, oneTest$stats)
     }
