@@ -21,10 +21,12 @@ MisclassificationEstimate <- function(self,
                                       iteration,
                                       classifier,
                                       permute=FALSE,
-                                      verbose = FALSE,
-                                      k= parameters$knn$k) {
+                                      # verbose = FALSE #,
+                                      # k= parameters$knn$k
+                                      ) {
 
-  # require(doMC)
+
+    # require(doMC)
   # registerDoMC(cores = 5)
   result <- list()
 
@@ -36,6 +38,25 @@ MisclassificationEstimate <- function(self,
     # message("\t\tUsing countTable as features for object of class ", paste(collapse=", ", class(self)))
     countTable <- t(self$countTable)
   }
+
+  ## Get parameters from the passed object
+  parameters <- self$parameters
+  ## Check required parameters
+  for (p in c("verbose")) {
+    if (is.null(parameters[[p]])) {
+      stop("Missing required parameter: '", p,
+           "'.\n\tPlease check configuration file. ")
+    } else {
+      assign(p, parameters[[p]])
+    }
+  }
+
+  if (is.null(parameters$knn$k)) {
+    stop("Missing required parameter: 'parameters$knn$k'.\n\tPlease check configuration file. ")
+  } else {
+    k <- parameters$knn$k
+  }
+
 
   ## AssignGet sample classes from the object
   classes <- self$classLabels
