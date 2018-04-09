@@ -3,18 +3,35 @@
 #' @description In ReCount data, some samples are sequenced over several runs, which increases the coverage but creates problems
 #'  # because technical replicates come from the same sample and are thus not independent.
 #' # We thus merge the runs per sample, in order to obtain a single vector of read counts per sample.
-#' @param countsPerRun an object of the class CounttableWithPheno
+#' @param runs an object of the class countTableWithClasses
 #' @param sampleIdColumn="geo_accession"  name of the column of the pheno table which contains the sample IDs. GEO accession is preferred because it is widely used, but it is sometimes not defined. In such case, the "sample" column should be used.
 #' @param verbose=FALSE if TRUE, write messages to indicate the progressing of the tasks
 #' @export
-MergeRuns <- function(runs,
-                      sampleIdColumn = "geo_accession",
-                      classColumn  = parameters$classColumn,
-                      verbose=FALSE) {
+MergeRuns <- function(runs) {
+                      # sampleIdColumn = "geo_accession",
+                      # classColumn  = parameters$classColumn,
+                      # verbose=FALSE) {
   message.with.time("MergeRuns()\t", "recountID = ", parameters$recountID)
 
-  ## Check that the run argument belobgs to the right class
-  class(runs)
+
+  ## Check that the run argument belobgs to the class countTableWithClasses
+  # class(runs)
+  ## Check the class of input object
+  if (!is(self, "countTableWithClasses")) {
+    stop("MergeRuns(): 'runs' parameter must belong to class countTableWithClasses. ")
+  }
+
+
+  ## Check required parameters
+  parameters <- runs$parameters
+  for (p in c("sampleIdColumn", "classColumn", "verbose")) {
+    if (is.null(parameters[[p]])) {
+      stop("Missing required parameter: '", p,
+           "'.\n\tPlease check configuration file. ")
+    } else {
+      assign(p, parameters[[p]])
+    }
+  }
 
   ## Extract gene names from the run count table
   geneNames <- rownames(runs$countTable)
@@ -72,11 +89,12 @@ MergeRuns <- function(runs,
 
   ## Instantiate a new object of the class countTableWithClasses, with the merged runs
   mergedRuns <- countTableWithClasses(countTable = countTable,
-                                    phenoTable = phenoTable,
-                                    classColumn = classColumn,
-                                    classColors = runs$classColors,
-                                    variablesType = parameters$variables.type[1],
-                                    dataType = "raw_counts_per_sample")
+                                      phenoTable = phenoTable,
+                                      # classColumn = classColumn,
+                                      # classColors = runs$classColors,
+                                      # variablesType = parameters$variables.type[1],
+                                      dataType = "raw_counts_per_sample",
+                                      parameters = runs$parameters)
   # class(mergedRuns)
   if (verbose) {
     summary(mergedRuns)
