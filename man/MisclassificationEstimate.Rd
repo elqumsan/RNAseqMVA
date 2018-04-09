@@ -4,17 +4,16 @@
 \alias{MisclassificationEstimate}
 \title{RNA-Seq classifier evaluation to assesse the performance of the classifier}
 \usage{
-MisclassificationEstimate(self, iteration, classifier, permute = FALSE,
-  verbose = FALSE, k = parameters$knn$k)
+MisclassificationEstimate(self, iteration, classifier, permute = FALSE)
 }
 \arguments{
 \item{self}{an object of class countTableWithTrainTestSets}
 
 \item{classifier}{is a type of the classifier}
 
-\item{k}{is number of neighbours passed to classifier}
-
 \item{classes}{such is vector for our cases for classes,}
+
+\item{k}{is number of neighbours passed to classifier}
 
 \item{trainIndex=NULL}{vector providing training sample indices. if NULL, training indices are sampled randomly}
 

@@ -4,7 +4,7 @@
 \alias{summary.countTableWithClasses}
 \title{print a summary of an object belonging to class countTableWithClasses}
 \usage{
-summary.countTableWithClasses(x)
+summary.countTableWithClasses(self)
 }
 \author{
 Mustafa AubElQumsan and Jacques van Helden

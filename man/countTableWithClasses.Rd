@@ -4,8 +4,7 @@
 \alias{countTableWithClasses}
 \title{constructor of the countTableWithClasses class}
 \usage{
-countTableWithClasses(countTable, phenoTable, variablesType, dataType,
-  parameters)
+countTableWithClasses(countTable, phenoTable, dataType, parameters)
 }
 \arguments{
 \item{countTable}{a data.frame with one row per feature (e.g. gene) and

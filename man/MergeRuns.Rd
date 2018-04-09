@@ -4,11 +4,10 @@
 \alias{MergeRuns}
 \title{Merge read counts from different runs by sample.}
 \usage{
-MergeRuns(runs, sampleIdColumn = "geo_accession",
-  classColumn = parameters$classColumn, verbose = FALSE)
+MergeRuns(runs)
 }
 \arguments{
-\item{countsPerRun}{an object of the class CounttableWithPheno}
+\item{runs}{an object of the class countTableWithClasses}
 
 \item{sampleIdColumn="geo_accession"}{name of the column of the pheno table which contains the sample IDs. GEO accession is preferred because it is widely used, but it is sometimes not defined. In such case, the "sample" column should be used.}
 
