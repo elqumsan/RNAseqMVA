@@ -9,7 +9,7 @@ initRecountID <- function(recountID, project.parameters) {
 
   ## Load default parameters for each new recountID
   ## (was previously parsed from the YAML file)
-  parameters <- project.parameters$default
+  parameters <- c(project.parameters$default, project.parameters$global)
 
   ## Specify the current recountID in parameters
   parameters$recountID <- recountID

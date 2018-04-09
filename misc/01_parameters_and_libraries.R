@@ -17,7 +17,7 @@ RequiredBioconductorPackages(requiredBioconductor)
 configFile <- "~/RNAseqMVA/misc/00_project_parameters.yml"
 message.with.time("Loading parameters from YAM file ", configFile)
 
-## Read project-specific parameters from a yaml-formatted file.
+## Read gloval and study case-specific parameters from a yaml-formatted file.
 ## These parameters will then be used to overwrite the default parameters.
 project.parameters <- yaml.load_file(configFile)
 
@@ -84,14 +84,14 @@ message("\tSelected ", length(selectedRecountIDs)," recount IDs: ", paste(collap
 # message("\tDefault recountID ", recountID)
 
 #### Initialise cluster processing ####
-if (!is.null(project.parameters$default$jobs)) {
+if (!is.null(project.parameters$global$jobs)) {
   message("\tSetting parallelisation parameters")
   require(foreach)
   require(doParallel)
 
   ## Define the max number of parallel jobs
   no_cores <- NULL
-  jobs <- project.parameters$default$jobs
+  jobs <- project.parameters$global$jobs
   if (is.integer(jobs) && (jobs > 0)) {
     no_cores <- jobs
   } else if (jobs == "auto") {
@@ -99,7 +99,7 @@ if (!is.null(project.parameters$default$jobs)) {
     no_cores <- as.integer(detectCores() - 1) ## Define the number of cores (keep one for the system)
   } else if (jobs == "none") {
     message("\tParallel computing not activated in config file. ")
-    project.parameters$default$parallel <- FALSE
+    project.parameters$global$parallel <- FALSE
   } else {
     stop(jobs, ' is not a valid value for the number of jobs. Should be either a strictly positive integer, or "auto".')
   }
@@ -108,9 +108,9 @@ if (!is.null(project.parameters$default$jobs)) {
     message("\tInitializing cluster computing with max ", no_cores, " parallel jobs. ")
     cl <- makeCluster(no_cores) ## Instantiate the cluser
     passed.libs <- clusterEvalQ(cl, library(RNAseqMVA)) ## pass the RNAseqMVA library to the cluster
-    # clusterExport(cl, "project.parameters") ## pass the global variable "parameters" to the cluster
+    clusterExport(cl, "project.parameters") ## pass the global variable "parameters" to the cluster
     registerDoParallel(cl)   ## Register the cluster for parallel computing
-    project.parameters$default$parallel <- TRUE
+    project.parameters$global$parallel <- TRUE
     project.parameters$no_cores <- no_cores
   }
 
