@@ -1,12 +1,11 @@
 #' @title Iintialise parameters and directories for a give recount ID.
 #' @author Jacques van Helden and Mustafa AbuElQumsan
 #' @param recountID must be a valid ID rom Recount2 database (SRP...)
-#' @param configFile YAML-formatted configuration file specifying global and recountID-specific parameters
+#' @param project.parameters project parameters (read from the YAML-formatted file)
 #' @export
-initRecountID <- function(recountID, configFile) {
+initRecountID <- function(recountID, project.parameters) {
   message.with.time("Loading parameters from YAM file ", configFile)
 
-  project.parameters <- yaml.load_file(configFile)
 
   ## Load default parameters for each new recountID
   ## (was previously parsed from the YAML file)
@@ -14,6 +13,7 @@ initRecountID <- function(recountID, configFile) {
 
   ## Specify the current recountID in parameters
   parameters$recountID <- recountID
+  parameters$studyPath <- file.path(parameters$dir$workspace, "data", recountID)
 
 
   ## Overwrite default parameters wih project-specific parameters
