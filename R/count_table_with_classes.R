@@ -23,7 +23,7 @@ countTableWithClasses <- function(countTable,
                                   parameters) {
 
   ## Check required parameters
-  for (p in c("recountID", "classColumn", "classColors")) {
+  for (p in c("recountID", "classColumn")) {
     if (is.null(parameters[[p]])) {
       stop("Missing required parameter: '", p,
            "'.\n\tPlease check configuration file. ")
@@ -47,14 +47,21 @@ countTableWithClasses <- function(countTable,
 
       ## NOTE: classColumn and classColors are now attached to the object via parameters
       ## -> should be suppressed from below but then we need to check that everything works fine.
-      classColumn = classColumn,
-      classColors = classColors
+      classColumn = classColumn# ,
+#      classColors = classColors
     ),
     class="countTableWithClasses")
   # names(object)
   # class(object)
   # attributes(object)
   # UseMethod("exportTables", self)
+
+  ##  Get user-specificed class colors if defined. If not, will be defined with buildAttributes
+  if (!is.null(parameters$classColors)) {
+    self$classColors <- parameters$classColors
+  }
+
+
 
   ## Define all the derived attributes from the count table and pheno table
   object <- buildAttributes(object)
