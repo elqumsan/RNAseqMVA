@@ -7,7 +7,7 @@ studyCases <- list() ## a list containing all the loaded datasets + their pre-pr
 for (recountID in selectedRecountIDs) {
 
   #### Specify generic and recountID-specific parameters ####
-  parameters <- initRecountID(recountID, configFile)
+  parameters <- initRecountID(recountID, project.parameters)
 
   # ## Load default parameters for each new recountID
   # ## (was previously parsed from the YAML file)
@@ -70,7 +70,7 @@ for (recountID in selectedRecountIDs) {
   # dir.create(path = parameters$dir$tsv, recursive = TRUE, showWarnings = FALSE)
 
   ## Directory to store the data downloaded from recountID
-  studyPath <- file.path(parameters$dir$workspace, "data", recountID)
+  # studyPath <- file.path(parameters$dir$workspace, "data", recountID)
 
 
 
@@ -81,10 +81,7 @@ for (recountID in selectedRecountIDs) {
   if (parameters$compute) {
     message.with.time("Loading count table from recount", "; recountID = ", parameters$recountID)
     studyCases[[recountID]] <- loadCounts(recountID = recountID,
-                                      mergeRuns = parameters$mergeRuns,
-                                      classColumn = parameters$classColumn,
-                                      minSamplesPerClass = parameters$minSamplesPerClass,
-                                      na.rm = parameters$na.rm)
+                                          parameters = parameters)
 
     ## Attach the recountID-specific parameters to the loaded data.
     studyCases[[recountID]]$parameters <- parameters
