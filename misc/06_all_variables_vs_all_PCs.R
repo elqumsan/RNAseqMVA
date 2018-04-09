@@ -19,12 +19,14 @@ if (parameters$compute) {
   ## Loop over recountIDs
   for (recountID in selectedRecountIDs) {
 
+    train.test.results.all.variables.per.classifier[[recountID]] <- list() ## Instantiate an entry per recountID
+
     ## Get the recountID-specific parameters from the loaded object
     parameters <- studyCases[[recountID]]$parameters
 
     #### TEMPORARY FOR DEBUG ####
     parameters$classifiers <- "svm"
-    parameters$data.types.to.test <- "log2norm"
+#    parameters$data.types.to.test <- "log2norm"
 
     message.with.time("Running train/test with all variables for recountID\t", recountID)
     ## Loop over classifiers
@@ -66,7 +68,7 @@ if (parameters$compute) {
 
           #### Run classifier with all variables (log2-transformed log counts) ####
           exp.prefix <-
-            paste(sep = "_", classifier, dataset$ID , dataset$dataType , dataset$variablesType)
+            paste(sep = "_", recountID, classifier, dataset$dataType , dataset$variablesType)
           if (permute) {
             exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
           }# end if permuted class
@@ -211,18 +213,17 @@ if (parameters$compute) {
       #### Plotting the Miscalssification Error rate using all diverse data type all variables with KNN classifier? ####
       ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
                        classifier = classifier,
-                       data.type = "diverse_data_type",
+                       data.type = "diverse-data-types",
+                       variablesType = dataset$variablesType,
                        main = paste(sep="",
-                                    classifier, ": all variables vs all PCs,", "\n",
-                                    parameters$recountID, ", ",
-                                    parameters$iterations, " iterations, ","\n",
-                                    data.type = "diverse_data_type"),
-                       variablesType = dataset$variablesType)
+                                    parameters$recountID,
+                                    "; ", classifier,
+                                    "\nall variables; ",
+                                    parameters$iterations, " iterations")
+                       )
+      train.test.results.all.variables.per.classifier[[recountID]][[classifier]] <- train.test.results.all.variables
 
-      train.test.results.all.variables.per.classifier[[classifier]] <- train.test.results.all.variables
-
-
-    } # end loop over classifier
+    } # end loop over classifiers
   } # end loop over recountIDs
 
   ## Save a memory image that can be re-loaded next time to avoid re-computing all the normalisation and so on.
