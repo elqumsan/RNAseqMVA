@@ -55,6 +55,8 @@ countTableWithClasses <- function(countTable,
   ## Define all the derived attributes from the count table and pheno table
   object <- buildAttributes(object)
 
+  ## Attach the parameters to the object
+  object$parameters <- parameters
 
   message("\t\tInstantiated an object of class countTablewithClasses for recountID\t", recountID)
   return(object)
