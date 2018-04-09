@@ -17,6 +17,8 @@
 #' @param k this parameter for the knn classifier to identify the number of neighbour in classification process.
 #'
 #' @return
+#' @import foreach
+#' @import doParallel
 #' @export
 ################################################################
 ## Define a function to iterate over one classifier with one particular data type.
@@ -79,23 +81,37 @@ one.experiment <- function (self,
 
   ## Iterate train/test cycles
   testTable <- data.frame() ## Instantiate the test table
-  i <- 1 #iterations
-  for (i in 1:iterations) {
-    ## Permute class labels if required
-    # computing the testing errors rate for the KNN classfier
-    # trainIndex <- trainIndices[[i]]
-    message("\t", format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", classifier, " training/testing evaluation, iteration ", i , "/", iterations)
+  if (parameters$parallel) {
+    ## Run a foreach loop and get the result back in a data frame with rbind.
+    testTable <- foreach(i = 1:iterations, .combine = rbind) %dopar%
+      MisclassificationEstimate(self = self,
+                                iteration = i,
+                                classifier = classifier,
+                                permute = permute,
+                                k=k,
+                                verbose=verbose)$stats
+  } else {
+    i <- 1 #iterations
+    for (i in 1:iterations) {
+      ## Permute class labels if required
+      # computing the testing errors rate for the KNN classfier
+      # trainIndex <- trainIndices[[i]]
+      message("\t", format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t",
+              recountID, "\t", classifier,
+              "\ttrain/test iteration ", i , "/", iterations)
 
 
-    oneTest <- MisclassificationEstimate(self = self,
-                                         iteration = i,
-                                         classifier = classifier,
-                                         permute = permute,
-                                         k=k,
-                                         verbose=verbose)
+      oneTest <- MisclassificationEstimate(self = self,
+                                           iteration = i,
+                                           classifier = classifier,
+                                           permute = permute,
+                                           k=k,
+                                           verbose=verbose)
 
-    testTable <- rbind (testTable, oneTest$stats)
-  }
+      testTable <- rbind (testTable, oneTest$stats)
+    }
+  } ## end if project.parameters$parallel
+
 
   ## Save the result table for KNN training/testing evaluation
   testTable.file <- file.path(parameters$dir$tablesDetail[classifier], paste(sep="", file.prefix, ".tsv"))
