@@ -94,9 +94,11 @@ if (!is.null(project.parameters$default$jobs)) {
   if (is.integer(jobs) && (jobs > 0)) {
     no_cores <- jobs
   } else if (jobs == "auto") {
+    message("\tAutomatic detection of cores for parallel computing. ")
     no_cores <- as.integer(detectCores() - 1) ## Define the number of cores (keep one for the system)
   } else if (jobs == "none") {
-    message("Parallel computing not activated in config file. ")
+    message("\tParallel computing not activated in config file. ")
+    project.parameters$default$parallel <- FALSE
   } else {
     stop(jobs, ' is not a valid value for the number of jobs. Should be either a strictly positive integer, or "auto".')
   }
@@ -109,8 +111,6 @@ if (!is.null(project.parameters$default$jobs)) {
     registerDoParallel(cl)   ## Register the cluster for parallel computing
     project.parameters$default$parallel <- TRUE
     project.parameters$no_cores <- no_cores
-  } else {
-    project.parameters$default$parallel <- FALSE
   }
 
   ## NOTE: WE SHOULD HAVE A TERMINATING SCRIPT, FOR INSTANCE TO STOP THE CLUSTER
