@@ -19,7 +19,7 @@ default:
 
   #  iterations: 50, ## Number of iterations for the classiifers
   iterations: 10 ## Number of iterations for the classiifers
-  jobs: "auto" ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
+  jobs: "none" ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
 
   reload: FALSE
   compute: TRUE ## If FALSE, do not run the heavy computations, just generate the pictures and save tables
