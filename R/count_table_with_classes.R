@@ -58,7 +58,7 @@ countTableWithClasses <- function(countTable,
 
   ##  Get user-specificed class colors if defined. If not, will be defined with buildAttributes
   if (!is.null(parameters$classColors)) {
-    self$classColors <- parameters$classColors
+    object$classColors <- parameters$classColors
   }
 
 
