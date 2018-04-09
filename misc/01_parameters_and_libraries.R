@@ -7,7 +7,7 @@ require("roxygen2") ## MUSTAFA: do we really required roxygen2 and devtools to r
 require("devtools") ## MUSTAFA: do we really required roxygen2 and devtools to run the scripts ? They are required for building the package, but maybe not for running the analyses
 
 # loading required libraries
-requiredCRAN <- c('devtools', 'class', "randomForest","broom", "roxygen2","scatterplot3d","e1071")
+requiredCRAN <- c('devtools', 'class', "randomForest","broom", "roxygen2","scatterplot3d","e1071","foreach","doParallel")
 RequiredCRANPackages(requiredCRAN)
 
 ## JvH: Mustafa, please add the other required packages, in particular recount

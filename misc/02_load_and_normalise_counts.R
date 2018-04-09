@@ -124,8 +124,8 @@ for (recountID in selectedRecountIDs) {
     message.with.time("Normalizing counts based on 75th percentile")
     studyCases[[recountID]]$norm <- NormalizeCounts(
       self = studyCases[[recountID]]$filtered,
-      classColumn = parameters$classColumn,
-      classColors = parameters$classColor,
+      classColumn = studyCases[[recountID]]$parameters$classColumn,
+      classColors = studyCases[[recountID]]$parameters$classColors,
       # phenoTable = studyCases[[recountID]]$filteredExperiment$phenoTable,
       # classLabels = studyCases[[recountID]]$filteredExperiment$classLabels,
       method = "quantile", quantile=0.75, log2 = FALSE)
@@ -162,7 +162,7 @@ for (recountID in selectedRecountIDs) {
     message.with.time("Normalizing counts based on 75th percentile + log2 transformation")
     studyCases[[recountID]]$log2norm <- NormalizeCounts(
       self = studyCases[[recountID]]$filtered,
-      classColumn = parameters$classColumn,
+      classColumn = studyCases[[recountID]]$parameters$classColumn,
       # counts =studyCases$filteredExperiment$countTable,
       # phenoTable = studyCases$filteredExperiment$phenoTable,
       # classLabels = studyCases$filteredExperiment$classLabels,
