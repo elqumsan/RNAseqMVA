@@ -39,9 +39,9 @@
 #' @import ggplot2
 #' @export
 filterCountTable <- function(rawCounts,
-                             na.rm = parameters$na.rm,
-                             minSamplesPerClass = parameters$minSamplesPerClass,
-                             nearZeroVarFilter = parameters$nearZeroVarFilter,
+                             # na.rm = parameters$na.rm,
+                             # minSamplesPerClass = parameters$minSamplesPerClass,
+                             # nearZeroVarFilter = parameters$nearZeroVarFilter,
                              draw.plot = TRUE) {
 
   message.with.time("Filtering count table")
@@ -50,6 +50,22 @@ filterCountTable <- function(rawCounts,
   if (!is(rawCounts, "countTableWithClasses")) {
     stop("filterCountTable() requires an object of class raw counts per sample")
   }
+
+
+  ## Take parameters from the countTableWithClasses object
+  parameters <- rawCounts$parameters
+
+  ## Check required parameters
+  for (p in c("na.rm", "minSamplesPerClass", "nearZeroVarFilter")) {
+    if (is.null(parameters[[p]])) {
+      stop("Missing required parameter: '", p,
+           "'.\n\tPlease check configuration file. ")
+    } else {
+      assign(p, parameters[[p]])
+    }
+  }
+
+
 
   ## Initialise a vector with the genes that will be kept through the different filtering stpes.
   keptGenes <- rawCounts$geneNames

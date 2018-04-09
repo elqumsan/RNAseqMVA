@@ -22,9 +22,14 @@ if (parameters$compute) {
     ## Get the recountID-specific parameters from the loaded object
     parameters <- studyCases[[recountID]]$parameters
 
+    #### TEMPORARY FOR DEBUG ####
+    parameters$classifiers <- "svm"
+    parameters$data.types.to.test <- "log2norm"
+
     message.with.time("Running train/test with all variables for recountID\t", recountID)
     ## Loop over classifiers
     classifier <- "svm" ## For quick test
+
     for (classifier in parameters$classifiers) {
 
       ## List to store all results
@@ -39,7 +44,7 @@ if (parameters$compute) {
       for (permute in parameters$permute) {
 
         ## Loop over data types
-        data.type <- "norm" ## For test
+        data.type <- "log2norm" ## For test
         for (data.type in parameters$data.types.to.test) {
           message.with.time("\tRunning train/test with all variables",
                             "\n\trecountID: ", recountID,
