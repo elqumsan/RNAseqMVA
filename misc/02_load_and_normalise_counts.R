@@ -49,7 +49,7 @@ for (recountID in selectedRecountIDs) {
 
   ## Prefix for experiments with permuted class labels
   ## (negative controls to estimate random expectation)
-  perm.prefix <- parameters$perm_prefix
+  # perm.prefix <- parameters$perm_prefix
 
 
   #### Specification of the directories   ####
