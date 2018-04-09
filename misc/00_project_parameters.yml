@@ -1,5 +1,4 @@
-## Default parameters
-default:
+global: ## Global parameters are those who are the samee across all study cases
   dir: ## Directories
     main: "~/RNAseqMVA"
     workspace: "~/RNAseqMVA_workspace"
@@ -8,18 +7,9 @@ default:
     memoryImages: "~/RNAseqMVA_workspace/memory_images"
 
   perm.prefix: "permLabels"
-  #  classColumn: "tissue" ## Characteristics to be used as class label
-  mergeRuns: TRUE ## Whether or not to merge runs per sample
-  sampleIdColumn: "geo_accession"
-
-  ## Filtering options
-  minSamplesPerClass: 15 ## THERE IS A BUG TO FIX: if we set this parameter to 10 (for example) the class labels must be adapted by suppressing the
-  nearZeroVarFilter: TRUE
-  na.rm: TRUE
-
+  jobs: "none" ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
   #  iterations: 50, ## Number of iterations for the classiifers
   iterations: 10 ## Number of iterations for the classiifers
-  jobs: "none" ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
 
   reload: FALSE
   compute: TRUE ## If FALSE, do not run the heavy computations, just generate the pictures and save tables
@@ -29,7 +19,6 @@ default:
   #  classifiers: c("lda"),
   classifiers: ["svm"]
   # classifiers: ["knn","rf","svm"] # TO ADD LATER: "lda", "qda"
-  # classifiers: ["knn"] # TO ADD LATER: "lda", "qda", "rf","svm"
   data.types: ["countsPerRun", "originalCounts", "filtered", "norm", "log2norm", "prcomp", "DEG", "V.importance"]
  # data.types.to.test: ["filtered", "norm", "log2norm"]
   data.types.to.test: ["log2norm"]
@@ -53,6 +42,18 @@ default:
     type: "C-classification"
     gamma: 1
     cost: 100
+
+## Default values for study case-specific parameters
+## (can then be over-written by recountID-specific values as shown below)
+default:
+  #  classColumn: "tissue" ## Characteristics to be used as class label
+  mergeRuns: TRUE ## Whether or not to merge runs per sample
+  sampleIdColumn: "geo_accession"
+
+  ## Filtering options
+  minSamplesPerClass: 15 ## THERE IS A BUG TO FIX: if we set this parameter to 10 (for example) the class labels must be adapted by suppressing the
+  nearZeroVarFilter: TRUE
+  na.rm: TRUE
 
 
 
