@@ -23,10 +23,11 @@
 ErrorRateBoxPlot <- function(experimentList,
                              classifier,
                              data.type, # = "log2norm.prcomp.centred",
-                             variablesType,
+#                             variablesType,
                              main = paste(sep="", parameters$recountID, "; ", classifier,
-                                          "\n", data.type, "; ", variablesType,
-                                          "\n", parameters$iterations, "iterations"),
+                                          "\n", data.type,
+                                          #"; ", variablesType,
+                                          "; ", parameters$iterations, "iterations"),
                              expColor = "#00BBFF",
                              permColor = "grey",
                              expLegend = "Train/test",
@@ -66,11 +67,11 @@ ErrorRateBoxPlot <- function(experimentList,
                          parameters$recountID,
                          classifier,
                          data.type,
-                         variablesType,
+#                         variablesType,
                          "iteration",
                          parameters$iterations)
     if (permute) {
-      file.prefix <- paste(sep = "_", file.prefix, perm.prefix)
+      file.prefix <- paste(sep = "_", file.prefix, parameters$perm.prefix)
     }# end if permuted class
     boxplot.file <- file.path(parameters$dir$figures[classifier],
                               paste(sep = "", file.prefix, "_boxplot.pdf"))
