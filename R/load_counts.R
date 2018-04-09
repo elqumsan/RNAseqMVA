@@ -105,9 +105,10 @@ loadCounts <- function(recountID,
 
   ################################################
   #### Filter zero-variance and near-zero variance variables from the count table #####
-  experiment$filtered <- filterCountTable(rawCounts = experiment$originalCounts,
-                                          nearZeroVarFilter = parameters$nearZeroVarFilter,
-                                          minSamplesPerClass = parameters$minSamplesPerClass)
+  experiment$filtered <- filterCountTable(rawCounts = experiment$originalCounts)
+  # #,
+  #                                         nearZeroVarFilter = parameters$nearZeroVarFilter,
+  #                                         minSamplesPerClass = parameters$minSamplesPerClass)
   # class(experiment$filtered)
   # summary(experiment$filtered)
   # dim(countTable)
