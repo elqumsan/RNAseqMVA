@@ -2,12 +2,12 @@
 % Please edit documentation in R/init_recount_id.R
 \name{initRecountID}
 \alias{initRecountID}
-\title{Iintialise parameters and directories for a give recount ID.}
+\title{Intialise parameters and directories for a give recount ID.}
 \usage{
 initRecountID(recountID, project.parameters)
 }
 \arguments{
-\item{recountID}{must be a valid ID rom Recount2 database (SRP...)}
+\item{recountID}{must be a valid ID row Recount2 database (SRP...)}
 
 \item{project.parameters}{project parameters (read from the YAML-formatted file)}
 }

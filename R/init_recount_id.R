@@ -1,6 +1,6 @@
-#' @title Iintialise parameters and directories for a give recount ID.
+#' @title Intialise parameters and directories for a give recount ID.
 #' @author Jacques van Helden and Mustafa AbuElQumsan
-#' @param recountID must be a valid ID rom Recount2 database (SRP...)
+#' @param recountID must be a valid ID row Recount2 database (SRP...)
 #' @param project.parameters project parameters (read from the YAML-formatted file)
 #' @export
 initRecountID <- function(recountID, project.parameters) {
@@ -24,8 +24,8 @@ initRecountID <- function(recountID, project.parameters) {
   } else {
     message("Using specific parameters specfied in yaml file for recount ID ", recountID)
     parameters[names(selected.parameters)] <- project.parameters[[recountID]]
-    names(parameters$data.types)<-parameters$data.types
-    names(parameters$variables.type)<-parameters$variables.type
+    names(parameters$data.types) <- parameters$data.types
+    names(parameters$variables.type) <- parameters$variables.type
   }
 
 
@@ -64,9 +64,9 @@ initRecountID <- function(recountID, project.parameters) {
     stop("Workspace directory must be specified in the config file. ")
   }
 
-
-  parameters$dir$results <- file.path(parameters$dir$workspace, "results", recountID)
-
+  ## Result directory
+  parameters$dir$results <- file.path(parameters$dir$workspace, "results")
+  dir.create(parameters$dir$results, showWarnings = FALSE, recursive = TRUE)
 
   # ## Directory with R scripts
   # if (is.null(parameters$dir$scripts)) {
@@ -75,16 +75,16 @@ initRecountID <- function(recountID, project.parameters) {
 
 
   ## Result directory
-  parameters$dir$results <- file.path(parameters$dir$workspace, "results", parameters$recountID)
+  #parameters$dir$results <- file.path(parameters$dir$workspace, "results", parameters$recountID)
 
   ## Sub-directory to save the tab-separated value (TSV) files
-  parameters$dir$tsv <- file.path(parameters$dir$results, "TSV")
+  parameters$dir$tsv <- file.path(parameters$dir$results,recountID, "TSV")
   dir.create(path = parameters$dir$tsv, recursive = TRUE, showWarnings = FALSE)
 
   ## Define the classifier-specific directories where tables and figures will be stored.
   ## One sub-directory per classifer, with separate subdirectories for tables and figures.
 
-  parameters$dir$classifiers <- file.path(parameters$dir$results, parameters$classifiers)
+  parameters$dir$classifiers <- file.path( parameters$dir$results,recountID,parameters$classifiers)
   names(parameters$dir$classifiers) <- parameters$classifiers
 
   parameters$dir$tables <- file.path(parameters$dir$classifiers, "tables")
@@ -108,11 +108,11 @@ initRecountID <- function(recountID, project.parameters) {
   ## TO CHECK LATER: DO wE STILL NEED THESE VARIABLES ???
 
   ## Directory for impact of Normalization and log2 into counts (and the study of its impact)
-  parameters$dir$NormalizationImpact <- file.path(parameters$dir$results , paste("impact_of_normalisation_and_log2", sep = ""))
+  parameters$dir$NormalizationImpact <- file.path(parameters$dir$results, recountID , paste("impact_of_normalisation_and_log2", sep = ""))
   dir.create(parameters$dir$NormalizationImpact, showWarnings = F, recursive = T)
 
   ## Directory for the visualization of Principal component for counts (and the study of its impact)
-  parameters$dir$PCviz <- file.path(parameters$dir$results , paste( "visualization_of_PCs", sep = ""))
+  parameters$dir$PCviz <- file.path(parameters$dir$results, recountID , paste( "visualization_of_PCs", sep = ""))
   dir.create(parameters$dir$PCviz, showWarnings = F, recursive = T)
 
   # View(parameters)
