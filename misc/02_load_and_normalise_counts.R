@@ -6,6 +6,7 @@ studyCases <- list() ## a list containing all the loaded datasets + their pre-pr
 
 for (recountID in selectedRecountIDs) {
 
+  message.with.time ("Loading data for recountID\t", recountID)
   #### Specify generic and recountID-specific parameters ####
   parameters <- initRecountID(recountID, project.parameters)
 
