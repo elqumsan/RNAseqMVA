@@ -43,6 +43,10 @@ countTableWithClasses <- function(countTable,
       phenoTable = phenoTable,
       # variablesType = variablesType,
       dataType = dataType,
+      parameters = parameters,
+
+      ## NOTE: classColumn and classColors are now attached to the object via parameters
+      ## -> should be suppressed from below but then we need to check that everything works fine.
       classColumn = classColumn,
       classColors = classColors
     ),
@@ -56,7 +60,7 @@ countTableWithClasses <- function(countTable,
   object <- buildAttributes(object)
 
   ## Attach the parameters to the object
-  object$parameters <- parameters
+#  object$parameters <- parameters
 
   message("\t\tInstantiated an object of class countTablewithClasses for recountID\t", recountID)
   return(object)
