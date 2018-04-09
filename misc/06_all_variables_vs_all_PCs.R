@@ -25,8 +25,8 @@ if (parameters$compute) {
     parameters <- studyCases[[recountID]]$parameters
 
     #### TEMPORARY FOR DEBUG ####
-#    parameters$classifiers <- "svm"
-#    parameters$data.types.to.test <- "log2norm"
+    # parameters$classifiers <- "svm"
+    # parameters$data.types.to.test <- "log2norm"
 
     message.with.time("Running train/test with all variables for recountID\t", recountID)
     ## Loop over classifiers
@@ -70,7 +70,7 @@ if (parameters$compute) {
           exp.prefix <-
             paste(sep = "_", recountID, classifier, dataset$dataType , dataset$variablesType)
           if (permute) {
-            exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
+            exp.prefix <- paste(sep = "_", exp.prefix, parameters$perm.prefix)
           }# end if permuted class
           # print(exp.prefix)
 
@@ -78,9 +78,9 @@ if (parameters$compute) {
             one.experiment (
               dataset,
               classifier = classifier,
-              permute = permute,
-              k = parameters$knn$k,
-              verbose = parameters$verbose
+              permute = permute#,
+              # k = parameters$knn$k,
+              # verbose = parameters$verbose
             )
 
         } # End iterations over dataset
