@@ -156,10 +156,10 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
     ## Merge runs if required
     if (verbose) { message("\tMerging run-wise counts by sample") }
     result$countsPerRun <- countsPerRuns
-    result$originalCounts <- MergeRuns(countsPerRuns,
-                                  classColumn  = classColumn ,
-                                  sampleIdColumn = sampleIdColumn,
-                                  verbose = verbose)
+    result$originalCounts <- MergeRuns(runs = countsPerRuns) #,
+                                  # classColumn  = classColumn ,
+                                  # sampleIdColumn = sampleIdColumn,
+                                  # verbose = verbose)
   } else {
     result$originalCounts <- countsPerRun
   }
