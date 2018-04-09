@@ -4,10 +4,8 @@
 \alias{countTableWithClasses}
 \title{constructor of the countTableWithClasses class}
 \usage{
-countTableWithClasses(countTable, phenoTable,
-  classColumn = parameters$classColumn,
-  classColors = parameters$classColors, ID = parameters$recountID,
-  variablesType, dataType = "raw_counts")
+countTableWithClasses(countTable, phenoTable, variablesType, dataType,
+  parameters)
 }
 \arguments{
 \item{countTable}{a data.frame with one row per feature (e.g. gene) and
@@ -15,13 +13,7 @@ one column per sample.}
 
 \item{phenoTable}{a data frame describing each sample: one row per sample and one column per attribute of a sample.}
 
-\item{classColumn}{a vector indicating one or several columns of the pheno table that will define the sample class labels. If umtiple columns are specified, they will be concatenated to build sample labels}
-
-\item{ID=parameters$recountID}{identifier associated to the count table (by default, the RecountID, but can be specified with custom identifiers)}
-
-\item{sampleNames=colnames(countTable)}{sample names (by default, automatically taken from the column names of the count table)}
-
-\item{geneNames=rownames(countTable)}{gene names (by default, automatically taken from the row names of the count table)}
+\item{parameters}{global and specific parameters for the analysis of this recountID}
 
 \item{dataType="raw}{counts" data type, free text (e.g. raw counts, log2-transformed counts, log2 normalised counts  ...).}
 }

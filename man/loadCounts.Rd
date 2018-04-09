@@ -4,18 +4,14 @@
 \alias{loadCounts}
 \title{Loading the count table, the Pheno table and vector of class labels}
 \usage{
-loadCounts(recountID = parameters$recountID,
-  classColumn = parameters$classColumn, mergeRuns = parameters$mergeRuns,
-  sampleIdColumn = parameters$sampleIdColumn,
-  minSamplesPerClass = parameters$minSamplesPerClass,
-  dir.workspace = parameters$dir$workspace, na.rm = parameters$na.rm, ...)
+loadCounts(recountID, parameters, ...)
 }
 \arguments{
 \item{recountID}{number of experiment}
 
-\item{mergeRuns}{to wrapper the rus by sample}
-
 \item{...}{additional parameters are passed to loadRecountExperiment()}
+
+\item{mergeRuns}{to wrapper the rus by sample}
 
 \item{sampleIdColumn="geo_accession"}{name of the column of the pheno table which contains the sample IDs.}
 
