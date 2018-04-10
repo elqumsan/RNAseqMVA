@@ -87,7 +87,7 @@ summary.countTableWithClasses <- function(self) {
   cat("\tClass properties\n")
   print(self$classProperties)
   cat("\n")
-  NextMethod("buildAttributes", self)
+  NextMethod("summary", self)
 }
 
 
@@ -95,12 +95,12 @@ summary.countTableWithClasses <- function(self) {
 #' @author Mustafa AubElQumsan and Jacques van Helden
 #' @export
 summary.default <- function(self) {
-#  cat("Summary printed. \n")
+   cat("")
 }
 
 #' @export
 print.countTableWithClasses <- function(x) {
-  summary.countTableWithClasses(x)
+  summary(x)
 }
 
 
@@ -173,7 +173,7 @@ buildAttributes.countTableWithClasses <- function(self) {
 
   ## Define class colors
   if (is.null(self$classColors)) {
-    self$classColors <-1:length(self$classNames)
+    self$classColors <- rainbow(n  = self$nbClasses)
     names(self$classColors) <- self$classNames
     #classColors <- unlist(classColors)
   } else {
@@ -181,17 +181,24 @@ buildAttributes.countTableWithClasses <- function(self) {
       ## Convert list (like the one parsed  from the YAML file) to a named vector
       self$classColors <- unlist(self$classColors)
     }
+
+    ## Assign automatic colors (numbers starting from 1) for classes with no defined color in the parameters
+    checkedColors <- self$classColors[self$classNames]
+    names(checkedColors) <- self$classNames
+    missing.color <- is.na(checkedColors)
+    if (sum(missing.color) > 0) {
+      ## Pick up missing color in a rainbow with n colors = nbClasses
+      checkedColors[missing.color] <- rainbow(n = self$nbClasses)[missing.color]
+      self$classColors <- checkedColors
+    }
+
+
     ##    self$classNames %in% names(self$classColors)
   }
 
   ## Assign class-specific colors if they were defined in the parameters
   self$classProperties$color <- self$classColors[rownames(self$classProperties)]
 
-  ## Assign automatic colors (numbers starting from 1) for classes with no defined color in the parameters
-  missing.color <- is.na(self$classProperties$color)
-  if (length(missing.color) > 0) {
-    self$classProperties$color[missing.color] <- 1:length(missing.color)
-  }
 
   ## Assign colors to samples
   self$sampleColors <- self$classColors[self$classLabels]

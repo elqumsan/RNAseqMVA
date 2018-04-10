@@ -186,7 +186,7 @@ for (recountID in selectedRecountIDs) {
 
     ## Clone the log2norm object to copy all its parameters
     studyCases[[recountID]]$log2normPCs <- studyCases[[recountID]]$log2norm
-    studyCases[[recountID]]$log2normPCs$prcomp <-
+    studyCases[[recountID]]$log2normPCs$dataType <- "log2normPCs"
     # names(studyCases[[recountID]]$log2normPCs)
 
     ## COmpte principal components
@@ -214,10 +214,10 @@ for (recountID in selectedRecountIDs) {
     silence <- dev.off()
 
     ## Plot PC2 vs PC3
-    PCplot.file <- file.path(parameters$dir$PCviz,paste(sep="", recountID, "_log2norm_PC2-PC3.pdf"))
+    PCplot.file <- file.path(parameters$dir$PCviz,paste(sep="", recountID, "_log2norm_PC3-PC4.pdf"))
     message("PC plot: ", PCplot.file)
     pdf(file = PCplot.file, width=7, height=9)
-    plot2PCs(studyCases[[recountID]]$log2normPCs, pcs = c(2,3))
+    plot2PCs(studyCases[[recountID]]$log2normPCs, pcs = c(3,4))
     silence <- dev.off()
 
     # ## STILL IN CONSTRUCTION (2018-03-19)

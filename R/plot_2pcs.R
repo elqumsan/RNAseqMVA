@@ -62,8 +62,8 @@ plot2PCs <- function(self,
        ...
   )
   legend("topleft",
-         legend = studyCases[[recountID]]$log2normPCs$classNames,
-         col = studyCases[[recountID]]$log2normPCs$classColors,
+         legend = self$classNames,
+         col = self$classColors,
          border="black", bty='o', bg='white',
          pch = class.pch, cex = 0.8
   )

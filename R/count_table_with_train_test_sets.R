@@ -56,14 +56,14 @@ summary.countTableWithTrainTestSets <- function(x){
   #print(x$trainTestProperties)
   cat("\n")
 
-  NextMethod("buildAttributes", self)
+  NextMethod("summary", self)
   #print()
 }
 
 #' @title print for a countTableWithTrainTestSets object
 #' @export
-print.countTableWithTrainTestSets <- function(x){
-  summary.countTableWithTrainTestSets(x)
+print.countTableWithTrainTestSets <- function(x) {
+  summary(x)
 }
 
 

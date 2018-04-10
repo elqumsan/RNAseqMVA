@@ -27,6 +27,7 @@ if (parameters$compute) {
     #### TEMPORARY FOR DEBUG ####
     # parameters$classifiers <- "svm"
     # parameters$data.types.to.test <- "log2norm"
+    # parameters$data.types.to.test <- "log2normPCs"
 
     message.with.time("Running train/test with all variables for recountID\t", recountID)
     ## Loop over classifiers
@@ -46,7 +47,7 @@ if (parameters$compute) {
       for (permute in parameters$permute) {
 
         ## Loop over data types
-        data.type <- "log2norm" ## For test
+        # data.type <- "log2norm" ## For test
         for (data.type in parameters$data.types.to.test) {
           message.with.time("\tRunning train/test with all variables",
                             "\n\trecountID: ", recountID,
