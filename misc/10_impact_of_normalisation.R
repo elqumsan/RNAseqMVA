@@ -6,7 +6,7 @@
 #' "Normalisation" treatment onto these raw count and study the miscalssification errors
 #' in order to evaluate if normalization improves the accuracy.
 #'
-#' @param countTable
+#' @param dataTable
 #' @param classes
 #' @param classfier
 #' @param trainingproportion
@@ -188,7 +188,7 @@ if (parameters$compute) {
           message (format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", "Experiment prefix: ", exp.prefix)
 
           train.test.results[[exp.prefix]] <-
-            one.experiment(countTable=counts,
+            one.experiment(dataTable=counts,
                            data.type=data.type,
                            classifier=classifier,
                            classes=classes,
@@ -211,11 +211,11 @@ if (parameters$compute) {
 if (parameters$compute) {
   ## Run differential analysis with DESeq2 and edgeR to define variable order
   message.with.time("Running DESeq2 and edgeR to define variable ordering")
-  DEG.DESeq2 <- DEGordering(studyCases$countTable, studyCases$classes, method = "DESeq2")
-  DEG.edgeR  <- DEGordering(studyCases$countTable, studyCases$classes, method = "edgeR")
+  DEG.DESeq2 <- DEGordering(studyCases$dataTable, studyCases$classes, method = "DESeq2")
+  DEG.edgeR  <- DEGordering(studyCases$dataTable, studyCases$classes, method = "edgeR")
 
-  sorted.log2.transformed.edgeR <- studyCases$countTable[, DEG.DESeq2$geneOrder]
-  sorted.log2.transformed.DESeq2 <- studyCases$countTable[, DEG.edgeR$geneOrder]
+  sorted.log2.transformed.edgeR <- studyCases$dataTable[, DEG.DESeq2$geneOrder]
+  sorted.log2.transformed.DESeq2 <- studyCases$dataTable[, DEG.edgeR$geneOrder]
 } else {
   message.with.time("Skipping DEG detection with edgeR and DESeq2. ")
 }
@@ -251,7 +251,7 @@ if (parameters$compute) {
           message (format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", "Experiment prefix: ", exp.prefix)
 
           train.test.results[[exp.prefix]] <-
-            one.experiment(countTable=counts,
+            one.experiment(dataTable=counts,
                            data.type=data.type,
                            classifier=classifier,
                            classes=classes,
@@ -431,7 +431,7 @@ stop("Mustafa, the next analyses should now be done with the same one.experiment
 ## we thus will using the ordered variables which are the most significance resulting from DEG,
 ## concering with padj.
 
-second.experiment <- function( countTable = rawCounts,
+second.experiment <- function( dataTable = rawCounts,
                                classes = classes,
                                classifier = "knn",
                                data.type = "raw",
@@ -444,11 +444,11 @@ second.experiment <- function( countTable = rawCounts,
                     variable.type, ":variable number" )
 
   if(deg.method == "DESeq2") {
-    DEG.DESeq <- DEGordering(countTable , classes, method = "DESeq2")
-    sorted.countTable.DESeq <- countTable[, DEG.DESeq$geneOrder]
+    DEG.DESeq <- DEGordering(dataTable , classes, method = "DESeq2")
+    sorted.dataTable.DESeq <- dataTable[, DEG.DESeq$geneOrder]
   }else {
-    DEG.edgeR  <- DEGordering(countTable , classes, method = "edgeR")
-    sorted.countTable.edgeR <- countTable[,  DEG.edgeR$geneOrder]
+    DEG.edgeR  <- DEGordering(dataTable , classes, method = "edgeR")
+    sorted.dataTable.edgeR <- dataTable[,  DEG.edgeR$geneOrder]
   } # end of the IF for checking the DEG( Deffirential expression genes)
 
 
@@ -463,7 +463,7 @@ second.experiment <- function( countTable = rawCounts,
       var.label <- paste(sep="_", "DESeq2_top", varnb)
 
       for(i in 1:parameters$iterations){
-        test.DESeq <-MisclassificationEstimate(countTable = sorted.countTable.DESeq[, 1:varnb], classes = classes, classifier = classifier)
+        test.DESeq <-MisclassificationEstimate(dataTable = sorted.dataTable.DESeq[, 1:varnb], classes = classes, classifier = classifier)
         testTable <- rbind(testTable, test.DESeq$stats)
       } # end for iteration
 
@@ -487,7 +487,7 @@ second.experiment <- function( countTable = rawCounts,
       var.label <- paste(sep="_", "edgeR_top", varnb)
 
       for(i in 1:parameters$iterations){
-        test.edgeR <-MisclassificationEstimate(countTable = sorted.countTable.edgeR[, 1:varnb], classes = classes ,classifier = classifier )
+        test.edgeR <-MisclassificationEstimate(dataTable = sorted.dataTable.edgeR[, 1:varnb], classes = classes ,classifier = classifier )
         testTable <- rbind(testTable, test.edgeR$stats)
       } # end for iteration
 
@@ -506,10 +506,10 @@ second.experiment <- function( countTable = rawCounts,
 
   }# end of for variables vector
 
-  testTable.error.rate[,paste("All variables (", ncol(countTable), ")")] <-
+  testTable.error.rate[,paste("All variables (", ncol(dataTable), ")")] <-
     data.frame(testTable$testing.error.rate)
 
-  testTable.error.rate[, paste("All variables (",ncol(countTable), ")")] <-
+  testTable.error.rate[, paste("All variables (",ncol(dataTable), ")")] <-
     data.frame( testTable$testing.error.rate)
 
   ## extracting the results for the testing and learning error rate in tables and figures
@@ -575,7 +575,7 @@ second.experiment <- function( countTable = rawCounts,
 }# end function second.experiment
 
 ## Run KNN classifier with all variables
-knnDEGrawTestTable <- second.experiment(countTable=rawCounts,
+knnDEGrawTestTable <- second.experiment(dataTable=rawCounts,
                                         data.type="raw",
                                         classifier="knn",
                                         deg.method = "DESeq2",
@@ -583,7 +583,7 @@ knnDEGrawTestTable <- second.experiment(countTable=rawCounts,
                                         variable.type = "all",
                                         permute = FALSE)
 ## Run KNN classifier with 20000 top variables
-knnDEGrawTestTable <- second.experiment(countTable=rawCounts,
+knnDEGrawTestTable <- second.experiment(dataTable=rawCounts,
                                         data.type="raw",
                                         classifier="knn",
                                         deg.method = "DESeq2",
@@ -592,7 +592,7 @@ knnDEGrawTestTable <- second.experiment(countTable=rawCounts,
                                         permute = FALSE)
 
 ## Run RF classifier with all variables
-knnDEGrawTestTable <- second.experiment(countTable=rawCounts,
+knnDEGrawTestTable <- second.experiment(dataTable=rawCounts,
                                         data.type="raw",
                                         classifier="rf",
                                         deg.method = "DESeq2",
@@ -600,7 +600,7 @@ knnDEGrawTestTable <- second.experiment(countTable=rawCounts,
                                         variable.type = "all",
                                         permute = FALSE)
 ## Run RF classifier with top variables
-knnDEGrawTestTable <- second.experiment(countTable=rawCounts,
+knnDEGrawTestTable <- second.experiment(dataTable=rawCounts,
                                         data.type="raw",
                                         classifier="rf",
                                         deg.method = "DESeq2",
@@ -632,15 +632,15 @@ if (parameters$compute) {
 
     # for(i in 1:parameters$iterations){
     #   message.with.time("RF classifier with ", i, "/", parameters$iterations , " iterations")
-    #   test.edgeR <-MisclassificationEstimate(countTable = sorted.log2.transformed.edgeR[, 1:varnb], classes = classes ,classifier = "knn" )
-    #   test.DESeq2 <-MisclassificationEstimate(countTable = sorted.log2.transformed.DESeq2[, 1:varnb], classes = classes, classifier = "knn")
+    #   test.edgeR <-MisclassificationEstimate(dataTable = sorted.log2.transformed.edgeR[, 1:varnb], classes = classes ,classifier = "knn" )
+    #   test.DESeq2 <-MisclassificationEstimate(dataTable = sorted.log2.transformed.DESeq2[, 1:varnb], classes = classes, classifier = "knn")
     #   iteratedKnn.test.edgeR.allVariables <- rbind(iteratedKnn.test.edgeR.allVariables, test.edgeR$stats)
     #   iteratedKnn.test.DESeq2.allVariables <- rbind(iteratedKnn.test.DESeq2.allVariables, test.DESeq2$stats)
     #
     # } # end for iteration
 
     # Run KNN classifier with all variables, log2-transformed normalised with percentile 75
-    KNNlog2TestTable.edgeRordering[[varnb]] <-  one.experiment(countTable=sorted.log2.transformed.edgeR[, 1:varnb],
+    KNNlog2TestTable.edgeRordering[[varnb]] <-  one.experiment(dataTable=sorted.log2.transformed.edgeR[, 1:varnb],
                                                                data.type="log2normP75",
                                                                classifier=classifier,
                                                                classes=classes,
@@ -665,11 +665,11 @@ if (parameters$compute) {
 if(parameters$compute){
   message.with.time("KNN classifier with DESeq2 and edgeR ordaring real data set , ", parameters$iterations, " iterations.")
 
-  DEG.DESeq2 <- DEGordering(studyCases$countTable , studyCases$classes, method = "DESeq2")
-  DEG.edgeR  <- DEGordering(studyCases$countTable, studyCases$classes, method = "edgeR")
+  DEG.DESeq2 <- DEGordering(studyCases$dataTable , studyCases$classes, method = "DESeq2")
+  DEG.edgeR  <- DEGordering(studyCases$dataTable, studyCases$classes, method = "edgeR")
 
-  sorted.log2.transformed.edgeR <- studyCases$countTable[, DEG.DESeq2$geneOrder]
-  sorted.log2.transformed.DESeq2 <- studyCases$countTable[, DEG.edgeR$geneOrder]
+  sorted.log2.transformed.edgeR <- studyCases$dataTable[, DEG.DESeq2$geneOrder]
+  sorted.log2.transformed.DESeq2 <- studyCases$dataTable[, DEG.edgeR$geneOrder]
 
   iteratedKnn.test.edgeR.allVariables <- data.frame()
   iteratedKnn.test.DESeq2.allVariables <- data.frame()
@@ -684,8 +684,8 @@ if(parameters$compute){
 
     for(i in 1:parameters$iterations){
       message.with.time("RF classifier with", i, "/", parameters$iterations , "iteration")
-      test.edgeR <-MisclassificationEstimate(countTable = sorted.log2.transformed.edgeR[, 1:varnb], classes = classes ,classifier = "knn" )
-      test.DESeq2 <-MisclassificationEstimate(countTable = sorted.log2.transformed.DESeq2[, 1:varnb], classes = classes, classifier = "knn")
+      test.edgeR <-MisclassificationEstimate(dataTable = sorted.log2.transformed.edgeR[, 1:varnb], classes = classes ,classifier = "knn" )
+      test.DESeq2 <-MisclassificationEstimate(dataTable = sorted.log2.transformed.DESeq2[, 1:varnb], classes = classes, classifier = "knn")
       iteratedKnn.test.edgeR.allVariables <- rbind(iteratedKnn.test.edgeR.allVariables, test.edgeR$stats)
       iteratedKnn.test.DESeq2.allVariables <- rbind(iteratedKnn.test.DESeq2.allVariables, test.DESeq2$stats)
 
@@ -764,8 +764,8 @@ silence <- dev.off()
 if(parameters$compute) {
   message.with.time("KNN classifier with DESeq2 and edgeR ordaring real data set , ", parameters$iterations, " iterations.")
 
-  DEG.DESeq2 <-  DEGordering(studyCases$countTable , studyCases$classes, method = "DESeq2")
-  DEG.edgeR  <- DEGordering(studyCases$countTable, studyCases$classes, method = "edgeR")
+  DEG.DESeq2 <-  DEGordering(studyCases$dataTable , studyCases$classes, method = "DESeq2")
+  DEG.edgeR  <- DEGordering(studyCases$dataTable, studyCases$classes, method = "edgeR")
 
   sorted.log2.transformed.edgeR <-log2norm$Counts[, DEG.DESeq2$geneOrder]
   sorted.log2.transformed.DESeq2 <- log2norm$Counts[, DEG.edgeR$geneOrder]
@@ -781,8 +781,8 @@ if(parameters$compute) {
     varnb <- parameters$nb.variables[i]
 
     for(i in 1:parameters$iterations){
-      test.edgeR <-MisclassificationEstimate(countTable = sorted.log2.transformed.edgeR[, 1:varnb], classes = classes ,classifier = "knn" )
-      test.DESeq2 <-MisclassificationEstimate(countTable = sorted.log2.transformed.DESeq2[, 1:varnb], classes = classes, classifier = "knn")
+      test.edgeR <-MisclassificationEstimate(dataTable = sorted.log2.transformed.edgeR[, 1:varnb], classes = classes ,classifier = "knn" )
+      test.DESeq2 <-MisclassificationEstimate(dataTable = sorted.log2.transformed.DESeq2[, 1:varnb], classes = classes, classifier = "knn")
       iteratedKnn.test.edgeR.Log2Norm <- rbind(iteratedKnn.test.edgeR.Log2Norm, test.edgeR$stats)
       iteratedKnn.test.DESeq2.Log2Norm <- rbind(iteratedKnn.test.DESeq2.Log2Norm, test.DESeq2$stats)
 
@@ -828,8 +828,8 @@ if(parameters$compute) {
 
     for(i in 1:parameters$iterations){
 
-      test.edgeR <- MisclassificationEstimate(countTable = sorted.log2.transformed.edgeR[, 1:varnb], classes = sample(classes) ,classifier = "knn" )
-      test.DESeq2 <- MisclassificationEstimate(countTable = sorted.log2.transformed.DESeq2[, 1:varnb], classes = sample(classes), classifier = "knn")
+      test.edgeR <- MisclassificationEstimate(dataTable = sorted.log2.transformed.edgeR[, 1:varnb], classes = sample(classes) ,classifier = "knn" )
+      test.DESeq2 <- MisclassificationEstimate(dataTable = sorted.log2.transformed.DESeq2[, 1:varnb], classes = sample(classes), classifier = "knn")
 
       iteratedKnn.test.edgeRPermuted  <- rbind(iteratedKnn.test.edgeRPermuted  , test.edgeR$stats)
       iteratedKnn.test.DESeq2Permuted <- rbind(iteratedKnn.test.DESeq2Permuted , test.DESeq2$stats)
@@ -881,8 +881,8 @@ silence <- dev.off()
 if(parameters$compute){
   message.with.time("analysis RF classifier with DESeq2 and edgeR ordaring real data set , ", parameters$iterations, " iterations.")
 
-  # DEG.DESeq2 <- DEGordering(studyCases$countTable , studyCases$classes, method = "DESeq2")
-  # DEG.edgeR  <- DEGordering(studyCases$countTable, studyCases$classes, method = "edgeR")
+  # DEG.DESeq2 <- DEGordering(studyCases$dataTable , studyCases$classes, method = "DESeq2")
+  # DEG.edgeR  <- DEGordering(studyCases$dataTable, studyCases$classes, method = "edgeR")
 
   sorted.log2.transformed.edgeR <-log2norm$Counts[, DEG.DESeq2$geneOrder]
   sorted.log2.transformed.DESeq2 <- log2norm$Counts[, DEG.edgeR$geneOrder]
@@ -898,8 +898,8 @@ if(parameters$compute){
     varnb <- parameters$nb.variables[i]
 
     for(i in 1:parameters$iterations){
-      test.edgeR <-MisclassificationEstimate(countTable = sorted.log2.transformed.edgeR[, 1:varnb], classes = classes ,classifier = "rf" )
-      test.DESeq2 <-MisclassificationEstimate(countTable = sorted.log2.transformed.DESeq2[, 1:varnb], classes = classes, classifier = "rf")
+      test.edgeR <-MisclassificationEstimate(dataTable = sorted.log2.transformed.edgeR[, 1:varnb], classes = classes ,classifier = "rf" )
+      test.DESeq2 <-MisclassificationEstimate(dataTable = sorted.log2.transformed.DESeq2[, 1:varnb], classes = classes, classifier = "rf")
       iteratedRf.test.edgeR <- rbind(iteratedRf.test.edgeR, test.edgeR$stats)
       iteratedRf.test.DESeq2 <- rbind(iteratedRf.test.DESeq2, test.DESeq2$stats)
 
@@ -960,8 +960,8 @@ silence <- dev.off()
 if(parameters$compute){
   message.with.time("analysis RF classifier with DESeq2 and edgeR ordaring permuted data set , ", parameters$iterations, " iterations.")
 
-  # DEG.DESeq2 <- DEGordering(studyCases$countTable , studyCases$classes, method = "DESeq2")
-  # DEG.edgeR  <- DEGordering(studyCases$countTable, studyCases$classes, method = "edgeR")
+  # DEG.DESeq2 <- DEGordering(studyCases$dataTable , studyCases$classes, method = "DESeq2")
+  # DEG.edgeR  <- DEGordering(studyCases$dataTable, studyCases$classes, method = "edgeR")
 
   sorted.log2.transformed.edgeR <-log2norm$Counts[, DEG.DESeq2$geneOrder]
   sorted.log2.transformed.DESeq2 <- log2norm$Counts[, DEG.edgeR$geneOrder]
@@ -977,8 +977,8 @@ if(parameters$compute){
     varnb <- parameters$nb.variables[i]
 
     for(i in 1:parameters$iterations){
-      test.edgeR <-MisclassificationEstimate(countTable = sorted.log2.transformed.edgeR[, 1:varnb], classes = sample(classes) ,classifier = "rf" )
-      test.DESeq2 <-MisclassificationEstimate(countTable = sorted.log2.transformed.DESeq2[, 1:varnb], classes = sample(classes), classifier = "rf")
+      test.edgeR <-MisclassificationEstimate(dataTable = sorted.log2.transformed.edgeR[, 1:varnb], classes = sample(classes) ,classifier = "rf" )
+      test.DESeq2 <-MisclassificationEstimate(dataTable = sorted.log2.transformed.DESeq2[, 1:varnb], classes = sample(classes), classifier = "rf")
       iteratedRf.test.edgeRPermuted <- rbind(iteratedRf.test.edgeRPermuted, test.edgeR$stats)
       iteratedRf.test.DESeq2Permuted <- rbind(iteratedRf.test.DESeq2Permuted, test.DESeq2$stats)
 

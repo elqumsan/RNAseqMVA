@@ -6,7 +6,7 @@
 #' "Log2-transformed" treatment onto these raw count and study the miscalssification errors
 #' in order to evaluate if normalization improves the accuracy.
 #'
-#' @param countTable
+#' @param dataTable
 #' @param classes
 #' @param classfier
 #' @param trainingproportion
@@ -14,7 +14,7 @@
 #'
 #'
 
-rawTable <- studyCases$originalExperiment$countTable
+rawTable <- studyCases$originalExperiment$dataTable
 stat.raw <- list()
 
 # M = data.frame(matrix(rnorm(100000),nrow=500))
@@ -50,14 +50,14 @@ silence <- dev.off()
 
 ##### cheking the No. libsum for each classes in the Raw Table  ##################
 
-# data.frame(libsum=apply(studyCases$countTable, 1, sum), class=studyCases$classes)
+# data.frame(libsum=apply(studyCases$dataTable, 1, sum), class=studyCases$classes)
 
 # x <- data.frame(q3 = apply(rawCounts$Counts, 1, quantile, q=0.75), sum = apply(rawCounts$Counts, 1, sum), class=studyCases$classes)
 #
 # x <- data.frame(q3 = apply(rawCounts$Counts, 1, quantile, q=0.75), sum = apply(rawCounts$Counts, 1, sum), class=studyCases$classes)
 
-libsum=apply(studyCases$originalExperiment$countTable, 2, sum)
-x <- data.frame(libsum=apply(studyCases$originalExperiment$countTable, 2, sum), class=studyCases$originalExperiment$classLabels)
+libsum=apply(studyCases$originalExperiment$dataTable, 2, sum)
+x <- data.frame(libsum=apply(studyCases$originalExperiment$dataTable, 2, sum), class=studyCases$originalExperiment$classLabels)
 
 head(x)
 
@@ -107,7 +107,7 @@ silence <- dev.off()
 
 ##### cheking the No. libsum for each classes in the log2norm Table  ##################
 
-# data.frame(libsum=apply(studyCases$countTable, 1, sum), class=studyCases$classes)
+# data.frame(libsum=apply(studyCases$dataTable, 1, sum), class=studyCases$classes)
 
 # x <- data.frame(q3 = apply(log2norm$Counts, 1, quantile, q=0.75), sum = apply(log2norm$Counts, 1, sum), class=studyCases$classes)
 #
@@ -200,8 +200,8 @@ silence <- dev.off()
 file.prefix <- file.path(parameters$dir$NormalizationImpact, paste(parameters$recountID, "_rawcounts_mean_vs_Q3.pdf", sep = ""))
 pdf(file= file.prefix,
   width = 8, height = 8)
-plot(x=apply(studyCases$originalExperiment$countTable, 2, mean),
-     y=signif(digits=3, apply(studyCases$originalExperiment$countTable, 2, quantile, 0.75)),
+plot(x=apply(studyCases$originalExperiment$dataTable, 2, mean),
+     y=signif(digits=3, apply(studyCases$originalExperiment$dataTable, 2, quantile, 0.75)),
      main="raw counts: Percentile 75 versus mean",
      xlab="Mean counts per sample",
      ylab="Percentile 75",
@@ -256,7 +256,7 @@ message.with.time(" finishing from drawing plots describing count table statisti
 
 # message("Loading count table from recount", "; recountID = ", recountID)
 # studyCases <- loadCounts(recountID = recountID, mergeRuns = T, classColumn = "tissue")
-# rawCounts <- studyCases$countTable ## Note: one row per sample, one column per gene
+# rawCounts <- studyCases$dataTable ## Note: one row per sample, one column per gene
 # dim(rawCounts)
 
 ################################################################
@@ -291,8 +291,8 @@ message.with.time(" finishing from drawing plots describing count table statisti
 
 #message("KNN classifier with DESeq2 and edgeR ordaring real data set , ", parameters$iterations, " iterations.")
 
-#DEG.DESeq <-  DEGordering(studyCases$countTable , studyCases$classes, method = "DESeq2")
-#DEG.edgeR  <- DEGordering(studyCases$countTable, studyCases$classes, method = "edgeR")
+#DEG.DESeq <-  DEGordering(studyCases$dataTable , studyCases$classes, method = "DESeq2")
+#DEG.edgeR  <- DEGordering(studyCases$dataTable, studyCases$classes, method = "edgeR")
 
 # sorted.log2.transformed.edgeR <-log2normCounts[, DEG.DESeq$geneOrder]
 # sorted.log2.transformed.DESeq <- log2normCounts[, DEG.edgeR$geneOrder]
@@ -312,8 +312,8 @@ message.with.time(" finishing from drawing plots describing count table statisti
 #
 #   iteratedKnn.test.DESeq.Log2Norm <- data.frame()
 #   for(i in 1:parameters$iterations){
-#     #test.edgeR <-MisclassificationEstimate(countTable = sorted.log2.transformed.edgeR[, 1:varnb], classes = classes ,classifier = "knn" )
-#     test.DESeq <-MisclassificationEstimate(countTable = sorted.log2.transformed.DESeq[, 1:varnb], classes = classes, classifier = "knn")
+#     #test.edgeR <-MisclassificationEstimate(dataTable = sorted.log2.transformed.edgeR[, 1:varnb], classes = classes ,classifier = "knn" )
+#     test.DESeq <-MisclassificationEstimate(dataTable = sorted.log2.transformed.DESeq[, 1:varnb], classes = classes, classifier = "knn")
 #     #iteratedKnn.test.edgeR.Log2Norm <- rbind(iteratedKnn.test.edgeR.Log2Norm, test.edgeR$stats)
 #     iteratedKnn.test.DESeq.Log2Norm <- rbind(iteratedKnn.test.DESeq.Log2Norm, test.DESeq$stats)
 #   } # end for iteration
@@ -408,7 +408,7 @@ message.with.time(" finishing from drawing plots describing count table statisti
 #   var.label <- paste("DESeq2_top", varnb, sep = "_")
 #   message("DESeq2-ordered- Permuted ", v, "/", length(nb.variables), ": ",varnb," variables")
 #   for(i in parameters$iterations){
-#     oneTestlog2Normalised <-MisclassificationEstimate(countTable = sorted.log2.transformed.DESeq[, 1:varnb], classes = sample(studyCases$classes), classifier = "knn")
+#     oneTestlog2Normalised <-MisclassificationEstimate(dataTable = sorted.log2.transformed.DESeq[, 1:varnb], classes = sample(studyCases$classes), classifier = "knn")
 #     iteratedKnn.test.DESeq.Log2NormPermuted <- rbind(iteratedKnn.test.edgeR.Log2NormPermuted , oneTestlog2Normalised$stats)
 #   }
 #   iteratedKnn.test.DESeq.Log2NormPermuted.by.varnb[[var.label]] <- iteratedKnn.test.DESeq.Log2NormPermuted

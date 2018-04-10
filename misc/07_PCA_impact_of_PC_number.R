@@ -94,7 +94,7 @@ if (parameters$compute) {
 
     # train.test.results[[exp.prefix]] <-
     #   one.experiment (
-    #     countTable = log2normCounts,
+    #     dataTable = log2normCounts,
     #     classes = classes,
     #     data.type = "log2normCounts",
     #     classifier = classifier,

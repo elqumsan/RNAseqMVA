@@ -19,7 +19,7 @@ loadCounts(recountID, parameters, ...)
 In some cases classes must be built by concatenating several columns of the pheno table (e.g. "tissue" and "cell.type" for dataset SRP057196),
 This can be achieved by providing a vector of column names from the pheno table. In this case, class names}
 
-\item{minSamplesPerClass=parameters$minSamplesPerClass}{min number of samples per class for the filtering.  Passed to filterCountTable()}
+\item{minSamplesPerClass=parameters$minSamplesPerClass}{min number of samples per class for the filtering.  Passed to filterDataTable()}
 
 \item{dir.workspace=parameters$dir$workspace}{Directory in which the data and results will be stored.}
 

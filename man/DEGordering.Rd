@@ -4,11 +4,11 @@
 \alias{DEGordering}
 \title{Variable ordering according to the p-values returned by differential expression analysis.}
 \usage{
-DEGordering(countTable, classes, method = "DESeq2", randomized = TRUE,
+DEGordering(dataTable, classes, method = "DESeq2", randomized = TRUE,
   edgeRDispEst = "tagwise")
 }
 \arguments{
-\item{countTable}{matrix or data frame with raw counts (reads per gene), one column per gene and one row per sample.}
+\item{dataTable}{matrix or data frame with raw counts (reads per gene), one column per gene and one row per sample.}
 
 \item{classes}{a vector of class labels (conditions, tissues, genotypes, treatment, ...) associated to each sample.}
 
@@ -21,7 +21,7 @@ DEGordering(countTable, classes, method = "DESeq2", randomized = TRUE,
 \value{
 a list with 2 tables:
 1) result$geneOrder: a vector of gene names ordered by increasing p-value.
-2) result$orderedCountTable ordered count table where columns (genes) have been ordered by increasing p-value.
+2) result$orderedDataTable ordered count table where columns (genes) have been ordered by increasing p-value.
 3) result$DEGtable a table with one row per gene, and one column per DEG statistics (mean, log-ratio, nominal and adjusted p-values, ...)
 
 Note that genes are ordered according to nominal p-value (pvalue) rather than
@@ -42,7 +42,7 @@ RequiredBioconductorPackages(packages = c("DESeq2","edgeR"))
 
 recountID <- "SRP048759"
 studyCases <- loadCounts(recountID = recountID, mergeRuns = T, classColumn = "tissue")
-degOrderdPValues <- DEGordering(countTable = studyCases$countTable, classes =  studyCases$classes, method = "edgeR")
+degOrderdPValues <- DEGordering(dataTable = studyCases$dataTable, classes =  studyCases$classes, method = "edgeR")
 ## degPValues<- degPValues[order(degPValues$padj) ,]
 
 choose the method of differential expression analysis

@@ -3,7 +3,7 @@
 #' @author Mustafa ABUELQUMSAN and Jacques van Helden
 #' @description for sake of the accuracy and due to the error rate have computed from sampleing from the origin count data,
 #' # it is better to compute the the error rate multiple time and then we would find the avarage for the error rate.
-#' @param countTable is the passed count data for the iterative process.
+#' @param dataTable is the passed count data for the iterative process.
 #' @param classes is the classes lable for the cout data.
 #' @param classifier is the type of classifier that is used with repeated process.
 #' @param data.type is data type that is used with iterative process, supported "raw","log2", "log2norm" and "log2norm.prcomp.centred"
@@ -39,8 +39,8 @@ one.experiment <- function (self,
 
 
   ## Check the class of the object
-  if (!is(object = self, class2 = "countTableWithTrainTestSets")) {
-    stop("one.experiment() only accepts objects of class countTableWithTrainTestSets")
+  if (!is(object = self, class2 = "DataTableWithTrainTestSets")) {
+    stop("one.experiment() only accepts objects of class DataTableWithTrainTestSets")
   }
 
   ## Get parameters from the passed object

@@ -7,7 +7,7 @@
 MisclassificationEstimate(self, iteration, classifier, permute = FALSE)
 }
 \arguments{
-\item{self}{an object of class countTableWithTrainTestSets}
+\item{self}{an object of class DataTableWithTrainTestSets}
 
 \item{classifier}{is a type of the classifier}
 

@@ -13,7 +13,7 @@
 #' recountData <- loadRecountExperiment(recountID)
 #'
 #' ## Check the dimension of the table with counts per run
-#' dim(recountData$result$runs$countTable)
+#' dim(recountData$result$runs$dataTable)
 #'
 #' ## Check the number of runs per sample
 #' table(recountData$runPheno$geo_accession)
@@ -25,7 +25,7 @@
 #' ## Check the dimension of the table with counts per sample
 #' dim(recountData$merged$sampleCounts)
 #'
-#' cor(log(recountData$result$runs$countTable[, recountData$runPheno$geo_accession == "GSM1521620"]+1))
+#' cor(log(recountData$result$runs$dataTable[, recountData$runPheno$geo_accession == "GSM1521620"]+1))
 #'
 #' ## Test correlation between 8 randomly selected biological replicates (distinct samples)
 #' cor(log(recountData$merged$sampleCounts[, sample(1:ncol(recountData$merged$sampleCounts), size=8)]+1))
@@ -122,9 +122,9 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
 
 
   ## Extract the count table
-  countTable <- assay(rse)
+  dataTable <- assay(rse)
   if (verbose) {
-    message("\tLoaded counts per run: ", nrow(countTable), " features x ", ncol(countTable), " runs.")
+    message("\tLoaded counts per run: ", nrow(dataTable), " features x ", ncol(dataTable), " runs.")
   }
 
   #### Extract pheno table ####
@@ -140,7 +140,7 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
   # names(phenoTable)
 
 
-  countsPerRuns <- countTableWithClasses(countTable = countTable,
+  countsPerRuns <- DataTableWithClasses(dataTable = dataTable,
                                          phenoTable = phenoTable,
                                          # classColumn = classColumn,
                                          # classColors = classColors,
@@ -181,7 +181,7 @@ loadRecountExperiment <- function(recountID = parameters$recountID,
 
   # result$original$classNames <- sort(unique(result$original$classLabels))
   # result$original$nbClasses <- length(result$original$classNames)
-  # class(result$original) <- append(class(result$original), "CountTableWithClasses")
+  # class(result$original) <- append(class(result$original), "DataTableWithClasses")
 
   message.with.time("Finished loading Recount experiment ID ", parameters$recountID)
   return(result)

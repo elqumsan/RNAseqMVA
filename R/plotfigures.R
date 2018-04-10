@@ -8,9 +8,9 @@ plotFigures  <- function(self,...){
 }
 
 
-#' @title plot diagnostic figures for an object of the class CountTableWithClasses.
+#' @title plot diagnostic figures for an object of the class DataTableWithClasses.
 #' @export
-plotFigures.countTableWithClasses <- function( self,
+plotFigures.DataTableWithClasses <- function( self,
                                                plot.dir,
                                                file.prefix,
                                                dataType = self[["dataType"]],
@@ -22,7 +22,7 @@ plotFigures.countTableWithClasses <- function( self,
   message("\tFile prefix\t", file.prefix)
 
 
-  rawTable <- self$countTable
+  rawTable <- self$dataTable
   # dim(rawTable)
   stat.raw <- list()
   # M = data.frame(matrix(rnorm(100000),nrow=500))
@@ -59,14 +59,14 @@ plotFigures.countTableWithClasses <- function( self,
 
   ##### cheking the No. libsum for each classes in the Raw Table  ##################
 
-  # data.frame(libsum=apply(loaded$countTable, 1, sum), class=loaded$classes)
+  # data.frame(libsum=apply(loaded$dataTable, 1, sum), class=loaded$classes)
 
   # x <- data.frame(q3 = apply(rawCounts$Counts, 1, quantile, q=0.75), sum = apply(rawCounts$Counts, 1, sum), class=loaded$classes)
   #
   # x <- data.frame(q3 = apply(rawCounts$Counts, 1, quantile, q=0.75), sum = apply(rawCounts$Counts, 1, sum), class=loaded$classes)
 
-  libsum=apply(self[["countTable"]], 1, sum)
-  x <- data.frame(libsum=apply(self[["countTable"]], 2, sum), class=self[["classLabels"]])
+  libsum=apply(self[["dataTable"]], 1, sum)
+  x <- data.frame(libsum=apply(self[["dataTable"]], 2, sum), class=self[["classLabels"]])
 
   head(x)
 
@@ -117,7 +117,7 @@ plotFigures.countTableWithClasses <- function( self,
 
   ##### cheking the No. libsum for each classes in the log2norm Table  ##################
 
-  # data.frame(libsum=apply(loaded$countTable, 1, sum), class=loaded$classes)
+  # data.frame(libsum=apply(loaded$dataTable, 1, sum), class=loaded$classes)
 
   # x <- data.frame(q3 = apply(log2norm$Counts, 1, quantile, q=0.75), sum = apply(log2norm$Counts, 1, sum), class=loaded$classes)
   #
@@ -148,7 +148,7 @@ plotFigures.countTableWithClasses <- function( self,
   #### Compute a trimmed mean: suppress the 5% top and bottom values ####
   if (parameters$compute) {
     message.with.time("Computing trimmed mean of normalized counts")
-    x <- unlist(self[["countTable"]])
+    x <- unlist(self[["dataTable"]])
     q0.05 <- quantile(x = x, probs = 0.05, na.rm=TRUE)
     q0.95 <- quantile(x = x, probs = 0.95, na.rm=TRUE)
     trimmed <- (x[x > q0.05 & x < q0.95])
@@ -163,11 +163,11 @@ plotFigures.countTableWithClasses <- function( self,
 
   pdf(file=file.prefix,
       width = 8, height = 8)
-  hist(unlist(self[["countTable"]]), breaks=10, las=1,
+  hist(unlist(self[["dataTable"]]), breaks=10, las=1,
        xlab="normalized counts", ylab="Occurrences", col="grey",
        main=paste(parameters$recountID, "Normalised count distrib"))
-  abline(v=mean(unlist(self[["countTable"]])), lwd=1, col="darkgreen") # mark the mean
-  abline(v=median(unlist(self[["countTable"]])), lwd=1, col="blue") # mark the median
+  abline(v=mean(unlist(self[["dataTable"]])), lwd=1, col="darkgreen") # mark the mean
+  abline(v=median(unlist(self[["dataTable"]])), lwd=1, col="blue") # mark the median
   abline(v=mean(unlist(trimmed)), lwd=1, col="purple") # mark the trimmed mean
   legend("topright",lwd=2,
          legend=c("mean", "median", "trimmed mean"),
@@ -178,7 +178,7 @@ plotFigures.countTableWithClasses <- function( self,
   # #### Compute a trimmed mean: suppress the 5% top and bottom values ####
   # if (parameters$compute) {
   #   message.with.time("Computing trimmed mean of log2normalized counts")
-  #   x <- unlist(self[["countTable"]])
+  #   x <- unlist(self[["dataTable"]])
   #   q0.05 <- quantile(x = x, probs = 0.05, na.rm=TRUE)
   #   q0.95 <- quantile(x = x, probs = 0.95, na.rm=TRUE)
   #   log2.trimmed <- (x[x > q0.05 & x < q0.95])
@@ -207,8 +207,8 @@ plotFigures.countTableWithClasses <- function( self,
   file.prefix <- file.path(plot.dir, paste(dataType, "_",self[["ID"]],"", extension, sep = ""))
   pdf(file= file.prefix,
       width = 8, height = 8)
-  plot(x=apply(self[["countTable"]], 1, mean),
-       y=signif(digits=3, apply(self[["countTable"]], 1, quantile, 0.75)),
+  plot(x=apply(self[["dataTable"]], 1, mean),
+       y=signif(digits=3, apply(self[["dataTable"]], 1, quantile, 0.75)),
        main="raw counts: Percentile 75 versus mean",
        xlab="Mean counts per sample",
        ylab="Percentile 75",
@@ -222,8 +222,8 @@ plotFigures.countTableWithClasses <- function( self,
   file.prefix <- file.path(plot.dir, paste(dataType,"_",self[["ID"]], "_","mean_3Q",extension, sep = ""))
   pdf(file= file.prefix,
       width = 8, height = 8)
-  plot(x=apply(self[["countTable"]], 1, mean),
-       y=signif(digits=3, apply(self[["countTable"]], 1, quantile, 0.75)),
+  plot(x=apply(self[["dataTable"]], 1, mean),
+       y=signif(digits=3, apply(self[["dataTable"]], 1, quantile, 0.75)),
        main="log2norm counts: Percentile 75 versus mean",
        xlab="Mean counts per sample",
        ylab="Percentile 75",

@@ -10,7 +10,7 @@ exportTables(self, ...)
 \item{self}{an object, which must belong to a compatible class}
 }
 \description{
-Such target for ease the function for the biologists by converting the Rdata object for the tab-separated delimited file for facilitate the difficulties for extrating countTables and phenoTables
+Such target for ease the function for the biologists by converting the Rdata object for the tab-separated delimited file for facilitate the difficulties for extrating dataTables and phenoTables
 }
 \author{
 Mustafa AbuElQumsan and Jacques van Helden

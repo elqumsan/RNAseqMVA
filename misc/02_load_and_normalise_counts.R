@@ -9,227 +9,81 @@ recountID <- "SRP056295" ## For quick test and debugging
 
 for (recountID in selectedRecountIDs) {
 
-  message.with.time ("Loading data for recountID\t", recountID)
+
+  message.with.time ("Building StudyCase for recountID\t", recountID)
+
   #### Specify generic and recountID-specific parameters ####
   parameters <- initRecountID(recountID, project.parameters)
 
-  # ## Load default parameters for each new recountID
-  # ## (was previously parsed from the YAML file)
-  # parameters <- project.parameters$default
-  #
-  # ## Specify the current recountID in parameters
-  # parameters$recountID <- recountID
-  #
-  # ## Overwrite default parameters wih project-specific parameters
-  # selected.parameters <- project.parameters[[recountID]]
-  # if (is.null(selected.parameters)) {
-  #   message("No specific parameters for recount ID ", recountID)
-  #   message("Using generic parameters from the yaml file. ")
-  # } else {
-  #   message("Using specific parameters specfied in yaml file for recount ID ", recountID)
-  #   parameters[names(selected.parameters)] <- project.parameters[[recountID]]
-  #   names(parameters$data.types)<-parameters$data.types
-  #   names(parameters$variables.type)<-parameters$variables.type
-  # }
-  #
-  # ## Convert list-formatted class colors to named vector (YAML does not allow to specify named vectors)
-  # if (!is.null(parameters$classColors)) {
-  #   if (class(parameters$classColors) == "list") {
-  #     parameters$classColors <- unlist(parameters$classColors)
-  #   }
-  # }
-
-  ## BEWARE: NOT SURE THIS IS FUNCTIONAL, RELOADING MEMORY IMAGES WILL BE TREATED LATER
-  # if (parameters$reload == TRUE) {
-  #   ## Save an image of the memory, so I can reload it later to avoid re-running all the analyses
-  #   parameters.current <- parameters # Keep current parameters to restore them after having loaded a memory image
-  #   message.with.time("Loading memory image ")
-  #   load(file = image.file)
-  #   parameters <- parameters.current ## Reload current parameters (they might have been saved different in the memory image)
-  #   rm(parameters.current)
-  # }
-
-
-  ## Prefix for experiments with permuted class labels
-  ## (negative controls to estimate random expectation)
-  # perm.prefix <- parameters$perm_prefix
-
-
-  #### Specification of the directories   ####
-
-  ## MUSTAFA: TO DO SOME DAY: THE DIRECTORIES SHOULD BE ATTRIBUTES OF THE OBJECTS RATHER THAN GLOBAL VARIABLES
-
   # Main directory should be adapted to the user's configuration
-  dir.main <- parameters$dir$main
+  #  dir.main <- project.parameters$global$dir$main
 
-  ## All other directories should be defined relative to dir.main
-  # dir.scripts <- file.path(dir.main, "R")
-
-  # ## Result directory
-  # parameters$dir$results <- file.path(parameters$dir$workspace, "results", parameters$recountID)
-  #
-  ## Directory to exprt the tab-separate value files
-  # parameters$dir$tsv <- paste(sep = "" , parameters$dir$tsv,"/",recountID)
-  # parameters$dir$tsv <- file.path(parameters$dir$results, "TSV")
-  # dir.create(path = parameters$dir$tsv, recursive = TRUE, showWarnings = FALSE)
-
-  ## Directory to store the data downloaded from recountID
-  # studyPath <- file.path(parameters$dir$workspace, "data", recountID)
+ # View(parameters)
+  studyCases[[recountID]] <- StudyCase(recountID = recountID, parameters = parameters)
 
 
+  #### Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files ###
 
-  # View(parameters)
+  ## Export raw counts per run
+  exportTables(studyCases[[recountID]]$countsPerRun,
+               export.dir = file.path(
+                 studyCases[[recountID]]$parameters$dir$tsv,
+                 studyCases[[recountID]]$parameters$recountID),
+               file.prefix = "counts_per_run_")
 
+  ## Export raw counts per sample
+  exportTables(studyCases[[recountID]]$originalCounts,
+               export.dir = file.path(
+                 studyCases[[recountID]]$parameters$dir$tsv,
+                 studyCases[[recountID]]$parameters$recountID),
+               file.prefix = "original_counts_")
 
+  ## Export filtere counts
+  exportTables(studyCases[[recountID]]$filtered,
+               export.dir = file.path(
+                 studyCases[[recountID]]$parameters$dir$tsv,
+                 studyCases[[recountID]]$parameters$recountID),
+               file.prefix = "filtered_counts_")
 
-  if (parameters$compute) {
-    message.with.time("Loading count table from recount", "; recountID = ", parameters$recountID)
-    studyCases[[recountID]] <- loadCounts(recountID = recountID,
-                                          parameters = parameters)
+  ## Export normalized counts
+  exportTables(studyCases[[recountID]]$norm,
+               export.dir = file.path(
+                 studyCases[[recountID]]$parameters$dir$tsv,
+                 studyCases[[recountID]]$parameters$recountID),
+               file.prefix = "norm_counts_")
 
-    ## Attach the recountID-specific parameters to the loaded data.
-    studyCases[[recountID]]$parameters <- parameters
+  ## Export log2-transformed normalised counts
+  exportTables(studyCases[[recountID]]$log2norm,
+               export.dir = paste(
+                 studyCases[[recountID]]$parameters$dir$tsv,
+                 studyCases[[recountID]]$parameters$recountID, sep = "/"),
+               file.prefix = "log2norm_counts_")
 
-    ## Select training and testing sets on the filtered table with raw counts
-    ## These wil then be passed to all the derived count tables (normalised, DGE, ...)
-    studyCases[[recountID]]$filtered <- countTableWithTrainTestSets(studyCases[[recountID]]$filtered)
-
-    #### Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files ###
-    exportTables(studyCases[[recountID]]$countsPerRun,
-                 export.dir = file.path(parameters$dir$tsv, parameters$recountID),
-                 file.prefix = "counts_per_run_")
-
-    exportTables(studyCases[[recountID]]$originalCounts,
-                 export.dir = file.path(parameters$dir$tsv, parameters$recountID),
-                 file.prefix = "original_counts_")
-
-    exportTables(studyCases[[recountID]]$filtered,
-                 export.dir = file.path(parameters$dir$tsv,parameters$recountID),
-                 file.prefix = "filtered_counts_")
-
-
-  } else {
-    message.with.time("Skipping load the count Table from recount experiment, merge count per sample and filter it\n","
-                    from zero and near-zero variance")
-  }
-
-
-
-
-  ##### Normalize the counts without log2 transformation (first test) #####
-  ##
-  ## Note: this method takes a table with one column per sample and one
-  ## row per gene, we thus have to transpose the raw count table.
-
-  ###### Normalization method for the recount Table after merge and filtered it ########
-  if (parameters$compute) {
-    # dim(studyCases[[recountID]]$studyCases$norm$counts)
-    message.with.time("Normalizing counts based on 75th percentile")
-    studyCases[[recountID]]$norm <- NormalizeCounts(
-      self = studyCases[[recountID]]$filtered,
-      classColumn = studyCases[[recountID]]$parameters$classColumn,
-      classColors = studyCases[[recountID]]$parameters$classColors,
-      # phenoTable = studyCases[[recountID]]$filteredExperiment$phenoTable,
-      # classLabels = studyCases[[recountID]]$filteredExperiment$classLabels,
-      method = "quantile", quantile=0.75, log2 = FALSE)
-    # dim(studyCases[[recountID]]$normCounts)
-    # studyCases[[recountID]]$norm$nb.samples
-    # studyCases[[recountID]]$norm$nb.genes
-
-    # class(studyCases[[recountID]]$norm)
-    # studyCases[[recountID]]$norm$dataType
-
-    # studyCases[[recountID]]$norm <- countTableWithTrainTestSets(studyCases[[recountID]]$norm)
-    #  hist(unlist(studyCases[[recountID]]$studyCases[[recountID]]$norm$counts), main="Normalised count distribution", breaks=1000)
-
-    ## Export the Normalized count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files
-    exportTables(studyCases[[recountID]]$norm,
-                 export.dir = paste(parameters$dir$tsv, parameters$recountID, sep = "/"),
-                 file.prefix = "norm_counts_")
+  ## Export principal components of log2-transformed normalised counts
+  exportTables(studyCases[[recountID]]$log2normPCs,
+               export.dir = file.path(
+                 studyCases[[recountID]]$parameters$dir$tsv,
+                 studyCases[[recountID]]$parameters$recountID),
+               file.prefix = "log2norm_counts_")
 
 
-  } else {
-    message.with.time("Skipping normalisation for the count Table  and log2 trasformation")
-  }
+  #### Plot first versus second components
 
+  ## Plot PC1 vs PC2
+  PCplot.file <- file.path(
+    studyCases[[recountID]]$parameters$dir$PCviz,
+    paste(sep="", recountID, "_log2norm_PC1-PC2.pdf"))
+  message("PC plot: ", PCplot.file)
+  pdf(file = PCplot.file, width=7, height=9)
+  plot2PCs(studyCases[[recountID]]$log2normPCs, pcs = c(1,2))
+  silence <- dev.off()
 
-
-
-
-
-  ##### Normalize counts with log2 transformation (second test) #####
-  ##
-  ## Note: this method takes a table with one column per sample and one
-  ## row per gene, we thus have to transpose the raw count table.
-  if (parameters$compute) {
-    message.with.time("Normalizing counts based on 75th percentile + log2 transformation")
-    studyCases[[recountID]]$log2norm <- NormalizeCounts(
-      self = studyCases[[recountID]]$filtered,
-      classColumn = studyCases[[recountID]]$parameters$classColumn,
-      # counts =studyCases$filteredExperiment$countTable,
-      # phenoTable = studyCases$filteredExperiment$phenoTable,
-      # classLabels = studyCases$filteredExperiment$classLabels,
-      method = "quantile", quantile=0.75,
-      log2 = TRUE, epsilon=0.1)
-
-    # class(studyCases[[recountID]]$log2norm)
-    # print(studyCases[[recountID]]$log2norm$dataType)
-
-    ## Export tables
-    exportTables(studyCases[[recountID]]$log2norm,
-                 export.dir = paste(parameters$dir$tsv, parameters$recountID, sep = "/"),
-                 file.prefix = "log2norm_counts_")
-
-
-    #### Derive an object having as features the principal components of log2norm ####
-
-    ## Clone the log2norm object to copy all its parameters
-    studyCases[[recountID]]$log2normPCs <- studyCases[[recountID]]$log2norm
-    studyCases[[recountID]]$log2normPCs$dataType <- "log2normPCs"
-    # names(studyCases[[recountID]]$log2normPCs)
-
-    ## COmpte principal components
-    studyCases[[recountID]]$log2normPCs$prcomp <-
-      prcomp( t(na.omit(studyCases[[recountID]]$log2norm$countTable)),
-              center = TRUE,
-              scale. = FALSE)
-    ## Replace log2 normalised counts by principal components
-    studyCases[[recountID]]$log2normPCs$countTable <- t(studyCases[[recountID]]$log2normPCs$prcomp$x)
-    # dim(studyCases[[recountID]]$log2norm$countTable)
-    # rownames(studyCases[[recountID]]$log2norm$countTable)
-    # dim(studyCases[[recountID]]$log2normPCs$countTable)
-    # rownames(studyCases[[recountID]]$log2normPCs$countTable)
-    # View(studyCases[[recountID]]$log2normPCs$countTable)
-    # biplot(studyCases[[recountID]]$log2normPCs$prcomp,cex=0.2) ## This is too heavy
-
-
-    #### Plot first versus second components
-
-    ## Plot PC1 vs PC2
-    PCplot.file <- file.path(parameters$dir$PCviz,paste(sep="", recountID, "_log2norm_PC1-PC2.pdf"))
-    message("PC plot: ", PCplot.file)
-    pdf(file = PCplot.file, width=7, height=9)
-    plot2PCs(studyCases[[recountID]]$log2normPCs, pcs = c(1,2))
-    silence <- dev.off()
-
-    ## Plot PC2 vs PC3
-    PCplot.file <- file.path(parameters$dir$PCviz,paste(sep="", recountID, "_log2norm_PC3-PC4.pdf"))
-    message("PC plot: ", PCplot.file)
-    pdf(file = PCplot.file, width=7, height=9)
-    plot2PCs(studyCases[[recountID]]$log2normPCs, pcs = c(3,4))
-    silence <- dev.off()
-
-    # ## STILL IN CONSTRUCTION (2018-03-19)
-
-    # plotFigures(studyCases[[recountID]]$log2norm,
-
-    # plotFigures(studyCases$log2norm,
-
-    #             plot.dir = file.path(parameters$dir$NormalizationImpact),
-    #             file.prefix = "log2norm")
-
-  }
-
+  ## Plot PC2 vs PC3
+  PCplot.file <- file.path(parameters$dir$PCviz,paste(sep="", recountID, "_log2norm_PC3-PC4.pdf"))
+  message("PC plot: ", PCplot.file)
+  pdf(file = PCplot.file, width=7, height=9)
+  plot2PCs(studyCases[[recountID]]$log2normPCs, pcs = c(3,4))
+  silence <- dev.off()
 
   ## TO DO LATER: CHECK IF THESE FIGURES ARE WELL GENERATED, AND INCOROPORATE THEM IN THE plot.figure methods
 
@@ -245,7 +99,7 @@ for (recountID in selectedRecountIDs) {
   #
   # silence <- dev.off()
 
-  #   if (ncol(studyCases[[recountID]]$log2norm$countTable) != length(studyCases[[recountID]]$log2norm$classLabels)){
+  #   if (ncol(studyCases[[recountID]]$log2norm$dataTable) != length(studyCases[[recountID]]$log2norm$classLabels)){
   #     stop(" the Number of samples in log2norm counts should be the same length of classes")
   #   }
   #

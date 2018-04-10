@@ -8,7 +8,7 @@ plot2PCs(self, main = paste(sep = "", self$ID, "; PCs of log2norm counts"),
   col = self$sampleColors, pcs = c(1, 2), ...)
 }
 \arguments{
-\item{self}{an object of class countTableWithClasses containing a field prcomp (produced by prcompt function)}
+\item{self}{an object of class DataTableWithClasses containing a field prcomp (produced by prcompt function)}
 
 \item{main}{main title is built by default by can be replaced}
 

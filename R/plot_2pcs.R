@@ -1,7 +1,7 @@
 #' @title Plot two components of prcomp transform
 #' @author Jacques van Helden
 #' @description Plot the first and second components of a prcomp() result in a lighter way than the default biplot.
-#' @param self an object of class countTableWithClasses containing a field prcomp (produced by prcompt function)
+#' @param self an object of class DataTableWithClasses containing a field prcomp (produced by prcompt function)
 #' @param main main title is built by default by can be replaced
 #' @param col = self$sampleColors dots are colored according to sample class membership.
 #' @param pcs=c(1,2) the two indices of the principal components to be displayed
@@ -17,8 +17,8 @@ plot2PCs <- function(self,
 
 
   ## Check conformity of the arguments
-  if (!is(object = self, class2 = "countTableWithClasses")) {
-    stop("plot2PCs(). Invalid self argument for plotPC12(): must be an object of class countTableWithClasses. ")
+  if (!is(object = self, class2 = "DataTableWithClasses")) {
+    stop("plot2PCs(). Invalid self argument for plotPC12(): must be an object of class DataTableWithClasses. ")
   }
   if (is.null(self$prcom)) {
     stop("plot2PCs(). This object does not contain a prcomp attribute)")

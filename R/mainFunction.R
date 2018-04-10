@@ -32,7 +32,7 @@ if (exists( "DEGordering" ,  mode="function")){
 #     source("~/RNAseqMVA/R/merge_runs.R")
 # }else if ( exists("MisclassificationEstimate", mode = "function")){
 #     source("~/RNAseqMVA/R/misclassification_estimate.R")
-# }else if( exists("NormalizeCounts" ,mode = "function")){
+# }else if( exists("NormalizeSamples" ,mode = "function")){
 #     source("~/RNAseqMVA/R/normalize_count_table.R")
 # }else if( exists("one.experiment" , mode = "function")){
 #     source("~/RNAseqMVA/R/one_experiment.R")

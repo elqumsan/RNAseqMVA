@@ -33,7 +33,7 @@ image.file <- file.path(image.dir, paste(sep = "", "train_test_no._of_DEG_ordere
 ## Default for quick test without iterating over all cases
 permute <- FALSE
 
-DEG.object <- countTableWithDEG(studyCases$filtered)
+DEG.object <- DataTableWithDEG(studyCases$filtered)
 
 if (parameters$compute) {
   message.with.time("\t\tStarting classification")
@@ -58,7 +58,7 @@ if (parameters$compute) {
         ## For the time being we do this experiment only with log2 normalised counts
         ## since we saw that it improves the result with all variables
         # data.type <- paste(dataset$dataType, dataset$method, sep = "_")
-        # data.table <- na.omit( as.data.frame(get(data.type)[["orderedCountTable"]]))
+        # data.table <- na.omit( as.data.frame(get(data.type)[["orderedDataTable"]]))
        if (dataset == "DESeq2"){
          selected.DEG.names <- DEG$geneOrder[1:varnb]
 
@@ -69,9 +69,9 @@ if (parameters$compute) {
 
         ## Make sure that we select gene names present in the selected data type
         ## (some genes may be filtered out or technical reasons)
-        valid.DEG.names <- selected.DEG.names[selected.DEG.names %in% rownames(DEG.object$countTable)]
+        valid.DEG.names <- selected.DEG.names[selected.DEG.names %in% rownames(DEG.object$dataTable)]
 
-        DEG.object$countTable <- DEG.object$countTable[valid.DEG.names,]
+        DEG.object$dataTable <- DEG.object$dataTable[valid.DEG.names,]
 
 
         ## dim(counts)

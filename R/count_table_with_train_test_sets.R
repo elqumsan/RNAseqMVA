@@ -1,28 +1,28 @@
-#' @title Random sampling of n training sets in a CountTableWithClasses.
+#' @title Random sampling of n training sets in a DataTableWithClasses.
 #' @author Jacques van Helden and Mustafa AbuElQumsan
-#' @description Select n random subsets for training. among the biological samples from a CountTableWithClasses.
-#' @param self an object of the class CountTableWithClasses
+#' @description Select n random subsets for training. among the biological samples from a DataTableWithClasses.
+#' @param self an object of the class DataTableWithClasses
 #' @param stratified=TRUE if true, sampling is done in each class separately in order to preserve the relative frequencies of classes in training and testing sets.
 #' @param iterations=parameters$iterations number of  train/test  iterations, which defines the number of independent sampled subsets
 #' @param trainingProportion=parameters$trainingProportion proportion of samples to sample for each training set
 #'
 #' @export
 
-countTableWithTrainTestSets <- function(self,
+DataTableWithTrainTestSets <- function(self,
                                         stratified=TRUE,
                                         iterations = parameters$iterations,
                                         trainingProportion = parameters$trainingProportion) {
 
-  message.with.time("Building object of class countTableWithTrainTestSets")
+  message.with.time("Building object of class DataTableWithTrainTestSets")
 
   #### Check validity of the paraemters ####
 
   ## Check the class of input object
-  if (!is(self, "countTableWithClasses")) {
-    stop("selectStratifiedTrainingSets(): self parameter should belong to class countTableWithClasses. ")
+  if (!is(self, "DataTableWithClasses")) {
+    stop("selectStratifiedTrainingSets(): self parameter should belong to class DataTableWithClasses. ")
   }
   ##  STRANGE: THIS RETURNS FALSE WHEREAS IT SHOULD B TRUE
-  # isClass("countTableWithClasses")
+  # isClass("DataTableWithClasses")
 
   ## Assign test/train selection parameters as attributes of the object (to be passed to the attribute builder)
   self$trainTestProperties <- list()
@@ -30,22 +30,22 @@ countTableWithTrainTestSets <- function(self,
   self$trainTestProperties$trainingProportion <- trainingProportion
   self$trainTestProperties$stratified <- stratified
 
-  ## Add the class countTableWithTrainTestSets
-  class(self) <- unique(c(class(self), "countTableWithTrainTestSets"))
+  ## Add the class DataTableWithTrainTestSets
+  class(self) <- unique(c(class(self), "DataTableWithTrainTestSets"))
 
   ## Build the attributes of the new object
   self <- buildAttributes(self)
 
   message("trainIndices length : ", length(self$trainTestProperties$trainIndices))
-  message("\t\t returning from countTableWithTrainTestSets()")
+  message("\t\t returning from DataTableWithTrainTestSets()")
   return(self)
 }
 
 
-#' @title summary for a countTableWithTrainTestSets object
+#' @title summary for a DataTableWithTrainTestSets object
 #' @export
-summary.countTableWithTrainTestSets <- function(x){
-  cat("\t\t countTableWithTrainTestSEts \n")
+summary.DataTableWithTrainTestSets <- function(x){
+  cat("\t\t DataTableWithTrainTestSEts \n")
   cat("\tData Type       \t", x$dataType,"\n")
   cat("\tVariables Type      \t", x$variablesType, "\n")
   cat("\titeration          \t", x$trainTestProperties$iterations, "\n")
@@ -60,9 +60,9 @@ summary.countTableWithTrainTestSets <- function(x){
   #print()
 }
 
-#' @title print for a countTableWithTrainTestSets object
+#' @title print for a DataTableWithTrainTestSets object
 #' @export
-print.countTableWithTrainTestSets <- function(x) {
+print.DataTableWithTrainTestSets <- function(x) {
   summary(x)
 }
 
@@ -72,7 +72,7 @@ print.countTableWithTrainTestSets <- function(x) {
 #' #' @title Export the object with train/test sets by stratification sampling
 #' #' @author Mustafa ABUELQUMSAN and Jacques van Helden
 #' #' @description sampling is done in each class separately in order to preserve the relative frequencies of classes in training and testing sets
-#' #' @param self which much belong to the countTableWithClasses class.
+#' #' @param self which much belong to the DataTableWithClasses class.
 #' #'
 #' #' @export
 #' selectTrainingSets <- function(self, ...){
@@ -82,19 +82,19 @@ print.countTableWithTrainTestSets <- function(x) {
 
 #' @title build the attributes that depend on the count table
 #' @export
-buildAttributes.countTableWithTrainTestSets <- function(self) {
-  message("\tBuilding class-specific attributes for countTableWithTrainTestSets\t", self$ID)
+buildAttributes.DataTableWithTrainTestSets <- function(self) {
+  message("\tBuilding class-specific attributes for DataTableWithTrainTestSets\t", self$ID)
 
   ## Check stratified
   stratified <- self$trainTestProperties$stratified
   if (is.null(stratified)) {
-    stop("Cannot build attributes for countTableWithTrainTestSets because the attribute 'stratified' is null (should be Boolean)")
+    stop("Cannot build attributes for DataTableWithTrainTestSets because the attribute 'stratified' is null (should be Boolean)")
   }
 
   ## Check iterations
   iterations <- self$trainTestProperties$iterations
   if (is.null(iterations)) {
-    stop("Cannot build attributes for countTableWithTrainTestSets because the attribute 'iterations' is null (should be a strictly positive Natural)")
+    stop("Cannot build attributes for DataTableWithTrainTestSets because the attribute 'iterations' is null (should be a strictly positive Natural)")
   }
   if (!is.integer(iterations) || (iterations < 1)) {
     stop("Invalid value for iterations (", iterations, "). Must be a strictly positive Natural number. ")
@@ -104,7 +104,7 @@ buildAttributes.countTableWithTrainTestSets <- function(self) {
   ## Check training proportion
   trainingProportion <- self$trainTestProperties$trainingProportion
   if (is.null(trainingProportion)) {
-    stop("Cannot build attributes for countTableWithTrainTestSets because the attribute 'trainingProportion' is null (should be a Real number)")
+    stop("Cannot build attributes for DataTableWithTrainTestSets because the attribute 'trainingProportion' is null (should be a Real number)")
   }
   if (!is.numeric(trainingProportion) || (trainingProportion <= 0) || (trainingProportion >= 1)) {
     stop("Invalid value for trainingProportion (", trainingProportion, "). Must be a Real number between 0 and 1. ")
@@ -171,7 +171,7 @@ buildAttributes.countTableWithTrainTestSets <- function(self) {
 
   ## Check that the sum of lengths for testindices and trainindices sum up to the length of the dataset
   if (sum(unlist(lapply(trainIndices, length)) + unlist(lapply(testIndices, length)) != self$nbSamples) > 0) {
-    stop("Error with countTableWithTrainTestSets(): incorrect lengths of trainIndices and testIndices ")
+    stop("Error with DataTableWithTrainTestSets(): incorrect lengths of trainIndices and testIndices ")
   }
   message.with.time("\tTraining set selection done")
 
@@ -202,6 +202,6 @@ buildAttributes.countTableWithTrainTestSets <- function(self) {
 
 
 #  message("trainIndices length : ", length(self$trainTestProperties$trainIndices))
-#  message("\t\treturning from buildAttributes.countTableWithTrainTestSets()")
+#  message("\t\treturning from buildAttributes.DataTableWithTrainTestSets()")
   return(self)
 }

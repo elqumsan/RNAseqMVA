@@ -1,5 +1,5 @@
 #' @title Export the different fields of an object in tab-separated values text files.
-#' @description  Such target for ease the function for the biologists by converting the Rdata object for the tab-separated delimited file for facilitate the difficulties for extrating countTables and phenoTables
+#' @description  Such target for ease the function for the biologists by converting the Rdata object for the tab-separated delimited file for facilitate the difficulties for extrating dataTables and phenoTables
 #' @author Mustafa AbuElQumsan and Jacques van Helden
 #' @param self an object, which must belong to a compatible class
 #' @export
@@ -20,18 +20,18 @@ exportTables.default <- function (self, ...) {
 
 
 
-#' @title Export the different fields of an object of class countTableWithClasses in tab-separated values text files.
+#' @title Export the different fields of an object of class DataTableWithClasses in tab-separated values text files.
 #' @author Mustafa AbuElQumsan and Jacques van Helden
 #' @param self an object, which must belong to a compatible class
 #' @param export.dir export directory
 #' @param file.prefix file prefix to build the different tables
 #' @param extension=".tsv" extension for the exported files (tab-separated values)
 #' @export
-exportTables.countTableWithClasses <- function (self,
+exportTables.DataTableWithClasses <- function (self,
                                                 export.dir,
                                                 file.prefix,
                                                 extension=".tsv") {
-  message("\tExporting countTableWithClasses object ", self$ID, " to tables")
+  message("\tExporting DataTableWithClasses object ", self$ID, " to tables")
   message("\t\tExport directory\t", export.dir)
   dir.create(export.dir, showWarnings = FALSE, recursive = TRUE)
 
@@ -41,7 +41,7 @@ exportTables.countTableWithClasses <- function (self,
   ############## Exporting the count table ####################
   count.file <- file.path(export.dir, paste(file.prefix, self$ID, "_count_table", extension, sep = ""))
   message("\t\tExporting count table in TSV file\t", count.file)
-  write.table(self$countTable, file = count.file, row.names = FALSE, quote=FALSE, sep = "\t")
+  write.table(self$dataTable, file = count.file, row.names = FALSE, quote=FALSE, sep = "\t")
 
   ############## Exporting the  Pheno Table ####################
   pheno.file <- file.path(export.dir, paste(file.prefix, self$ID, "_pheno_table", extension, sep = ""))
@@ -57,18 +57,18 @@ exportTables.countTableWithClasses <- function (self,
   NextMethod("exportTables", self)
 }
 
-#' @title Export the tables specific to the class countTableWithTrainTestSets
+#' @title Export the tables specific to the class DataTableWithTrainTestSets
 #' @author Jacques van Helden
-#' @param self an object, which must belong to class countTableWithTrainTestSets
+#' @param self an object, which must belong to class DataTableWithTrainTestSets
 #' @param export.dir export directory
 #' @param file.prefix file prefix to build the different tables
 #' @param extension=".tsv" extension for the exported files (tab-separated values)
 #' @export
-exportTables.countTableWithTrainTestSets <- function (self,
+exportTables.DataTableWithTrainTestSets <- function (self,
                                                 export.dir,
                                                 file.prefix,
                                                 extension=".tsv") {
-  message("\tExporting countTableWithTrainTestSets object ", self$ID, " to tables")
+  message("\tExporting DataTableWithTrainTestSets object ", self$ID, " to tables")
   message("\t\tExport directory\t", export.dir)
   dir.create(export.dir, showWarnings = FALSE, recursive = TRUE)
 

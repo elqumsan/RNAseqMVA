@@ -58,8 +58,8 @@ if (parameters$compute) {
           # class(dataset)
           # summary(dataset)
 
-          # Check if the dataset belongs to the class countTableWithTrainTestSets
-          if (!is(object = dataset, class2 = "countTableWithTrainTestSets")) {
+          # Check if the dataset belongs to the class DataTableWithTrainTestSets
+          if (!is(object = dataset, class2 = "DataTableWithTrainTestSets")) {
 
             ## Check if the train and test indices  were properly defined
             if (is.null(dataset$trainTestProperties$trainIndices) || is.null(dataset$trainTestProperties$testIndices)) {
@@ -152,7 +152,7 @@ if (parameters$compute) {
       #### Run analysis with raw counts, ordered by DEG (edgeR tool), selecting the 75% genes with the smallest DEG p-value ####
       ## we looking here to notice the ipmact of ordered variables by DEG edgeR tool into classifiers
       # DEG.object <- get("DEG.edgeR")
-      # DEG.Counts <- na.omit(as.data.frame(DEG.object$orderedCountTable))
+      # DEG.Counts <- na.omit(as.data.frame(DEG.object$orderedDataTable))
       # sig.variables <- round(ncol(DEG.Counts) * 0.75)
       # DEG.Counts <- DEG.Counts[, 1:sig.variables]
       # ## define experiment prefix
@@ -164,7 +164,7 @@ if (parameters$compute) {
       #
       # train.test.results.all.variables[[exp.prefix]] <-
       #   one.experiment (
-      #     countTable = DEG.Counts,
+      #     dataTable = DEG.Counts,
       #     classes = classes,
       #     trainIndices = trainIndices,
       #     # trainIndex = sample( DEG.edgeR$trainIndex ) ,
@@ -183,7 +183,7 @@ if (parameters$compute) {
 
       #### Run classifier with all the variables importance computed by random forest, and then ordered the variables rely on the most 3/4 imporatnce from all varaibles   ####
 
-      # v.importance <- get("ordered.countTable.by.importance")
+      # v.importance <- get("ordered.dataTable.by.importance")
       # ## define experiment prefix
       # exp.prefix <-
       #   paste(sep = "_", classifier, parameters$recountID , parameters$data.types["V.importance"], "allvars")
@@ -193,7 +193,7 @@ if (parameters$compute) {
       #
       # train.test.results.all.variables[[exp.prefix]] <-
       #   one.experiment (
-      #     countTable = as.data.frame(ordered.countTable.by.importance),
+      #     dataTable = as.data.frame(ordered.dataTable.by.importance),
       #     classes = classes,
       #     trainIndices = trainIndices,
       #     # trainIndex = sample( log2norm.prcomp.centred.scaled$trainIndex),

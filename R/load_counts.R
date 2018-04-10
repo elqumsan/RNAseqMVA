@@ -10,7 +10,7 @@
 #' In some cases classes must be built by concatenating several columns of the pheno table (e.g. "tissue" and "cell.type" for dataset SRP057196),
 #' This can be achieved by providing a vector of column names from the pheno table. In this case, class names
 ## are built by concantenating the values in the specified columns (separated by "_").
-#' @param minSamplesPerClass=parameters$minSamplesPerClass min number of samples per class for the filtering.  Passed to filterCountTable()
+#' @param minSamplesPerClass=parameters$minSamplesPerClass min number of samples per class for the filtering.  Passed to filterDataTable()
 #' @param dir.workspace=parameters$dir$workspace Directory in which the data and results will be stored.
 #' @param na.rm=TRUE if TRUE, omit all the rows (genes) that contain NA values. True by default because these NA values are problematic for classification methods.
 #' @param ...  additional parameters are passed to loadRecountExperiment()
@@ -85,39 +85,39 @@ loadCounts <- function(recountID,
   # ## If requested, suppress the NA values
   # if (na.rm) {
   #   message("\tSuppressing rows (genes) with NA values")
-  #   countTable <- na.omit(experiment$originalCounts$countTable)
-  #   # dim(countTable)
+  #   dataTable <- na.omit(experiment$originalCounts$dataTable)
+  #   # dim(dataTable)
   # }
 
-  ## This control is not necessary anymore since this is done when building the countTableWithClasses object.
+  ## This control is not necessary anymore since this is done when building the DataTableWithClasses object.
   # ##### Check the dimensions of original experiment #####
   # if (experiment$originalCounts$nbSamples != length(experiment$originalCounts$classLabels)){
   #   stop("The number of samples (", experiment$originalCounts$nbSamples, ") differs from the number class labels (", length(experiment$original$classLabels),")")
   # }
 
 
-  message("\toriginal countTable contains ",
-          nrow(experiment$originalCounts$countTable), " rows (genes) and ",
-          ncol(experiment$originalCounts$countTable), " columns (samples).")
-  #countTable <-as.data.frame(t(experiment$runCounts))
+  message("\toriginal dataTable contains ",
+          nrow(experiment$originalCounts$dataTable), " rows (genes) and ",
+          ncol(experiment$originalCounts$dataTable), " columns (samples).")
+  #dataTable <-as.data.frame(t(experiment$runCounts))
 
 
 
   ################################################
   #### Filter zero-variance and near-zero variance variables from the count table #####
-  experiment$filtered <- filterCountTable(rawCounts = experiment$originalCounts)
+  experiment$filtered <- filterDataTable(rawCounts = experiment$originalCounts)
   # #,
   #                                         nearZeroVarFilter = parameters$nearZeroVarFilter,
   #                                         minSamplesPerClass = parameters$minSamplesPerClass)
   # class(experiment$filtered)
   # summary(experiment$filtered)
-  # dim(countTable)
+  # dim(dataTable)
 
 
   ##### Check the dimensions of filtered experiment #####
-  if (length(experiment$filtered$classLabels) != ncol(experiment$filtered$countTable)) {
+  if (length(experiment$filtered$classLabels) != ncol(experiment$filtered$dataTable)) {
     stop("invaled number of filtered class labels, (", length(experiment$filtered$classLabels) ,"). ",
-         "must equal the number of individuals in Count Table (",ncol(experiment$filtered$countTable),").")
+         "must equal the number of individuals in Count Table (",ncol(experiment$filtered$dataTable),").")
   }
 
 

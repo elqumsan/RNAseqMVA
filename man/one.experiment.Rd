@@ -13,7 +13,7 @@ one.experiment(self, classifier, permute = FALSE, file.prefix = NULL)
 
 \item{file.prefix}{in order to let us to save file from the one experiment}
 
-\item{countTable}{is the passed count data for the iterative process.}
+\item{dataTable}{is the passed count data for the iterative process.}
 
 \item{classes}{is the classes lable for the cout data.}
 

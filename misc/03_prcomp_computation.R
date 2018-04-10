@@ -1,5 +1,5 @@
 #
-# #studyCases$log2norm.prcomp.centred.scaled <- prcomp(t(na.omit(studyCases$log2norm$countTable)), center = TRUE, scale. = TRUE)
+# #studyCases$log2norm.prcomp.centred.scaled <- prcomp(t(na.omit(studyCases$log2norm$dataTable)), center = TRUE, scale. = TRUE)
 #
 #
 #
@@ -10,16 +10,10 @@
 # source("misc/12_visualization_prcomp_analysis.R")
 
 
-## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ##
-## TEMPORARILY HERE
-## We define a method for stratified selection of training and testing sets,
-## In a second time we will creat a new class names TrainTestCounttable, and this
-## method will be attached to this class.
-
 #' @title Shorthand the real varaibles sets to the principal component.
 #' @author Jacques van Helden and Mustafa AbuElQumsan
-#' @description reduction all real varaibles in count Table to the n numbers from Principal component. among the biological samples from a CountTableWithClasses.
-#' @param self an object of the class CountTableWithClasses
+#' @description reduction all real varaibles in count Table to the n numbers from Principal component. among the biological samples from a DataTableWithClasses.
+#' @param self an object of the class DataTableWithClasses
 
 #' @export
 
@@ -33,11 +27,11 @@ PCsWithTrainTestSets <- function( self,
   #### Check validity of the paraemters ####
 
   ## Check the class of input object
-  if (!is(self, "countTableWithTrainTestSets")  ) {
-    stop("PCsWithTrainTestSets(): self parameter should belong to class countTableWithTrainTestSets. ")
+  if (!is(self, "DataTableWithTrainTestSets")  ) {
+    stop("PCsWithTrainTestSets(): self parameter should belong to class DataTableWithTrainTestSets. ")
   }
   ##  STRANGE: THIS RETURNS FALSE WHEREAS IT SHOULD B TRUE
-  # isClass("countTableWithClasses")
+  # isClass("DataTableWithClasses")
 
 
   ## Trainng Proportion
@@ -49,7 +43,7 @@ PCsWithTrainTestSets <- function( self,
   #### Compute principal components for normalized log2 counts ####
   message.with.time("Pre-processing by Principal Component analysis (PCA)")
   PCsProperties<- list()
-  PCsProperties <- prcomp( t(na.omit(self$countTable)), center = TRUE, scale. = FALSE)
+  PCsProperties <- prcomp( t(na.omit(self$dataTable)), center = TRUE, scale. = FALSE)
   PCsProperties$PCs <- PCsProperties$x
 
   ## Instantiate the list with training indices
@@ -123,7 +117,7 @@ PCsWithTrainTestSets <- function( self,
 
   #self$trainTestProperties$stratified <- stratified
 
-  #class(self) <- unique(c( "countTableWithTrainTestSets", class(self)))
+  #class(self) <- unique(c( "DataTableWithTrainTestSets", class(self)))
   class(PCsProperties) <- unique(c( "PCsWithTrainTestSets", class(self)))
 
   return(PCsProperties)
@@ -145,6 +139,6 @@ summary.PCsWithTrainTestSets  <- function(x){
   #print()
 }
 
-print.countTableWithTrainTestSets <- function(x){
-  summary.countTableWithTrainTestSets(x)
+print.DataTableWithTrainTestSets <- function(x){
+  summary.DataTableWithTrainTestSets(x)
 }

@@ -1,5 +1,5 @@
 ########### Computation the importace of all vaiables in raw count table and ordered it by the importance ########
-countTable <-  rawCounts$Counts
+dataTable <-  rawCounts$Counts
 classes <- studyCases$classes
 #### The computation of the variables importance by Random forest, and ordered it by the most importance ####
 
@@ -15,18 +15,18 @@ classes <- studyCases$classes
 message.with.time("The computation of the variables importance by Random forest, and ordered it by the most importance")
 
 rf.model  <- randomForest(
-  x = countTable,
+  x = dataTable,
   y =  as.factor( classes),
-  xtest = countTable, importance = T, keep.forest = T)
+  xtest = dataTable, importance = T, keep.forest = T)
 
 variable.importance <- importance(rf.model,type = 1,scale = F)
 #variable.importance[,1]
 
 ordered.varaible.importance <-order(variable.importance[,1],decreasing = T)
 
-ordered.countTable.by.importace <-countTable[, ordered.varaible.importance]
+ordered.dataTable.by.importace <-dataTable[, ordered.varaible.importance]
 
-sig.variables <- round(ncol(ordered.countTable.by.importace) * 0.75)
-ordered.countTable.by.importance  <- ordered.countTable.by.importace[, 1:sig.variables]
+sig.variables <- round(ncol(ordered.dataTable.by.importace) * 0.75)
+ordered.dataTable.by.importance  <- ordered.dataTable.by.importace[, 1:sig.variables]
 
 

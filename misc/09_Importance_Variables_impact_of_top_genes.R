@@ -50,7 +50,7 @@ if (parameters$compute) {
     #### Associate each analysis of real data with a permutation test ####
     for (permute in c(FALSE, TRUE)) {
 
-      v.importance <- get("ordered.countTable.by.importance")
+      v.importance <- get("ordered.dataTable.by.importance")
       v  <- 5
       for(v in 1:length(parameters$nb.variables)){
         varnb <- parameters$nb.variables[v]
@@ -58,7 +58,7 @@ if (parameters$compute) {
         ## For the time being we do this experiment only with log2 normalised counts
         ## since we saw that it improves the result with all variables
         data.type <- parameters$data.types["V.importance"]
-       # data.table <- na.omit( as.data.frame(get(data.type)[["orderedCountTable"]]))
+       # data.table <- na.omit( as.data.frame(get(data.type)[["orderedDataTable"]]))
         selected.v.importance <- v.importance[,1:varnb]
         selected.v.importance.names <-names(selected.v.importance)
         ## Make sure that we select gene names present in the selected data type
@@ -81,7 +81,7 @@ if (parameters$compute) {
 
         train.test.results.importance.varaibles[[exp.prefix]] <-
           one.experiment (
-            countTable = as.data.frame(counts),
+            dataTable = as.data.frame(counts),
             classes = classes,
             trainIndices = trainIndices,
             # trainIndex = sample(log2norm$trainIndex),

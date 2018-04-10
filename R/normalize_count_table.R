@@ -5,7 +5,7 @@
 #' have the same value for auser-defined scaling parameter.
 #' By default, we use the quantile 0.75 as scaling factor.
 #'
-#' @param self an object belonging to the class countTableWithClasses
+#' @param self an object belonging to the class DataTableWithClasses
 #' This input object contains a count table, with one column per sample and
 #' one row per gene + a phenoTable + sample class specifications.
 #'
@@ -24,18 +24,18 @@
 #' @param epsilon=0.1 value added to all counts before applying the log2 transformation
 #' in order to avoid zero counts.
 #'
-#' @return the function returns an object of class countTableWithClasses, where the countTable
+#' @return the function returns an object of class DataTableWithClasses, where the dataTable
 #' coontains the normalised counts. Note that the normalized count table may have a smaller
 #' number of samples than the input count table because if some samples have a scaling
 #' factor of 0 they will be filtered out. In such case, the phenoTable and classLabels will
 #' be filtered out in the same way to ensure consistency  of the attributes of the
-#' returned countTableWithClass object.
+#' returned DataTableWithClass object.
 #'
 #'
 #' @examples
 #'
 #' @export
-NormalizeCounts <- function(self,
+NormalizeSamples <- function(self,
                             classColumn = parameters$classColumn,
                             classColors = parameters$classColors,
                             method="quantile",
@@ -44,32 +44,32 @@ NormalizeCounts <- function(self,
                             epsilon=0.1) {
 
   if (log2) {
-    message.with.time("Starting log2 NormalizeCounts() for Recount experiment ID ", self[["ID"]])
+    message.with.time("Starting log2 NormalizeSamples() for Recount experiment ID ", self[["ID"]])
   } else{
-    message.with.time("Starting NormalizeCounts() for Recount experiment ID ", self[["ID"]])
+    message.with.time("Starting NormalizeSamples() for Recount experiment ID ", self[["ID"]])
   }
 
 
-  # counts <- self$countTable
+  # counts <- self$dataTable
   # phenoTable <- self$phenoTable
   # classLabels  <- self$classLabels
 
 
-  #dim(self$countTable)
+  #dim(self$dataTable)
   ## Compute sample-wise statistics
   message("\t", "Computing sample-wise statistics\t", recountID)
   sampleStats <- data.frame(
-    sum = apply(self$countTable, 2, sum, na.rm=TRUE),
-    min = apply(self$countTable, 2, min, na.rm=TRUE),
-    mean = apply(self$countTable, 2, mean, na.rm=TRUE),
-    Q1 = apply(self$countTable, 2, quantile, na.rm=TRUE, probs=0.25),
-    median = apply(self$countTable, 2, median, na.rm=TRUE),
-    Q3 = apply(self$countTable, 2, quantile, na.rm=TRUE, probs=0.75),
-    max = apply(self$countTable, 2, max, na.rm=TRUE),
-    zero.values = apply(self$countTable == 0, 2, sum),
-    na.values = apply(is.na(self$countTable), 2, sum),
-   # infinite.values = apply(is.infinite(self$countTable), 2, sum)
-   infinite.values = length(is.infinite(unlist(self$countTable)) == TRUE)
+    sum = apply(self$dataTable, 2, sum, na.rm=TRUE),
+    min = apply(self$dataTable, 2, min, na.rm=TRUE),
+    mean = apply(self$dataTable, 2, mean, na.rm=TRUE),
+    Q1 = apply(self$dataTable, 2, quantile, na.rm=TRUE, probs=0.25),
+    median = apply(self$dataTable, 2, median, na.rm=TRUE),
+    Q3 = apply(self$dataTable, 2, quantile, na.rm=TRUE, probs=0.75),
+    max = apply(self$dataTable, 2, max, na.rm=TRUE),
+    zero.values = apply(self$dataTable == 0, 2, sum),
+    na.values = apply(is.na(self$dataTable), 2, sum),
+   # infinite.values = apply(is.infinite(self$dataTable), 2, sum)
+   infinite.values = length(is.infinite(unlist(self$dataTable)) == TRUE)
   )
 
   ## check it the original data contains NA values
@@ -79,12 +79,12 @@ NormalizeCounts <- function(self,
 
   if (method == "quantile") {
     message("\tNormalizing counts. Scaling factor: sample quantile ", quantile)
-    sampleStats$norm.quantile <- apply(self$countTable, 2, quantile, na.rm=TRUE, probs=quantile)
+    sampleStats$norm.quantile <- apply(self$dataTable, 2, quantile, na.rm=TRUE, probs=quantile)
     sampleStats$scaling.factor <- sampleStats$norm.quantile
   } else if (method == "mean") {
     message("\tNormalizing counts. Scaling factor: sample mean.  ")
     ## Note: mean is very sensitive to outliers, which are very problematic with RNAseq data
-  #  sampleStats$scaling.factor <- apply(self$countTable, 2, quantile, na.rm=TRUE, probs=quantile)
+  #  sampleStats$scaling.factor <- apply(self$dataTable, 2, quantile, na.rm=TRUE, probs=quantile)
     sampleStats$scaling.factor <- sampleStats$mean
   } else if (method == "median") {
     message("\tNormalizing counts. Scaling factor: sample median.  ")
@@ -93,23 +93,23 @@ NormalizeCounts <- function(self,
     message("\tNormalizing counts. Scaling factor: sample sum (= libsum)  ")
     sampleStats$scaling.factor <- sampleStats$sum
   } else {
-    stop(method, " is not a valid method for NormalizeCounts()")
+    stop(method, " is not a valid method for NormalizeSamples()")
   }
 
   ## Detect problems related to null scaling factors, which may happen in some datasets due to a very large number of zeros.
   zeroScaledSamples <- sampleStats$scaling.factor == 0
-  discaredSampleNames <- colnames(self$countTable[, zeroScaledSamples])
+  discaredSampleNames <- colnames(self$dataTable[, zeroScaledSamples])
 
-  # apply(self$countTable[, zeroScaledSamples]==0, 2, sum)
+  # apply(self$dataTable[, zeroScaledSamples]==0, 2, sum)
   message("\tDiscarding ", sum(zeroScaledSamples), " samples because their scaling factor is null. ")
   message("\tDiscarded samples: ", paste(collapse="; ", discaredSampleNames))
 
   ## Compute normalised counts
   normTarget <- median(sampleStats$scaling.factor[!zeroScaledSamples])
-  normCounts <- t(t(self$countTable[, !zeroScaledSamples]) / sampleStats$scaling.factor[!zeroScaledSamples]) * normTarget
+  normCounts <- t(t(self$dataTable[, !zeroScaledSamples]) / sampleStats$scaling.factor[!zeroScaledSamples]) * normTarget
   # Check that all normalised coutns have the same scaling factor
   # apply(normCounts, 2, quantile, probs=quantile)
-  # dim(self$countTable)
+  # dim(self$dataTable)
   # dim(self$phenoTable)
   # length(self$classLabels)
   # dim(normCounts)
@@ -121,7 +121,7 @@ NormalizeCounts <- function(self,
     ## We should certainly not use na.omit, because this removes any sample that would have any NA value.
     ## Instead, we need to understand why there are NA values in the original count table.
     normCounts <- log2(normCounts + epsilon)
-    # result <- countTableWithClasses(countTable = normCounts,
+    # result <- DataTableWithClasses(dataTable = normCounts,
     #                                 phenoTable = phenoTable,
     #                                 classColumn = classColumn,
     #                                 classColors = classColors ,
@@ -131,7 +131,7 @@ NormalizeCounts <- function(self,
 
   } else {
 
-    # result <- countTableWithClasses(countTable = normCounts,
+    # result <- DataTableWithClasses(dataTable = normCounts,
     #                                 phenoTable = phenoTable,
     #                                 classColumn = classColumn,
     #                                 classColors = classColors,
@@ -140,7 +140,7 @@ NormalizeCounts <- function(self,
   }
 
   result <- self
-  result$countTable <- normCounts
+  result$dataTable <- normCounts
   if (sum(zeroScaledSamples) > 0) {
     result$phenoTable <- self$phenoTable[!zeroScaledSamples,]
 
@@ -169,11 +169,11 @@ NormalizeCounts <- function(self,
   if (log2) {
     result$dataType <- "log2norm_counts"
     message("\tDimensions of the log2 normalized count table: ", result$nbGenes, " genes x ", result$nbSamples, " samples. ")
-    message.with.time("Finished log2 NormalizeCounts() for Recount experiment ID ", result[["ID"]])
+    message.with.time("Finished log2 NormalizeSamples() for Recount experiment ID ", result[["ID"]])
   } else{
     result$dataType <- "norm_counts"
     message("\tDimensions of the normalized count table: ", result$nbGenes, " genes x ", result$nbSamples, " samples. ")
-    message.with.time("Finished NormalizeCounts() for Recount experiment ID ", result[["ID"]])
+    message.with.time("Finished NormalizeSamples() for Recount experiment ID ", result[["ID"]])
   }
   return(result)
 }
