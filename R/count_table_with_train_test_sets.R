@@ -56,7 +56,7 @@ summary.countTableWithTrainTestSets <- function(x){
   #print(x$trainTestProperties)
   cat("\n")
 
-  NextMethod("buildAttributes", self)
+  NextMethod("summary", self)
   #print()
 }
 
