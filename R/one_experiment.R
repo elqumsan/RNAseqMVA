@@ -98,7 +98,7 @@ one.experiment <- function (self,
   if (project.parameters$global$parallel) {
     message("\t", format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t",
             recountID, "\t", classifier,
-            "\ttrain/test\t", project.parameters$global$iterations, " iterations with ", project.parameters$global$jobs, "cores")
+            "\ttrain/test\t", project.parameters$global$iterations, " iterations with ", project.parameters$global$no_cores, " cores.")
     ## Run a foreach loop and get the result back in a data frame with rbind.
     testTable <- foreach(i = 1:iterations, .combine = rbind) %dopar%
       MisclassificationEstimate(self = self,
