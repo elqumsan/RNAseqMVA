@@ -87,7 +87,7 @@ summary.countTableWithClasses <- function(self) {
   cat("\tClass properties\n")
   print(self$classProperties)
   cat("\n")
-  NextMethod("buildAttributes", self)
+  NextMethod("summary", self)
 }
 
 
@@ -95,7 +95,7 @@ summary.countTableWithClasses <- function(self) {
 #' @author Mustafa AubElQumsan and Jacques van Helden
 #' @export
 summary.default <- function(self) {
-#  cat("Summary printed. \n")
+   cat("")
 }
 
 #' @export
