@@ -180,6 +180,45 @@ for (recountID in selectedRecountIDs) {
                  export.dir = paste(parameters$dir$tsv, parameters$recountID, sep = "/"),
                  file.prefix = "log2norm_counts_")
 
+
+    #### Derive an object having as features the principal components of log2norm ####
+
+    ## Clone the log2norm object to copy all its parameters
+    studyCases[[recountID]]$log2normPCs <- studyCases[[recountID]]$log2norm
+    studyCases[[recountID]]$log2normPCs$prcomp <-
+    # names(studyCases[[recountID]]$log2normPCs)
+
+    ## COmpte principal components
+    studyCases[[recountID]]$log2normPCs$prcomp <-
+      prcomp( t(na.omit(studyCases[[recountID]]$log2norm$countTable)),
+              center = TRUE,
+              scale. = FALSE)
+    ## Replace log2 normalised counts by principal components
+    studyCases[[recountID]]$log2normPCs$countTable <- t(studyCases[[recountID]]$log2normPCs$prcomp$x)
+    # dim(studyCases[[recountID]]$log2norm$countTable)
+    # rownames(studyCases[[recountID]]$log2norm$countTable)
+    # dim(studyCases[[recountID]]$log2normPCs$countTable)
+    # rownames(studyCases[[recountID]]$log2normPCs$countTable)
+    # View(studyCases[[recountID]]$log2normPCs$countTable)
+    # biplot(studyCases[[recountID]]$log2normPCs$prcomp,cex=0.2) ## This is too heavy
+
+
+    #### Plot first versus second components
+
+    ## Plot PC1 vs PC2
+    PCplot.file <- file.path(parameters$dir$PCviz,paste(sep="", recountID, "_log2norm_PC1-PC2.pdf"))
+    message("PC plot: ", PCplot.file)
+    pdf(file = PCplot.file, width=7, height=9)
+    plot2PCs(studyCases[[recountID]]$log2normPCs, pcs = c(1,2))
+    silence <- dev.off()
+
+    ## Plot PC2 vs PC3
+    PCplot.file <- file.path(parameters$dir$PCviz,paste(sep="", recountID, "_log2norm_PC2-PC3.pdf"))
+    message("PC plot: ", PCplot.file)
+    pdf(file = PCplot.file, width=7, height=9)
+    plot2PCs(studyCases[[recountID]]$log2normPCs, pcs = c(2,3))
+    silence <- dev.off()
+
     # ## STILL IN CONSTRUCTION (2018-03-19)
 
     # plotFigures(studyCases[[recountID]]$log2norm,
