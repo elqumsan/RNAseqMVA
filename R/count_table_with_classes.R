@@ -100,7 +100,7 @@ summary.default <- function(self) {
 
 #' @export
 print.countTableWithClasses <- function(x) {
-  summary.countTableWithClasses(x)
+  summary(x)
 }
 
 
