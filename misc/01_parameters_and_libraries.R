@@ -111,7 +111,7 @@ if (!is.null(project.parameters$global$jobs)) {
     clusterExport(cl, "project.parameters") ## pass the global variable "parameters" to the cluster
     registerDoParallel(cl)   ## Register the cluster for parallel computing
     project.parameters$global$parallel <- TRUE
-    project.parameters$no_cores <- no_cores
+    project.parameters$global$no_cores <- no_cores
   }
 
   ## NOTE: WE SHOULD HAVE A TERMINATING SCRIPT, FOR INSTANCE TO STOP THE CLUSTER
