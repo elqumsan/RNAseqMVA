@@ -11,6 +11,7 @@ for (recountID in selectedRecountIDs) {
 
   message.with.time ("Loading data for recountID\t", recountID)
   #### Specify generic and recountID-specific parameters ####
+  parameters <- NULL
   parameters <- initRecountID(recountID, project.parameters)
 
   # ## Load default parameters for each new recountID
