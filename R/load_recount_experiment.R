@@ -40,7 +40,7 @@
 #' @import S4Vectors
 #'
 #' @export
-loadRecountExperiment <- function(recountID = parameters$recountID,
+loadRecountExperiment <- function(recountID = recountID,
                                   parameters,
                                   # dir.workspace = parameters$dir$workspace,
                                   # mergeRuns = parameters$mergeRuns,
