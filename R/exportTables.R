@@ -15,6 +15,7 @@ exportTables <- function (self, ...) {
 exportTables.default <- function (self, ...) {
   message("Finished exporting tables")
   #  message("Looking for a function named ", paste("exportTables", class(self), sep="."))
+  cat("\n") ## This avoids to print NULL in the console
   return()
 }
 
