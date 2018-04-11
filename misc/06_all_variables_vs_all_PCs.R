@@ -47,14 +47,14 @@ if (parameters$compute) {
       for (permute in parameters$permute) {
 
         ## Loop over data types
-        # data.type <- "log2norm" ## For test
+        data.type <- "log2normPCs" ## For test
         for (data.type in parameters$data.types.to.test) {
           message.with.time("\tRunning train/test with all variables",
                             "\n\trecountID: ", recountID,
                             "\n\tClassifier: ", classifier,
                             "\n\tpermuted class labels: ", permute,
                             "\n\tData type: ", data.type)
-          dataset <- studyCases[[recountID]][[data.type]]
+          dataset <- studyCases[[recountID]]$datasetsForTest[[data.type]]
           # class(dataset)
           # summary(dataset)
 
