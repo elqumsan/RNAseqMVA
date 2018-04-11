@@ -23,48 +23,7 @@ for (recountID in selectedRecountIDs) {
 
 
   #### Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files ###
-
-  ## Export raw counts per run
-  exportTables(studyCases[[recountID]]$countsPerRun,
-               export.dir = file.path(
-                 studyCases[[recountID]]$parameters$dir$tsv,
-                 studyCases[[recountID]]$parameters$recountID),
-               file.prefix = "counts_per_run_")
-
-  ## Export raw counts per sample
-  exportTables(studyCases[[recountID]]$originalCounts,
-               export.dir = file.path(
-                 studyCases[[recountID]]$parameters$dir$tsv,
-                 studyCases[[recountID]]$parameters$recountID),
-               file.prefix = "original_counts_")
-
-  ## Export filtere counts
-  exportTables(studyCases[[recountID]]$filtered,
-               export.dir = file.path(
-                 studyCases[[recountID]]$parameters$dir$tsv,
-                 studyCases[[recountID]]$parameters$recountID),
-               file.prefix = "filtered_counts_")
-
-  ## Export normalized counts
-  exportTables(studyCases[[recountID]]$norm,
-               export.dir = file.path(
-                 studyCases[[recountID]]$parameters$dir$tsv,
-                 studyCases[[recountID]]$parameters$recountID),
-               file.prefix = "norm_counts_")
-
-  ## Export log2-transformed normalised counts
-  exportTables(studyCases[[recountID]]$log2norm,
-               export.dir = paste(
-                 studyCases[[recountID]]$parameters$dir$tsv,
-                 studyCases[[recountID]]$parameters$recountID, sep = "/"),
-               file.prefix = "log2norm_counts_")
-
-  ## Export principal components of log2-transformed normalised counts
-  exportTables(studyCases[[recountID]]$log2normPCs,
-               export.dir = file.path(
-                 studyCases[[recountID]]$parameters$dir$tsv,
-                 studyCases[[recountID]]$parameters$recountID),
-               file.prefix = "log2norm_counts_")
+  exportTables(studyCases[[recountID]])
 
 
   #### Plot first versus second components
@@ -75,14 +34,14 @@ for (recountID in selectedRecountIDs) {
     paste(sep="", recountID, "_log2norm_PC1-PC2.pdf"))
   message("PC plot: ", PCplot.file)
   pdf(file = PCplot.file, width=7, height=9)
-  plot2PCs(studyCases[[recountID]]$log2normPCs, pcs = c(1,2))
+  plot2PCs(studyCases[[recountID]]$datasetsForTest$log2normPCs, pcs = c(1,2))
   silence <- dev.off()
 
   ## Plot PC2 vs PC3
   PCplot.file <- file.path(parameters$dir$PCviz,paste(sep="", recountID, "_log2norm_PC3-PC4.pdf"))
   message("PC plot: ", PCplot.file)
   pdf(file = PCplot.file, width=7, height=9)
-  plot2PCs(studyCases[[recountID]]$log2normPCs, pcs = c(3,4))
+  plot2PCs(studyCases[[recountID]]$datasetsForTest$log2normPCs, pcs = c(3,4))
   silence <- dev.off()
 
   ## TO DO LATER: CHECK IF THESE FIGURES ARE WELL GENERATED, AND INCOROPORATE THEM IN THE plot.figure methods
