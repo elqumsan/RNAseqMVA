@@ -4,8 +4,8 @@
 \alias{exportTables.DataTableWithClasses}
 \title{Export the different fields of an object of class DataTableWithClasses in tab-separated values text files.}
 \usage{
-\method{exportTables}{DataTableWithClasses}(self, export.dir, file.prefix,
-  extension = ".tsv")
+\method{exportTables}{DataTableWithClasses}(self,
+  export.dir = self$parameters$dir$tsv, file.prefix, extension = ".tsv")
 }
 \arguments{
 \item{self}{an object, which must belong to a compatible class}
