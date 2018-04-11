@@ -7,7 +7,7 @@ global: ## Global parameters are those who are the samee across all study cases
     memoryImages: "~/RNAseqMVA_workspace/memory_images"
 
   perm.prefix: "permLabels"
-  jobs: "none" ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
+  jobs: "auto" ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
   #  iterations: 50, ## Number of iterations for the classiifers
   iterations: 10 ## Number of iterations for the classiifers
 
