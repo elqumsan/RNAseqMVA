@@ -77,13 +77,13 @@ StudyCase  <- function (recountID, parameters) {
       ID = recountID,
       parameters = parameters,
       rawData = list(
-        countsPerRun <- result$countsPerRun,
-        countsPerSample <- result$originalCounts),
+        countsPerRun = result$countsPerRun,
+        countsPerSample = result$originalCounts),
       datasetsForTest = list(
-        result$filtered,
-        result$norm,
-        result$log2norm,
-        result$log2normPCs
+        filtered = result$filtered,
+        norm = result$norm,
+        log2norm = result$log2norm,
+        log2normPCs = result$log2normPCs
       )
     ),
     class="StudyCase")
