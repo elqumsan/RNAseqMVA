@@ -74,7 +74,7 @@ MisclassificationEstimate <- function(self,
 
 
   if (classifier == "knn"){
-
+     require("class")
     ## we need to tune our predictive model by using multiple workers "cores", such step to run our code through parallel
     ##  rather than sequentially technologies
     ## Compute testing errors
@@ -107,6 +107,7 @@ MisclassificationEstimate <- function(self,
 
   } else if (classifier == "rf") {
 
+    require("randomForest")
     ## we need to tune our predictive model by using multiple workers "cores", such step to run our code through parallel
     ##  rather than sequentially technologies
 
