@@ -8,11 +8,11 @@
 ## Choice of the classifier
 
 ## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
-memory.image.file <- file.path(parameters$dir$memoryImages, "classifier_eval_with_all_variables.Rdata")
+memory.image.file <- file.path(project.parameters$global$dir$memoryImages, "classifier_eval_with_all_variables.Rdata")
 
 ## Run the whole computation if required
 ## (this can take several hours depending on the number of datasets and classifier methods)
-if (parameters$compute) {
+if (project.parameters$global$compute) {
 
   train.test.results.all.variables.per.classifier <- list()
 
@@ -33,7 +33,7 @@ if (parameters$compute) {
     ## Loop over classifiers
     classifier <- "svm" ## For quick test
 
-    for (classifier in parameters$classifiers) {
+    for (classifier in project.parameters$global$classifiers) {
 
       ## List to store all results
       train.test.results.all.variables <- list()
@@ -44,11 +44,11 @@ if (parameters$compute) {
 
       #### Associate each analysis of real data with a permutation test ####
       permute <- FALSE ## Default for quick test without iterating over all cases
-      for (permute in parameters$permute) {
+      for (permute in project.parameters$global$permute) {
 
         ## Loop over data types
         data.type <- "log2normPCs" ## For test
-        for (data.type in parameters$data.types.to.test) {
+        for (data.type in project.parameters$global$data.types.to.test) {
           message.with.time("\tRunning train/test with all variables",
                             "\n\trecountID: ", recountID,
                             "\n\tClassifier: ", classifier,
@@ -71,7 +71,7 @@ if (parameters$compute) {
           exp.prefix <-
             paste(sep = "_", recountID, classifier, dataset$dataType)
           if (permute) {
-            exp.prefix <- paste(sep = "_", exp.prefix, parameters$perm.prefix)
+            exp.prefix <- paste(sep = "_", exp.prefix, project.parameters$global$perm.prefix)
           }# end if permuted class
           # print(exp.prefix)
 
@@ -219,7 +219,7 @@ if (parameters$compute) {
                                     parameters$recountID,
                                     "; ", classifier,
                                     "\nall variables; ",
-                                    parameters$iterations, " iterations")
+                                    project.parameters$global$iterations, " iterations")
                        )
       train.test.results.all.variables.per.classifier[[recountID]][[classifier]] <- train.test.results.all.variables
 
@@ -227,8 +227,8 @@ if (parameters$compute) {
   } # end loop over recountIDs
 
   ## Save a memory image that can be re-loaded next time to avoid re-computing all the normalisation and so on.
-  if (parameters$save.image) {
-    dir.create(parameters$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
+  if (project.parameters$global$save.image) {
+    dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
     message.with.time("Saving memory image after eval of all variables: ", memory.image.file)
     save.image(file = memory.image.file)
   }
