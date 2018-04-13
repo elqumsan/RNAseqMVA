@@ -13,9 +13,12 @@
 #' @example
 #' oneTest <- MisclassificationEstimate(dataTable, classes, trainingProportion = 2/3, classifier = "rf")
 #'
-#'
-#'
 #' @import doMC
+#' @import class
+#' @import randomForest
+#' @import MASS
+#' @import e1071
+#'
 #' @export
 MisclassificationEstimate <- function(self,
                                       iteration,
