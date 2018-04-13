@@ -10,6 +10,23 @@
 ## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
 memory.image.file <- file.path(project.parameters$global$dir$memoryImages, "classifier_eval_with_all_variables.Rdata")
 
+
+## For debug: reset the parameteres for all the study cases
+## This is used to re-run the analyses on each study case after having changed some parameters in the yaml-specific configuration file
+project.parameters <- yaml.load_file(configFile)
+project.parameters <- initParallelComputing(project.parameters)
+if(exists("studyCases")) {
+  for (recountID in names(studyCases)) {
+    parameters <- initRecountID(recountID, project.parameters)
+    studyCases[[recountID]]$parameters <- parameters
+    for (dataSetName in names(studyCases[[recountID]]$datasetsForTest)) {
+      studyCases[[recountID]]$datasetsForTest[[dataSetName]]$parameters <- parameters
+    }
+    #  print (studyCases[[recountID]]$parameters$dir$tablesDetail)
+  }
+}
+
+
 ## Run the whole computation if required
 ## (this can take several hours depending on the number of datasets and classifier methods)
 if (project.parameters$global$compute) {
@@ -31,7 +48,7 @@ if (project.parameters$global$compute) {
 
     message.with.time("Running train/test with all variables for recountID\t", recountID)
     ## Loop over classifiers
-    classifier <- "svm" ## For quick test
+    classifier <- "knn" ## For quick test
 
     for (classifier in project.parameters$global$classifiers) {
 
@@ -249,6 +266,7 @@ if (project.parameters$global$compute) {
   #} # end else if compute statment
 
 
+
   ###############################################################################################
   #### What is better to using all PCs versus all variables with KNN classifier? ####
   # ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
@@ -259,3 +277,5 @@ if (project.parameters$global$compute) {
   #                               parameters$iterations, " iterations, ","\n",
   #                               data.type = "diverse data type"))
   #
+
+message.with.time("Finished script 06_all_vaariables_vs_all_PCs.R")
