@@ -188,7 +188,7 @@ par(mfrow=c(4,2))
 par(mar=c(4,15,5,1))
 for (recountID in names(studyCases)) {
   heights <- barplot(
-    sort( studyCases[[recountID]]$rawData$countsPerSample$samplesPerClass, decreasing = TRUE),
+    sort(studyCases[[recountID]]$rawData$countsPerSample$samplesPerClass, decreasing = TRUE),
     horiz = TRUE, las=1, cex.names = 0.7, main=recountID,
     xlab="Samples per class", col="white")
   barplot(sort(studyCases[[recountID]]$datasetsForTest$filtered$samplesPerClass, decreasing = TRUE),
@@ -233,4 +233,6 @@ message.with.time("finished executing 02_load_and_normalise_counts.R")
 #
 # }
 #
+
+
 

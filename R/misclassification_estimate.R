@@ -13,9 +13,13 @@
 #' @example
 #' oneTest <- MisclassificationEstimate(dataTable, classes, trainingProportion = 2/3, classifier = "rf")
 #'
-#'
-#'
 #' @import doMC
+#' @import class
+#' @import e1071
+#' @import MASS
+#' @import stats
+#' @import randomForest
+#'
 #' @export
 MisclassificationEstimate <- function(self,
                                       iteration,
@@ -26,7 +30,7 @@ MisclassificationEstimate <- function(self,
                                       ) {
 
 
-    # require(doMC)
+  # require(doMC)
   # registerDoMC(cores = 5)
   result <- list()
 
@@ -110,8 +114,8 @@ MisclassificationEstimate <- function(self,
     require("randomForest")
     ## we need to tune our predictive model by using multiple workers "cores", such step to run our code through parallel
     ##  rather than sequentially technologies
-
-    #library(doMC)
+    require(randomForest)
+    #require(doMC)
     #registerDoMC(cores = 5)
 
     ## Computing Testing errors for Random Forest
@@ -167,7 +171,7 @@ MisclassificationEstimate <- function(self,
 
 #    registerDoMC(cores = 5)
 
-    library("MASS")
+    require("MASS")
 
     ## Computing Testing errors for Linear Discriminant Analysis
 
