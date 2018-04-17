@@ -23,7 +23,7 @@ ErrorRateBoxPlot(experimentList, classifier, data.type, main = paste(sep = "",
 
 \item{expLegend}{is the legend for the real class lable train/test experiment.}
 
-\item{permLegend}{legend for the one experiment with permuted class lables.}
+\item{permLegend}{legend for the IterateTrainingTesting with permuted class lables.}
 
 \item{dataType}{data type(s), used to build the file prefix}
 

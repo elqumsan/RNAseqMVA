@@ -6,3 +6,6 @@
 \usage{
 initParallelComputing(project.parameters)
 }
+\author{
+Jacques van Helden and Mustafa ABUELQUMSAN
+}
