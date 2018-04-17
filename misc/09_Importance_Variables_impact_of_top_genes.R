@@ -80,7 +80,7 @@ if (parameters$compute) {
         message (format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", "Experiment prefix: ", exp.prefix)
 
         train.test.results.importance.varaibles[[exp.prefix]] <-
-          one.experiment (
+          IterateTrainingTesting (
             dataTable = as.data.frame(counts),
             classes = classes,
             trainIndices = trainIndices,

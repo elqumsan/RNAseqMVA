@@ -188,7 +188,7 @@ if (parameters$compute) {
           message (format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", "Experiment prefix: ", exp.prefix)
 
           train.test.results[[exp.prefix]] <-
-            one.experiment(dataTable=counts,
+            IterateTrainingTesting(dataTable=counts,
                            data.type=data.type,
                            classifier=classifier,
                            classes=classes,
@@ -251,7 +251,7 @@ if (parameters$compute) {
           message (format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", "Experiment prefix: ", exp.prefix)
 
           train.test.results[[exp.prefix]] <-
-            one.experiment(dataTable=counts,
+            IterateTrainingTesting(dataTable=counts,
                            data.type=data.type,
                            classifier=classifier,
                            classes=classes,
@@ -422,7 +422,7 @@ for (classifier in parameters$classifiers) {
 ## TO BE DONE
 
 
-stop("Mustafa, the next analyses should now be done with the same one.experiment() function")
+stop("Mustafa, the next analyses should now be done with the same IterateTrainingTesting() function")
 
 
 ###########################################################################################################
@@ -640,7 +640,7 @@ if (parameters$compute) {
     # } # end for iteration
 
     # Run KNN classifier with all variables, log2-transformed normalised with percentile 75
-    KNNlog2TestTable.edgeRordering[[varnb]] <-  one.experiment(dataTable=sorted.log2.transformed.edgeR[, 1:varnb],
+    KNNlog2TestTable.edgeRordering[[varnb]] <-  IterateTrainingTesting(dataTable=sorted.log2.transformed.edgeR[, 1:varnb],
                                                                data.type="log2normP75",
                                                                classifier=classifier,
                                                                classes=classes,

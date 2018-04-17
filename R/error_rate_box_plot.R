@@ -9,7 +9,7 @@
 #' @param expColor is colore each box plot that represent the error rate for each experiment with actual class lables.
 #' @param permColor is the coler for the box plot that represent error rate for each experiment with permuted calss lables.
 #' @param expLegend is the legend for the real class lable train/test experiment.
-#' @param  permLegend legend for the one experiment with permuted class lables.
+#' @param  permLegend legend for the IterateTrainingTesting with permuted class lables.
 #' @param dataType data type(s), used to build the file prefix
 #' @param variablesType variable types (e.g. all, DEG, ...), used to build the file prefix
 #'

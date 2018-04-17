@@ -85,7 +85,7 @@ if (parameters$compute) {
         message (format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", "Experiment prefix: ", exp.prefix)
 
         train.test.results.DEG[[exp.prefix]] <-
-          one.experiment(DEG.object,
+          IterateTrainingTesting(DEG.object,
                          classifier=classifier,
                          iterations = parameters$iterations,
                           # data.type=data.type,

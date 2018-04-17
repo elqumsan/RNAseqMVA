@@ -1,37 +1,43 @@
-##### Iterate training/testing procedures with a given classifier and a given data type #####
 #' @title Iterate training/testing procedures with a given classifier and a given data type
 #' @author Mustafa ABUELQUMSAN and Jacques van Helden
 #' @description for sake of the accuracy and due to the error rate have computed from sampleing from the origin count data,
 #' # it is better to compute the the error rate multiple time and then we would find the avarage for the error rate.
-#' @param dataTable is the passed count data for the iterative process.
-#' @param classes is the classes lable for the cout data.
+#' @param self an object of class DataTableWithTrainTestSets
 #' @param classifier is the type of classifier that is used with repeated process.
-#' @param data.type is data type that is used with iterative process, supported "raw","log2", "log2norm" and "log2norm.prcomp.centred"
-#' @param iteration is the how much number it will be repeated the process.
-#' @param variable.type this indicate for the number of variables that will used with iterative procedure.
-#' @param trainingProportion is the ratio of trianing proportion.
-#' @param trainIndices a list of vectors providing training sample indices that will be used at each iteration. The length of the list must correspond to the number of iteractions. This enables to compare different methods wilt using exactly the same training/testing sets between methods.
 #' @param permute is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier
-#' @param file.prefix in order to let us to save file from the one experiment
-#' @param verbose to write messages to indicate the progressing of tasks
-#' @param k this parameter for the knn classifier to identify the number of neighbour in classification process.
+#' @param file.prefix in order to let us to save file from the IterateTrainingTesting
 #'
 #' @return
 #' @import foreach
 #' @import doParallel
 #' @export
+#'
+#'
+
+IterateTrainingTesting <- function (self, ...) {
+  message("\tRunning IterateTrainingTesting() with object of class\t", paste( collapse  = ",",class(self) ) )
+  UseMethod("IterateTrainingTesting", self)
+  return(self)
+}
+
+
+IterateTrainingTesting.DataTableWithClasses <- function (self, ...) {
+  message("\tRunning IterateTrainingTesting() with object of class\t", "DataTableWithClasses")
+  self <- NextMethod("IterateTrainingTesting",self)
+}
+
+IterateTrainingTesting.default <- function(self, ...){
+  message("\tFinished from IterateTrainingTesting() with object of class\t", paste(collapse = ",", class(self)))
+  return(self)
+}
+
+
 ################################################################
 ## Define a function to iterate over one classifier with one particular data type.
-one.experiment <- function (self,
-                            classifier, # supported: knn or rf
-                            # iterations = parameters$iterations,
-                          #  variable.type = "all", ## e.g;. "all", "top20", "top200", ...
-                          #  trainingProportion, # ratio of training proportion
-                          #  trainIndex, testIndex,
-                            permute = FALSE, # permute the class labels before running the test
-                          # verbose = parameters$verbose,
-                          # k = parameters$knn$k, ## For KNN only
-                          file.prefix = NULL # prefix for the saved files. If not provided, will be automatically generated
+IterateTrainingTesting.DataTableWithTrainTestSets <- function (self,
+                                                               classifier, # supported: knn or rf
+                                                               permute = FALSE, # permute the class labels before running the test
+                                                               file.prefix = NULL # prefix for the saved files. If not provided, will be automatically generated
 ) {
 
 
@@ -40,7 +46,7 @@ one.experiment <- function (self,
 
   ## Check the class of the object
   if (!is(object = self, class2 = "DataTableWithTrainTestSets")) {
-    stop("one.experiment() only accepts objects of class DataTableWithTrainTestSets")
+    stop("IterateTrainingTesting() only accepts objects of class DataTableWithTrainTestSets")
   }
 
   ## Get parameters from the passed object
@@ -59,7 +65,7 @@ one.experiment <- function (self,
 
   ## Check the consistency between trainIndices and iterations
   if (is.null(self$trainTestProperties$trainIndices)) {
-    stop("one.experiment()  train indices are not defined")
+    stop("IterateTrainingTesting()  train indices are not defined")
   } else {
     trainIndices <- self$trainTestProperties$trainIndices
   }
@@ -71,7 +77,7 @@ one.experiment <- function (self,
   }
 
 
-  message.with.time("\t", "one.experiment()",
+  message.with.time("\t", "IterateTrainingTesting()",
                     "\n\tID: ", self$ID,
                     "\n\tclassifier: ", classifier,
                     "\n\tdata type: ", self$dataType,
@@ -90,7 +96,7 @@ one.experiment <- function (self,
 
   ## Define directory based on the method
   dir.create(parameters$dir$tablesDetail[classifier], recursive = TRUE, showWarnings = F)
-  message("Output directory for result tables: ", parameters$dir$tablesDetail[classifier])
+  message("\tOutput directory for result tables: ", parameters$dir$tablesDetail[classifier])
 
 
   ## Iterate train/test cycles

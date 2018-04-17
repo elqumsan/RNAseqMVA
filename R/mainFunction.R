@@ -17,7 +17,7 @@ if (exists( "DEGordering" ,  mode="function")){
   # source("~/RNAseqMVA/R/misclassification_estimate.R")
   # source("~/RNAseqMVA/R/normalize_count_table.R")
   # source("~/RNAseqMVA/R/normalize_count_table.R")
-  # source("~/RNAseqMVA/R/one_experiment.R")
+  # source("~/RNAseqMVA/R/IterateTrainingTesting.R")
   # source("~/RNAseqMVA/R/required_libraries.R")
   # source("~/RNAseqMVA/R/required_libraries.R")
 
@@ -34,8 +34,8 @@ if (exists( "DEGordering" ,  mode="function")){
 #     source("~/RNAseqMVA/R/misclassification_estimate.R")
 # }else if( exists("NormalizeSamples" ,mode = "function")){
 #     source("~/RNAseqMVA/R/normalize_count_table.R")
-# }else if( exists("one.experiment" , mode = "function")){
-#     source("~/RNAseqMVA/R/one_experiment.R")
+# }else if( exists("IterateTrainingTesting" , mode = "function")){
+#     source("~/RNAseqMVA/R/IterateTrainingTesting.R")
 # }else if(exists("RequiredCRANPackages", mode = "function")){
 #     source("~/RNAseqMVA/R/required_libraries.R")
 # } else if (exists("RequiredBioconductorPackages" , mode = "function")){
