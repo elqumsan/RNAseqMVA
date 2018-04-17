@@ -4,7 +4,7 @@
 \alias{buildAttributes.DataTableWithClasses}
 \title{build the attributes of an object of class DataTableWithClasses based on the count table and pheno table.}
 \usage{
-buildAttributes.DataTableWithClasses(self)
+\method{buildAttributes}{DataTableWithClasses}(self)
 }
 \value{
 the same object with added fields to describe sample classes and derived

@@ -4,7 +4,7 @@
 \alias{buildAttributes.DataTableWithTrainTestSets}
 \title{build the attributes that depend on the count table}
 \usage{
-buildAttributes.DataTableWithTrainTestSets(self)
+\method{buildAttributes}{DataTableWithTrainTestSets}(self)
 }
 \description{
 #################### Builde constractor for the selecting Training Sets #########

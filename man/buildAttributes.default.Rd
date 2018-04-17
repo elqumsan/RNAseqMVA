@@ -4,7 +4,7 @@
 \alias{buildAttributes.default}
 \title{default method to build attributes for an object.}
 \usage{
-buildAttributes.default(self)
+\method{buildAttributes}{default}(self)
 }
 \description{
 Just send message with object classes. The class-specific builders should have been be called before.
