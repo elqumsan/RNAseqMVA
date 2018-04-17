@@ -1,4 +1,9 @@
 #' @title initialise parameters for parallel computing with foreach and doParallel packages
+#' @author Jacques van Helden and Mustafa ABUELQUMSAN
+#'
+#' @import foreach
+#' @import doParallel
+#'
 #' @export
 initParallelComputing <- function(project.parameters) {
   if (!is.null(project.parameters$global$jobs)) {
