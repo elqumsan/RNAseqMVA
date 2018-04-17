@@ -93,7 +93,7 @@ if (project.parameters$global$compute) {
           # print(exp.prefix)
 
           train.test.results.all.variables[[exp.prefix]] <-
-            one.experiment (
+            IterateTrainingTesting (
               dataset,
               classifier = classifier,
               permute = permute#,
@@ -118,7 +118,7 @@ if (project.parameters$global$compute) {
       # }# end if permuted class
       #
       # train.test.results.all.variables[[exp.prefix]] <-
-      #   one.experiment (
+      #   IterateTrainingTesting (
       #     first.pcs,
       #     # classes = classes,
       #     # trainIndices = trainIndices,
@@ -149,7 +149,7 @@ if (project.parameters$global$compute) {
       # }# end if permuted class
       #
       # train.test.results.all.variables[[exp.prefix]] <-
-      #   one.experiment (
+      #   IterateTrainingTesting (
       #     dataset2,
       #     # classes = classes,
       #     # trainIndices = trainIndices,
@@ -180,7 +180,7 @@ if (project.parameters$global$compute) {
       # }# end if permuted class
       #
       # train.test.results.all.variables[[exp.prefix]] <-
-      #   one.experiment (
+      #   IterateTrainingTesting (
       #     dataTable = DEG.Counts,
       #     classes = classes,
       #     trainIndices = trainIndices,
@@ -209,7 +209,7 @@ if (project.parameters$global$compute) {
       # }# end if permuted class
       #
       # train.test.results.all.variables[[exp.prefix]] <-
-      #   one.experiment (
+      #   IterateTrainingTesting (
       #     dataTable = as.data.frame(ordered.dataTable.by.importance),
       #     classes = classes,
       #     trainIndices = trainIndices,

@@ -93,7 +93,7 @@ if (parameters$compute) {
     #
 
     # train.test.results[[exp.prefix]] <-
-    #   one.experiment (
+    #   IterateTrainingTesting (
     #     dataTable = log2normCounts,
     #     classes = classes,
     #     data.type = "log2normCounts",
@@ -124,7 +124,7 @@ if (parameters$compute) {
       }# end if permuted class
 
       train.test.results.No.PCs[[exp.prefix]] <-
-        one.experiment (
+        IterateTrainingTesting (
           dataset,
         # classes = classes,
         #  trainIndex = log2norm.prcomp.centred.scaled$trainIndex, testIndex = log2norm.prcomp.centred.scaled$testIndex,
