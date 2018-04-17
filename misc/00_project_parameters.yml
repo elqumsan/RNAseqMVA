@@ -16,16 +16,13 @@ global: ## Global parameters are those who are the samee across all study cases
   save.tables: TRUE ## If TRUE, save tab-delimited files with the results
   save.image: TRUE
   draw.plot : TRUE
-  #  classifiers: c("lda"),
+  classifiers: "svm"
+  # classifiers: ["svm", "knn","rf"]
+  # classifiers: ["knn","rf","svm"] # TO ADD LATER: "lda", "qda" + the one suggested by Aitor
 
-  classifiers: ["svm", "knn","rf"]
-
-#  classifiers: ["rf"]
-
-  #classifiers: ["knn","rf","svm"] # TO ADD LATER: "lda", "qda"
   data.types: ["countsPerRun", "originalCounts", "filtered", "norm", "log2norm", "log2normPCs", "DEG", "V.importance"]
-  # data.types.to.test: ["log2normPCs"]
-  data.types.to.test: ["filtered", "norm", "log2norm", "log2normPCs"]
+  data.types.to.test: ["log2normPCs"]
+  #data.types.to.test: ["filtered", "norm", "log2norm", "log2normPCs"]
 
   # data.types.to.test: ["log2norm"]
   variables.type: ["all", "top_ordered"]
