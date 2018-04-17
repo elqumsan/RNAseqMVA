@@ -17,7 +17,7 @@
 IterateTrainingTesting <- function (self, ...) {
   message("\tRunning IterateTrainingTesting() with object of class\t", paste( collapse  = ",",class(self) ) )
   UseMethod("IterateTrainingTesting", self)
-  return(self)
+ # return(self)
 }
 
 
@@ -28,7 +28,7 @@ IterateTrainingTesting.DataTableWithClasses <- function (self, ...) {
 
 IterateTrainingTesting.default <- function(self, ...){
   message("\tFinished from IterateTrainingTesting() with object of class\t", paste(collapse = ",", class(self)))
-  return(self)
+ # return(self)
 }
 
 
@@ -166,5 +166,6 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function (self,
   elapsedTimeFile <- file.path(parameters$dir$tablesDetail[classifier], paste(sep="", file.prefix, "_elapsed_time.txt"))
   write(file = elapsedTimeFile, x = paste(startTime, endTime, elapsedTime))
   message("Elapsed Time file: ", elapsedTimeFile)
+  NextMethod("IterateTrainingTesting", self)
   return(testTable)
 }
