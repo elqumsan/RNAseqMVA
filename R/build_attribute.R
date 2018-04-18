@@ -5,7 +5,7 @@ buildAttributes <- function(self) {
   UseMethod("buildAttributes", self)
 #  message("trainIndices length : ", length(self$trainTestProperties$trainIndices))
 #  message("\t\treturning from buildAttributes()")
-  return(self)
+  return(self) ## NOT SURE THIS LINE IS REQUIRED. TO BE CHECKED.
 }
 
 #' @title default method to build attributes for an object.
