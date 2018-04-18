@@ -36,7 +36,7 @@ global: ## Global parameters are those who are the samee across all study cases
 
   knn:
     k: 10
-    k_values: 3,5,7,10,15
+    k_values: [3, 5, 7, 10, 15]
 
   svm:
     kernel: "linear"
