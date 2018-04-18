@@ -88,11 +88,13 @@ if (project.parameters$global$compute) {
           }
 
           #### Run classifier with all variables (log2-transformed log counts) ####
-          exp.prefix <-
-            paste(sep = "_", recountID, classifier, dataset$dataType)
+          exp.prefix <- filePrefix(dataset,classifier, permute)
+          #  paste(sep = "_", recountID, classifier, dataset$dataType)
           if (permute) {
-            exp.prefix <- paste(sep = "_", exp.prefix, project.parameters$global$perm.prefix)
-          }# end if permuted class
+          #  exp.prefix <- paste(sep = "_", exp.prefix, project.parameters$global$perm.prefix)
+            exp.prefix <- filePrefix(dataset,classifier, permute)
+
+            }# end if permuted class
           # print(exp.prefix)
 
           train.test.results.all.variables[[exp.prefix]] <-

@@ -50,7 +50,7 @@ if (project.parameters$global$compute) {
     ## Loop over classifiers
     classifier <- "svm"
 
-    for (svm.kernel in project.parameters$global$svm$kernel) {
+    for (svm.kernel in project.parameters$global$svm$kernel_values) {
 
       ## List to store all results
       train.test.results.all.variables.svm <- list()
@@ -86,42 +86,48 @@ if (project.parameters$global$compute) {
           }
 
           #### Run classifier with all variables (log2-transformed log counts) ####
-          exp.prefix <-
-            paste(sep = "_", recountID, classifier, dataset$dataType, svm.kernel)
+          exp.prefix <- filePrefix(dataset,classifier, permute)
+          #  paste(sep = "_", recountID, classifier, dataset$dataType)
           if (permute) {
-            exp.prefix <- paste(sep = "_", exp.prefix, project.parameters$global$perm.prefix)
-          }# end if permuted class
-          # print(exp.prefix)
+            #  exp.prefix <- paste(sep = "_", exp.prefix, project.parameters$global$perm.prefix)
+            exp.prefix <- filePrefix(dataset,classifier, permute)
 
-          train.test.results.all.variables.svm[[exp.prefix]] <-
-            IterateTrainingTesting (
-              dataset,
-              classifier = classifier,
-              permute = permute#,
-              # k = parameters$knn$k,
-              # verbose = parameters$verbose
-            )
+            # exp.prefix <-
+            #   paste(sep = "_", recountID, classifier, dataset$dataType, svm.kernel)
+            # if (permute) {
+            #   exp.prefix <- paste(sep = "_", exp.prefix, project.parameters$global$perm.prefix)
+            # }# end if permuted class
+            # # print(exp.prefix)
 
-        } # End iterations over dataset
-      } # End iterations over permutation
+            train.test.results.all.variables.svm[[exp.prefix]] <-
+              IterateTrainingTesting (
+                dataset,
+                classifier = classifier,
+                permute = permute#,
+                # k = parameters$knn$k,
+                # verbose = parameters$verbose
+              )
+
+          } # End iterations over dataset
+        } # End iterations over permutation
 
 
 
 
-      #### Plotting the Miscalssification Error rate using all diverse data type all variables with KNN classifier? ####
-      ErrorRateBoxPlot(experimentList = train.test.results.all.variables.svm,
-                       classifier = classifier,
-                       data.type = "diverse-data-types",
-                       main = paste(sep="",
-                                    parameters$recountID,
-                                    "; ", classifier,
-                                    "\nall variables; ",
-                                    project.parameters$global$iterations, " iterations")
-      )
-      train.test.results.all.variables.per.svm[[recountID]][[classifier]] <- train.test.results.all.variables.svm
+        #### Plotting the Miscalssification Error rate using all diverse data type all variables with KNN classifier? ####
+        ErrorRateBoxPlot(experimentList = train.test.results.all.variables.svm,
+                         classifier = classifier,
+                         data.type = "diverse-data-types",
+                         main = paste(sep="",
+                                      parameters$recountID,
+                                      "; ", classifier,
+                                      "\nall variables; ",
+                                      project.parameters$global$iterations, " iterations")
+        )
+        train.test.results.all.variables.per.svm[[recountID]][[classifier]] <- train.test.results.all.variables.svm
 
-    } # end loop over classifiers
-  } # end loop over recountIDs
+      } # end loop over permutation
+  } # end loop over classifier-spacific parameter
 
   ## Save a memory image that can be re-loaded next time to avoid re-computing all the normalisation and so on.
   if (project.parameters$global$save.image) {
@@ -140,10 +146,10 @@ if (project.parameters$global$compute) {
   #     stop("Cannot reload memory image file ", memory.image.file)
   #   }
 
-}  # end of "if compute"
+ }  # end of over recountIDS
 
 
-#} # end else if compute statment
+} # end else if compute statment
 
 
 
