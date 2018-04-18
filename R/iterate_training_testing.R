@@ -83,34 +83,35 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function (self,
   message.with.time("\t", "IterateTrainingTesting()",
                     "\n\tID: ", self$ID,
                     "\n\tclassifier: ", classifier,
+                    "\n\tclassifier kernel:  ", self$parameters$svm$kernel,
                     "\n\tdata type: ", self$dataType,
                     "\n\tvariable type: ", self$variablesType,
                     "\n\tTrain/test iterations: ",   parameters$iterations)
 
 
-  ## TO DO:THIS SHOULD BE MOVED TO A SEPARATE FUNCTION
-  ## Define file prefix is not specified in paramters
-  if (is.null(file.prefix)) {
-    if (classifier == "svm") {
-      if (is.null(parameters$svm$kernel)) {
-        parameters$svm$kernel = "linear"
-      }
-      classifier_prefix = paste(sep="", "svm_", parameters$svm$kernel)
-    } else if (classifier == "knn") {
-      if (is.null(parameters$knn$k)) {
-        parameters$knn$k
-      }
-      classifier_prefix = paste(sep="", "knn_", parameters$knn$k)
-
-    } else {
-      classifier_prefix = classifier
-    }
-    file.prefix <- paste(sep="_", classifier_prefix, self$ID,  self$dataType, self$variablesType)
-    file.prefix <- sub(pattern = " ", replacement = "_", x = file.prefix) ## Avoid spaces in file names
-    if (permute) {
-      file.prefix <- paste(sep="_", file.prefix, "permLabels")
-    }
-  }
+  # ## TO DO:THIS SHOULD BE MOVED TO A SEPARATE FUNCTION
+  # ## Define file prefix is not specified in paramters
+  # if (is.null(file.prefix)) {
+  #   if (classifier == "svm") {
+  #     if (is.null(parameters$svm$kernel)) {
+  #       parameters$svm$kernel = "linear"
+  #     }
+  #     classifier_prefix = paste(sep="", "svm_", parameters$svm$kernel)
+  #   } else if (classifier == "knn") {
+  #     if (is.null(parameters$knn$k)) {
+  #       parameters$knn$k
+  #     }
+  #     classifier_prefix = paste(sep="", "knn_", parameters$knn$k)
+  #
+  #   } else {
+  #     classifier_prefix = classifier
+  #   }
+  #   file.prefix <- paste(sep="_", classifier_prefix, self$ID,  self$dataType, self$variablesType)
+  #   file.prefix <- sub(pattern = " ", replacement = "_", x = file.prefix) ## Avoid spaces in file names
+  #   if (permute) {
+  #     file.prefix <- paste(sep="_", file.prefix, "permLabels")
+  #   }
+  # }
 
   ## Define directory based on the method
   dir.create(parameters$dir$tablesDetail[classifier], recursive = TRUE, showWarnings = F)
