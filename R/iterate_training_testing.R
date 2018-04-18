@@ -16,24 +16,27 @@
 
 IterateTrainingTesting <- function (self, ...) {
   message("\tRunning IterateTrainingTesting() with object of class\t", paste( collapse  = ",",class(self) ) )
-  UseMethod("IterateTrainingTesting", self)
- # return(self)
+  testTable <- UseMethod("IterateTrainingTesting", self)
+  return(testTable)
 }
 
 
+#' @export
 IterateTrainingTesting.DataTableWithClasses <- function (self, ...) {
   message("\tRunning IterateTrainingTesting() with object of class\t", "DataTableWithClasses")
-  self <- NextMethod("IterateTrainingTesting",self)
+  testTable <- NextMethod("IterateTrainingTesting",self)
+  return(testTable)
 }
 
+#' @export
 IterateTrainingTesting.default <- function(self, ...){
   message("\tFinished from IterateTrainingTesting() with object of class\t", paste(collapse = ",", class(self)))
- # return(self)
 }
 
 
 ################################################################
 ## Define a function to iterate over one classifier with one particular data type.
+#' @export
 IterateTrainingTesting.DataTableWithTrainTestSets <- function (self,
                                                                classifier, # supported: knn or rf
                                                                permute = FALSE, # permute the class labels before running the test
