@@ -221,7 +221,8 @@ MisclassificationEstimate <- function(self,
                        y = as.factor(classes[trainIndex]),
                        type = parameters$svm$type,
                        scale = parameters$svm$scale,
-                       kernel = parameters$svm$kernel
+                      # kernel = parameters$svm$kernel,
+                       kernel = self$parameters$svm$kernel
                        # gamma = 1 ,
                        # cost = 10
     )
