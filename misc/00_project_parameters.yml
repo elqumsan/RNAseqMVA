@@ -21,8 +21,8 @@ global: ## Global parameters are those who are the samee across all study cases
   # classifiers: ["knn","rf","svm"] # TO ADD LATER: "lda", "qda" + the one suggested by Aitor
 
   data.types: ["countsPerRun", "originalCounts", "filtered", "norm", "log2norm", "log2normPCs", "DEG", "V.importance"]
-  data.types.to.test: ["log2normPCs"]
-  #data.types.to.test: ["filtered", "norm", "log2norm", "log2normPCs"]
+  #data.types.to.test: ["log2normPCs"]
+  data.types.to.test: ["filtered", "norm", "log2norm", "log2normPCs"]
 
   # data.types.to.test: ["log2norm"]
   variables.type: ["all", "top_ordered"]
@@ -36,10 +36,11 @@ global: ## Global parameters are those who are the samee across all study cases
 
   knn:
     k: 10
+    k_values: 3,5,7,10,15
 
   svm:
-  # kernel: "linear"
-    kernel: ["linear", "polynomial", "radial basis", "sigmoid" ]
+    kernel: "linear"
+    kernel_values: ["linear", "polynomial", "radial basis", "sigmoid" ]
     scale: FALSE
     type: "C-classification"
   # type: ["C-classification", "nu-classification", "one-classification"]
