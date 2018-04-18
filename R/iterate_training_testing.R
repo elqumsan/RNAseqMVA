@@ -88,9 +88,24 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function (self,
                     "\n\tTrain/test iterations: ",   parameters$iterations)
 
 
+  ## TO DO:THIS SHOULD BE MOVED TO A SEPARATE FUNCTION
   ## Define file prefix is not specified in paramters
   if (is.null(file.prefix)) {
-    file.prefix <- paste(sep="_", classifier, self$ID,  self$dataType, self$variablesType)
+    if (classifier == "svm") {
+      if (is.null(parameters$svm$kernel)) {
+        parameters$svm$kernel = "linear"
+      }
+      classifier_prefix = paste(sep="", "svm_", parameters$svm$kernel)
+    } else if (classifier == "knn") {
+      if (is.null(parameters$knn$k)) {
+        parameters$knn$k
+      }
+      classifier_prefix = paste(sep="", "knn_", parameters$knn$k)
+
+    } else {
+      classifier_prefix = classifier
+    }
+    file.prefix <- paste(sep="_", classifier_prefix, self$ID,  self$dataType, self$variablesType)
     file.prefix <- sub(pattern = " ", replacement = "_", x = file.prefix) ## Avoid spaces in file names
     if (permute) {
       file.prefix <- paste(sep="_", file.prefix, "permLabels")
