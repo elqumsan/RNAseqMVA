@@ -13,16 +13,19 @@ memory.image.file <- file.path(project.parameters$global$dir$memoryImages, "clas
 
 ## For debug: reset the parameteres for all the study cases
 ## This is used to re-run the analyses on each study case after having changed some parameters in the yaml-specific configuration file
-project.parameters <- yaml.load_file(configFile)
-project.parameters <- initParallelComputing(project.parameters)
-if(exists("studyCases")) {
-  for (recountID in names(studyCases)) {
-    parameters <- initRecountID(recountID, project.parameters)
-    studyCases[[recountID]]$parameters <- parameters
-    for (dataSetName in names(studyCases[[recountID]]$datasetsForTest)) {
-      studyCases[[recountID]]$datasetsForTest[[dataSetName]]$parameters <- parameters
+reload.parameters <- FALSE
+if (reload.parameters) {
+  project.parameters <- yaml.load_file(configFile)
+  project.parameters <- initParallelComputing(project.parameters)
+  if(exists("studyCases")) {
+    for (recountID in names(studyCases)) {
+      parameters <- initRecountID(recountID, project.parameters)
+      studyCases[[recountID]]$parameters <- parameters
+      for (dataSetName in names(studyCases[[recountID]]$datasetsForTest)) {
+        studyCases[[recountID]]$datasetsForTest[[dataSetName]]$parameters <- parameters
+      }
+      #  print (studyCases[[recountID]]$parameters$dir$tablesDetail)
     }
-    #  print (studyCases[[recountID]]$parameters$dir$tablesDetail)
   }
 }
 
