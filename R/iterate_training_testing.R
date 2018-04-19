@@ -2,7 +2,7 @@
 #' @author Mustafa ABUELQUMSAN and Jacques van Helden
 #' @description for sake of the accuracy and due to the error rate have computed from sampleing from the origin count data,
 #' # it is better to compute the the error rate multiple time and then we would find the avarage for the error rate.
-#' @param self an object of class DataTableWithTrainTestSets
+#' @param dataset an object of class DataTableWithTrainTestSets
 #' @param classifier is the type of classifier that is used with repeated process.
 #' @param permute is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier
 #' @param file.prefix in order to let us to save file from the IterateTrainingTesting
@@ -14,30 +14,30 @@
 #'
 #'
 
-IterateTrainingTesting <- function (self, ...) {
-  message("\tRunning IterateTrainingTesting() with object of class\t", paste( collapse  = ",",class(self) ) )
-  testTable <- UseMethod("IterateTrainingTesting", self)
+IterateTrainingTesting <- function (dataset, ...) {
+  message("\tRunning IterateTrainingTesting() with object of class\t", paste( collapse  = ",",class(dataset) ) )
+  testTable <- UseMethod("IterateTrainingTesting", dataset)
   return(testTable)
 }
 
 
 #' @export
-IterateTrainingTesting.DataTableWithClasses <- function (self, ...) {
+IterateTrainingTesting.DataTableWithClasses <- function (dataset, ...) {
   message("\tRunning IterateTrainingTesting() with object of class\t", "DataTableWithClasses")
-  testTable <- NextMethod("IterateTrainingTesting",self)
+  testTable <- NextMethod("IterateTrainingTesting",dataset)
   return(testTable)
 }
 
 #' @export
-IterateTrainingTesting.default <- function(self, ...){
-  message("\tFinished from IterateTrainingTesting() with object of class\t", paste(collapse = ",", class(self)))
+IterateTrainingTesting.default <- function(dataset, ...){
+  message("\tFinished from IterateTrainingTesting() with object of class\t", paste(collapse = ",", class(dataset)))
 }
 
 
 ################################################################
 ## Define a function to iterate over one classifier with one particular data type.
 #' @export
-IterateTrainingTesting.DataTableWithTrainTestSets <- function (self,
+IterateTrainingTesting.DataTableWithTrainTestSets <- function (dataset,
                                                                classifier, # supported: knn or rf
                                                                permute = FALSE, # permute the class labels before running the test
                                                                file.prefix = NULL # prefix for the saved files. If not provided, will be automatically generated
@@ -48,12 +48,13 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function (self,
 
 
   ## Check the class of the object
-  if (!is(object = self, class2 = "DataTableWithTrainTestSets")) {
+  if (!is(object = dataset, class2 = "DataTableWithTrainTestSets")) {
     stop("IterateTrainingTesting() only accepts objects of class DataTableWithTrainTestSets")
   }
 
-  ## Get parameters from the passed object
-  parameters <- self$parameters
+  ## Get parameters from the passed dataset object
+  parameters <- dataset$parameters
+
   ## Check required parameters
   for (p in c("verbose", "iterations")) {
     if (is.null(parameters[[p]])) {
@@ -65,12 +66,11 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function (self,
   }
 
 
-
   ## Check the consistency between trainIndices and iterations
-  if (is.null(self$trainTestProperties$trainIndices)) {
+  if (is.null(dataset$trainTestProperties$trainIndices)) {
     stop("IterateTrainingTesting()  train indices are not defined")
   } else {
-    trainIndices <- self$trainTestProperties$trainIndices
+    trainIndices <- dataset$trainTestProperties$trainIndices
   }
 
 
@@ -81,42 +81,17 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function (self,
 
 
   message.with.time("\t", "IterateTrainingTesting()",
-                    "\n\tID: ", self$ID,
+                    "\n\tID: ", dataset$ID,
                     "\n\tclassifier: ", classifier,
-                    "\n\tclassifier kernel:  ", self$parameters$svm$kernel,
-                    "\n\tdata type: ", self$dataType,
-                    "\n\tvariable type: ", self$variablesType,
+                    "\n\tclassifier kernel:  ", dataset$parameters$svm$kernel,
+                    "\n\tdata type: ", dataset$dataType,
+                    "\n\tvariable type: ", dataset$variablesType,
                     "\n\tTrain/test iterations: ",   parameters$iterations)
 
 
-  # ## TO DO:THIS SHOULD BE MOVED TO A SEPARATE FUNCTION
-  # ## Define file prefix is not specified in paramters
-  # if (is.null(file.prefix)) {
-  #   if (classifier == "svm") {
-  #     if (is.null(parameters$svm$kernel)) {
-  #       parameters$svm$kernel = "linear"
-  #     }
-  #     classifier_prefix = paste(sep="", "svm_", parameters$svm$kernel)
-  #   } else if (classifier == "knn") {
-  #     if (is.null(parameters$knn$k)) {
-  #       parameters$knn$k
-  #     }
-  #     classifier_prefix = paste(sep="", "knn_", parameters$knn$k)
-  #
-  #   } else {
-  #     classifier_prefix = classifier
-  #   }
-  #   file.prefix <- paste(sep="_", classifier_prefix, self$ID,  self$dataType, self$variablesType)
-  #   file.prefix <- sub(pattern = " ", replacement = "_", x = file.prefix) ## Avoid spaces in file names
-  #   if (permute) {
-  #     file.prefix <- paste(sep="_", file.prefix, "permLabels")
-  #   }
-  # }
 
   ## Define directory based on the method
-  dir.create(parameters$dir$tablesDetail[classifier], recursive = TRUE, showWarnings = F)
-  message("\tOutput directory for result tables: ", parameters$dir$tablesDetail[classifier])
-
+  outParam <- outputParameters( dataset,classifier, permute)
 
   ## Iterate train/test cycles
   testTable <- data.frame() ## Instantiate the test table
@@ -126,7 +101,7 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function (self,
             "\ttrain/test\t", project.parameters$global$iterations, " iterations with ", project.parameters$global$no_cores, " cores.")
     ## Run a foreach loop and get the result back in a data frame with rbind.
     testTable <- foreach(i = 1:iterations, .combine = rbind) %dopar%
-      MisclassificationEstimate(self = self,
+      MisclassificationEstimate(dataset = dataset,
                                 iteration = i,
                                 classifier = classifier,
                                 permute = permute)$stats
@@ -141,7 +116,7 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function (self,
               "\ttrain/test iteration ", i , "/", iterations)
 
 
-      oneTest <- MisclassificationEstimate(self = self,
+      oneTest <- MisclassificationEstimate(dataset = dataset,
                                            iteration = i,
                                            classifier = classifier,
                                            permute = permute)
@@ -170,7 +145,7 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function (self,
     paste(sep="", file.prefix, "_R", iterations, "_learning_vs_test_error_boxplot.pdf"))
 
   pdf(file=boxplot.file, width = 7, height = 5)
-  main <- paste(sep="", classifier, "; ", self$dataType, " counts; ", self$variablesType, " variables")
+  main <- paste(sep="", classifier, "; ", dataset$dataType, " counts; ", dataset$variablesType, " variables")
   if (permute) {
     main <- paste(sep="", main, "; permuted labels")
   }
@@ -185,6 +160,6 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function (self,
   elapsedTimeFile <- file.path(parameters$dir$tablesDetail[classifier], paste(sep="", file.prefix, "_elapsed_time.txt"))
   write(file = elapsedTimeFile, x = paste(startTime, endTime, elapsedTime))
   message("Elapsed Time file: ", elapsedTimeFile)
-  NextMethod("IterateTrainingTesting", self)
+  NextMethod("IterateTrainingTesting", dataset)
   return(testTable)
 }

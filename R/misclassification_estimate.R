@@ -4,10 +4,8 @@
 #' @description  this script to evaluate and assesse the performance of the RNA-Seq classifier by
 #' # Random sampling (random partitioning) estimation of the misclassification rate.
 #'
-#' @param self  an object of class DataTableWithTrainTestSets
-#' @param classes  such is vector for our cases for classes,
-#' @param k is number of neighbours passed to classifier
-#' @param trainIndex=NULL vector providing training sample indices. if NULL, training indices are sampled randomly
+#' @param dataset  an object of class DataTableWithTrainTestSets
+#' @iteration current iteration number (the MisclassificationEstimate function is typically called iteratively)
 #' @param classifier is a type of the classifier
 #' @param permute=FALSE permute the calss labels to measure misclassifciation rate without relevant learning
 #' @example
@@ -21,7 +19,7 @@
 #' @import randomForest
 #'
 #' @export
-MisclassificationEstimate <- function(self,
+MisclassificationEstimate <- function(dataset,
                                       iteration,
                                       classifier,
                                       permute=FALSE) {
@@ -31,17 +29,19 @@ MisclassificationEstimate <- function(self,
   # registerDoMC(cores = 5)
   result <- list()
 
-  ##
-  if (is(self, class2 = "PCsWithTrainTestSets") ){
-    # message("\t\tUsing PCs as features for object of class ", paste(collapse=", ", class(self)))
-    dataTable <- t(self$x)
-  } else {
-    # message("\t\tUsing dataTable as features for object of class ", paste(collapse=", ", class(self)))
-    dataTable <- t(self$dataTable)
-  }
+  # ##
+  # if (is(dataset, class2 = "PCsWithTrainTestSets") ){
+  #   # message("\t\tUsing PCs as features for object of class ", paste(collapse=", ", class(dataset)))
+  #   dataTable <- t(dataset$x)
+  # } else {
+    # message("\t\tUsing dataTable as features for object of class ", paste(collapse=", ", class(dataset)))
+
+  ## We transpose the dataTable
+  transposedDataTable <- t(dataset$dataTable)
+  # }
 
   ## Get parameters from the passed object
-  parameters <- self$parameters
+  parameters <- dataset$parameters
   ## Check required parameters
   for (p in c("verbose")) {
     if (is.null(parameters[[p]])) {
@@ -52,66 +52,57 @@ MisclassificationEstimate <- function(self,
     }
   }
 
-  if (is.null(parameters$knn$k)) {
-    stop("Missing required parameter: 'parameters$knn$k'.\n\tPlease check configuration file. ")
-  } else {
-    k <- parameters$knn$k
-  }
-
 
   ## AssignGet sample classes from the object
-  classes <- self$classLabels
+  classes <- dataset$classLabels
   if (permute) {
     classes <- sample(classes, replace = FALSE)
   }
 
-  trainIndex <- self$trainTestProperties$trainIndices[[iteration]]
-  testIndex <- self$trainTestProperties$testIndices[[iteration]]
+  trainIndex <- dataset$trainTestProperties$trainIndices[[iteration]]
+  testIndex <- dataset$trainTestProperties$testIndices[[iteration]]
   # intersect(trainIndex, testIndex)
   #
-  if (sum(1:self$nbSamples != sort(union(trainIndex, testIndex))) > 0) {
-    stop("Inconsistent training and testing indices: the union differs from Nb sample (",self$nbSamples,"). ")
+  if (sum(1:dataset$nbSamples != sort(union(trainIndex, testIndex))) > 0) {
+    stop("Inconsistent training and testing indices: the union differs from Nb sample (",dataset$nbSamples,"). ")
   }
 
 
   if (classifier == "knn"){
-     require("class")
-    ## we need to tune our predictive model by using multiple workers "cores", such step to run our code through parallel
-    ##  rather than sequentially technologies
-    ## Compute testing errors
-    # dim(dataTable)
-    randsampling.fit <- knn(train = dataTable[trainIndex, ],
-                            test = dataTable[testIndex, ],
-                            cl = classes[trainIndex],
-                            k = k)
+    if (is.null(parameters$knn$k)) {
+      stop("Missing required parameter: 'parameters$knn$k'.\n\tPlease check configuration file. ")
+    } else {
+      k <- parameters$knn$k
+    }
 
-    test.contingency <- table(classes[testIndex], randsampling.fit) ## Compute contingency table
-    ## A misclassificaiton error is defined as an observation for which the predicted class differs from the known class
-    testing.errors <- classes[testIndex] != randsampling.fit
-    testing.error.nb <- sum(testing.errors)
+    # require("class")
 
-    testing.error.rate  <- testing.error.nb / length(testing.errors)
+    ## Compute predicted classes on the test set
+    testPredictedClasses <- as.vector(knn(train = transposedDataTable[trainIndex, ],
+                                          test = transposedDataTable[testIndex, ],
+                                          cl = classes[trainIndex],
+                                          k = k))
+
+    ## Compute predicted calsses on the training set (this will be used to compute learning error)
+    trainPredictedClasses <- knn(train = transposedDataTable[trainIndex, ],
+                                 test = transposedDataTable[trainIndex, ],
+                                 cl = classes[trainIndex],
+                                 k = k)
 
 
-    ## Compute training error ( = learning error)
-    train.fit <- knn(train = dataTable[trainIndex, ],
-                     test = dataTable[trainIndex, ],
-                     cl = classes[trainIndex],
-                     k = k)
 
-    train.contingency <- table(classes[trainIndex], train.fit) ## Compute contingency table
-    ## A misclassificaiton error is defined as an observation for which the predicted class differs from the known class
-    training.errors <- classes[trainIndex] != train.fit
-    training.error.nb <- sum(training.errors)
+    ## TO DO: the following code thousl be written only once, after the list of if ... else if ... else if over classifiers.
+    ## For each classifier, return two vectors
+    ## testPredictedClasses and trainPredictedClasses
+    ## All the rest is the same -> no code dreplication.
 
-    training.error.rate  <- training.error.nb / length(training.errors)
 
   } else if (classifier == "rf") {
 
-    require("randomForest")
+    # require("randomForest")
     ## we need to tune our predictive model by using multiple workers "cores", such step to run our code through parallel
     ##  rather than sequentially technologies
-    require(randomForest)
+    # require(randomForest)
     #require(doMC)
     #registerDoMC(cores = 5)
 
@@ -119,9 +110,9 @@ MisclassificationEstimate <- function(self,
 
     ## Train the classifier with the training subset
     rf.trained  <- randomForest(
-      x = dataTable[trainIndex, ],
+      x = transposedDataTable[trainIndex, ],
       y =  as.factor(classes[trainIndex]),
-      xtest = dataTable[testIndex,],  keep.forest = T)
+      xtest = transposedDataTable[testIndex,],  keep.forest = T)
     ## MUSTAFA: I think you don't use the xtest result after this,
     ## since you use predict() to predict the class of the testinf set.
     ## You should either keep xtest as randomForest parameter, but then
@@ -129,7 +120,7 @@ MisclassificationEstimate <- function(self,
     ## or remove this option here, since you use predict below.
 
     ## Predict class of the testing subset
-    rf.test.prediction <- predict(rf.trained , dataTable[testIndex,] )
+    rf.test.prediction <- predict(rf.trained , transposedDataTable[testIndex,] )
 
     ## Compute testing errors
     test.contingency <- table(classes[testIndex], rf.test.prediction)
@@ -138,7 +129,7 @@ MisclassificationEstimate <- function(self,
     testing.error.rate <- testing.error.nb / length(testing.errors)
 
     ## Computing training errors (= learning errors)
-    rf.train.prediction <- predict(rf.trained , dataTable[trainIndex,] )
+    rf.train.prediction <- predict(rf.trained , transposedDataTable[trainIndex,] )
 
     ## MUSTAFA, I (JvH) replaced the following command by(randomForest)
     ## by the previous one (predict) because you are running the training
@@ -146,11 +137,11 @@ MisclassificationEstimate <- function(self,
     ##
     ## Once the classifier is trained, it is simpler to reuse it for computing
     ## both the testing error rate and the training error rate.
-    # rf.train.prediction  <- randomForest(x = dataTable[trainIndex, ],
+    # rf.train.prediction  <- randomForest(x = transposedDataTable[trainIndex, ],
     #                                    y = as.factor( classes[trainIndex]),
-    #                                    xtest = dataTable[trainIndex,], importance = T, keep.forest = T)
+    #                                    xtest = transposedDataTable[trainIndex,], importance = T, keep.forest = T)
     #
-    # training.randsampling.fit <- predict(rf.train.prediction , dataTable[trainIndex,] )
+    # training.randsampling.fit <- predict(rf.train.prediction , transposedDataTable[trainIndex,] )
 
 
     ## Compute training errors (=learning errors)
@@ -168,18 +159,18 @@ MisclassificationEstimate <- function(self,
 
 #    registerDoMC(cores = 5)
 
-    require("MASS")
+    # require("MASS")
 
     ## Computing Testing errors for Linear Discriminant Analysis
 
     ## Train the classifier with the training subset
     lda.trained  <- lda(
-      x = dataTable[trainIndex, ],
+      x = transposedDataTable[trainIndex, ],
       grouping = as.vector(classes[trainIndex]),
       CV=FALSE)
 
     ## Predict class of the testing subset
-    lda.test.prediction <- predict(lda.trained , dataTable[testIndex,])
+    lda.test.prediction <- predict(lda.trained , transposedDataTable[testIndex,])
 
     test.contingency <- table(classes[testIndex], as.vector(lda.test.prediction$class))
     testing.errors <- classes[testIndex] != lda.test.prediction$class
@@ -187,7 +178,7 @@ MisclassificationEstimate <- function(self,
     testing.error.rate <- testing.error.nb / length(testing.errors)
 
     ## computing Training errors
-    lda.train.prediction <- predict(lda.trained , dataTable[trainIndex,] )
+    lda.train.prediction <- predict(lda.trained , transposedDataTable[trainIndex,] )
     training.contingency <- table(classes[trainIndex], as.vector(lda.train.prediction$class))
     training.errors <- classes[trainIndex] != lda.train.prediction$class
     training.error.nb <-sum(training.errors)
@@ -208,7 +199,7 @@ MisclassificationEstimate <- function(self,
   ##  rather than sequentially technologies
     #registerDoMC(cores = 5)
 
-    require("e1071")
+    # require("e1071")
 
     ## Computing testing error for Suuport Vector Machine
     if (is.null(parameters$svm$kernel)) {
@@ -217,18 +208,18 @@ MisclassificationEstimate <- function(self,
 
 
     ## Train the classifier with the training suset
-    svm.trained <- svm(x = dataTable[trainIndex,],
+    svm.trained <- svm(x = transposedDataTable[trainIndex,],
                        y = as.factor(classes[trainIndex]),
                        type = parameters$svm$type,
                        scale = parameters$svm$scale,
                       # kernel = parameters$svm$kernel,
-                       kernel = self$parameters$svm$kernel
+                       kernel = dataset$parameters$svm$kernel
                        # gamma = 1 ,
                        # cost = 10
     )
 
     ## predicting the classes of testing subset
-    svm.test.prediction <- predict(svm.trained, dataTable[testIndex,])
+    svm.test.prediction <- predict(svm.trained, transposedDataTable[testIndex,])
 
     test.contingency <- table(classes[testIndex], svm.test.prediction)
     testing.errors <- classes[testIndex] != svm.test.prediction
@@ -236,7 +227,7 @@ MisclassificationEstimate <- function(self,
     testing.error.rate <- testing.error.nb / length(testing.errors)
 
     ## Compute Training errors
-    svm.train.prediction <- predict(svm.trained, dataTable[trainIndex,])
+    svm.train.prediction <- predict(svm.trained, transposedDataTable[trainIndex,])
 
     training.contingency <- table(classes[trainIndex], svm.train.prediction)
     training.errors <- classes[trainIndex] != svm.train.prediction
@@ -255,12 +246,33 @@ MisclassificationEstimate <- function(self,
   }
 
 
+
+  ################################################################################
+  ## Compute testing misclassification reate
+  test.contingency <- table(classes[testIndex], testPredictedClasses) ## Compute contingency table
+  ## A misclassificaiton error is defined as an observation for which the predicted class differs from the known class
+  testing.errors <- classes[testIndex] != testPredictedClasses
+  testing.error.nb <- sum(testing.errors)
+  testing.error.rate  <- testing.error.nb / length(testing.errors)
+
+
+  ################################################################################
+  ## Compute misclassification rate on the training set (=learning error)
+  train.contingency <- table(classes[trainIndex], trainPredictedClasses) ## Compute contingency table
+  ## A misclassificaiton error is defined as an observation for which the predicted class differs from the known class
+  training.errors <- classes[trainIndex] != trainPredictedClasses
+  training.error.nb <- sum(training.errors)
+  training.error.rate  <- training.error.nb / length(training.errors)
+
+
   ## Gather single-value stats in a vector
   result$stats <- data.frame(n = iteration,
                              trainSize =  length(trainIndex),
-                             trainingProportion = self$trainTestProperties$trainingProportion,
+                             trainingProportion = dataset$trainTestProperties$trainingProportion,
+                             testing.predicted.classes = testPredictedClasses,
                              testing.error.nb = testing.error.nb,
                              testing.error.rate = testing.error.rate,
+                             training.predicted.classes = trainPredictedClasses,
                              training.error.nb= training.error.nb,
                              training.error.rate = training.error.rate)
   cn <- as.vector(colnames(result$stats)) ## keep colnames for cbind
@@ -272,7 +284,7 @@ MisclassificationEstimate <- function(self,
   # colnames(result$stats) <- c(cn, cont.names )
   # result$test.contingency <- test.contingencytest.contingency
 
-  result$trainingProportion <- self$trainTestProperties$trainingProportion
+  result$trainingProportion <- dataset$trainTestProperties$trainingProportion
   result$trainSize <-length(trainIndex)
   result$testing.error.nb <- testing.error.nb
   result$testing.error.rate <-   testing.error.rate

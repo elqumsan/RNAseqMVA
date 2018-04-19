@@ -51,7 +51,8 @@ if (project.parameters$global$compute) {
 
     message.with.time("Running train/test with all variables for recountID\t", recountID)
     ## Loop over classifiers
-    classifier <- "knn" ## For quick test
+    # classifier <- "knn" ## For quick test
+    classifier <- "svm" ## For quick test
 
     for (classifier in project.parameters$global$classifiers) {
 
@@ -71,9 +72,9 @@ if (project.parameters$global$compute) {
         for (data.type in project.parameters$global$data.types.to.test) {
           message.with.time("\tRunning train/test with all variables",
                             "\n\trecountID: ", recountID,
+                            "\n\tData type: ", data.type,
                             "\n\tClassifier: ", classifier,
-                            "\n\tpermuted class labels: ", permute,
-                            "\n\tData type: ", data.type)
+                            "\n\tpermuted class labels: ", permute)
           dataset <- studyCases[[recountID]]$datasetsForTest[[data.type]]
           # class(dataset)
           # summary(dataset)
@@ -88,14 +89,7 @@ if (project.parameters$global$compute) {
           }
 
           #### Run classifier with all variables (log2-transformed log counts) ####
-          exp.prefix <- filePrefix(dataset,classifier, permute)
-          #  paste(sep = "_", recountID, classifier, dataset$dataType)
-          if (permute) {
-          #  exp.prefix <- paste(sep = "_", exp.prefix, project.parameters$global$perm.prefix)
-            exp.prefix <- filePrefix(dataset,classifier, permute)
-
-            }# end if permuted class
-          # print(exp.prefix)
+          exp.prefix <- filePrefix(dataset, classifier, permute)
 
           train.test.results.all.variables[[exp.prefix]] <-
             IterateTrainingTesting (
