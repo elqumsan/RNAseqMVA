@@ -35,7 +35,7 @@ filePrefix <- function( self,
     } else {
       classifier_prefix = classifier
     }
-    file.prefix <- paste(sep="_", classifier_prefix, self$ID,  self$dataType, self$variablesType)
+    file.prefix <- paste(sep="_", classifier_prefix,  self$dataType, self$variablesType)
     file.prefix <- sub(pattern = " ", replacement = "_", x = file.prefix) ## Avoid spaces in file names
     if (permute) {
       file.prefix <- paste( file.prefix, "permLabels")

@@ -40,7 +40,7 @@ global: ## Global parameters are those who are the samee across all study cases
 
   svm:
     kernel: "linear"
-    kernel_values: ["linear", "polynomial", "radial basis", "sigmoid" ]
+    kernel_values: ["linear", "polynomial", "sigmoid" ]
     scale: FALSE
     type: "C-classification"
   # type: ["C-classification", "nu-classification", "one-classification"]

@@ -91,7 +91,7 @@ if (project.parameters$global$compute) {
           if (permute) {
             #  exp.prefix <- paste(sep = "_", exp.prefix, project.parameters$global$perm.prefix)
             exp.prefix <- filePrefix(dataset,classifier, permute)
-
+            }
             # exp.prefix <-
             #   paste(sep = "_", recountID, classifier, dataset$dataType, svm.kernel)
             # if (permute) {
@@ -109,7 +109,10 @@ if (project.parameters$global$compute) {
               )
 
           } # End iterations over dataset
+
         } # End iterations over permutation
+
+      } # end iteration over svm_kernels
 
 
 
@@ -124,10 +127,10 @@ if (project.parameters$global$compute) {
                                       "\nall variables; ",
                                       project.parameters$global$iterations, " iterations")
         )
-        train.test.results.all.variables.per.svm[[recountID]][[classifier]] <- train.test.results.all.variables.svm
+        train.test.results.all.variables.per.svm[[recountID]][[svm.kernel]] <- train.test.results.all.variables.svm
 
-      } # end loop over permutation
-  } # end loop over classifier-spacific parameter
+      } # end loop over recountIDs
+
 
   ## Save a memory image that can be re-loaded next time to avoid re-computing all the normalisation and so on.
   if (project.parameters$global$save.image) {
@@ -146,7 +149,7 @@ if (project.parameters$global$compute) {
   #     stop("Cannot reload memory image file ", memory.image.file)
   #   }
 
- }  # end of over recountIDS
+
 
 
 } # end else if compute statment
