@@ -4,18 +4,12 @@
 \alias{MisclassificationEstimate}
 \title{RNA-Seq classifier evaluation to assesse the performance of the classifier}
 \usage{
-MisclassificationEstimate(self, iteration, classifier, permute = FALSE)
+MisclassificationEstimate(dataset, iteration, classifier, permute = FALSE)
 }
 \arguments{
-\item{self}{an object of class DataTableWithTrainTestSets}
+\item{dataset}{an object of class DataTableWithTrainTestSets}
 
 \item{classifier}{is a type of the classifier}
-
-\item{classes}{such is vector for our cases for classes,}
-
-\item{k}{is number of neighbours passed to classifier}
-
-\item{trainIndex=NULL}{vector providing training sample indices. if NULL, training indices are sampled randomly}
 
 \item{permute=FALSE}{permute the calss labels to measure misclassifciation rate without relevant learning}
 }

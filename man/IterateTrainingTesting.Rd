@@ -4,10 +4,10 @@
 \alias{IterateTrainingTesting}
 \title{Iterate training/testing procedures with a given classifier and a given data type}
 \usage{
-IterateTrainingTesting(self, ...)
+IterateTrainingTesting(dataset, ...)
 }
 \arguments{
-\item{self}{an object of class DataTableWithTrainTestSets}
+\item{dataset}{an object of class DataTableWithTrainTestSets}
 
 \item{classifier}{is the type of classifier that is used with repeated process.}
 

@@ -17,6 +17,18 @@ an object of class StudyCase
 \description{
 Create a StudyCase object, load RecountID dataset, and run preprocessing to generate the DataTableWitthClasses objects.
 }
+\details{
+#' @title build DataTableWithTrainTestSets for an instance StudyCase depending on its class
+#' @author Mustafa AbuElqumsan and Jacques van Helden
+#' @export
+
+DataTableWithTrainTestSets.StudyCase <- function(dataSet){
+  message("\tInstantiate 'DataTableWithTrainTestSets' for object of class ", paste(collapse=", ", class(dataSet)))
+  UseMethod("DataTableWithTrainTestSets", dataSet)
+  return(dataSet)
+
+}
+}
 \author{
 Jacques van Helden and Mustafa AbuElQumsan
 }
