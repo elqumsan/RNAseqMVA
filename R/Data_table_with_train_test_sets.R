@@ -34,7 +34,8 @@ DataTableWithTrainTestSets <- function(self,
   class(self) <- unique(c(class(self), "DataTableWithTrainTestSets"))
 
   ## Build the attributes of the new object
-  self <- buildAttributes(self)
+  self <-buildAttributes(self)
+#  self <- UseMethod( "buildAttributes", self)
 
   message("trainIndices length : ", length(self$trainTestProperties$trainIndices))
   message("\t\t returning from DataTableWithTrainTestSets()")
