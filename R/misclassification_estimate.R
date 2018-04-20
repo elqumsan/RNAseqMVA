@@ -39,6 +39,7 @@ MisclassificationEstimate <- function(dataset,
   ## We transpose the dataTable
   transposedDataTable <- t(dataset$dataTable)
   # }
+ #  iteration <- dataset$trainTestProperties$iterations
 
   ## Get parameters from the passed object
   parameters <- dataset$parameters
@@ -120,16 +121,16 @@ MisclassificationEstimate <- function(dataset,
     ## or remove this option here, since you use predict below.
 
     ## Predict class of the testing subset
-    rf.test.prediction <- predict(rf.trained , transposedDataTable[testIndex,] )
+    testPredictedClasses<- predict(rf.trained , transposedDataTable[testIndex,] )
 
-    ## Compute testing errors
-    test.contingency <- table(classes[testIndex], rf.test.prediction)
-    testing.errors <- classes[testIndex] != rf.test.prediction
-    testing.error.nb <- sum(testing.errors)
-    testing.error.rate <- testing.error.nb / length(testing.errors)
+    # ## Compute testing errors
+    # test.contingency <- table(classes[testIndex], rf.test.prediction)
+    # testing.errors <- classes[testIndex] != rf.test.prediction
+    # testing.error.nb <- sum(testing.errors)
+    # testing.error.rate <- testing.error.nb / length(testing.errors)
 
     ## Computing training errors (= learning errors)
-    rf.train.prediction <- predict(rf.trained , transposedDataTable[trainIndex,] )
+    trainPredictedClasses <- predict(rf.trained , transposedDataTable[trainIndex,] )
 
     ## MUSTAFA, I (JvH) replaced the following command by(randomForest)
     ## by the previous one (predict) because you are running the training
@@ -145,10 +146,10 @@ MisclassificationEstimate <- function(dataset,
 
 
     ## Compute training errors (=learning errors)
-    training.contingency <- table(classes[trainIndex], rf.train.prediction )
-    training.errors <- classes[trainIndex] != rf.train.prediction
-    training.error.nb <-sum(training.errors)
-    training.error.rate <- training.error.nb / length(training.errors)
+    # training.contingency <- table(classes[trainIndex], rf.train.prediction )
+    # training.errors <- classes[trainIndex] != rf.train.prediction
+    # training.error.nb <-sum(training.errors)
+    # training.error.rate <- training.error.nb / length(training.errors)
     #message(" contingency Table fo randomForest," ,  sep = " , " ,test.contingency[,3])
 
 
@@ -170,19 +171,20 @@ MisclassificationEstimate <- function(dataset,
       CV=FALSE)
 
     ## Predict class of the testing subset
-    lda.test.prediction <- predict(lda.trained , transposedDataTable[testIndex,])
+    testPredictedClasses <- predict(lda.trained , transposedDataTable[testIndex,])
 
-    test.contingency <- table(classes[testIndex], as.vector(lda.test.prediction$class))
-    testing.errors <- classes[testIndex] != lda.test.prediction$class
-    testing.error.nb <- sum(testing.errors)
-    testing.error.rate <- testing.error.nb / length(testing.errors)
+    # test.contingency <- table(classes[testIndex], as.vector(lda.test.prediction$class))
+    # testing.errors <- classes[testIndex] != lda.test.prediction$class
+    # testing.error.nb <- sum(testing.errors)
+    # testing.error.rate <- testing.error.nb / length(testing.errors)
 
     ## computing Training errors
-    lda.train.prediction <- predict(lda.trained , transposedDataTable[trainIndex,] )
-    training.contingency <- table(classes[trainIndex], as.vector(lda.train.prediction$class))
-    training.errors <- classes[trainIndex] != lda.train.prediction$class
-    training.error.nb <-sum(training.errors)
-    training.error.rate <- training.error.nb / length(training.errors)
+    trainPredictedClasses <- predict(lda.trained , transposedDataTable[trainIndex,] )
+
+    # training.contingency <- table(classes[trainIndex], as.vector(lda.train.prediction$class))
+    # training.errors <- classes[trainIndex] != lda.train.prediction$class
+    # training.error.nb <-sum(training.errors)
+    # training.error.rate <- training.error.nb / length(training.errors)
     #message(" contingency Table fo randomForest," ,  sep = " , " ,test.contingency[,3])
 
     # result$trainingProportion <- trainingProportion
@@ -219,31 +221,27 @@ MisclassificationEstimate <- function(dataset,
     )
 
     ## predicting the classes of testing subset
-    svm.test.prediction <- predict(svm.trained, transposedDataTable[testIndex,])
+    testPredictedClasses <- predict(svm.trained, transposedDataTable[testIndex,])
 
-    test.contingency <- table(classes[testIndex], svm.test.prediction)
-    testing.errors <- classes[testIndex] != svm.test.prediction
-    testing.error.nb <- sum(testing.errors)
-    testing.error.rate <- testing.error.nb / length(testing.errors)
+    # test.contingency <- table(classes[testIndex], svm.test.prediction)
+    # testing.errors <- classes[testIndex] != svm.test.prediction
+    # testing.error.nb <- sum(testing.errors)
+    # testing.error.rate <- testing.error.nb / length(testing.errors)
 
     ## Compute Training errors
-    svm.train.prediction <- predict(svm.trained, transposedDataTable[trainIndex,])
+    trainPredictedClasses <- predict(svm.trained, transposedDataTable[trainIndex,])
 
-    training.contingency <- table(classes[trainIndex], svm.train.prediction)
-    training.errors <- classes[trainIndex] != svm.train.prediction
-    training.error.nb <- sum(training.errors)
-    training.error.rate <- training.error.nb / length(training.errors)
+    # training.contingency <- table(classes[trainIndex], svm.train.prediction)
+    # training.errors <- classes[trainIndex] != svm.train.prediction
+    # training.error.nb <- sum(training.errors)
+    # training.error.rate <- training.error.nb / length(training.errors)
 
   } else {
     stop(classifier, " is not a valid classifier. Supported: knn, rf, lda and svm" )
 
   }
 
-  if (verbose) {
-    message("\t\t\t", classifier,
-            "; training error rate = ", signif(digits=3, training.error.rate ),
-            "; testing error rate = ", signif(digits=3, testing.error.rate ))
-  }
+
 
 
 
@@ -265,17 +263,22 @@ MisclassificationEstimate <- function(dataset,
   training.error.rate  <- training.error.nb / length(training.errors)
 
 
+  if (verbose) {
+    message("\t\t\t", classifier,
+            "; training error rate = ", signif(digits=3, training.error.rate ),
+            "; testing error rate = ", signif(digits=3, testing.error.rate ))
+  }
   ## Gather single-value stats in a vector
-  result$stats <- data.frame(n = iteration,
-                             trainSize =  length(trainIndex),
-                             trainingProportion = dataset$trainTestProperties$trainingProportion,
-                             testing.predicted.classes = testPredictedClasses,
-                             testing.error.nb = testing.error.nb,
-                             testing.error.rate = testing.error.rate,
-                             training.predicted.classes = trainPredictedClasses,
-                             training.error.nb= training.error.nb,
-                             training.error.rate = training.error.rate)
-  cn <- as.vector(colnames(result$stats)) ## keep colnames for cbind
+  # result$stats <- data.frame(n = iteration,
+  #                            trainSize =  length(trainIndex),
+  #                            trainingProportion = dataset$trainTestProperties$trainingProportion,
+  #                            testing.predicted.classes = testPredictedClasses,
+  #                            testing.error.nb = testing.error.nb,
+  #                            testing.error.rate = testing.error.rate,
+  #                            training.predicted.classes = trainPredictedClasses,
+  #                            training.error.nb= training.error.nb,
+  #                            training.error.rate = training.error.rate)
+  # cn <- as.vector(colnames(result$stats)) ## keep colnames for cbind
 
   ## Build a vector from the contingency table in order to return a result in the form ofa list that can easily be cas as vector
   # contingency.df <- as.data.frame.table(test.contingency)
