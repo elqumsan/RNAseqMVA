@@ -107,7 +107,7 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function (dataset,
                                 permute = permute)$stats
   } else {
     i <- 1 #iterations
-    for (i in 1:iterations) {
+    for (i in 1:parameters$iterations) {
       ## Permute class labels if required
       # computing the testing errors rate for the KNN classfier
       # trainIndex <- trainIndices[[i]]
