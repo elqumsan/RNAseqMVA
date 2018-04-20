@@ -7,9 +7,9 @@
 #'
 #' @return a list with the following fields
 #' \itemize {
-#'   \item resultDir. path to the result directory, in which teh result files should be stored.
-#'   \item filePrefix. string that should prepend the name of each result file.
-#'   \item figureLabel.  short string with a label for the graphics
+#'   \item resultDir: path to the result directory, in which teh result files should be stored.
+#'   \item filePrefix: string that should prepend the name of each result file.
+#'   \item figureLabel:  short string with a label for the graphics
 #' }
 #' @export
 outputParameters <- function(dataset,
