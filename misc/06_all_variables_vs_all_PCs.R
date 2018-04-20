@@ -89,9 +89,9 @@ if (project.parameters$global$compute) {
           }
 
           #### Run classifier with all variables (log2-transformed log counts) ####
-          exp.prefix <- filePrefix(dataset, classifier, permute)
+          exp.prefix <- outputParameters(dataset, classifier, permute, createDir = TRUE)
 
-          train.test.results.all.variables[[exp.prefix]] <-
+          train.test.results.all.variables[[exp.prefix$filePrefix]] <-
             IterateTrainingTesting (
               dataset,
               classifier = classifier,
