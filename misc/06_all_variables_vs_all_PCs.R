@@ -7,13 +7,10 @@
 ## choose the data.type in return we will pass the data.type for each experiment.
 ## Choice of the classifier
 
-## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
-memory.image.file <- file.path(project.parameters$global$dir$memoryImages, "classifier_eval_with_all_variables.Rdata")
-
 
 ## For debug: reset the parameteres for all the study cases
 ## This is used to re-run the analyses on each study case after having changed some parameters in the yaml-specific configuration file
-reload.parameters <- FALSE
+reload.parameters <- TRUE
 if (reload.parameters) {
   project.parameters <- yaml.load_file(configFile)
   project.parameters <- initParallelComputing(project.parameters)
@@ -28,6 +25,9 @@ if (reload.parameters) {
     }
   }
 }
+
+## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
+memory.image.file <- file.path(project.parameters$global$dir$memoryImages, "classifier_eval_with_all_variables.Rdata")
 
 
 ## Run the whole computation if required
@@ -89,9 +89,9 @@ if (project.parameters$global$compute) {
           }
 
           #### Run classifier with all variables (log2-transformed log counts) ####
-          exp.prefix <- outputParameters(dataset, classifier, permute, createDir = TRUE)
+          outParam <- outputParameters(dataset, classifier, permute, createDir = TRUE)
 
-          train.test.results.all.variables[[exp.prefix$filePrefix]] <-
+          train.test.results.all.variables[[outParam$filePrefix]] <-
             IterateTrainingTesting (
               dataset,
               classifier = classifier,
@@ -110,13 +110,13 @@ if (project.parameters$global$compute) {
       # first.pcs <- PCsWithTrainTestSets(studyCases$log2norm)
       #
       # ## define experiment prefix
-      # exp.prefix <-
+      # outParam <-
       #   paste(sep = "_", classifier, first.pcs$ID , first.pcs$dataType)
       # if (permute) {
-      #   exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
+      #   outParam <- paste(sep = "_", outParam, perm.prefix)
       # }# end if permuted class
       #
-      # train.test.results.all.variables[[exp.prefix]] <-
+      # train.test.results.all.variables[[outParam]] <-
       #   IterateTrainingTesting (
       #     first.pcs,
       #     # classes = classes,
@@ -128,7 +128,7 @@ if (project.parameters$global$compute) {
       #     # variable.type = "all_PCs",
       #     # trainingProportion = parameters$trainingProportion,
       #
-      #     file.prefix = exp.prefix,
+      #     file.prefix = outParam,
       #     permute = permute,
       #     k = parameters$knn$k,
       #     verbose = parameters$verbose
@@ -141,13 +141,13 @@ if (project.parameters$global$compute) {
       # # dim(rawCounts1)
       #
       # ## define experiment prefix
-      # exp.prefix <-
+      # outParam <-
       #   paste(sep = "_", classifier, parameters$recountID , parameters$data.types["raw"])
       # if (permute) {
-      #   exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
+      #   outParam <- paste(sep = "_", outParam, perm.prefix)
       # }# end if permuted class
       #
-      # train.test.results.all.variables[[exp.prefix]] <-
+      # train.test.results.all.variables[[outParam]] <-
       #   IterateTrainingTesting (
       #     dataset2,
       #     # classes = classes,
@@ -159,7 +159,7 @@ if (project.parameters$global$compute) {
       #     # variable.type = "raw",
       #     # trainingProportion = parameters$trainingProportion,
       #
-      #     file.prefix = exp.prefix,
+      #     file.prefix = outParam,
       #     permute = permute,
       #     k = parameters$knn$k,
       #     verbose = parameters$verbose
@@ -172,13 +172,13 @@ if (project.parameters$global$compute) {
       # sig.variables <- round(ncol(DEG.Counts) * 0.75)
       # DEG.Counts <- DEG.Counts[, 1:sig.variables]
       # ## define experiment prefix
-      # exp.prefix <-
+      # outParam <-
       #   paste(sep = "_", classifier, parameters$recountID , parameters$data.types["DEG"])
       # if (permute) {
-      #   exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
+      #   outParam <- paste(sep = "_", outParam, perm.prefix)
       # }# end if permuted class
       #
-      # train.test.results.all.variables[[exp.prefix]] <-
+      # train.test.results.all.variables[[outParam]] <-
       #   IterateTrainingTesting (
       #     dataTable = DEG.Counts,
       #     classes = classes,
@@ -189,7 +189,7 @@ if (project.parameters$global$compute) {
       #     classifier = classifier,
       #     variable.type = "DEG",
       #     trainingProportion = parameters$trainingProportion,
-      #     file.prefix = exp.prefix,
+      #     file.prefix = outParam,
       #     permute = permute,
       #     k = parameters$knn$k,
       #     verbose = parameters$verbose
@@ -201,13 +201,13 @@ if (project.parameters$global$compute) {
 
       # v.importance <- get("ordered.dataTable.by.importance")
       # ## define experiment prefix
-      # exp.prefix <-
+      # outParam <-
       #   paste(sep = "_", classifier, parameters$recountID , parameters$data.types["V.importance"], "allvars")
       # if (permute) {
-      #   exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
+      #   outParam <- paste(sep = "_", outParam, perm.prefix)
       # }# end if permuted class
       #
-      # train.test.results.all.variables[[exp.prefix]] <-
+      # train.test.results.all.variables[[outParam]] <-
       #   IterateTrainingTesting (
       #     dataTable = as.data.frame(ordered.dataTable.by.importance),
       #     classes = classes,
@@ -219,7 +219,7 @@ if (project.parameters$global$compute) {
       #     variable.type = "all_v.importance",
       #     trainingProportion = parameters$trainingProportion,
       #
-      #     file.prefix = exp.prefix,
+      #     file.prefix = outParam,
       #     permute = permute,
       #     k = parameters$knn$k,
       #     verbose = parameters$verbose
