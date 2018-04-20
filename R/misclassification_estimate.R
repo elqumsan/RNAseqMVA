@@ -268,17 +268,20 @@ MisclassificationEstimate <- function(dataset,
             "; training error rate = ", signif(digits=3, training.error.rate ),
             "; testing error rate = ", signif(digits=3, testing.error.rate ))
   }
-  ## Gather single-value stats in a vector
-  # result$stats <- data.frame(n = iteration,
-  #                            trainSize =  length(trainIndex),
-  #                            trainingProportion = dataset$trainTestProperties$trainingProportion,
-  #                            testing.predicted.classes = testPredictedClasses,
-  #                            testing.error.nb = testing.error.nb,
-  #                            testing.error.rate = testing.error.rate,
-  #                            training.predicted.classes = trainPredictedClasses,
-  #                            training.error.nb= training.error.nb,
-  #                            training.error.rate = training.error.rate)
-  # cn <- as.vector(colnames(result$stats)) ## keep colnames for cbind
+  # Gather single-value stats in a vector
+  result$stats <- data.frame(n = iteration,
+                             trainSize =  length(trainIndex),
+                             trainingProportion = dataset$trainTestProperties$trainingProportion,
+
+                           # testing.predicted.classes = testPredictedClasses,
+                             testing.error.nb = testing.error.nb,
+                             testing.error.rate = testing.error.rate,
+
+                          #  training.predicted.classes = trainPredictedClasses,
+                             training.error.nb= training.error.nb,
+                             training.error.rate = training.error.rate)
+
+  cn <- as.vector(colnames(result$stats)) ## keep colnames for cbind
 
   ## Build a vector from the contingency table in order to return a result in the form ofa list that can easily be cas as vector
   # contingency.df <- as.data.frame.table(test.contingency)
