@@ -1,3 +1,16 @@
+#' #' @title build DataTableWithTrainTestSets for an instance StudyCase depending on its class
+#' #' @author Mustafa AbuElqumsan and Jacques van Helden
+#' #' @export
+#'
+#' DataTableWithTrainTestSets.StudyCase <- function(dataSet){
+#'   message("\tInstantiate 'DataTableWithTrainTestSets' for object of class ", paste(collapse=", ", class(dataSet)))
+#'   UseMethod("DataTableWithTrainTestSets", dataSet)
+#'   return(dataSet)
+#'
+#' }
+#'
+
+
 #' @title Create a StudyCase object, load RecountID dataset, and generate datasets.
 #' @author Jacques van Helden and Mustafa AbuElQumsan
 #' @param recountID A valide ID for an object of the ReCount2 database
@@ -19,7 +32,9 @@ StudyCase  <- function (recountID, parameters) {
 
   ## Select training and testing sets on the filtered table with raw counts
   ## These wil then be passed to all the derived count tables (normalised, DGE, ...)
-  result$filtered <- DataTableWithTrainTestSets(result$filtered)
+
+   result$filtered <- DataTableWithTrainTestSets(result$filtered)
+   #result$filtered <-  UseMethod("DataTableWithTrainTestSets",result$filtered)
 
   ##### Normalize the counts without log2 transformation (first test) #####
   ##
