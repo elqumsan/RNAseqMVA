@@ -55,16 +55,16 @@ TrainTestResult <- function(dataset,
   ## Compute testing misclassification reate
   object$test.contingency <- table(object$classLabels[object$testIndex], testPredictedClasses) ## Compute contingency table
   ## A misclassificaiton error is defined as an observation for which the predicted class differs from the known class
-  object$testing.errors <- classLabels[testIndex] != object$testPredictedClasses
+  object$testing.errors <- object$classLabels[object$testIndex] != object$testPredictedClasses
   object$testing.error.nb <- sum(object$testing.errors)
   object$testing.error.rate  <- object$testing.error.nb / length(object$testing.errors)
 
 
   ################################################################################
   ## Compute misclassification rate on the training set (=learning error)
-  object$train.contingency <- table(classLabels[trainIndex], trainPredictedClasses) ## Compute contingency table
+  object$train.contingency <- table(object$classLabels[object$trainIndex], trainPredictedClasses) ## Compute contingency table
   ## A misclassificaiton error is defined as an observation for which the predicted class differs from the known class
-  object$training.errors <- classLabels[trainIndex] != object$trainPredictedClasses
+  object$training.errors <- object$classLabels[object$trainIndex] != object$trainPredictedClasses
   object$training.error.nb <- sum(object$training.errors)
   object$training.error.rate  <- object$training.error.nb / length(object$training.errors)
 
