@@ -17,7 +17,7 @@ RequiredBioconductorPackages(requiredBioconductor)
 configFile <- "~/RNAseqMVA/misc/00_project_parameters.yml"
 message.with.time("Loading parameters from YAM file ", configFile)
 
-## Read gloval and study case-specific parameters from a yaml-formatted file.
+## Read global and study case-specific parameters from a yaml-formatted file.
 ## These parameters will then be used to overwrite the default parameters.
 project.parameters <- yaml.load_file(configFile)
 
