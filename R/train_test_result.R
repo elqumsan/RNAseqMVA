@@ -7,7 +7,8 @@
 #'
 #' @return an object of class TrainResult containing the following attributes
 #' \itemize {
-#'   \item ... MUSTAFA WILL DESCRIBE THE ATTRIBUTES ...
+#'
+#'   \item trainProportion
 #' }
 
 #'
