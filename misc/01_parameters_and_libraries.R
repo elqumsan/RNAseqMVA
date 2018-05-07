@@ -48,9 +48,9 @@ TO DO: detect such cases and stop with explicit message before any analysis.
 
 ## Optional: select a subset of the recountIDs
 # selectedRecountIDs <- c("SRP056295")
-selectedRecountIDs <- c("SRP042620")
+# selectedRecountIDs <- c("SRP042620")
 # selectedRecountIDs <- c("SRP057196", "SRP042620")
-#selectedRecountIDs <- setdiff(recountIDs, names(recountIDs.with.problems))
+selectedRecountIDs <- setdiff(recountIDs, names(recountIDs.with.problems))
 
 message("\tSelected ", length(selectedRecountIDs)," recount IDs: ", paste(collapse="; ", selectedRecountIDs))
 #selectedRecountIDs <- recountIDs
