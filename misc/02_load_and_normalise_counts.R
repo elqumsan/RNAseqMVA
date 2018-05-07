@@ -25,7 +25,6 @@ for (recountID in selectedRecountIDs) {
   #### Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files ###
   exportTables(studyCases[[recountID]])
 
-
   #### Plot first versus second components
 
   ## Plot PC1 vs PC2
@@ -42,6 +41,16 @@ for (recountID in selectedRecountIDs) {
   message("PC plot: ", PCplot.file)
   pdf(file = PCplot.file, width=7, height=9)
   plot2PCs(studyCases[[recountID]]$datasetsForTest$log2normPCs, pcs = c(3,4))
+  silence <- dev.off()
+
+  ## Combine PC1-PC2 and PC3-PC4  plots in a single figure
+  PCplot.file <- file.path(parameters$dir$PCviz,paste(sep="", recountID, "_log2norm_PC1to4.pdf"))
+  message("PC plot: ", PCplot.file)
+  pdf(file = PCplot.file, width=10, height=6)
+  par(mfrow=c(1,2))
+  plot2PCs(studyCases[[recountID]]$datasetsForTest$log2normPCs, pcs = c(1,2))
+  plot2PCs(studyCases[[recountID]]$datasetsForTest$log2normPCs, pcs = c(3,4))
+  par(mfrow=c(1,1))
   silence <- dev.off()
 
   ## TO DO LATER: CHECK IF THESE FIGURES ARE WELL GENERATED, AND INCOROPORATE THEM IN THE plot.figure methods
