@@ -25,9 +25,9 @@ parameters:
 STUDY_CASE=SRP042620
 PCS=PC1to4
 SOURCE_PLOT=${STUDY_CASE}_log2norm_${PCS}.pdf
-SOURCE_PC=${WORKSPACE}//results/${STUDY_CASE}/visualization_of_PCs/${SOURCE_PLOT}
-MANUSCRIPT_DIR=~/Dropbox/Mustafa_AbuElQumsan_shared_folder/scientific/research_project_Mustafa/manuscript_supervised_classif_assessment_RNA-seq/
-FIGURE_ELEMENTS=${MANUSCRIPT_DIR}/figure_elements/
+SOURCE_PC=${WORKSPACE}/results/${STUDY_CASE}/visualization_of_PCs/${SOURCE_PLOT}
+MANUSCRIPT_DIR=~/Dropbox/Mustafa_AbuElQumsan_shared_folder/scientific/research_project_Mustafa/manuscript_supervised_classif_assessment_RNA-seq
+FIGURE_ELEMENTS=${MANUSCRIPT_DIR}/figure_elements
 TARGET_PC=${FIGURE_ELEMENTS}/${STUDY_CASE}_log2norm_${PCS}.${IMG_FORMAT}
 convert_one_pcplot:
 	@mkdir -p ${FIGURE_ELEMENTS}
@@ -39,7 +39,7 @@ convert_pc_plots_one_study_case:
 	@echo "Converting PC plot for study case	${STUDY_CASE}"
 	@${MAKE} convert_one_pcplot PCS=PC1-PC2
 	@${MAKE} convert_one_pcplot PCS=PC3-PC4
-	@${MAKE} convert_one_pcplot PCS=PC1to4
+	@${MAKE} convert_one_pcplot PCS=PCplots
 
 
 convert_pc_plots_all_study_cases:
@@ -47,8 +47,6 @@ convert_pc_plots_all_study_cases:
 	@for i in ${STUDY_CASES}; do \
 		${MAKE} convert_pc_plots_one_study_case STUDY_CASE=$${i}; \
 	done
-
-
 
 
 sync_one_pcplot:
@@ -60,7 +58,7 @@ sync_pc_plots_one_study_case:
 	@echo "Syncing PC plot for study case	${STUDY_CASE}"
 	@${MAKE} sync_one_pcplot PCS=PC1-PC2
 	@${MAKE} sync_one_pcplot PCS=PC3-PC4
-	@${MAKE} sync_one_pcplot PCS=PC1to4
+	@${MAKE} sync_one_pcplot PCS=PCplots
 
 
 sync_pc_plots_all_study_cases:
