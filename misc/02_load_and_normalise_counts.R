@@ -220,32 +220,44 @@ message.with.time("finished executing 02_load_and_normalise_counts.R")
 #
 
 
-#### Principal component plots
+#### Principal component plots ####
 for (recountID in selectedRecountIDs) {
+  plotDir <- studyCases[[recountID]]$parameters$dir$PCviz
+  message("plotDir = ", plotDir)
+
+  ## Variance barplot of the components
+  PCplot.file <- file.path(plotDir, paste(sep="", recountID, "_log2norm_prcomp_variance.pdf"))
+  message("PC variance plot: ", PCplot.file)
+  pdf(file = PCplot.file, width=7, height=5)
+  plot(studyCases[[recountID]]$datasetsForTest$log2normPCs$prcomp, col="#BBDDEE", xlab="Components")
+  silence <- dev.off()
+
+  #biplot(studyCases[[recountID]]$datasetsForTest$log2normPCs$prcomp, pc.biplot = TRUE)
 
   ## Plot PC1 vs PC2
-  PCplot.file <- file.path(
-    studyCases[[recountID]]$parameters$dir$PCviz,
-    paste(sep="", recountID, "_log2norm_PC1-PC2.pdf"))
+  PCplot.file <- file.path(plotDir, paste(sep="", recountID, "_log2norm_PC1-PC2.pdf"))
   message("PC plot: ", PCplot.file)
   pdf(file = PCplot.file, width=7, height=9)
   plot2PCs(studyCases[[recountID]]$datasetsForTest$log2normPCs, pcs = c(1,2))
   silence <- dev.off()
 
   ## Plot PC2 vs PC3
-  PCplot.file <- file.path(parameters$dir$PCviz,paste(sep="", recountID, "_log2norm_PC3-PC4.pdf"))
+  PCplot.file <- file.path(plotDir, paste(sep="", recountID, "_log2norm_PC3-PC4.pdf"))
   message("PC plot: ", PCplot.file)
   pdf(file = PCplot.file, width=7, height=9)
   plot2PCs(studyCases[[recountID]]$datasetsForTest$log2normPCs, pcs = c(3,4))
   silence <- dev.off()
 
   ## Combine PC1-PC2 and PC3-PC4  plots in a single figure
-  PCplot.file <- file.path(parameters$dir$PCviz,paste(sep="", recountID, "_log2norm_PC1to4.pdf"))
+  PCplot.file <- file.path(plotDir, paste(sep="", recountID, "_log2norm_PCplots.pdf"))
   message("PC plot: ", PCplot.file)
-  pdf(file = PCplot.file, width=10, height=6)
-  par(mfrow=c(1,2))
+  pdf(file = PCplot.file, width=10, height=10)
+  par(mfrow=c(2,2))
+  plot(studyCases[[recountID]]$datasetsForTest$log2normPCs$prcomp, col="#BBDDEE",
+       xlab="Components", main=paste(recountID, " PC variance baplot"))
   plot2PCs(studyCases[[recountID]]$datasetsForTest$log2normPCs, pcs = c(1,2))
   plot2PCs(studyCases[[recountID]]$datasetsForTest$log2normPCs, pcs = c(3,4))
+  plot2PCs(studyCases[[recountID]]$datasetsForTest$log2normPCs, pcs = c(5,6))
   par(mfrow=c(1,1))
   silence <- dev.off()
 }
