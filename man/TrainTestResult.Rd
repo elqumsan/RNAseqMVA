@@ -17,7 +17,9 @@ TrainTestResult(dataset, classifier, iteration, trainPredictedClasses,
 \value{
 an object of class TrainResult containing the following attributes
 \itemize {
-  \item ... MUSTAFA WILL DESCRIBE THE ATTRIBUTES ...
+  \item trainProportion:  the ratio of the train from all the dataset
+  \item trainSize:        the train size from all the dataset
+  \item testSize:         the test size "remained size" from all dataset
 }
 }
 \author{
