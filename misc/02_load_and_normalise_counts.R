@@ -25,33 +25,6 @@ for (recountID in selectedRecountIDs) {
   #### Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files ###
   exportTables(studyCases[[recountID]])
 
-  #### Plot first versus second components
-
-  ## Plot PC1 vs PC2
-  PCplot.file <- file.path(
-    studyCases[[recountID]]$parameters$dir$PCviz,
-    paste(sep="", recountID, "_log2norm_PC1-PC2.pdf"))
-  message("PC plot: ", PCplot.file)
-  pdf(file = PCplot.file, width=7, height=9)
-  plot2PCs(studyCases[[recountID]]$datasetsForTest$log2normPCs, pcs = c(1,2))
-  silence <- dev.off()
-
-  ## Plot PC2 vs PC3
-  PCplot.file <- file.path(parameters$dir$PCviz,paste(sep="", recountID, "_log2norm_PC3-PC4.pdf"))
-  message("PC plot: ", PCplot.file)
-  pdf(file = PCplot.file, width=7, height=9)
-  plot2PCs(studyCases[[recountID]]$datasetsForTest$log2normPCs, pcs = c(3,4))
-  silence <- dev.off()
-
-  ## Combine PC1-PC2 and PC3-PC4  plots in a single figure
-  PCplot.file <- file.path(parameters$dir$PCviz,paste(sep="", recountID, "_log2norm_PC1to4.pdf"))
-  message("PC plot: ", PCplot.file)
-  pdf(file = PCplot.file, width=10, height=6)
-  par(mfrow=c(1,2))
-  plot2PCs(studyCases[[recountID]]$datasetsForTest$log2normPCs, pcs = c(1,2))
-  plot2PCs(studyCases[[recountID]]$datasetsForTest$log2normPCs, pcs = c(3,4))
-  par(mfrow=c(1,1))
-  silence <- dev.off()
 
   ## TO DO LATER: CHECK IF THESE FIGURES ARE WELL GENERATED, AND INCOROPORATE THEM IN THE plot.figure methods
 
@@ -107,6 +80,9 @@ for (recountID in selectedRecountIDs) {
   #              row.names = FALSE, sep = "\t" )
 
 } # end loop over recountIDs
+
+
+
 
 
 ## Compute statistics about loaded datasets
@@ -184,8 +160,8 @@ ypos <- barplot(t(gene.pc), las=1, horiz = TRUE,
                 xlim=c(0, 170))
 text(x = 100, kept.label, y = ypos, pos = 4)
 
-par(mar = save.margins)
-silence<- dev.off()
+par(mar = save.margins)  ## Restore original graphical parameter
+silence<- dev.off()      ## Close graphical device
 
 #### Draw a barplot with the number of samples per class ####
 figure.file <- paste("samples_per_classes.pdf")
@@ -242,6 +218,37 @@ message.with.time("finished executing 02_load_and_normalise_counts.R")
 #
 # }
 #
+
+
+#### Principal component plots
+for (recountID in selectedRecountIDs) {
+
+  ## Plot PC1 vs PC2
+  PCplot.file <- file.path(
+    studyCases[[recountID]]$parameters$dir$PCviz,
+    paste(sep="", recountID, "_log2norm_PC1-PC2.pdf"))
+  message("PC plot: ", PCplot.file)
+  pdf(file = PCplot.file, width=7, height=9)
+  plot2PCs(studyCases[[recountID]]$datasetsForTest$log2normPCs, pcs = c(1,2))
+  silence <- dev.off()
+
+  ## Plot PC2 vs PC3
+  PCplot.file <- file.path(parameters$dir$PCviz,paste(sep="", recountID, "_log2norm_PC3-PC4.pdf"))
+  message("PC plot: ", PCplot.file)
+  pdf(file = PCplot.file, width=7, height=9)
+  plot2PCs(studyCases[[recountID]]$datasetsForTest$log2normPCs, pcs = c(3,4))
+  silence <- dev.off()
+
+  ## Combine PC1-PC2 and PC3-PC4  plots in a single figure
+  PCplot.file <- file.path(parameters$dir$PCviz,paste(sep="", recountID, "_log2norm_PC1to4.pdf"))
+  message("PC plot: ", PCplot.file)
+  pdf(file = PCplot.file, width=10, height=6)
+  par(mfrow=c(1,2))
+  plot2PCs(studyCases[[recountID]]$datasetsForTest$log2normPCs, pcs = c(1,2))
+  plot2PCs(studyCases[[recountID]]$datasetsForTest$log2normPCs, pcs = c(3,4))
+  par(mfrow=c(1,1))
+  silence <- dev.off()
+}
 
 
 
