@@ -17,6 +17,18 @@ DataTableWithTrainTestSets(self, stratified = TRUE,
 
 \item{trainingProportion=parameters$trainingProportion}{proportion of samples to sample for each training set}
 }
+\value{
+object of class DataTableWithTrainTestSets containing the following attributes
+\itemes {
+ \item  iteration: which is number of resampling
+  \item trainPropotion:      which is ratio of train volume from whole of dataset
+  \item statified:           parameter which refer to stratification criteria would be included in analysis or not.
+  \item trainSizePerClass:   which is specify the train volume for each class included in analysis.
+  \item trianIndices:        which are whole indices for training process.
+  \item testIndices:         which are whole indices for the testing process.
+
+}
+}
 \description{
 Select n random subsets for training. among the biological samples from a DataTableWithClasses.
 }

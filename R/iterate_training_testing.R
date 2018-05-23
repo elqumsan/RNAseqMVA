@@ -1,5 +1,5 @@
 #' @title Iterate training/testing procedures with a given classifier and a given data type
-#' @author Mustafa ABUELQUMSAN and Jacques van Helden
+#' @author Mustafa AbuElQumsan and Jacques van Helden
 #' @description for sake of the accuracy and due to the error rate have computed from sampleing from the origin count data,
 #' # it is better to compute the the error rate multiple time and then we would find the avarage for the error rate.
 #' @param dataset an object of class DataTableWithTrainTestSets
@@ -7,7 +7,11 @@
 #' @param permute is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier
 #' @param file.prefix in order to let us to save file from the IterateTrainingTesting
 #'
-#' @return
+#' @return an object which is Misclassification error rate for the specified number for resampling
+#' \itemize {
+#'      \item testTable: that is the table that is contains misclassification error rate for specified  number of resampling.
+#'
+#' }
 #' @import foreach
 #' @import doParallel
 #' @export

@@ -22,6 +22,9 @@ an object of class TrainResult containing the following attributes
   \item testSize:         the test size "remained size" from all dataset
 }
 }
+\description{
+Each an object of this class contains the primary results of a training-testing evaluation of a classifier
+}
 \author{
 Jacques van Helden and Mustafa AbuElQumsan
 }

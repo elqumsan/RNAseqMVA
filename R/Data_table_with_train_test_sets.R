@@ -5,9 +5,19 @@
 #' @param stratified=TRUE if true, sampling is done in each class separately in order to preserve the relative frequencies of classes in training and testing sets.
 #' @param iterations=parameters$iterations number of  train/test  iterations, which defines the number of independent sampled subsets
 #' @param trainingProportion=parameters$trainingProportion proportion of samples to sample for each training set
-#' @return
+#'
+#' @return object of class DataTableWithTrainTestSets containing the following attributes
+#' \itemes {
+#'  \item  iteration: which is number of resampling
+#'   \item trainPropotion:      which is ratio of train volume from whole of dataset
+#'   \item statified:           parameter which refer to stratification criteria would be included in analysis or not.
+#'   \item trainSizePerClass:   which is specify the train volume for each class included in analysis.
+#'   \item trianIndices:        which are whole indices for training process.
+#'   \item testIndices:         which are whole indices for the testing process.
+#'
+#' }
+#'
 #' @export
-
 DataTableWithTrainTestSets <- function(self,
                                         stratified=TRUE,
                                         iterations = parameters$iterations,

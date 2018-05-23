@@ -1,6 +1,6 @@
 #' @title Class to handle the results of  Training-Testing evaluation for a given classifier
 #' @author Jacques van Helden and Mustafa AbuElQumsan
-#' @descripiton EachAn object of this class contains the primary results of a training-testing evaluation of a classifier
+#' @description  Each an object of this class contains the primary results of a training-testing evaluation of a classifier
 #' @param dataset the dataset on which the classifier ran
 #' @param classifier the classifier used to produce this result
 #' @param call  the function call used to produce this result
