@@ -5,7 +5,7 @@
 #' @param stratified=TRUE if true, sampling is done in each class separately in order to preserve the relative frequencies of classes in training and testing sets.
 #' @param iterations=parameters$iterations number of  train/test  iterations, which defines the number of independent sampled subsets
 #' @param trainingProportion=parameters$trainingProportion proportion of samples to sample for each training set
-#'
+#' @return
 #' @export
 
 DataTableWithTrainTestSets <- function(self,
