@@ -1,11 +1,16 @@
 #' @title Merge read counts from different runs by sample.
-#' @author Jacques van Helden
+#' @author Jacques van Helden and Mustafa AbuELQumsan
 #' @description In ReCount data, some samples are sequenced over several runs, which increases the coverage but creates problems
 #'  # because technical replicates come from the same sample and are thus not independent.
 #' # We thus merge the runs per sample, in order to obtain a single vector of read counts per sample.
 #' @param runs an object of the class DataTableWithClasses
 #' @param sampleIdColumn="geo_accession"  name of the column of the pheno table which contains the sample IDs. GEO accession is preferred because it is widely used, but it is sometimes not defined. In such case, the "sample" column should be used.
 #' @param verbose=FALSE if TRUE, write messages to indicate the progressing of the tasks
+#' @return  this is original cout table witout multipl runs per sample
+#'  \itemize{
+#'    \item mergedRuns thia is the count table after marging the runs to be original count table after get ride of the multipl run per sample.
+#'  }
+#' mergedRuns
 #' @export
 MergeRuns <- function(runs) {
                       # sampleIdColumn = "geo_accession",

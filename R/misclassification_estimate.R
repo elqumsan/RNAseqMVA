@@ -5,9 +5,18 @@
 #' # Random sampling (random partitioning) estimation of the misclassification rate.
 #'
 #' @param dataset  an object of class DataTableWithTrainTestSets
-#' @iteration current iteration number (the MisclassificationEstimate function is typically called iteratively)
-#' @param classifier is a type of the classifier
+#' @iteration current iteration number (the MisclassificationEstimate function is typically called iteratively) and it called number of resampling.
+#' @param classifier is a type of the classifier.
 #' @param permute=FALSE permute the calss labels to measure misclassifciation rate without relevant learning
+#' @return
+#'  \itemize {
+#'      \item dataset = it is data table one row for the individual (sample) and one culomn for the feature (gene).
+#'      \item classifier = what is the tested classifier, KNN, RF, SVM and LDA.
+#'      \item iteration = nomber of resampling.
+#'      \item testPredictedClasses = these are the test classes which are predicted from classifier.
+#'      \item trainPredictedClasses = these are the train classes whci are predicated from classifier.
+#'     }
+#'
 #' @example
 #' oneTest <- MisclassificationEstimate(dataTable, classLabels, trainingProportion = 2/3, classifier = "rf")
 #'

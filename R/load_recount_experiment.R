@@ -1,4 +1,6 @@
-#' @author: Jacques van Helden and Mustafa Abuelqumsan
+#' @title  Loading one count table from Recount repository by given experiment ID and then having two option one made merge run to prevent
+#' redundancy between multipl runs per sample.
+#' @author Jacques van Helden and Mustafa Abuelqumsan
 #' @description Load one count table from Recount for a given experiment ID, and optionally
 #' merge the counts in order to avoid redundancy between multipl runs per sample.
 #' @param recountID identifier of one study in ReCount database
@@ -33,7 +35,10 @@
 #'
 #' @return
 #' A list containing: the count table, the pheno table, and some additional parameters (study ID, ...).
-#'
+#'    \itemize{
+#'         \item countsPerRun:  count table before any pre-proccessing procedure
+#'         \item originalCounts: count table after merge runs proccess in order to get ride of multipl runs per sample.
+#'    }
 #'
 #' @import recount
 #' @import SummarizedExperiment
