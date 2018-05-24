@@ -1,4 +1,8 @@
 #' @title plot diagnostic figures for specific classes of objects
+#' @author Mustafa AbuElQUmsan and Jacques van Helden
+#' @description to explore the nature of raw data and showing the the distribution and main statistics for the raw data.
+#' @param self is an object that is belonge to DataTableWithClasses.
+#' @return utmost figures and visualisation about the main statistics and the distribution for the raw data.
 #' @export
 plotFigures  <- function(self,...){
   message("Exporting object of class", class(self), "to figures")
@@ -9,6 +13,10 @@ plotFigures  <- function(self,...){
 
 
 #' @title plot diagnostic figures for an object of the class DataTableWithClasses.
+#' @author Mustafa AbuElQUmsan and Jacques van Helden
+#' @description to explore the nature of raw data and showing the the distribution and main statistics for the raw data.
+#' @param self is an object that is belonge to DataTableWithClasses.
+#' @return utmost figures and visualisation about the main statistics and the distribution for the raw data.
 #' @export
 plotFigures.DataTableWithClasses <- function( self,
                                                plot.dir,

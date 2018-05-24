@@ -33,8 +33,8 @@ buildAttributes <- function(self) {
 
 #' @title default method to build attributes for an object.
 #' @author Mustafa AbuElQumsan and Jacques van Helden
-#' @description Just send message with object classes. The class-specific builders should have been be called before.
-#' @param self that is an object ahs been instantiated.
+#' @description Just send message with object classes. The class-specific builders should have been being called before.
+#' @param self that is an object has been instantiated.
 #' @return print message that inform the instantiate the object has been done.
 #'
 #' @export

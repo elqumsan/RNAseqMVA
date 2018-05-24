@@ -3,7 +3,7 @@
 #' a single summary table with 1 row per input file and one column per statistics
 #' of the original error tables. The summary statistics is the mean, except for
 #' the iteration, where the max value of the error table is taken.
-#' @author Jacques van Helden and Mustaga AbuElQumsan
+#' @author Jacques van Helden and Mustafa AbuElQumsan
 #' @param files a list of files with the error rates for one classification analysis.
 #' @param stopIfMissing=TRUE if TRUE, issue an error if any of the input files does not exist
 #' @param labels=files labels associated to each file (used for displays)

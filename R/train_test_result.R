@@ -1,14 +1,14 @@
-#' @title Class to handle the results of  Training-Testing evaluation for a given classifier
+#' @title Class to handle the results of Training-Testing evaluation for a given classifier
 #' @author Jacques van Helden and Mustafa AbuElQumsan
 #' @description  Each an object of this class contains the primary results of a training-testing evaluation of a classifier
 #' @param dataset the dataset on which the classifier ran
 #' @param classifier the classifier used to produce this result
 #' @param call  the function call used to produce this result
 #'
-#' @return an object of class TrainResult containing the following attributes
+#' @return an object of class TrainTestResult containing the following attributes
 #' \itemize {
 #'   \item trainProportion:  the ratio of the train from all the dataset
-#'   \item trainSize:        the train size from all the dataset
+#'   \item trainSize:        is volume of the train size from all the dataset it is computed by multiple number of individuals in the trainProportion magnitude.
 #'   \item testSize:         the test size "remained size" from all dataset
 #' }
 

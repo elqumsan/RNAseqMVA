@@ -1,24 +1,12 @@
-#' #' @title build DataTableWithTrainTestSets for an instance StudyCase depending on its class
-#' #' @author Mustafa AbuElqumsan and Jacques van Helden
-#' #' @export
-#'
-#' DataTableWithTrainTestSets.StudyCase <- function(dataSet){
-#'   message("\tInstantiate 'DataTableWithTrainTestSets' for object of class ", paste(collapse=", ", class(dataSet)))
-#'   UseMethod("DataTableWithTrainTestSets", dataSet)
-#'   return(dataSet)
-#'
-#' }
-#'
-
-
 #' @title Create a StudyCase object, load RecountID dataset, and generate datasets.
 #' @author Jacques van Helden and Mustafa AbuElQumsan
+#' @description Create a StudyCase object, load RecountID dataset, and run preprocessing to generate the DataTableWitthClasses objects.
+
 #' @param recountID A valide ID for an object of the ReCount2 database
 #' @param parameters recountID-specific parameters specified in a YAML-formatted configuration file
 #'
-#' @return an object of class StudyCase
+#' @return an object of class StudyCase, that is contain raw data before per-processing step, datasets for testing that are per-processed dataset and their respective parameters.
 #'
-#' @description Create a StudyCase object, load RecountID dataset, and run preprocessing to generate the DataTableWitthClasses objects.
 #' @export
 
 StudyCase  <- function (recountID, parameters) {
