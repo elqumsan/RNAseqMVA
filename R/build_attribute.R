@@ -1,6 +1,6 @@
 #' @title build attributes for an object depending on its class
 #' @author Mustafa AbuELQumsan and Jacques van Helden
-#' @description building all the attributes for the object based on its own class. e.g. we have DataTableWithClases, dataTableWithTrainTestSets, ect.
+#' @description building all the attributes for the object based on its own class. in order to give it some certian features based on its own class e.g. we have DataTableWithClases, dataTableWithTrainTestSets, ect.
 #' @param self which is dataTable (a data.frame) with one row per feature (genes) and one column per individuals (sample)
 #'
 #' @return an object that has all required attributes as in the following attributes.
