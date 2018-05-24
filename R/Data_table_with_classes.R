@@ -10,6 +10,31 @@
 #' @param dataType="raw counts" data type, free text (e.g. raw counts, log2-transformed counts, log2 normalised counts  ...).
 #' @param parameters global and specific parameters for the analysis of this recountID
 #'
+#' @return it is create object that is belonge to DataTableWithClasses class that means it would have the follwing attributes
+#' \itemize {
+#'      \item dataTable: is count table that is contains one raw per feature (e.g. gene) and one column per individual (e.g. sample)
+#'      \item phenoTable: that is description table for all individuals whereas that erach raw is individual (sample) and each column is the itemize for such individuals
+#'      \item dataType: that is deemed feature type whereas we have filtered, scaled, log2-norm, PCs of log2norm and so on. to inspect the impact of pre-processing procedures with NGS data.
+#'      \item parameters = that is all the accompanying parameters to recount study case
+
+#'     \item classColumn: that is indeed refers to type of the outcome column.
+#'     \item nbGenes: that is whole number of features.
+#'     \item sampleNames: that is names of individuals that are included in the new object.
+#'     \item geneNames: the names of each genes in the count table that will be involved in new object.
+#'     \item classLabels: that is the class labels for all the samples in the relatedness object.
+#'     \item classNames:  that is the names of all classes included in the relatedness object.
+#'     \item nbClasses:   that is the overall number of the classes involved in the relatedness object.
+#'     \item classProperities: that is the data.frame composed of two columns one for the class name, number of samples in each class, train size per class
+#'     \item samplesPerClass: such paraperter are involved in classProperities.
+#'     \item classFrequencies: such parameter means the ratio of certain samples for somehow class so as to the whole samples into the dataTable.
+#'     \item randExpectedHitRate: it is corss product for the classFrequensies .
+#'     \item randExpectedMisclassificationRate: it is 1 - randExpectedHitRate.
+#'     \item sampleColors: such parameter for visualisation of the sample by putting some useful colors.
+#'     \item classColors: such parameter for puting special color for each class involved in analysis.
+
+
+#' }
+#'
 #' @export
 
 DataTableWithClasses <- function(dataTable,
@@ -74,6 +99,8 @@ DataTableWithClasses <- function(dataTable,
 
 #' @title print a summary of an object belonging to class DataTableWithClasses
 #' @author Mustafa AubElQumsan and Jacques van Helden
+#' @description just print the summary of the object that is belonge to class DataTableWithClasses
+#' @return print the summary of such object by utilizing generic function
 #' @export
 summary.DataTableWithClasses <- function(self) {
 #  message("\t\t\n giving the summary of the created object")
@@ -90,13 +117,21 @@ summary.DataTableWithClasses <- function(self) {
 }
 
 
-#' @title finish summary
+#' @title finish summary of an object belonging to class DataTableWithClasses
 #' @author Mustafa AubElQumsan and Jacques van Helden
+#' @description this is default generic funtion in order to print the properities of the object  that is belonge to DataTableWithClasses.
+#' @param self that is an object which is want to print its properities
+#' @return properities of an object
 #' @export
 summary.default <- function(self) {
    cat("")
 }
 
+#' @title finish summary of an object belonging to class DataTableWithClasses
+#' @author Mustafa AubElQumsan and Jacques van Helden
+#' @description this is default generic funtion in order to print the properities of the object  that is belonge to DataTableWithClasses.
+#' @param self that is an object which is want to print its properities
+#' @return properities of an object
 #' @export
 print.DataTableWithClasses <- function(x) {
   summary(x)

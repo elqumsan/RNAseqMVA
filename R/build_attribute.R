@@ -1,6 +1,6 @@
 #' @title build attributes for an object depending on its class
 #' @author Mustafa AbuELQumsan and Jacques van Helden
-#' @description building all the attributes for the object based on its own class. e.g. we have DataTableWithClases, dataTableWithTrainTestSets, ect.
+#' @description building all the attributes for the object based on its own class. in order to give it some certian features based on its own class e.g. we have DataTableWithClases, dataTableWithTrainTestSets, ect.
 #' @param self which is dataTable (a data.frame) with one row per feature (genes) and one column per individuals (sample)
 #'
 #' @return an object that has all required attributes as in the following attributes.
@@ -30,8 +30,13 @@ buildAttributes <- function(self) {
   return(self) ## NOT SURE THIS LINE IS REQUIRED. TO BE CHECKED.
 }
 
+
 #' @title default method to build attributes for an object.
+#' @author Mustafa AbuElQumsan and Jacques van Helden
 #' @description Just send message with object classes. The class-specific builders should have been be called before.
+#' @param self that is an object ahs been instantiated.
+#' @return print message that inform the instantiate the object has been done.
+#'
 #' @export
 buildAttributes.default <- function(self) {
   message("\tFinished building attributes for object of class ", paste(collapse=",", class(self)))

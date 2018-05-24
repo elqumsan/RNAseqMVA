@@ -2,7 +2,19 @@
 % Please edit documentation in R/Data_table_with_train_test_sets.R
 \name{summary.DataTableWithTrainTestSets}
 \alias{summary.DataTableWithTrainTestSets}
-\title{summary for a DataTableWithTrainTestSets object}
+\title{print a summary of an object belonging to class DataTableWithTrainTestSets}
 \usage{
 summary.DataTableWithTrainTestSets(x)
+}
+\arguments{
+\item{self}{is the targeted object for print its properities.}
+}
+\value{
+print the summary of such object that is belonge to DataTableWithTrainTestSets class by utilizing generic function.
+}
+\description{
+just print the summary of the object that is belonge to class DataTableWithTrainTestSets.
+}
+\author{
+Mustafa AbuELQumsan and Jacques van Helden.
 }

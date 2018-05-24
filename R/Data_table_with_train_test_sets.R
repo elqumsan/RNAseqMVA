@@ -7,7 +7,7 @@
 #' @param trainingProportion=parameters$trainingProportion proportion of samples to sample for each training set
 #'
 #' @return object of class DataTableWithTrainTestSets containing the following attributes
-#' \itemes {
+#' \itemize {
 #'  \item  iteration: which is number of resampling
 #'   \item trainPropotion:      which is ratio of train volume from whole of dataset
 #'   \item statified:           parameter which refer to stratification criteria would be included in analysis or not.
@@ -53,7 +53,11 @@ DataTableWithTrainTestSets <- function(self,
 }
 
 
-#' @title summary for a DataTableWithTrainTestSets object
+#' @title print a summary of an object belonging to class DataTableWithTrainTestSets
+#' @author Mustafa AbuELQumsan and Jacques van Helden.
+#' @param self is the targeted object for print its properities.
+#' @description just print the summary of the object that is belonge to class DataTableWithTrainTestSets.
+#' @return print the summary of such object that is belonge to DataTableWithTrainTestSets class by utilizing generic function.
 #' @export
 summary.DataTableWithTrainTestSets <- function(x){
   cat("\t\t DataTableWithTrainTestSEts \n")
@@ -71,7 +75,11 @@ summary.DataTableWithTrainTestSets <- function(x){
   #print()
 }
 
-#' @title print for a DataTableWithTrainTestSets object
+#' @title print of an object belonging to class DataTableWithTrainTestSets.
+#' @author Mustafa AbuELQumsan and Jacques van Helden.
+#' @param self is the targeted object for print its properities.
+#' @description just print the summary of the object that is belonge to class DataTableWithTrainTestSets.
+#' @return print the summary of such object that is belonge to DataTableWithTrainTestSets class by utilizing generic function.
 #' @export
 print.DataTableWithTrainTestSets <- function(x) {
   summary(x)
@@ -92,6 +100,20 @@ print.DataTableWithTrainTestSets <- function(x) {
 #' }
 
 #' @title build the attributes that depend on the count table
+#' @author Mustafa AbuELQumsan and Jacques van Helden
+#' @description build special attributes for an object wherein to be initialized to belonge to DataTableWithTrainTestSets
+#' @param self: is an object which we stive to initialize it to be has membership of DataTableWithTrainTestSets.
+#' @return  an object that is became has the attributes of the class DataTableWithTrainTestSets
+#'  \itemize {
+#'  \item  iteration: which is number of resampling
+#'   \item trainPropotion:      which is ratio of train volume from whole of dataset
+#'   \item statified:           parameter which refer to stratification criteria would be included in analysis or not.
+#'   \item trainSizePerClass:   which is specify the train volume for each class included in analysis.
+#'   \item trianIndices:        which are whole indices for training process.
+#'   \item testIndices:         which are whole indices for the testing process.
+#'
+#' }
+#'
 #' @export
 buildAttributes.DataTableWithTrainTestSets <- function(self) {
   message("\tBuilding class-specific attributes for DataTableWithTrainTestSets\t", self$ID)

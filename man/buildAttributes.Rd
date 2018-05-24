@@ -28,7 +28,7 @@ an object that has all required attributes as in the following attributes.
 }
 }
 \description{
-building all the attributes for the object based on its own class. e.g. we have DataTableWithClases, dataTableWithTrainTestSets, ect.
+building all the attributes for the object based on its own class. in order to give it some certian features based on its own class e.g. we have DataTableWithClases, dataTableWithTrainTestSets, ect.
 }
 \author{
 Mustafa AbuELQumsan and Jacques van Helden
