@@ -24,19 +24,6 @@ an object that is became has the attributes of the class DataTableWithTrainTestS
 \description{
 build special attributes for an object wherein to be initialized to belonge to DataTableWithTrainTestSets
 }
-\details{
-#################### Builde constractor for the selecting Training Sets #########
-#' @title Export the object with train/test sets by stratification sampling
-#' @author Mustafa ABUELQUMSAN and Jacques van Helden
-#' @description sampling is done in each class separately in order to preserve the relative frequencies of classes in training and testing sets
-#' @param self which much belong to the DataTableWithClasses class.
-#'
-#' @export
-selectTrainingSets <- function(self, ...){
-  message("\tExporting the object class  ", class(self), " object with train/test sets")
-  UseMethod("selectTrainingSets", self)
-}
-}
 \author{
 Mustafa AbuELQumsan and Jacques van Helden
 }

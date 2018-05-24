@@ -10,7 +10,10 @@ exportTables <- function (self, ...) {
 }
 
 #' @title default export table (for closing the NextMethod calls)
-#' @author Jacques van Helden
+#' @author Jacques van Helden and Mustafa AbuELQumsan.
+#' @description  to print message which is inform us the exporting processes has been done.
+#' @param self  an object, which must belong to a compatible class
+#'
 #' @export
 exportTables.default <- function (self, ...) {
   message("Finished exporting tables")
@@ -59,7 +62,7 @@ exportTables.DataTableWithClasses <- function (self,
 }
 
 #' @title Export the tables specific to the class DataTableWithTrainTestSets
-#' @author Jacques van Helden
+#' @author Mustafa AbuElQumsan and Jacques van Helden.
 #' @param self an object, which must belong to class DataTableWithTrainTestSets
 #' @param export.dir export directory
 #' @param file.prefix file prefix to build the different tables
@@ -91,7 +94,7 @@ exportTables.DataTableWithTrainTestSets <- function (self,
 
 
 #' @title Export the tables specific to the class StudyCase
-#' @author Jacques van Helden
+#' @author Mustafa AbuElQumsan and Jacques van Helden
 #' @description this calls exportTable on each of the datasets  (which belong to DataTableWithClasses and DataTableWithTrainTestSets)
 #' @param self an object, which must belong to class StudyCase
 #' @param export.dir export directory
