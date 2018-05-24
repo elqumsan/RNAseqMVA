@@ -11,7 +11,11 @@
 #' @param parameters global and specific parameters for the analysis of this recountID
 #'
 #' @return it is create object that is belonge to DataTableWithClasses class that means it would have the follwing attributes
+<<<<<<< HEAD
 #' \itemize {
+=======
+#' \itemise {
+>>>>>>> 3f02c617393d7cc7df5570ad7b746b857d11b77a
 #'      \item dataTable: is count table that is contains one raw per feature (e.g. gene) and one column per individual (e.g. sample)
 #'      \item phenoTable: that is description table for all individuals whereas that erach raw is individual (sample) and each column is the itemize for such individuals
 #'      \item dataType: that is deemed feature type whereas we have filtered, scaled, log2-norm, PCs of log2norm and so on. to inspect the impact of pre-processing procedures with NGS data.
