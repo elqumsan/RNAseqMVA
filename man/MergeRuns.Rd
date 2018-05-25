@@ -13,11 +13,18 @@ MergeRuns(runs)
 
 \item{verbose=FALSE}{if TRUE, write messages to indicate the progressing of the tasks}
 }
+\value{
+this is original cout table witout multipl runs per sample
+ \itemize{
+   \item mergedRuns thia is the count table after marging the runs to be original count table after get ride of the multipl run per sample.
+ }
+mergedRuns
+}
 \description{
 In ReCount data, some samples are sequenced over several runs, which increases the coverage but creates problems
  # because technical replicates come from the same sample and are thus not independent.
 # We thus merge the runs per sample, in order to obtain a single vector of read counts per sample.
 }
 \author{
-Jacques van Helden
+Jacques van Helden and Mustafa AbuELQumsan
 }

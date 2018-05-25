@@ -20,5 +20,5 @@
 this calls exportTable on each of the datasets  (which belong to DataTableWithClasses and DataTableWithTrainTestSets)
 }
 \author{
-Jacques van Helden
+Mustafa AbuElQumsan and Jacques van Helden
 }

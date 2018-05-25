@@ -11,6 +11,52 @@ initRecountID(recountID, project.parameters)
 
 \item{project.parameters}{project parameters (read from the YAML-formatted file)}
 }
+\value{
+all project.parameters for the related recount ID.
+\itemize {
+     \item global: ## Global parameters are those who are the samee across all study cases
+     \item  dir: ## Directories
+     \item   main: "~/RNAseqMVA"
+     \item  workspace: "~/RNAseqMVA_workspace"
+     \item results: "~/RNAseqMVA_workspace/results"
+     \item TSV: "~/RNAseqMVA_workspace/data"
+     \item memoryImages: "~/RNAseqMVA_workspace/memory_images"
+     \item perm.prefix: "permLabels"
+     \item jobs: "none" ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
+      \item iterations: 10 ## Number of iterations for the classiifers
+      \item reload: FALSE
+      \item compute: TRUE ## If FALSE, do not run the heavy computations, just generate the pictures and save tables
+      \item save.tables: TRUE ## If TRUE, save tab-delimited files with the results
+      \item save.image: FALSE
+draw.plot : TRUE
+       \item classifiers: "svm"
+      \item data.types: ["countsPerRun", "originalCounts", "filtered", "norm", "log2norm", "log2normPCs", "DEG", "V.importance"]
+      \item data.types.to.test: ["log2normPCs"]
+      \item variables.type: ["all", "top_ordered"]
+      \item deg.methods: ["DESeq2", "edgeR"]
+      \item nb.variables: [3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 300, 400, 500, 1000, 2000, 5000, 10000] ## Number of variables for variable ordering test
+      \item trainingProportion: [0.66] # ratio of spliting the data set to training and testing sets
+      \item identicalTrainTest: TRUE
+      \item permute: [FALSE, TRUE]
+      \item verbose: TRUE
+      \item knn:
+      \item   k: 10
+      \item k_values: [3, 5, 7, 10, 15]
+      \item svm:
+      \item kernel: "linear"
+      \item kernel_values: ["linear", "polynomial", "sigmoid"] ## NOT WORKING YET, TO BE TESTED LATER: "radial basis"
+      \item scale: FALSE
+      \item type: "C-classification"
+      \item gamma: 1
+      \item cost: 100
+     \item default:
+     \item mergeRuns: TRUE ## Whether or not to merge runs per sample
+     \item sampleIdColumn: "geo_accession"
+     \item minSamplesPerClass: 15 ## THERE IS A BUG TO FIX: if we set this parameter to 10 (for example) the class labels must be adapted by suppressing the
+     \item nearZeroVarFilter: TRUE
+     \item na.rm: TRUE
+}
+}
 \author{
 Jacques van Helden and Mustafa AbuElQumsan
 }

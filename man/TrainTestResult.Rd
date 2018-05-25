@@ -2,7 +2,7 @@
 % Please edit documentation in R/train_test_result.R
 \name{TrainTestResult}
 \alias{TrainTestResult}
-\title{Class to handle the results of  Training-Testing evaluation for a given classifier}
+\title{Class to handle the results of Training-Testing evaluation for a given classifier}
 \usage{
 TrainTestResult(dataset, classifier, iteration, trainPredictedClasses,
   testPredictedClasses)
@@ -15,10 +15,10 @@ TrainTestResult(dataset, classifier, iteration, trainPredictedClasses,
 \item{call}{the function call used to produce this result}
 }
 \value{
-an object of class TrainResult containing the following attributes
+an object of class TrainTestResult containing the following attributes
 \itemize {
   \item trainProportion:  the ratio of the train from all the dataset
-  \item trainSize:        the train size from all the dataset
+  \item trainSize:        is volume of the train size from all the dataset it is computed by multiple number of individuals in the trainProportion magnitude.
   \item testSize:         the test size "remained size" from all dataset
 }
 }

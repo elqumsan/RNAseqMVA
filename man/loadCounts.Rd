@@ -26,7 +26,14 @@ This can be achieved by providing a vector of column names from the pheno table.
 \item{na.rm=TRUE}{if TRUE, omit all the rows (genes) that contain NA values. True by default because these NA values are problematic for classification methods.}
 }
 \value{
+it is returen the two feature types:
+ 1) for the original counts that means implicitly the raw count table before making ang pre-processing proccess.
+ 2) for the filtered count that means implicitly the raw count after made the pre-processing proccess,
 
+  \itemize {
+     \item filtered: count table after applying the pre-processing proccess.
+
+  }
 }
 \description{
 Given a ReCount ID, load the count table, the pheno table

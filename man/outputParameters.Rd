@@ -18,10 +18,14 @@ outputParameters(dataset, classifier, permute = FALSE, createDir = TRUE)
 \value{
 a list with the following fields
 \itemize {
-  \item resultDir: path to the result directory, in which teh result files should be stored.
+  \item resultDir: path to the result directory, in which the result files should be stored.
   \item filePrefix: string that should prepend the name of each result file.
   \item figureLabel:  short string with a label for the graphics
 }
+}
+\description{
+for saking of saveing all required output parameters (output dirctory, file prefix and figure label) to facilitate and reduce the  process of plotting
+and saving the results in identified workspace.
 }
 \author{
 Mustafa ABUELQUMSAN and Jacques van Helden

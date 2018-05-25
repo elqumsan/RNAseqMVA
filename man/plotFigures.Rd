@@ -6,3 +6,15 @@
 \usage{
 plotFigures(self, ...)
 }
+\arguments{
+\item{self}{is an object that is belonge to DataTableWithClasses.}
+}
+\value{
+utmost figures and visualisation about the main statistics and the distribution for the raw data.
+}
+\description{
+to explore the nature of raw data and showing the the distribution and main statistics for the raw data.
+}
+\author{
+Mustafa AbuElQUmsan and Jacques van Helden
+}

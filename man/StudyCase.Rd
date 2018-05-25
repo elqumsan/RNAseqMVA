@@ -12,22 +12,10 @@ StudyCase(recountID, parameters)
 \item{parameters}{recountID-specific parameters specified in a YAML-formatted configuration file}
 }
 \value{
-an object of class StudyCase
+an object of class StudyCase, that is contain raw data before per-processing step, datasets for testing that are per-processed dataset and their respective parameters.
 }
 \description{
 Create a StudyCase object, load RecountID dataset, and run preprocessing to generate the DataTableWitthClasses objects.
-}
-\details{
-#' @title build DataTableWithTrainTestSets for an instance StudyCase depending on its class
-#' @author Mustafa AbuElqumsan and Jacques van Helden
-#' @export
-
-DataTableWithTrainTestSets.StudyCase <- function(dataSet){
-  message("\tInstantiate 'DataTableWithTrainTestSets' for object of class ", paste(collapse=", ", class(dataSet)))
-  UseMethod("DataTableWithTrainTestSets", dataSet)
-  return(dataSet)
-
-}
 }
 \author{
 Jacques van Helden and Mustafa AbuElQumsan

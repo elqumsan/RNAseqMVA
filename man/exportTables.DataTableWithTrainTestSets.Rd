@@ -17,5 +17,5 @@
 \item{extension=".tsv"}{extension for the exported files (tab-separated values)}
 }
 \author{
-Jacques van Helden
+Mustafa AbuElQumsan and Jacques van Helden.
 }

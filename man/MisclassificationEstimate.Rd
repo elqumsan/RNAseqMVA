@@ -9,9 +9,18 @@ MisclassificationEstimate(dataset, iteration, classifier, permute = FALSE)
 \arguments{
 \item{dataset}{an object of class DataTableWithTrainTestSets}
 
-\item{classifier}{is a type of the classifier}
+\item{classifier}{is a type of the classifier.}
 
 \item{permute=FALSE}{permute the calss labels to measure misclassifciation rate without relevant learning}
+}
+\value{
+\itemize {
+     \item dataset = it is data table one row for the individual (sample) and one culomn for the feature (gene).
+     \item classifier = what is the tested classifier, KNN, RF, SVM and LDA.
+     \item iteration = nomber of resampling.
+     \item testPredictedClasses = these are the test classes which are predicted from classifier.
+     \item trainPredictedClasses = these are the train classes whci are predicated from classifier.
+    }
 }
 \description{
 this script to evaluate and assesse the performance of the RNA-Seq classifier by

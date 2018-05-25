@@ -6,6 +6,12 @@
 \usage{
 \method{exportTables}{default}(self, ...)
 }
+\arguments{
+\item{self}{an object, which must belong to a compatible class}
+}
+\description{
+to print message which is inform us the exporting processes has been done.
+}
 \author{
-Jacques van Helden
+Jacques van Helden and Mustafa AbuELQumsan.
 }

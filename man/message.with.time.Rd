@@ -9,6 +9,12 @@ message.with.time(...)
 \arguments{
 \item{...}{all parameters are passed to the message() function}
 }
+\value{
+report message with time for each proccess.
+}
+\description{
+such function in order to be able to compute the time has been exploit through the computation process.
+}
 \author{
-Jacques van Helden
+Jacques van Helden and Mustafa AbuElQumsan
 }
