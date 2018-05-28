@@ -47,6 +47,10 @@ global: ## Global parameters are those who are the samee across all study cases
     gamma: 1
     cost: 100
 
+  rf:
+    ntree: 1000 # Number of trees to grow, to ensure that every input row gets predicted at least a few times. by default that is 500.
+    mtry: 500 # number of variables randomly sampled as candidates at each split. wherein the default value is sqrt(number of variables in recount dataset) here is around ~ 235
+    nodesize: 20000 # minimum size of terminal nodes, wherein by setting it number larger causes smaller trees to be grown (and thus take less time)
 ## Default values for study case-specific parameters
 ## (can then be over-written by recountID-specific values as shown below)
 default:
