@@ -3,10 +3,25 @@
 #' @description  Each an object of this class contains the primary results of a training-testing evaluation of a classifier
 #' @param dataset the dataset on which the classifier ran
 #' @param classifier the classifier used to produce this result
+#' @param iteration is the number of resampling for sake of much more precision to evaluate used classifier.
+#' @param trainPredictedClasses are the classes that are predicted based on training the classifier with trainIndices.
+#' @param testPredicatedClasses are the classes that are predicated based on training an classifier with testIndices.
 #' @param call  the function call used to produce this result
 #'
 #' @return an object of class TrainTestResult containing the following attributes
 #' \itemize {
+#'   \item ID: is that recountID for the test dataset.
+#'   \item classLabels: are labels (classes) for each sample in the targeted dataset.
+#'   \item dataType: are the feature type (preprocessing created data) to analyize the imapct of pre-processing into efficiency of classifer, e.g. (filtered, norm, log2norm, log2norm-Pcs, ....)
+#'   \item parameters: are all general parameter joind with each dataset from methods init_recount_id().
+#'   \item classifier: is the classifier used to produce such results.
+#'   \item iteration: is number of resampling to individuals in order to paly it with classifier.
+#'   \item trainIndices: are the whole indeices for the trainset to be used as the trainset for the classifier ran.
+#'   \item testIndices: are the whole indices for the testset to be paased to classifier as the tesset part.
+#'   \item trainPredictedClasses: all the classes that are predicted based on training the classifier with trainset.
+#'   \item testPredictedClasses: all the classes that are predicted based on training the classifier with testset.
+#'   \item test.contingency: is the table contain in the raw actual class and in column predicted class and in diagonal is the coorect classification and out of diagonal is misclassification errors.
+#'   \item training.errors: is
 #'   \item trainProportion:  the ratio of the train from all the dataset
 #'   \item trainSize:        is volume of the train size from all the dataset it is computed by multiple number of individuals in the trainProportion magnitude.
 #'   \item testSize:         the test size "remained size" from all dataset
@@ -54,7 +69,7 @@ TrainTestResult <- function(dataset,
 
 
   ################################################################################
-  ## Compute testing misclassification reate
+  ## Compute testing misclassification rate
   object$test.contingency <- table(object$classLabels[object$testIndex], testPredictedClasses) ## Compute contingency table
   ## A misclassificaiton error is defined as an observation for which the predicted class differs from the known class
   object$testing.errors <- object$classLabels[object$testIndex] != object$testPredictedClasses
