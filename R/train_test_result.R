@@ -123,11 +123,18 @@ TrainTestResult <- function(dataset,
   object$trainSize <-length(object$trainIndex)
   object$testSize <-length(object$testIndex)
 
+
+  exportTables(object)
+
   return(object)
 }
 
 
-
+#' @title  heat map is a fales color image with pattern added to the left side and to the top.
+#' @author Jacques van Helden and Mustafa AbuElQumsan
+#' @description  to show reordering of the rows and columns according to some set of values(row or column means) within the restrictions imposed by pattern is carried out.
+#' @param  object is the object belonge to TrainTestresult that have summary about the results of Training-Testing evaluation of the given classifier.
+#' @return heatmap figure for the object belonge to the TrainTestresult.
 #' @export
 heatmap.TrainTestResult <- function(object) {
 
@@ -139,11 +146,15 @@ heatmap.TrainTestResult <- function(object) {
 }
 
 
-
+#' @title   printing the attribute of object that had TraiTestResult class.
+#' @author Mustafa AbuElQumsan and Jacques van Helden.
+#' @description  showcasting the some useful attributes of the object had TrainTestResult in order to seen the results of Training-Testing evaluation of the given classifier.
+#' @param  object is the object belonge to TrainTestresult that have summary about the results of Training-Testing evaluation of the given classifier.
+#' @return showcase some the object belonge to the TrainTestresult that are Test (misclassifiaction rate) and Train (learning error).
 #' @export
 print.TrainTestResult <- function(object) {
   cat("Train-test result\n")
-  cat("\tTest misclassificationr rate = ", object$testing.error.rate, "\n")
-  cat("\tTrain (learning) misclassificationr rate = ", object$training.error.rate, "\n")
+  cat("\tTest misclassification rate = ", object$testing.error.rate, "\n")
+  cat("\tTrain (learning) misclassification rate = ", object$training.error.rate, "\n")
 
 }
