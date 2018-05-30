@@ -102,7 +102,7 @@ exportTables.DataTableWithTrainTestSets <- function (self,
 #' @param extension=".tsv" extension for the exported files (tab-separated values)
 #' @export
 exportTables.StudyCase <- function(self,
-                                  export.dir = self$parameters$dir$tsv,
+                                   export.dir = self$parameters$dir$tsv,
                                   extension=".tsv") {
 
   message("\tExporting StudyCase object ", self$ID, " to tables")
@@ -142,3 +142,32 @@ exportTables.StudyCase <- function(self,
 
 }
 
+
+#' #' @export
+#' exportTables <- function(object, ...){
+#'   message("export object belonges to", class(object), "to TSV tables")
+#'   UseMethod("exportTables", object )
+#'
+#' }
+
+exportTables.TrainTestResult <- function(object,
+                                        export.dir = object$parameters$dir$tables,
+                                        file.prefix,
+                                         extension = ".tsv"){
+
+  message("\tExporting TrainTestResult object ", object$ID, " to tables")
+  message("\t\tExport directory\t", export.dir)
+
+  dir.create(export.dir, showWarnings = FALSE, recursive = TRUE)
+
+  message("\t\tFile prefix\t", file.prefix)
+  # UseMethod("exportTables", self)
+
+  ############## Exporting the count table ####################
+  trainTestResult.file <- file.path(export.dir, paste(file.prefix, self$ID, "_Train_Test_Result", extension, sep = ""))
+  message("\t\tExporting count table in TSV file\t",trainTestResult.file)
+  write.table(object$stats, file = trainTestResult.file, row.names = FALSE, quote=FALSE, sep = "\t")
+
+
+
+}
