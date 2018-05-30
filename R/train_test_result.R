@@ -20,6 +20,7 @@
 #'   \item testIndices: are the whole indices for the testset to be paased to classifier as the tesset part.
 #'   \item trainPredictedClasses: all the classes that are predicted based on training the classifier with trainset.
 #'   \item testPredictedClasses: all the classes that are predicted based on training the classifier with testset.
+<<<<<<< HEAD
 #'   \item test.contingency: is (testing error) that is a table which contains in raw the actual classes on the testing set and in column predicted classes from classifier on the testing set.wherein that in diagolan is the correct classification and out of diagonal is miscalssifcation error rate for the testing set.
 #'   \item testing.errors: are the class labels that are existed in the actuall classes for the testset and  which are not existed in the predicted classes from the trained classifier.
 #'   \item testing.error.nb: is the sume of the testing.errors.
@@ -30,6 +31,11 @@
 #'   \item training.error.rate: is the training.error.nb divided by overall counts of the training errors.
 #'   \item
 #'   \item trainProportion:  the ratio of the trainset from all the dataset.
+=======
+#'   \item test.contingency: is the table contain in the raw actual class and in column predicted class and in diagonal is the coorect classification and out of diagonal is misclassification errors.
+#'   \item training.errors: is
+#'   \item trainProportion:  the ratio of the train from all the dataset
+>>>>>>> a4436d74bcc2fc44262d5ea5c3611f458f1e2da7
 #'   \item trainSize:        is volume of the train size from all the dataset it is computed by multiple number of individuals in the trainProportion magnitude.
 #'   \item testSize:         the test size "remained size" from all dataset after we remove the trainSize from targeted dataset
 #' }
