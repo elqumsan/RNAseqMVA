@@ -59,6 +59,12 @@ outputParameters <- function(dataset,
 
   dir.create(resultDir, showWarnings = FALSE, recursive = TRUE)
 
+  ## Define the path to the tables TSV result directory
+  resultDirTablesTSV <- file.path(dataset$parameters$dir$results,
+                         dataset$ID,
+                         classifier, "tables")
+  dir.create(resultDir.tablesTSV, showWarnings = FALSE, recursive = TRUE)
+
   ## Define file prefix
   filePrefix <- paste(sep="_", dataset$ID, classifier_prefix,  dataset$dataType)
   if (permute) {
@@ -77,6 +83,7 @@ outputParameters <- function(dataset,
 
 
   return(list("resultDir" = resultDir,
+              "resultsTablesTSV" = resultDir.tablesTSV,
               "filePrefix" = filePrefix,
               "figLabel" = figLabel))
 }
