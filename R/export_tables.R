@@ -16,7 +16,7 @@ exportTables <- function (self, ...) {
 #'
 #' @export
 exportTables.default <- function (self, ...) {
-  message("Finished exporting tables")
+  message("\t\tFinished exporting tables")
   #  message("Looking for a function named ", paste("exportTables", class(self), sep="."))
   cat("\n") ## This avoids to print NULL in the console
   return()
@@ -152,7 +152,7 @@ exportTables.StudyCase <- function(self,
 
 exportTables.TrainTestResult <- function(object,
                                         export.dir = object$parameters$dir$tables,
-                                        file.prefix,
+                                        #file.prefix,
                                          extension = ".tsv"){
 
   message("\tExporting TrainTestResult object ", object$ID, " to tables")
@@ -168,6 +168,7 @@ exportTables.TrainTestResult <- function(object,
   message("\t\tExporting count table in TSV file\t",trainTestResult.file)
   write.table(object$stats, file = trainTestResult.file, row.names = FALSE, quote=FALSE, sep = "\t")
 
+NextMethod("exportTables", object)
 
 
 }
