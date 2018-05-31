@@ -97,4 +97,10 @@ StudyCase  <- function (recountID, parameters) {
 }
 
 
+summary.StudyCase<- function (object){
+
+  cat("\t\tObject belonge to StudyCase class \n")
+  cat("\tRecountID        \t", object$ID ,"\n")
+ #cat("\t rawData", object )
+}
 
