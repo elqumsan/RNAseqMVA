@@ -138,6 +138,7 @@ summary.StudyCase<- function(object){
   cat("\t\tnorm = result$norm,\n")
   cat("\t\tlog2norm = result$log2norm,\n")
   cat("\t\tlog2normPCs = result$log2normPCs)\n")
+  cat("\t\tlog2normViRf = result$log2normViRf")
 }
 
 #' @export
