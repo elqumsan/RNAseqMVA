@@ -72,7 +72,32 @@ StudyCase  <- function (recountID, parameters) {
   # View(result$log2normPCs$dataTable)
   # biplot(result$log2normPCs$prcomp,cex=0.2) ## This is too heavy
 
+  message.with.time("The computation of the variables importance by Random forest, and ordered it by the most importance")
+  ## Clone the log2norm object to copy all its parameters
+  result$log2normViRf <- result$log2norm
+  result$log2normViRf$dataType <- "log2normViRf"
 
+  rf.model  <- randomForest(
+    x = t(result$log2norm$dataTable),
+    y =  as.factor( result$log2norm$classLabels),
+    xtest = t(result$log2norm$dataTable), importance = T, keep.forest = T)
+
+  variable.importance <- importance(rf.model,type = 1,scale = F)
+  #variable.importance[,1]
+
+  ordered.varaible.importance <-order(variable.importance[,1],decreasing = T)
+
+  ordered.dataTable.by.importace <-result$log2norm$dataTable[ordered.varaible.importance, ]
+
+  sig.variables <- round(ncol(ordered.dataTable.by.importace) * 0.75)
+  ordered.dataTable.by.importance  <- ordered.dataTable.by.importace[1:sig.variables, ]
+
+  result$log2normViRf$viRf <- rf.model
+  result$log2normViRf$ordereviRf <- ordered.varaible.importance
+ # result$log2normViRf$sigviRf <- sig.variables
+  result$log2normViRf$sigviRf <- ordered.dataTable.by.importance
+
+  result$log2normViRf <- ordered.dataTable.by.importace
 
   ## Build a first version of the object based on passed parameters
   object <- structure(
@@ -86,7 +111,8 @@ StudyCase  <- function (recountID, parameters) {
         filtered = result$filtered,
         norm = result$norm,
         log2norm = result$log2norm,
-        log2normPCs = result$log2normPCs
+        log2normPCs = result$log2normPCs,
+        log2normViRf = result$log2normViRf
       )
     ),
     class="StudyCase")
@@ -96,11 +122,34 @@ StudyCase  <- function (recountID, parameters) {
   return(object)
 }
 
-
-summary.StudyCase<- function (object){
-
-  cat("\t\tObject belonge to StudyCase class \n")
+#' @title print a summary of an object belonging to class StudyCase
+#' @author Mustafa AubElQumsan and Jacques van Helden
+#' @description just print the summary of the object that is belonge to class StudyCase
+#' @return print the summary of such object by utilizing generic function
+#' @export
+summary.StudyCase<- function(object){
+  cat("\t\tObject belonge to StudyCase class\n")
   cat("\tRecountID        \t", object$ID ,"\n")
- #cat("\t rawData", object )
+  cat("\t rawData = list( \n"  )
+  cat("\t\tcountsPerRun = result$countsPerRun,\n")
+  cat("\t\tcountsPerSample = result$originalCounts),\n")
+  cat("\tdatasetsForTest = list( \n")
+  cat("\t\tfiltered = result$filtered,\n")
+  cat("\t\tnorm = result$norm,\n")
+  cat("\t\tlog2norm = result$log2norm,\n")
+  cat("\t\tlog2normPCs = result$log2normPCs)\n")
 }
 
+#' @export
+summary.default<- function(object){
+  cat("")
+}
+
+#' @title print a summary of an object belonging to class StudyCase
+#' @author Mustafa AubElQumsan and Jacques van Helden
+#' @description just print the summary of the object that is belonge to class StudyCase
+#' @return print the summary of such object by utilizing generic function
+#' @export
+print.StudyCase <- function(object){
+  summary(object)
+}
