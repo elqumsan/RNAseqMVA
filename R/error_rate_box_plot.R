@@ -70,7 +70,7 @@ ErrorRateBoxPlot <- function(experimentList,
 # #                         variablesType,
 #                          "iteration",
 #                          parameters$iterations)
-
+    outputParam <- outputParameters(experimentList,classifier = classifier, permute = FALSE,createDir = TRUE)
     file.prefix <- outputParam$filePrefix
     if (permute) {
       file.prefix <- paste(sep = "_", file.prefix, parameters$perm.prefix)
