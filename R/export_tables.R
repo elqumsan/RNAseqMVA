@@ -143,13 +143,7 @@ exportTables.StudyCase <- function(self,
 }
 
 
-#' #' @export
-#' exportTables <- function(object, ...){
-#'   message("export object belonges to", class(object), "to TSV tables")
-#'   UseMethod("exportTables", object )
-#'
-#' }
-
+#' @export
 exportTables.TrainTestResult <- function(object,
                                         export.dir = object$parameters$dir$tables,
                                         #file.prefix,
@@ -160,11 +154,11 @@ exportTables.TrainTestResult <- function(object,
 
   dir.create(export.dir, showWarnings = FALSE, recursive = TRUE)
 
-  message("\t\tFile prefix\t", file.prefix)
+ ## message("\t\tFile prefix\t", file.prefix)
   # UseMethod("exportTables", self)
 
   ############## Exporting the count table ####################
-  trainTestResult.file <- file.path(export.dir, paste(file.prefix, self$ID, "_Train_Test_Result", extension, sep = ""))
+  trainTestResult.file <- file.path(export.dir, paste( object$ID, "_Train_Test_Result", extension, sep = ""))
   message("\t\tExporting count table in TSV file\t",trainTestResult.file)
   write.table(object$stats, file = trainTestResult.file, row.names = FALSE, quote=FALSE, sep = "\t")
 
