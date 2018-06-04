@@ -16,7 +16,7 @@ global: ## Global parameters are those who are the samee across all study cases
   save.tables: TRUE ## If TRUE, save tab-delimited files with the results
   save.image: FALSE
   draw.plot : TRUE
-  classifiers: "rf"
+  classifiers: "svm"
   # classifiers: ["svm", "knn","rf"]
   # classifiers: ["knn","rf","svm"] # TO ADD LATER: "lda", "qda" + the one suggested by Aitor
 
