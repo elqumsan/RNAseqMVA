@@ -74,7 +74,7 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function (dataset,
                                                                classifier, # supported: knn or rf
                                                                permute = FALSE, # permute the class labels before running the test
                                                                file.prefix = NULL # prefix for the saved files. If not provided, will be automatically generated
-) {
+                                                               ) {
 
 
   startTime <- Sys.time()
@@ -124,7 +124,7 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function (dataset,
 
 
   ## Define directory based on the method
-  outParam <- outputParameters( dataset,classifier, permute)
+  # outParam <- outputParameters( dataset,classifier, permute)
 
   ## Iterate train/test cycles
   testTable <- data.frame() ## Instantiate the test table
