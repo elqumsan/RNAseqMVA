@@ -37,7 +37,7 @@ if (project.parameters$global$compute) {
   train.test.results.all.variables.per.classifier <- list()
 
   ## Loop over recountIDs
-  for (recountID in selectedRecountIDs) {
+  # for (recountID in selectedRecountIDs) {
 
     train.test.results.all.variables.per.classifier[[recountID]] <- list() ## Instantiate an entry per recountID
 
@@ -237,7 +237,7 @@ if (project.parameters$global$compute) {
                                     "\nall variables; ",
                                     project.parameters$global$iterations, " iterations")
                        )
-      train.test.results.all.variables.per.classifier[[recountID]][[classifier]] <- train.test.results.all.variables
+      # train.test.results.all.variables.per.classifier[[recountID]][[classifier]] <- train.test.results.all.variables
 
     } # end loop over classifiers
   } # end loop over recountIDs
@@ -262,7 +262,7 @@ if (project.parameters$global$compute) {
 }  # end of "if compute"
 
 
-  #} # end else if compute statment
+  } # end else if compute statment
 
 
 
