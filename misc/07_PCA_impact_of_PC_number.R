@@ -30,13 +30,15 @@ if (reload.parameters) {
   }
 }
 
-if (parameters$compute) {
+if (project.parameters$global$compute) {
 
   train.test.results.all.PCs.per.classifier <- list()
 
+  ## Loop over recountIDs
+   for (recountID in selectedRecountIDs) {
 
-
-
+   #  train.test.results.all.PCs.per.classifier[[recountID]] <- list() ## Instantiate an entry per recountID
+     parameters <- studyCases[[recountID]]$parameters
   #studyCases$PCsVar <- PCsWithTrainTestSets(studyCases$filtered)
   dataset <- studyCases[[recountID]]$datasetsForTest$log2normPCs$dataTable
 
@@ -127,7 +129,7 @@ if (parameters$compute) {
       exp.prefix <-
         paste(sep = "_", classifier, dataset$ID  , dataset$dataType, "nb_of_PCs", pc.nb)
       if (permute) {
-        exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
+        exp.prefix <- paste(sep = "_", exp.prefix,parameters$perm.prefix)
       }# end if permuted class
 
       train.test.results.No.PCs[[exp.prefix]] <-
@@ -148,19 +150,23 @@ if (parameters$compute) {
 
    } # end of permutation
 
+
   #### Print the results of the effect of the number of PCs on the efficiancy of each classifier classifier ####
   ErrorRateBoxPlot(experimentList = train.test.results.No.PCs,
                    classifier = classifier,
-                   data.type = parameters$data.types["prcomp"],
+                   data.type = dataset$dataType,
                    #variable.type = "number_of_PCs",
                    main = paste("Impact of the number of PCs on,", classifier, "\n,",parameters$recountID,";",
                                 parameters$iterations , "iterations,",
-                                dataset$dataType , sep = ""),
-                   variablesType = dataset$variablesType)
+                                dataset$dataType , sep = "")
+                   #variablesType = project.parameters$global$variables.type[[2]]
+  )
 
-  train.test.results.all.PCs.per.classifier[[classifier]] <- train.test.results.No.PCs
 
+#  train.test.results.all.PCs.per.classifier[[recountID]][[classifier]] <- train.test.results.No.PCs
    }  # end of loop over classifiers
+
+  } # end loop over recountIDs
  }  # end of if computation
 
 
