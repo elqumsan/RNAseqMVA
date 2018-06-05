@@ -63,15 +63,15 @@ ErrorRateBoxPlot <- function(experimentList,
     rownames(testing.error.rates) <- 1:nrow(testing.error.rates)
 
     ## Define file to store the boxplot
-#     file.prefix <- paste(sep="_",
-#                          parameters$recountID,
-#                          classifier,
-#                          data.type,
-# #                         variablesType,
-#                          "iteration",
-#                          parameters$iterations)
-    outputParam <- outputParameters(experimentList,classifier = classifier, permute = FALSE,createDir = TRUE)
-    file.prefix <- outputParam$filePrefix
+    file.prefix <- paste(sep="_",
+                         parameters$recountID,
+                         classifier,
+                         data.type,
+#                         variablesType,
+                         "iteration",
+                         parameters$iterations)
+    # outputParam <- outputParameters(experimentList,classifier = classifier, permute = FALSE,createDir = TRUE)
+    file.prefix <- file.prefix
     if (permute) {
       file.prefix <- paste(sep = "_", file.prefix, parameters$perm.prefix)
     }# end if permuted class
