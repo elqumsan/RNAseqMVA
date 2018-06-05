@@ -3,30 +3,59 @@
 #### experiment: measure hit rates with increasing number of variables ordered by imporatnce of variables by random forest ####
 ###################################################################################################
 
-##### define the file to store memory Image for " the Number of DEG Ordered" test #####
+
+##### define the file to store memory Image for " the Number of PCs" test #####
 image.dir <- file.path( parameters$dir$memoryImages, parameters$recountID)
 dir.create(image.dir, showWarnings = FALSE, recursive = TRUE)
-image.file <- file.path(image.dir, paste(sep = "", "train_test_no._of_v.importance_ordered_",parameters$recountID , ".Rdata"))
+image.file <- file.path(image.dir, paste(sep = "", "train_test_no._of_VIs_",parameters$recountID , ".Rdata"))
 
 
-##### Define all the train indices for all the iterations, in order to using the same training\testing parts with different classifiers and data type. #####
-if (parameters$identicalTrainTest) {
-  ## New option: define all the train indices for all the iterations, in order to use the same training/testing sets between dfferent classifiers and data types
-  trainIndices <- list()
-  for(i in 1:parameters$iterations) {
-    n <- nrow(rawCounts$Counts)
-    train.size <- round(parameters$trainingProportion * n)
-    trainIndices [[i]] <- sample(1:n, size = train.size, replace = FALSE)
+## For debug: reset the parameteres for all the study cases
+## This is used to re-run the analyses on each study case after having changed some parameters in the yaml-specific configuration file
+reload.parameters <- TRUE
+if (reload.parameters) {
+  project.parameters <- yaml.load_file(configFile)
+  project.parameters <- initParallelComputing(project.parameters)
+  if(exists("studyCases")) {
+    for (recountID in names(studyCases)) {
+      parameters <- initRecountID(recountID, project.parameters)
+      studyCases[[recountID]]$parameters <- parameters
+      for (dataSetName in names(studyCases[[recountID]]$datasetsForTest)) {
+        ViRf.numbers <- c(2, 3, 4, 5, 6, 7,
+                        seq(from=10, to=nrow(studyCases[[recountID]]$datasetsForTest$log2normViRf$sigviRf )-1, by = 10), nrow(studyCases[[recountID]]$datasetsForTest$log2normViRf$sigviRf ))
+
+        studyCases[[recountID]]$parameters$pc.numbers <- ViRf.numbers
+        studyCases[[recountID]]$datasetsForTest[[dataSetName]]$parameters <- parameters
+      }
+      #  print (studyCases[[recountID]]$parameters$dir$tablesDetail)
+    }
   }
-} else {
-  ## First option: select different indices at each experiment
-  trainIndices = NULL
 }
 
-
-
-# dim(counts)
-# View(counts)
+# ##### define the file to store memory Image for " the Number of DEG Ordered" test #####
+# image.dir <- file.path( parameters$dir$memoryImages, parameters$recountID)
+# dir.create(image.dir, showWarnings = FALSE, recursive = TRUE)
+# image.file <- file.path(image.dir, paste(sep = "", "train_test_no._of_v.importance_ordered_",parameters$recountID , ".Rdata"))
+#
+#
+# ##### Define all the train indices for all the iterations, in order to using the same training\testing parts with different classifiers and data type. #####
+# if (parameters$identicalTrainTest) {
+#   ## New option: define all the train indices for all the iterations, in order to use the same training/testing sets between dfferent classifiers and data types
+#   trainIndices <- list()
+#   for(i in 1:parameters$iterations) {
+#     n <- nrow(rawCounts$Counts)
+#     train.size <- round(parameters$trainingProportion * n)
+#     trainIndices [[i]] <- sample(1:n, size = train.size, replace = FALSE)
+#   }
+# } else {
+#   ## First option: select different indices at each experiment
+#   trainIndices = NULL
+# }
+#
+#
+#
+# # dim(counts)
+# # View(counts)
 
 ## Default for quick test without iterating over all cases
 permute <- FALSE
