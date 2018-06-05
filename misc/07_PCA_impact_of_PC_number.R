@@ -20,7 +20,7 @@ if (reload.parameters) {
       studyCases[[recountID]]$parameters <- parameters
       for (dataSetName in names(studyCases[[recountID]]$datasetsForTest)) {
         pc.numbers <- c(2, 3, 4, 5, 6, 7,
-                        seq(from=10, to=ncol(studyCases[[recountID]]$datasetsForTest$log2normPCs$dataTable)-1, by = 10), ncol(studyCases[[recountID]]$datasetsForTest$log2normPCs$dataTable))
+                        seq(from=10, to=nrow(studyCases[[recountID]]$datasetsForTest$log2normPCs$dataTable)-1, by = 10), nrow(studyCases[[recountID]]$datasetsForTest$log2normPCs$dataTable))
 
         studyCases[[recountID]]$parameters$pc.numbers <- pc.numbers
         studyCases[[recountID]]$datasetsForTest[[dataSetName]]$parameters <- parameters
