@@ -82,14 +82,14 @@ StudyCase  <- function (recountID, parameters) {
     y =  as.factor( result$log2norm$classLabels),
     xtest = t(result$log2norm$dataTable), importance = T, keep.forest = T)
 
-  variable.importance <- importance(rf.model,type = 1,scale = F)
+  variable.importance <- importance(rf.model, type = 1, scale = F)
   #variable.importance[,1]
 
   ordered.varaible.importance <-order(variable.importance[,1],decreasing = T)
 
   ordered.dataTable.by.importace <-result$log2norm$dataTable[ordered.varaible.importance, ]
 
-  sig.variables <- round(ncol(ordered.dataTable.by.importace) * 0.75)
+  sig.variables <- round(nrow(ordered.dataTable.by.importace) * 0.75)
   ordered.dataTable.by.importance  <- ordered.dataTable.by.importace[1:sig.variables, ]
 
   result$log2normViRf$viRf <- rf.model
@@ -97,7 +97,7 @@ StudyCase  <- function (recountID, parameters) {
  # result$log2normViRf$sigviRf <- sig.variables
   result$log2normViRf$sigviRf <- ordered.dataTable.by.importance
 
-  result$log2normViRf <- ordered.dataTable.by.importace
+  result$log2normViRf$orderedDataTable <- ordered.dataTable.by.importace
 
   ## Build a first version of the object based on passed parameters
   object <- structure(
