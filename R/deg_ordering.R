@@ -132,8 +132,8 @@ DEGordering <- function( dataTable,
 
     ## Fit edgeR model for differential expression analysis
     message("\t\tedgeR model fitting")
-    fit <- glmFit(dgList, designMat)
-    lrt <- glmLRT(fit)
+    fit <- as.list( glmFit(dgList, designMat))
+    lrt <- as.list( glmLRT(fit))
 
     #View(lrt$table)
 
