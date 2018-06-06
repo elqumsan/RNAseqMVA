@@ -72,32 +72,34 @@ StudyCase  <- function (recountID, parameters) {
   # View(result$log2normPCs$dataTable)
   # biplot(result$log2normPCs$prcomp,cex=0.2) ## This is too heavy
 
-  message.with.time("The computation of the variables importance by Random forest, and ordered it by the most importance")
-  ## Clone the log2norm object to copy all its parameters
-  result$log2normViRf <- result$log2norm
-  result$log2normViRf$dataType <- "log2normViRf"
+  # message.with.time("The computation of the variables importance by Random forest, and ordered it by the most importance")
+  # ## Clone the log2norm object to copy all its parameters
+  # result$log2normViRf <- result$log2norm
+  # result$log2normViRf$dataType <- "log2normViRf"
+  # rf.model  <- randomForest(
+  #   x = t(result$log2norm$dataTable),
+  #   y =  as.factor( result$log2norm$classLabels),
+  #   xtest = t(result$log2norm$dataTable), importance = T, keep.forest = T)
+  # variable.importance <- importance(rf.model, type = 1, scale = F)
+  # ordered.varaible.importance <-order(variable.importance[,1],decreasing = T)
+  # ordered.dataTable.by.importace <-result$log2norm$dataTable[ordered.varaible.importance, ]
+  # sig.variables <- round(nrow(ordered.dataTable.by.importace) * 0.75)
+  # ordered.dataTable.by.importance  <- ordered.dataTable.by.importace[1:sig.variables, ]
+  # result$log2normViRf$viRf <- rf.model
+  # result$log2normViRf$ordereviRf <- ordered.varaible.importance
+  # result$log2normViRf$sigviRf <- ordered.dataTable.by.importance
+  # result$log2normViRf$orderedDataTable <- ordered.dataTable.by.importace
 
-  rf.model  <- randomForest(
-    x = t(result$log2norm$dataTable),
-    y =  as.factor( result$log2norm$classLabels),
-    xtest = t(result$log2norm$dataTable), importance = T, keep.forest = T)
+  ##### instantiate object from ged-dataSet from Differential analysis with DESeq2 and edgeR to define gene (variable) order ####
+  message.with.time("instantiate object of Differential analysis with DESeq2 and edgeR to define gene (variable) order")
 
-  variable.importance <- importance(rf.model, type = 1, scale = F)
-  #variable.importance[,1]
+ result$DEG.datasets$DESeq2  <- DEGordering(result$originalCounts$dataTable, result$originalCounts$classLabels,
+                               method = project.parameters$global$deg.methods[1] , randomized = TRUE )
+  result$DEG.datasets$DESeq2$dataType <- "DESeq2orderedVariables"
 
-  ordered.varaible.importance <-order(variable.importance[,1],decreasing = T)
-
-  ordered.dataTable.by.importace <-result$log2norm$dataTable[ordered.varaible.importance, ]
-
-  sig.variables <- round(nrow(ordered.dataTable.by.importace) * 0.75)
-  ordered.dataTable.by.importance  <- ordered.dataTable.by.importace[1:sig.variables, ]
-
-  result$log2normViRf$viRf <- rf.model
-  result$log2normViRf$ordereviRf <- ordered.varaible.importance
- # result$log2normViRf$sigviRf <- sig.variables
-  result$log2normViRf$sigviRf <- ordered.dataTable.by.importance
-
-  result$log2normViRf$orderedDataTable <- ordered.dataTable.by.importace
+ results$DEG.datasets$edgeR  <- DEGordering(result$originalCounts$dataTable, result$originalCounts$classLabels,
+                               method = project.parameters$global$deg.methods[2] , randomized = TRUE )
+ result$DEG.datasets$edgeR$dataType <- "edgeRorderedVariables"
 
   ## Build a first version of the object based on passed parameters
   object <- structure(
@@ -112,7 +114,8 @@ StudyCase  <- function (recountID, parameters) {
         norm = result$norm,
         log2norm = result$log2norm,
         log2normPCs = result$log2normPCs,
-        log2normViRf = result$log2normViRf
+        log2normViRf = result$log2normViRf,
+        DEG.datasets = result$DEG.datasets
       )
     ),
     class="StudyCase")
