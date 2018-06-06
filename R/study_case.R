@@ -93,13 +93,13 @@ StudyCase  <- function (recountID, parameters) {
   ##### instantiate object from ged-dataSet from Differential analysis with DESeq2 and edgeR to define gene (variable) order ####
   message.with.time("instantiate object of Differential analysis with DESeq2 and edgeR to define gene (variable) order")
 
- result$DEG.datasets$DESeq2  <- DEGordering(result$originalCounts$dataTable, result$originalCounts$classLabels,
+ result$DEGdataSets$DESeq2  <- DEGordering(result$originalCounts$dataTable, result$originalCounts$classLabels,
                                method = project.parameters$global$deg.methods[1] , randomized = TRUE )
-  result$DEG.datasets$DESeq2$dataType <- "DESeq2orderedVariables"
+  result$DEGdataSets$DESeq2$dataType <- "DESeq2orderedVariables"
 
- results$DEG.datasets$edgeR  <- DEGordering(result$originalCounts$dataTable, result$originalCounts$classLabels,
+ results$DEGdataSets$edgeR  <- DEGordering(result$originalCounts$dataTable, result$originalCounts$classLabels,
                                method = project.parameters$global$deg.methods[2] , randomized = TRUE )
- result$DEG.datasets$edgeR$dataType <- "edgeRorderedVariables"
+ result$DEGdataSets$edgeR$dataType <- "edgeRorderedVariables"
 
   ## Build a first version of the object based on passed parameters
   object <- structure(
@@ -115,7 +115,7 @@ StudyCase  <- function (recountID, parameters) {
         log2norm = result$log2norm,
         log2normPCs = result$log2normPCs,
         log2normViRf = result$log2normViRf,
-        DEG.datasets = result$DEG.datasets
+        DEGdataSets = result$DEGdataSets
       )
     ),
     class="StudyCase")
