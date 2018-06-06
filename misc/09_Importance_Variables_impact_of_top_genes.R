@@ -22,7 +22,7 @@ if (reload.parameters) {
       studyCases[[recountID]]$parameters <- parameters
       for (dataSetName in names(studyCases[[recountID]]$datasetsForTest)) {
         ViRf.numbers <- c( 10, 40, 80, 200, 400, 1000,
-                        seq(from=3000, to=nrow(studyCases[[recountID]]$datasetsForTest$log2normViRf$sigviRf )-1, by = 3000), nrow(studyCases[[recountID]]$datasetsForTest$log2normViRf$sigviRf ))
+                        seq(from=3000, to=nrow(studyCases[[recountID]]$datasetsForTest$log2normViRf$sigviRf )-1, by = 70000), nrow(studyCases[[recountID]]$datasetsForTest$log2normViRf$sigviRf))
 
         studyCases[[recountID]]$parameters$ViRf.numbers <- ViRf.numbers
         studyCases[[recountID]]$datasetsForTest[[dataSetName]]$parameters <- parameters
@@ -90,8 +90,8 @@ if (project.parameters$global$compute) {
 
     #  v.importance <- get("ordered.dataTable.by.importance")
       data.type <- "log2normViRf"
-      v  <- 5
-      for(v in 1:nrow(dataset$sigviRf)){
+      v  <- 1
+      for(v in 1:length(studyCases[[recountID]]$parameters$ViRf.numbers)){
         varnb <- studyCases[[recountID]]$parameters$ViRf.numbers[v]
 
         ## For the time being we do this experiment only with log2 normalised counts
@@ -113,7 +113,7 @@ if (project.parameters$global$compute) {
         exp.prefix <-
           paste(sep = "_", project.parameters$global$classifiers, studyCases[[recountID]]$ID , variable.type)
         if (permute) {
-          exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
+          exp.prefix <- paste(sep = "_", exp.prefix,project.parameters$global$perm.prefix)
         }# end if permuted class
 
         message (format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", "Experiment prefix: ", exp.prefix)
