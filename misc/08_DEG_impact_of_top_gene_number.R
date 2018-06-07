@@ -90,12 +90,12 @@ if (project.parameters$global$compute) {
 
         #### Define experiment prefix ####
 
-        variable.type <- paste(sep="_", "DEG.numbers", "top", varnb, "var")
+        variable.type <- paste(sep="_", "DEG.numbers", "top", dataset, varnb, "var")
         exp.prefix <- paste(sep="_", project.parameters$global$classifiers, studyCases[[recountID]]$ID , variable.type)
         if (permute) {
           exp.prefix <- paste(sep="_", exp.prefix,project.parameters$global$perm.prefix)
         }
-        message (format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", "Experiment prefix: ", exp.prefix)
+        message (format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", paste("Experiment prefix: ", exp.prefix, "DEG-Method", dataset))
 
         train.test.results.DEG[[exp.prefix]] <-
           IterateTrainingTesting(DEGdataset,
