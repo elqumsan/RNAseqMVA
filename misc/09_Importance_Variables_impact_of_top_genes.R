@@ -5,7 +5,7 @@
 
 
 ##### define the file to store memory Image for " the Number of PCs" test #####
-image.dir <- file.path( parameters$dir$memoryImages, parameters$recountID)
+image.dir <- file.path( project.parameters$global$dir$memoryImages, parameters$recountID)
 dir.create(image.dir, showWarnings = FALSE, recursive = TRUE)
 image.file <- file.path(image.dir, paste(sep = "", "train_test_no._of_VIs_",parameters$recountID , ".Rdata"))
 
@@ -32,30 +32,6 @@ if (reload.parameters) {
   }
 }
 
-# ##### define the file to store memory Image for " the Number of DEG Ordered" test #####
-# image.dir <- file.path( parameters$dir$memoryImages, parameters$recountID)
-# dir.create(image.dir, showWarnings = FALSE, recursive = TRUE)
-# image.file <- file.path(image.dir, paste(sep = "", "train_test_no._of_v.importance_ordered_",parameters$recountID , ".Rdata"))
-#
-#
-# ##### Define all the train indices for all the iterations, in order to using the same training\testing parts with different classifiers and data type. #####
-# if (parameters$identicalTrainTest) {
-#   ## New option: define all the train indices for all the iterations, in order to use the same training/testing sets between dfferent classifiers and data types
-#   trainIndices <- list()
-#   for(i in 1:parameters$iterations) {
-#     n <- nrow(rawCounts$Counts)
-#     train.size <- round(parameters$trainingProportion * n)
-#     trainIndices [[i]] <- sample(1:n, size = train.size, replace = FALSE)
-#   }
-# } else {
-#   ## First option: select different indices at each experiment
-#   trainIndices = NULL
-# }
-#
-#
-#
-# # dim(counts)
-# # View(counts)
 
 ## Default for quick test without iterating over all cases
 
@@ -157,7 +133,7 @@ if (project.parameters$global$compute) {
   } # end of loop over classifiers
 
   #### Save an image of the results to enable reloading them withouht recomputing everything ####
-  if (parameters$save.image) {
+  if ( project.parameters$global$save.image) {
     save.image(file = image.file)
   }
 
