@@ -132,9 +132,10 @@ DEGordering <- function( dataTable,
 
     ## Fit edgeR model for differential expression analysis
     message("\t\tedgeR model fitting")
-    fit <- as.list( glmFit(dgList, designMat))
-    lrt <- as.list( glmLRT(fit))
-
+    fit <-   glmFit(dgList, designMat)
+#    message("\tFinishig fit settable for closure the fitted object from edgeR ")
+    lrt <-  glmLRT(fit)
+#   message("\tFinishig lrt settable for closure the fitted object from edgeR ")
     #View(lrt$table)
 
     ## we can explore the results from topTags function
@@ -171,6 +172,7 @@ DEGordering <- function( dataTable,
     stop(method, " is not a valid method for DEGordering. Supported: edgeR, DESeq2")
   }
 
+  message("\tFinishing from DESeq2 and edgeR differntial expression analysis")
   return(result)
 
 }
