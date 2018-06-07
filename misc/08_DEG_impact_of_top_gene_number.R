@@ -117,7 +117,7 @@ if (project.parameters$global$compute) {
   ErrorRateBoxPlot(experimentList = train.test.results.DEG,
                    classifier=classifier,
                  #  data.type = studyCases[[recountID]]$datasetsForTest$DEGdataSets$DESeq2$dataType,
-                   data.type =  DEG.data.type,
+                   data.type =  DEG$dataType,
                  #  variable.type = project.parameters$global$variables.type[2],
                    main = paste(  "impact of number of variables sorted according DEG", "\n",
                                 studyCases[[recountID]]$ID,";",
