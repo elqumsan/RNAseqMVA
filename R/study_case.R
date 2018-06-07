@@ -92,7 +92,7 @@ StudyCase  <- function (recountID, parameters) {
 
   ##### instantiate object from ged-dataSet from Differential analysis with DESeq2 and edgeR to define gene (variable) order ####
   message.with.time("instantiate object of Differential analysis with DESeq2 and edgeR to define gene (variable) order")
- result$DEGdataSets <- result$originalCounts
+ result$DEGdataSets <- result$filtered
  #result$DEGdataSets$edgeR <- list()
  result$DEGdataSets$DESeq2  <- DEGordering(result$originalCounts$dataTable, result$originalCounts$classLabels,
                                method = project.parameters$global$deg.methods[1] , randomized = TRUE )
