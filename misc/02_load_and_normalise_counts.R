@@ -5,7 +5,7 @@
 studyCases <- list() ## a list containing all the loaded datasets + their pre-processed data
 
 
-recountID <- "SRP056295" ## For quick test and debugging
+recountID <- "SRP042620" ## For quick test and debugging
 selectedRecountIDs <- "SRP042620" ## For quick test and debugging
 for (recountID in selectedRecountIDs) {
 
