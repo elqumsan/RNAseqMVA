@@ -58,6 +58,7 @@ if (project.parameters$global$compute) {
   for (permute in project.parameters$global$permute) {
 
 
+
     for (dataset in c("DESeq2","edgeR")) {
 
       DEG <- DEGdataset[[dataset]]
@@ -75,7 +76,7 @@ if (project.parameters$global$compute) {
          selected.DEG.names <- rownames(  DEG$orderedDataTable[1:varnb,])
 
        } else{
-         selected.DEG.names <- rownames( DEG$orderedDataTable[1:varnb,])
+         selected.DEG.names <- rownames( DEGdataset[dataset]$edgeR$orderedDataTable[1:varnb,])
 
        }
 
@@ -84,13 +85,17 @@ if (project.parameters$global$compute) {
         valid.DEG.names <- selected.DEG.names[selected.DEG.names %in% rownames(DEG$orderedDataTable)]
 
         DEG.object <- DEG$orderedDataTable[valid.DEG.names,]
+         DEGdataset$dataTable <- DEG.object
+
+        #DEG$DEG.object <- DEG.object
+        #DataTableWithTrainTestSets(DEG$DEG.object )
 
 
         ## dim(counts)
 
         #### Define experiment prefix ####
 
-        variable.type <- paste(sep="_", "DEG.numbers", "top", dataset, varnb, "var")
+        variable.type <- paste(sep="_", "DEG-",dataset, "top", varnb, "var")
         exp.prefix <- paste(sep="_", project.parameters$global$classifiers, studyCases[[recountID]]$ID , variable.type)
         if (permute) {
           exp.prefix <- paste(sep="_", exp.prefix,project.parameters$global$perm.prefix)
