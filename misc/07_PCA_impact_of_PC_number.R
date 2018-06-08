@@ -118,8 +118,9 @@ if (project.parameters$global$compute) {
     for (pc.nb in studyCases[[recountID]]$parameters$pc.numbers) {
 
       ## Select the first N principal components
-      first.pcs <- data.frame(studyCases[[recountID]]$datasetsForTest$log2normPCs$dataTable[1:pc.nb,])
-      rownames(first.pcs) <- rownames(studyCases[[recountID]]$datasetsForTest$log2normPCs$dataTable)[1:pc.nb]
+      first.pcs <- data.frame(t(dataset$prcomp$x[,1:pc.nb]))
+      rownames(first.pcs) <- rownames(t(dataset$prcomp$x[,1:pc.nb]))
+       dataset$dataTable <- first.pcs
 
       # dataset$firstPCs[[pc.nb]] <- first.pcs
      # variable.type <- paste(sep="", "PC_1-", pc.nb)
@@ -131,6 +132,9 @@ if (project.parameters$global$compute) {
       if (permute) {
         exp.prefix <- paste(sep = "_", exp.prefix,parameters$perm.prefix)
       }# end if permuted class
+
+      message (format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", paste("Experiment prefix: ", exp.prefix))
+
 
       train.test.results.No.PCs[[exp.prefix]] <-
         IterateTrainingTesting (
