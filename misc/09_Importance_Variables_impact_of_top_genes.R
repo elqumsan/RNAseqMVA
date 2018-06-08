@@ -78,7 +78,7 @@ if (project.parameters$global$compute) {
         selected.v.importance.names <-rownames(selected.v.importance)
         ## Make sure that we select gene names present in the selected data type
         ## (some genes may be filtered out or technical reasons)
-        valid.v.importance.names <- selected.v.importance.names[selected.v.importance.names %in% rownames(dataset)]
+        valid.v.importance.names <- selected.v.importance.names[selected.v.importance.names %in% rownames(dataset$sigviRf)]
 
         dataset.from.ViRf <- dataset$sigviRf[valid.v.importance.names,]
         dataset$dataTable <- dataset.from.ViRf
