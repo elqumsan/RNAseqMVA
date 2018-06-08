@@ -74,33 +74,33 @@ StudyCase  <- function (recountID, parameters) {
 
   # message.with.time("The computation of the variables importance by Random forest, and ordered it by the most importance")
   # ## Clone the log2norm object to copy all its parameters
-  # result$log2normViRf <- result$log2norm
-  # result$log2normViRf$dataType <- "log2normViRf"
-  # rf.model  <- randomForest(
-  #   x = t(result$log2norm$dataTable),
-  #   y =  as.factor( result$log2norm$classLabels),
-  #   xtest = t(result$log2norm$dataTable), importance = T, keep.forest = T)
-  # variable.importance <- importance(rf.model, type = 1, scale = F)
-  # ordered.varaible.importance <-order(variable.importance[,1],decreasing = T)
-  # ordered.dataTable.by.importace <-result$log2norm$dataTable[ordered.varaible.importance, ]
-  # sig.variables <- round(nrow(ordered.dataTable.by.importace) * 0.75)
-  # ordered.dataTable.by.importance  <- ordered.dataTable.by.importace[1:sig.variables, ]
-  # result$log2normViRf$viRf <- rf.model
-  # result$log2normViRf$ordereviRf <- ordered.varaible.importance
-  # result$log2normViRf$sigviRf <- ordered.dataTable.by.importance
-  # result$log2normViRf$orderedDataTable <- ordered.dataTable.by.importace
+  result$log2normViRf <- result$log2norm
+  result$log2normViRf$dataType <- "log2normViRf"
+  rf.model  <- randomForest(
+    x = t(result$log2norm$dataTable),
+    y =  as.factor( result$log2norm$classLabels),
+    xtest = t(result$log2norm$dataTable), importance = T, keep.forest = T)
+  variable.importance <- importance(rf.model, type = 1, scale = F)
+  ordered.varaible.importance <-order(variable.importance[,1],decreasing = T)
+  ordered.dataTable.by.importace <-result$log2norm$dataTable[ordered.varaible.importance, ]
+  sig.variables <- round(nrow(ordered.dataTable.by.importace) * 0.75)
+  ordered.dataTable.by.importance  <- ordered.dataTable.by.importace[1:sig.variables, ]
+  result$log2normViRf$viRf <- rf.model
+  result$log2normViRf$ordereviRf <- ordered.varaible.importance
+  result$log2normViRf$sigviRf <- ordered.dataTable.by.importance
+  result$log2normViRf$orderedDataTable <- ordered.dataTable.by.importace
 
   ##### instantiate object from ged-dataSet from Differential analysis with DESeq2 and edgeR to define gene (variable) order ####
-  message.with.time("instantiate object of Differential analysis with DESeq2 and edgeR to define gene (variable) order")
- result$DEGdataSets <- result$filtered
- #result$DEGdataSets$edgeR <- list()
- result$DEGdataSets$DESeq2  <- DEGordering(result$originalCounts$dataTable, result$originalCounts$classLabels,
-                               method = project.parameters$global$deg.methods[1] , randomized = TRUE )
-  result$DEGdataSets$DESeq2$dataType <- "DESeq2orderedVariables"
-
- result$DEGdataSets$edgeR  <- DEGordering(result$originalCounts$dataTable, result$originalCounts$classLabels,
-                               method = project.parameters$global$deg.methods[2] , randomized = TRUE )
- result$DEGdataSets$edgeR$dataType <- "edgeRorderedVariables"
+ #  message.with.time("instantiate object of Differential analysis with DESeq2 and edgeR to define gene (variable) order")
+ # result$DEGdataSets <- result$filtered
+ # #result$DEGdataSets$edgeR <- list()
+ # result$DEGdataSets$DESeq2  <- DEGordering(result$originalCounts$dataTable, result$originalCounts$classLabels,
+ #                               method = project.parameters$global$deg.methods[1] , randomized = TRUE )
+ #  result$DEGdataSets$DESeq2$dataType <- "DESeq2orderedVariables"
+ #
+ # result$DEGdataSets$edgeR  <- DEGordering(result$originalCounts$dataTable, result$originalCounts$classLabels,
+ #                               method = project.parameters$global$deg.methods[2] , randomized = TRUE )
+ # result$DEGdataSets$edgeR$dataType <- "edgeRorderedVariables"
 
   ## Build a first version of the object based on passed parameters
   object <- structure(

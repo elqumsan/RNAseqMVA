@@ -81,6 +81,7 @@ if (project.parameters$global$compute) {
         valid.v.importance.names <- selected.v.importance.names[selected.v.importance.names %in% rownames(dataset)]
 
         dataset.from.ViRf <- dataset$sigviRf[valid.v.importance.names,]
+        dataset$dataTable <- dataset.from.ViRf
 
         #### Run classifier with the most importance variables (raw counts) ####
 
