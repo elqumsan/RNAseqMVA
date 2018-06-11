@@ -74,6 +74,8 @@ StudyCase  <- function (recountID, parameters) {
 
   # message.with.time("The computation of the variables importance by Random forest, and ordered it by the most importance")
   # ## Clone the log2norm object to copy all its parameters
+
+
   # result$log2normViRf <- result$log2norm
   # result$log2normViRf$dataType <- "log2normViRf"
   # rf.model  <- randomForest(
