@@ -59,9 +59,9 @@ if (project.parameters$global$compute) {
 
 
 
-    for (dataset in c("DESeq2","edgeR")) {
+    for (dataSetName in c("DESeq2","edgeR")) {
 
-      DEG <- DEGdataset[[dataset]]
+      DEG <- DEGdataset[[dataSetName]]
     #  DEG <- DEG.object$DEGdataSetsType[[dataset]]
 
     #  v  <- 1
@@ -72,11 +72,11 @@ if (project.parameters$global$compute) {
         ## since we saw that it improves the result with all variables
         # data.type <- paste(dataset$dataType, dataset$method, sep = "_")
         # data.table <- na.omit( as.data.frame(get(data.type)[["orderedDataTable"]]))
-       if (dataset == "DESeq2"){
-         selected.DEG.names <- rownames(  DEG$orderedDataTable[1:varnb,])
+       if (dataSetName == "DESeq2"){
+         selected.DEG.names <- rownames( DEGdataset$orderedDataTable[1:varnb,])
 
        } else{
-         selected.DEG.names <- rownames( DEGdataset[dataset]$edgeR$orderedDataTable[1:varnb,])
+         selected.DEG.names <- rownames( DEG$orderedDataTable[1:varnb,])
 
        }
 
