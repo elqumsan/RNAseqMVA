@@ -138,6 +138,16 @@ exportTables.StudyCase <- function(self,
                export.dir = file.path(export.dir, self$ID),
                file.prefix = "log2norm_counts_")
 
+  ## Export log2norm counts sorted by DESeq2 p-value of differential analysis
+  exportTables(self$datasetsForTest$log2norm_DESeq2_sorted,
+               export.dir = file.path(export.dir, self$ID),
+               file.prefix = "log2norm_counts_DESeq2_sorted_")
+
+  ## Export log2norm counts sorted by edgeR p-value of differential analysis
+  exportTables(self$datasetsForTest$log2norm_edgeR_sorted,
+               export.dir = file.path(export.dir, self$ID),
+               file.prefix = "log2norm_counts_DESeq2_sorted_")
+
   NextMethod("exportTables", self)
 
 }
