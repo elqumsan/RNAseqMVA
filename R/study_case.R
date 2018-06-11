@@ -21,8 +21,8 @@ StudyCase  <- function (recountID, parameters) {
   ## Select training and testing sets on the filtered table with raw counts
   ## These wil then be passed to all the derived count tables (normalised, DGE, ...)
 
-   result$filtered <- DataTableWithTrainTestSets(result$filtered)
-   #result$filtered <-  UseMethod("DataTableWithTrainTestSets",result$filtered)
+  result$filtered <- DataTableWithTrainTestSets(result$filtered)
+  #result$filtered <-  UseMethod("DataTableWithTrainTestSets",result$filtered)
 
   ##### Normalize the counts without log2 transformation (first test) #####
   ##
@@ -58,7 +58,7 @@ StudyCase  <- function (recountID, parameters) {
   result$log2normPCs$dataType <- "log2normPCs"
   # names(result$log2normPCs)
 
-  ## COmpte principal components
+  ## Compute principal components
   result$log2normPCs$prcomp <-
     prcomp( t(na.omit(result$log2norm$dataTable)),
             center = TRUE,
@@ -93,18 +93,18 @@ StudyCase  <- function (recountID, parameters) {
   # result$log2normViRf$orderedDataTable <- ordered.dataTable.by.importace
 
   ##### instantiate object from ged-dataSet from Differential analysis with DESeq2 and edgeR to define gene (variable) order ####
-  message.with.time("instantiate object of Differential analysis with DESeq2 and edgeR to define gene (variable) order")
- result$DEGdataSets <- result$filtered
- #result$DEGdataSets$edgeR <- list()
- result$DEGdataSets$DESeq2  <- DEGordering(result$originalCounts$dataTable, result$originalCounts$classLabels,
-                               method = project.parameters$global$deg.methods[1] , randomized = TRUE )
-  result$DEGdataSets$DESeq2$dataType <- "DESeq2orderedVariables"
+  # message.with.time("instantiate object of Differential analysis with DESeq2 and edgeR to define gene (variable) order")
+  # result$DEGdataSets <- result$filtered
+  # #result$DEGdataSets$edgeR <- list()
+  # result$DEGdataSets$DESeq2  <- DEGordering(result$originalCounts$dataTable, result$originalCounts$classLabels,
+  #                                           method = project.parameters$global$deg.methods[1] , randomized = TRUE )
+  # result$DEGdataSets$DESeq2$dataType <- "DESeq2orderedVariables"
+  #
+  # result$DEGdataSets$edgeR  <- DEGordering(result$originalCounts$dataTable, result$originalCounts$classLabels,
+  #                                          method = project.parameters$global$deg.methods[2] , randomized = TRUE )
+  # result$DEGdataSets$edgeR$dataType <- "edgeRorderedVariables"
 
- result$DEGdataSets$edgeR  <- DEGordering(result$originalCounts$dataTable, result$originalCounts$classLabels,
-                               method = project.parameters$global$deg.methods[2] , randomized = TRUE )
- result$DEGdataSets$edgeR$dataType <- "edgeRorderedVariables"
-
-  ## Build a first version of the object based on passed parameters
+   ## Build a first version of the object based on passed parameters
   object <- structure(
     list(
       ID = recountID,
@@ -117,11 +117,46 @@ StudyCase  <- function (recountID, parameters) {
         norm = result$norm,
         log2norm = result$log2norm,
         log2normPCs = result$log2normPCs,
-        log2normViRf = result$log2normViRf,
-        DEGdataSets = result$DEGdataSets
+        log2normViRf = result$log2normViRf# ,
+#        log2norm_DESeq2_sorted = result$log2norm_DESeq2_sorted,
+#        log2norm_edgeR_sorted = result$log2norm_edgeR_sorted
       )
     ),
     class="StudyCase")
+
+  #### DESeq2-sorted variables ####
+  if ("DESeq2" %in% project.parameters$global$deg.methods) {
+    message.with.time("Defining gene order according to DESeq2 differential expression")
+
+    object$log2norm_DESeq2_sorted <- object$datasetsForTest$log2norm
+    object$log2norm_DESeq2_sorted$DESeq2  <-
+      DEGordering(object$datasetsForTest$filtered,
+                  method = "DESeq2", randomized = TRUE )
+    object$DEGdataSets$DESeq2$dataType <- "log2norm_DESeq2_ordered"
+
+    ## Note: we use the log2norm as variables,
+    ## but sort them according to DESeq2,
+    ## which was based on the raw counts
+    object$log2norm_DESeq2_sorted$dataTable <-
+      object$log2norm_DESeq2_sorted$dataTable[object$log2norm_DESeq2_sorted$DESeq2$geneOrder, ]
+  }
+
+  #### edgeR-sorted variables ####
+  if ("edgeR" %in% project.parameters$global$deg.methods) {
+    message.with.time("Defining gene order according to edgeR differential expression")
+
+    object$log2norm_edgeR_sorted <- object$datasetsForTest$log2norm
+    object$log2norm_edgeR_sorted$edgeR  <-
+      DEGordering(object$datasetsForTest$filtered,
+                  method = "edgeR", randomized = TRUE )
+    object$DEGdataSets$edgeR$dataType <- "log2norm_edgeR_ordered"
+
+    ## Note: we use the log2norm as variables,
+    ## but sort them according to edgeR,
+    ## which was based on the raw counts
+    object$log2norm_edgeR_sorted$dataTable <-
+      object$log2norm_edgeR_sorted$dataTable[object$log2norm_edgeR_sorted$edgeR$geneOrder, ]
+  }
 
 
   message("\t\tInstantiated an object of class StudyCase for recountID\t", recountID)
