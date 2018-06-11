@@ -72,25 +72,6 @@ StudyCase  <- function (recountID, parameters) {
   # View(result$log2normPCs$dataTable)
   # biplot(result$log2normPCs$prcomp,cex=0.2) ## This is too heavy
 
-  # message.with.time("The computation of the variables importance by Random forest, and ordered it by the most importance")
-  # ## Clone the log2norm object to copy all its parameters
-
-
-  # result$log2normViRf <- result$log2norm
-  # result$log2normViRf$dataType <- "log2normViRf"
-  # rf.model  <- randomForest(
-  #   x = t(result$log2norm$dataTable),
-  #   y =  as.factor( result$log2norm$classLabels),
-  #   xtest = t(result$log2norm$dataTable), importance = T, keep.forest = T)
-  # variable.importance <- importance(rf.model, type = 1, scale = F)
-  # ordered.varaible.importance <-order(variable.importance[,1],decreasing = T)
-  # ordered.dataTable.by.importace <-result$log2norm$dataTable[ordered.varaible.importance, ]
-  # sig.variables <- round(nrow(ordered.dataTable.by.importace) * 0.75)
-  # ordered.dataTable.by.importance  <- ordered.dataTable.by.importace[1:sig.variables, ]
-  # result$log2normViRf$viRf <- rf.model
-  # result$log2normViRf$ordereviRf <- ordered.varaible.importance
-  # result$log2normViRf$sigviRf <- ordered.dataTable.by.importance
-  # result$log2normViRf$orderedDataTable <- ordered.dataTable.by.importace
 
   ##### instantiate object from ged-dataSet from Differential analysis with DESeq2 and edgeR to define gene (variable) order ####
   # message.with.time("instantiate object of Differential analysis with DESeq2 and edgeR to define gene (variable) order")
@@ -116,8 +97,8 @@ StudyCase  <- function (recountID, parameters) {
         filtered = result$filtered,
         norm = result$norm,
         log2norm = result$log2norm,
-        log2normPCs = result$log2normPCs,
-        log2normViRf = result$log2normViRf# ,
+        log2normPCs = result$log2normPCs
+#        log2normViRf = result$log2normViRf# ,
 #        log2norm_DESeq2_sorted = result$log2norm_DESeq2_sorted,
 #        log2norm_edgeR_sorted = result$log2norm_edgeR_sorted
       )
@@ -159,6 +140,27 @@ StudyCase  <- function (recountID, parameters) {
   }
 
 
+
+  message.with.time("The computation of the variables importance by Random forest, and ordered it by the most importance")
+  # ## Clone the log2norm object to copy all its parameters
+
+
+  object$log2norm_ViRf_sorted <- object$datasetsForTest$log2norm
+  object$log2norm_ViRf_sorted$dataType <- "log2normViRf"
+  rf.model  <- randomForest(
+    x = t(result$log2norm$dataTable),
+    y =  as.factor( result$log2norm$classLabels),
+    xtest = t(result$log2norm$dataTable), importance = T, keep.forest = T)
+  variable.importance <- importance(rf.model, type = 1, scale = F)
+  ordered.varaible.importance <-order(variable.importance[,1],decreasing = T)
+  ordered.dataTable.by.importace <-result$log2norm$dataTable[ordered.varaible.importance, ]
+  sig.variables <- round(nrow(ordered.dataTable.by.importace) * 0.75)
+  ordered.dataTable.by.importance  <- ordered.dataTable.by.importace[1:sig.variables, ]
+  object$log2norm_ViRf_sorted$viRf <- rf.model
+  object$log2norm_ViRf_sorted$ordereviRf <- ordered.varaible.importance
+  object$log2norm_ViRf_sorted$sigviRf <- ordered.dataTable.by.importance
+  object$log2norm_ViRf_sorted$orderedDataTable <- ordered.dataTable.by.importace
+  object$log2norm_ViRf_sorted$dataTable <- ordered.dataTable.by.importace
   message("\t\tInstantiated an object of class StudyCase for recountID\t", recountID)
   return(object)
 }
