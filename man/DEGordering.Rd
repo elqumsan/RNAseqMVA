@@ -4,13 +4,11 @@
 \alias{DEGordering}
 \title{Variable ordering according to the p-values returned by differential expression analysis.}
 \usage{
-DEGordering(dataTable, classes, method = "DESeq2", randomized = TRUE,
+DEGordering(dataTableWithClasses, method = "DESeq2", randomized = TRUE,
   edgeRDispEst = "tagwise")
 }
 \arguments{
-\item{dataTable}{matrix or data frame with raw counts (reads per gene), one column per gene and one row per sample.}
-
-\item{classes}{a vector of class labels (conditions, tissues, genotypes, treatment, ...) associated to each sample.}
+\item{dataTableWithClasses}{an object containing both the data table and the class label vector.}
 
 \item{method="DESeq2"}{choice of method for differential expression analysis. Supported: "DESeq2" , "edgeR".}
 
@@ -42,7 +40,7 @@ RequiredBioconductorPackages(packages = c("DESeq2","edgeR"))
 
 recountID <- "SRP048759"
 studyCases <- loadCounts(recountID = recountID, mergeRuns = T, classColumn = "tissue")
-degOrderdPValues <- DEGordering(dataTable = studyCases$dataTable, classes =  studyCases$classes, method = "edgeR")
+degOrderdPValues <- DEGordering(dataTableWithClasses = studyCases$dataTable, classes =  studyCases$classes, method = "edgeR")
 ## degPValues<- degPValues[order(degPValues$padj) ,]
 
 choose the method of differential expression analysis
