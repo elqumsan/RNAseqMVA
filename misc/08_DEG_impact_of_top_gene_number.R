@@ -20,13 +20,14 @@ if (reload.parameters) {
     for (recountID in names(studyCases)) {
       parameters <- initRecountID(recountID, project.parameters)
       studyCases[[recountID]]$parameters <- parameters
-      for (dataSetName in names(studyCases[[recountID]]$datasetsForTest)) {
-        if(dataSetName == "DEGdataSets"){
+      for (dataSetName in names(studyCases[[recountID]])) {
+        if(dataSetName == "log2norm_edgeR_sorted"  ){
+
           var.numbers <- c( 10, 40, 80, 200, 400, 1000,
-                            seq(from=3000, to=nrow(studyCases[[recountID]]$datasetsForTest$DEGdataSets$DESeq2$orderedDataTable )-1, by = 70000), nrow(studyCases[[recountID]]$datasetsForTest$DEGdataSets$DESeq2$orderedDataTable))
+                            seq(from=3000, to=nrow(studyCases[[recountID]]$dataSetName$dataTable )-1, by = 70000), nrow(studyCases[[recountID]]$dataSetName$dataTable))
 
           studyCases[[recountID]]$parameters$var.numbers <- var.numbers
-          studyCases[[recountID]]$datasetsForTest[[dataSetName]]$parameters <- parameters
+          studyCases[[recountID]]$dataSetName$parameters <- parameters
         } # end if dataset is included in DEGdataset
       }
       #  print (studyCases[[recountID]]$parameters$dir$tablesDetail)
@@ -59,7 +60,7 @@ if (project.parameters$global$compute) {
 
 
 
-    for (dataSetName in c("DESeq2","edgeR")) {
+    for (dataSetName in c("log2norm_DESeq2_sorted","log2norm_edgeR_sorted")) {
 
       DEG <- DEGdataset[[dataSetName]]
     #  DEG <- DEG.object$DEGdataSetsType[[dataset]]
