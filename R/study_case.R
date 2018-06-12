@@ -162,6 +162,8 @@ StudyCase  <- function (recountID, parameters) {
   object$log2norm_ViRf_sorted$orderedDataTable <- ordered.dataTable.by.importace
   object$log2norm_ViRf_sorted$dataTable <- ordered.dataTable.by.importace
   message("\t\tInstantiated an object of class StudyCase for recountID\t", recountID)
+
+
   return(object)
 }
 

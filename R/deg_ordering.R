@@ -44,8 +44,8 @@ DEGordering <- function(dataTableWithClasses,
     stop("The function DEGordering() requires an object of class DataTableWithClasses")
   }
 
-  classes <- dataTableWithClasses$classLabels
-  dataTable <- dataTableWithClasses$dataTable
+  classes <-   dataTableWithClasses$classLabels
+  dataTable <-  dataTableWithClasses$dataTable
 
   result <- list()
 
