@@ -5,7 +5,7 @@
 \title{Export the tables specific to the class StudyCase}
 \usage{
 \method{exportTables}{StudyCase}(self, export.dir = self$parameters$dir$tsv,
-  file.prefix, extension = ".tsv")
+  extension = ".tsv")
 }
 \arguments{
 \item{self}{an object, which must belong to class StudyCase}
