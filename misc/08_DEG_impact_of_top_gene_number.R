@@ -28,7 +28,7 @@ if (reload.parameters) {
 
           studyCases[[recountID]]$parameters$var.numbers <- var.numbers
           studyCases[[recountID]]$dataSetName$parameters <- parameters
-        } else if(dataSetName "log2norm_DESeq2_sorted" )  {
+        } else if (dataSetName =="log2norm_DESeq2_sorted" )  {
           var.numbers <- c( 10, 40, 80, 200, 400, 1000,
                             seq(from=3000, to=nrow(studyCases[[recountID]]$dataSetName$dataTable )-1, by = 70000), nrow(studyCases[[recountID]]$dataSetName$dataTable))
 
