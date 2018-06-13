@@ -1,93 +1,103 @@
 #################### Load counts and pheno ####################
 ## Load a count Table from recount-experiment, merge counts per sample
 ## and apply some pre-filtering (remove zero-variance and near-zero-variance genes).
-
-studyCases <- list() ## a list containing all the loaded datasets + their pre-processed data
-
-
-recountID <- "SRP042620" ## For quick test and debugging
-selectedRecountIDs <- "SRP042620" ## For quick test and debugging
-for (recountID in selectedRecountIDs) {
+studyCases.mem.image <- file.path(
+  project.parameters$global$dir$memoryImages,
+  "loaded_studyCases.Rdata")
 
 
-  message.with.time ("Building StudyCase for recountID\t", recountID)
+if (project.parameters$global$reload) {
+  ## Reload previously stored memory image
+  message("Reloading study cases from previously stored memory image")
+  message("\t", studyCases.mem.image)
+  load(studyCases.mem.image)
+} else {
+  message("Loading study cases")
 
-  #### Specify generic and recountID-specific parameters ####
-  parameters <- initRecountID(recountID, project.parameters)
-
-  # Main directory should be adapted to the user's configuration
-  #  dir.main <- project.parameters$global$dir$main
-
- # View(parameters)
-  studyCases[[recountID]] <- StudyCase(recountID = recountID, parameters = parameters)
-
-
-  #### Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files ###
-  exportTables(studyCases[[recountID]])
+  studyCases <- list() ## a list containing all the loaded datasets + their pre-processed data
 
 
-  ## TO DO LATER: CHECK IF THESE FIGURES ARE WELL GENERATED, AND INCOROPORATE THEM IN THE plot.figure methods
-
-  # plot.file <- file.path(parameters$dir$NormalizationImpact, "log2normCount_hist.pdf")
-  # message("\tlog2(norm counts) histogram\t", plot.file)
-  # pdf(plot.file, width=7, height=5)
-  # hist(unlist(studyCases[[recountID]]$log2norm$counts), breaks=100,
-  #      col="grey",
-  #      main=paste("log2(norm counts) distrib;", recountID),
-  #      las=1,
-  #      xlab="log2(norm counts)",
-  #      ylab="Frequency")
-  #
-  # silence <- dev.off()
-
-  #   if (ncol(studyCases[[recountID]]$log2norm$dataTable) != length(studyCases[[recountID]]$log2norm$classLabels)){
-  #     stop(" the Number of samples in log2norm counts should be the same length of classes")
-  #   }
-  #
-  #
-  #
-  # } else {
-  #   message.with.time("Skipping normalisation for count Table with log2 transformation")
-  # }
+  recountID <- "SRP042620" ## For quick test and debugging
+  for (recountID in selectedRecountIDs) {
 
 
-  # Check studyCases[[recountID]] objects
+    message.with.time ("Building StudyCase for recountID\t", recountID)
 
-  # attributes(studyCases[[recountID]])
-  # class(studyCases[[recountID]]$countsPerRun)
-  # class(studyCases[[recountID]]$originalCounts)
-  # class(studyCases[[recountID]]$filtered)
-  # class(studyCases[[recountID]]$norm)
-  # class(studyCases[[recountID]]$log2norm)
-  #
-  #
-  # # unlist(lapply(studyCases[[recountID]]$norm$trainTestProperties$trainIndices, length))
-  # length(unlist(studyCases[[recountID]]$norm$trainTestProperties$trainIndices))
-  # sum(unlist(studyCases[[recountID]]$norm$trainTestProperties$trainIndices) != unlist(studyCases[[recountID]]$filtered$trainTestProperties$trainIndices))
-  # sum(unlist(studyCases[[recountID]]$norm$trainTestProperties$trainIndices) != unlist(studyCases[[recountID]]$log2norm$trainTestProperties$trainIndices))
+    #### Specify generic and recountID-specific parameters ####
+    parameters <- initRecountID(recountID, project.parameters)
+
+    # Main directory should be adapted to the user's configuration
+    #  dir.main <- project.parameters$global$dir$main
+
+    # View(parameters)
+    studyCases[[recountID]] <- StudyCase(recountID = recountID, parameters = parameters)
 
 
-  ##### plotting some figures to explore the nuture of recount data set #####
-  # message.with.time(" plotting some figures to explore distribution for the recount data set ",parameters$recountID)
-  # source("misc/11_impact_of_normalization_and_Log2.R")
-
-  # ##### Exhibiting the geo charactiristics for the current project #####
-  # message.with.time("Exhibit the geo charactiristics for such experiment: ", parameters$recountID, " in order to know the class lable
-  #                   for such experiment")
-  # head( geo.characteristics)
-  # geo.characteristics.file <- file.path("~/RNAseqMVA_workspace", "data", parameters$recountID, "geo.characteristics.tsv")
-  # write.table( geo.characteristics, file = geo.characteristics.file, quote = FALSE,
-  #              row.names = FALSE, sep = "\t" )
-
-} # end loop over recountIDs
+    #### Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files ###
+    exportTables(studyCases[[recountID]])
 
 
+    ## TO DO LATER: CHECK IF THESE FIGURES ARE WELL GENERATED, AND INCOROPORATE THEM IN THE plot.figure methods
 
+    # plot.file <- file.path(parameters$dir$NormalizationImpact, "log2normCount_hist.pdf")
+    # message("\tlog2(norm counts) histogram\t", plot.file)
+    # pdf(plot.file, width=7, height=5)
+    # hist(unlist(studyCases[[recountID]]$log2norm$counts), breaks=100,
+    #      col="grey",
+    #      main=paste("log2(norm counts) distrib;", recountID),
+    #      las=1,
+    #      xlab="log2(norm counts)",
+    #      ylab="Frequency")
+    #
+    # silence <- dev.off()
+
+    #   if (ncol(studyCases[[recountID]]$log2norm$dataTable) != length(studyCases[[recountID]]$log2norm$classLabels)){
+    #     stop(" the Number of samples in log2norm counts should be the same length of classes")
+    #   }
+    #
+    #
+    #
+    # } else {
+    #   message.with.time("Skipping normalisation for count Table with log2 transformation")
+    # }
+
+
+    # Check studyCases[[recountID]] objects
+
+    # attributes(studyCases[[recountID]])
+    # class(studyCases[[recountID]]$countsPerRun)
+    # class(studyCases[[recountID]]$originalCounts)
+    # class(studyCases[[recountID]]$filtered)
+    # class(studyCases[[recountID]]$norm)
+    # class(studyCases[[recountID]]$log2norm)
+    #
+    #
+    # # unlist(lapply(studyCases[[recountID]]$norm$trainTestProperties$trainIndices, length))
+    # length(unlist(studyCases[[recountID]]$norm$trainTestProperties$trainIndices))
+    # sum(unlist(studyCases[[recountID]]$norm$trainTestProperties$trainIndices) != unlist(studyCases[[recountID]]$filtered$trainTestProperties$trainIndices))
+    # sum(unlist(studyCases[[recountID]]$norm$trainTestProperties$trainIndices) != unlist(studyCases[[recountID]]$log2norm$trainTestProperties$trainIndices))
+
+
+    ##### plotting some figures to explore the nuture of recount data set #####
+    # message.with.time(" plotting some figures to explore distribution for the recount data set ",parameters$recountID)
+    # source("misc/11_impact_of_normalization_and_Log2.R")
+
+    # ##### Exhibiting the geo charactiristics for the current project #####
+    # message.with.time("Exhibit the geo charactiristics for such experiment: ", parameters$recountID, " in order to know the class lable
+    #                   for such experiment")
+    # head( geo.characteristics)
+    # geo.characteristics.file <- file.path("~/RNAseqMVA_workspace", "data", parameters$recountID, "geo.characteristics.tsv")
+    # write.table( geo.characteristics, file = geo.characteristics.file, quote = FALSE,
+    #              row.names = FALSE, sep = "\t" )
+
+  } # end loop over recountIDs
+  message("Finished loading ", length(studyCases), " study cases")
+}
 
 
 ## Compute statistics about loaded datasets
 studyCasesStats <- data.frame()
-
+message("Computing summary statistics for ", length(studyCases), " study case(s). ")
 for (recountID in selectedRecountIDs) {
   newStats <-
     data.frame(
@@ -113,11 +123,6 @@ for (recountID in selectedRecountIDs) {
   }
 }
 rownames(studyCasesStats) <- studyCasesStats$recountID
-
-
-#studyCasesStats$genes.NA + studyCasesStats$genes.zeroVar + studyCasesStats$genes.NZfilter + studyCasesStats$genes.filtered
-#studyCasesStats$genes.ori
-
 studyCasesStats$pc.NA <-100*studyCasesStats$genes.NA / studyCasesStats$genes.ori
 studyCasesStats$pc.zeroVar <- 100*studyCasesStats$genes.zeroVar / studyCasesStats$genes.ori
 studyCasesStats$pc.NZfilter <- 100*studyCasesStats$genes.NZfilter / studyCasesStats$genes.ori
@@ -143,7 +148,7 @@ row.names(gene.pc) <- studyCasesStats$recountID
 gene.pc <- gene.pc[order(gene.pc$pc.kept, decreasing = FALSE), ]
 ## apply(gene.pc, 1, sum) ## The sums must give 100 for each experiment
 
-figure.file <- paste("experiments_sumaries.pdf")
+figure.file <- paste("experiments_summaries.pdf")
 barPlot.file <- file.path(parameters$dir$results,figure.file)
 message("Filtering summary barplot: ", barPlot.file)
 pdf(file = barPlot.file, width=7, height=2+1*nrow(studyCasesStats))
@@ -186,17 +191,6 @@ for (recountID in names(studyCases)) {
 par(mfrow=c(1,1))
 par(mar = save.margins)
 silence<- dev.off()
-
-## Save a memory image that can be re-loaded next time to avoid re-computing all the normalisation and so on.
-if (parameters$save.image) {
-  dir.create(parameters$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
-  studyCases.mem.image <- file.path(parameters$dir$memoryImages, "data_studyCases.Rdata")
-  message.with.time("Saving memory image after loading: ", studyCases.mem.image)
-  save.image(file = studyCases.mem.image)
-}
-
-## Indicate that this script has finished running
-message.with.time("finished executing 02_load_and_normalise_counts.R")
 
 #######################################################
 # loadedObjects.dataType <- data.frame()
@@ -262,5 +256,16 @@ for (recountID in selectedRecountIDs) {
   silence <- dev.off()
 }
 
+
+## Save a memory image that can be re-loaded next time
+## to avoid re-computing all the normalisation and so on.
+if (project.parameters$global$save.image) {
+  dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
+  message.with.time("Saving memory image after loading: ", studyCases.mem.image)
+  save.image(file = studyCases.mem.image)
+}
+
+## Indicate that this script has finished running
+message.with.time("finished executing 02_load_and_normalise_counts.R")
 
 
