@@ -4,10 +4,12 @@
 \alias{ErrorRateBoxPlot}
 \title{Function for boxplot the error rate}
 \usage{
-ErrorRateBoxPlot(experimentList, classifier, data.type, main = paste(sep = "",
+ErrorRateBoxPlot(experimentList, classifier, data.type, fig.height = 10,
+  fig.width = 4 + 0.2 * length(experimentList),
+  experimentLabels = names(experimentList), main = paste(sep = "",
   parameters$recountID, "; ", classifier, "\\n", data.type, "; ",
-  parameters$iterations, "iterations"), expColor = "#00BBFF",
-  permColor = "grey", expLegend = "Train/test",
+  parameters$iterations, "iterations"), boxplotFile = NULL,
+  expColor = "#00BBFF", permColor = "grey", expLegend = "Train/test",
   permLegend = "Permuted labels", ....)
 }
 \arguments{
