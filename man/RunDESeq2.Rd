@@ -7,8 +7,14 @@
 RunDESeq2(self)
 }
 \arguments{
-\item{self}{object}
+\item{self}{object belong to StudyCase class}
 }
 \value{
 an object of the same class as the input object
+}
+\description{
+run DESeq2 on an object of class StudyCase to test differential expression on each feature of a data table, and order variables by increasing adjusted p-value.
+}
+\author{
+Mustafa AbuElQumsan and Jacques van Helden
 }
