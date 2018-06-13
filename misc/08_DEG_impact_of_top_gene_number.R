@@ -20,7 +20,7 @@ if (reload.parameters) {
     for (recountID in names(studyCases)) {
       parameters <- initRecountID(recountID, project.parameters)
       studyCases[[recountID]]$parameters <- parameters
-      for (dataSetName in names(studyCases[[recountID]])) {
+      for (dataSetName in grep("_sorted", names(studyCases[[recountID]]),value = TRUE)) {
         if(dataSetName == "log2norm_edgeR_sorted"  ){
 
           var.numbers <- c( 10, 40, 80, 200, 400, 1000,
@@ -28,11 +28,18 @@ if (reload.parameters) {
 
           studyCases[[recountID]]$parameters$var.numbers <- var.numbers
           studyCases[[recountID]]$dataSetName$parameters <- parameters
+        } else if(dataSetName "log2norm_DESeq2_sorted" )  {
+          var.numbers <- c( 10, 40, 80, 200, 400, 1000,
+                            seq(from=3000, to=nrow(studyCases[[recountID]]$dataSetName$dataTable )-1, by = 70000), nrow(studyCases[[recountID]]$dataSetName$dataTable))
+
+          studyCases[[recountID]]$parameters$var.numbers <- var.numbers
+          studyCases[[recountID]]$dataSetName$parameters <- parameters
+
         } # end if dataset is included in DEGdataset
-      }
+      } # end for over dataSetNames
       #  print (studyCases[[recountID]]$parameters$dir$tablesDetail)
     }
-  }
+  } # end of
 }
 
 ## Default for quick test without iterating over all cases
