@@ -78,15 +78,15 @@ StudyCase  <- function (recountID, parameters) {
   # result$DEGdataSets <- result$filtered
   # #result$DEGdataSets$edgeR <- list()
   # result$DEGdataSets$DESeq2  <- DEGordering(result$originalCounts$dataTable, result$originalCounts$classLabels,
-  #                                           method = project.parameters$global$deg.methods[1] , randomized = TRUE )
+  #                                           method = project.parameters$global$ordering.methods[1] , randomized = TRUE )
   # result$DEGdataSets$DESeq2$dataType <- "DESeq2orderedVariables"
   #
   # result$DEGdataSets$edgeR  <- DEGordering(result$originalCounts$dataTable, result$originalCounts$classLabels,
-  #                                          method = project.parameters$global$deg.methods[2] , randomized = TRUE )
+  #                                          method = project.parameters$global$ordering.methods[2] , randomized = TRUE )
   # result$DEGdataSets$edgeR$dataType <- "edgeRorderedVariables"
 
    ## Build a first version of the object based on passed parameters
-  object <- structure(
+  self <- structure(
     list(
       ID = recountID,
       parameters = parameters,
@@ -106,65 +106,67 @@ StudyCase  <- function (recountID, parameters) {
     class="StudyCase")
 
   #### DESeq2-sorted variables ####
-  if ("DESeq2" %in% project.parameters$global$deg.methods) {
-    message.with.time("Defining gene order according to DESeq2 differential expression")
-
-    object$log2norm_DESeq2_sorted <- object$datasetsForTest$log2norm
-    object$log2norm_DESeq2_sorted$DESeq2  <-
-      DEGordering(object$datasetsForTest$filtered,
-                  method = "DESeq2", randomized = TRUE )
-    object$DEGdataSets$DESeq2$dataType <- "log2norm_DESeq2_ordered"
-
-    ## Note: we use the log2norm as variables,
-    ## but sort them according to DESeq2,
-    ## which was based on the raw counts
-    object$log2norm_DESeq2_sorted$dataTable <-
-      object$log2norm_DESeq2_sorted$dataTable[object$log2norm_DESeq2_sorted$DESeq2$geneOrder, ]
+  if ("DESeq2" %in% project.parameters$global$ordering.methods) {
+    RunDESeq2(self)
+    # message.with.time("Defining gene order according to DESeq2 differential expression")
+    #
+    # self$log2norm_DESeq2_sorted <- self$datasetsForTest$log2norm
+    # self$log2norm_DESeq2_sorted$DESeq2  <-
+    #   DEGordering(self$datasetsForTest$filtered,
+    #               method = "DESeq2", randomized = TRUE )
+    # self$DEGdataSets$DESeq2$dataType <- "log2norm_DESeq2_ordered"
+    #
+    # ## Note: we use the log2norm as variables,
+    # ## but sort them according to DESeq2,
+    # ## which was based on the raw counts
+    # self$log2norm_DESeq2_sorted$dataTable <-
+    #   self$log2norm_DESeq2_sorted$dataTable[self$log2norm_DESeq2_sorted$DESeq2$geneOrder, ]
   }
 
   #### edgeR-sorted variables ####
-  if ("edgeR" %in% project.parameters$global$deg.methods) {
+  if ("edgeR" %in% project.parameters$global$ordering.methods) {
     message.with.time("Defining gene order according to edgeR differential expression")
 
-    object$log2norm_edgeR_sorted <- object$datasetsForTest$log2norm
-    object$log2norm_edgeR_sorted$edgeR  <-
-      DEGordering(object$datasetsForTest$filtered,
+    self$log2norm_edgeR_sorted <- self$datasetsForTest$log2norm
+    self$log2norm_edgeR_sorted$edgeR  <-
+      DEGordering(self$datasetsForTest$filtered,
                   method = "edgeR", randomized = TRUE )
-    object$DEGdataSets$edgeR$dataType <- "log2norm_edgeR_ordered"
+    self$DEGdataSets$edgeR$dataType <- "log2norm_edgeR_ordered"
 
     ## Note: we use the log2norm as variables,
     ## but sort them according to edgeR,
     ## which was based on the raw counts
-    object$log2norm_edgeR_sorted$dataTable <-
-      object$log2norm_edgeR_sorted$dataTable[object$log2norm_edgeR_sorted$edgeR$geneOrder, ]
+    self$log2norm_edgeR_sorted$dataTable <-
+      self$log2norm_edgeR_sorted$dataTable[self$log2norm_edgeR_sorted$edgeR$geneOrder, ]
   }
 
 
+  if ("RF" %in% project.parameters$global$ordering.methods) {
 
-  message.with.time("The computation of the variables importance by Random forest, and ordered it by the most importance")
-  # ## Clone the log2norm object to copy all its parameters
+    message.with.time("Computing variables importance by Random Forest (RF), and ordering features by decreasing importance. ")
+    # ## Clone the log2norm object to copy all its parameters
 
 
-  object$log2norm_ViRf_sorted <- object$datasetsForTest$log2norm
-  object$log2norm_ViRf_sorted$dataType <- "log2normViRf"
-  rf.model  <- randomForest(
-    x = t(result$log2norm$dataTable),
-    y =  as.factor( result$log2norm$classLabels),
-    xtest = t(result$log2norm$dataTable), importance = T, keep.forest = T)
-  variable.importance <- importance(rf.model, type = 1, scale = F)
-  ordered.varaible.importance <-order(variable.importance[,1],decreasing = T)
-  ordered.dataTable.by.importace <-result$log2norm$dataTable[ordered.varaible.importance, ]
-  sig.variables <- round(nrow(ordered.dataTable.by.importace) * 0.75)
-  ordered.dataTable.by.importance  <- ordered.dataTable.by.importace[1:sig.variables, ]
-  object$log2norm_ViRf_sorted$viRf <- rf.model
-  object$log2norm_ViRf_sorted$ordereviRf <- ordered.varaible.importance
-  object$log2norm_ViRf_sorted$sigviRf <- ordered.dataTable.by.importance
-  object$log2norm_ViRf_sorted$orderedDataTable <- ordered.dataTable.by.importace
-  object$log2norm_ViRf_sorted$dataTable <- ordered.dataTable.by.importace
+    self$log2norm_ViRf_sorted <- self$datasetsForTest$log2norm
+    self$log2norm_ViRf_sorted$dataType <- "log2normViRf"
+    rf.model  <- randomForest(
+      x = t(result$log2norm$dataTable),
+      y =  as.factor( result$log2norm$classLabels),
+      xtest = t(result$log2norm$dataTable), importance = T, keep.forest = T)
+    variable.importance <- importance(rf.model, type = 1, scale = F)
+    ordered.varaible.importance <-order(variable.importance[,1],decreasing = T)
+    ordered.dataTable.by.importace <-result$log2norm$dataTable[ordered.varaible.importance, ]
+    sig.variables <- round(nrow(ordered.dataTable.by.importace) * 0.75)
+    ordered.dataTable.by.importance  <- ordered.dataTable.by.importace[1:sig.variables, ]
+    self$log2norm_ViRf_sorted$viRf <- rf.model
+    self$log2norm_ViRf_sorted$ordereviRf <- ordered.varaible.importance
+    self$log2norm_ViRf_sorted$sigviRf <- ordered.dataTable.by.importance
+    self$log2norm_ViRf_sorted$orderedDataTable <- ordered.dataTable.by.importace
+    self$log2norm_ViRf_sorted$dataTable <- ordered.dataTable.by.importace
+  }
+
   message("\t\tInstantiated an object of class StudyCase for recountID\t", recountID)
-
-
-  return(object)
+  return(self)
 }
 
 #' @title print a summary of an object belonging to class StudyCase
@@ -172,22 +174,21 @@ StudyCase  <- function (recountID, parameters) {
 #' @description just print the summary of the object that is belonge to class StudyCase
 #' @return print the summary of such object by utilizing generic function
 #' @export
-summary.StudyCase<- function(object){
-  cat("\t\tObject belonge to StudyCase class\n")
-  cat("\tRecountID        \t", object$ID ,"\n")
-  cat("\t rawData = list( \n"  )
-  cat("\t\tcountsPerRun = result$countsPerRun,\n")
-  cat("\t\tcountsPerSample = result$originalCounts),\n")
-  cat("\tdatasetsForTest = list( \n")
-  cat("\t\tfiltered = result$filtered,\n")
-  cat("\t\tnorm = result$norm,\n")
-  cat("\t\tlog2norm = result$log2norm,\n")
-  cat("\t\tlog2normPCs = result$log2normPCs)\n")
-  cat("\t\tlog2normViRf = result$log2normViRf")
+summary.StudyCase<- function(self){
+  cat("StudyCase object\n")
+  cat("\tRecountID\t", self$ID ,"\n")
+  cat("\trawData\n")
+  for (dataset in names(self$rawData)) {
+    cat ("\t\t", dataset, "\t", paste(collapse=", ", class(self$rawData[[dataset]])), "\n")
+  }
+  cat("\tdatasetsForTest\n")
+  for (dataset in names(self$datasetsForTest)) {
+    cat ("\t\t", dataset, "\t", paste(collapse=", ", class(self$datasetsForTest[[dataset]])), "\n")
+  }
 }
 
 #' @export
-summary.default<- function(object){
+summary.default<- function(self){
   cat("")
 }
 
@@ -196,6 +197,98 @@ summary.default<- function(object){
 #' @description just print the summary of the object that is belonge to class StudyCase
 #' @return print the summary of such object by utilizing generic function
 #' @export
-print.StudyCase <- function(object){
-  summary(object)
+print.StudyCase <- function(self){
+  summary(self)
 }
+
+
+
+#' @title run edgeR to test differential expression on each feature of a data table.
+#' @description
+#' @param self object
+#' @return an object of the same class as the input object
+#' @export
+RunedgeR <- function(self) {
+  message("\tRunning edgeR for object of class ", paste(collapse=", ", class(self)))
+  UseMethod("RunedgeR", self)
+  return(self)
+}
+
+
+#' @title run edgeR on an object of class StudyCase
+#' @description run edgeR on an object of class StudyCase to test differential expression on each feature of a data table, and order variables by increasing adjusted p-value.
+#' @param self object
+#' @return a clone of the input StudyCase object with an added
+#' DataTableWithTrainTestSets containing the log2norm data table
+#' where features have been re-ordered by increasing adjusted p-value.
+#' @export
+RunedgeR.StudyCase <- function(self) {
+
+  message.with.time("Defining gene order according to edgeR differential expression")
+
+  self$datasetsForTest$log2norm_edgeR_sorted <- self$datasetsForTest$log2norm
+
+  ## include the edgeR result table in the resulting data object
+  self$datasetsForTest$log2norm_edgeR_sorted$edgeR  <-
+    DEGordering(self$datasetsForTest$filtered,
+                method = "edgeR", randomized = TRUE )
+
+  ## Specify te data type
+  self$datasetsForTest$log2norm_edgeR_sorted$dataType <- "log2norm_edgeR_ordered"
+
+  ## Note: we use the log2norm as variables,
+  ## but sort them according to edgeR,
+  ## which was based on the raw counts
+  self$datasetsForTest$log2norm_edgeR_sorted$dataTable <-
+    self$datasetsForTest$log2norm_edgeR_sorted$dataTable[
+      self$datasetsForTest$log2norm_edgeR_sorted$edgeR$geneOrder, ]
+
+  return(self)
+}
+
+
+#' @title run DESeq2 to test differential expression on each feature of a data table.
+#' @description
+#' @param self object
+#' @return an object of the same class as the input object
+#' @export
+RunDESeq2 <- function(self) {
+  message("\tRunning DESeq2 for object of class ", paste(collapse=", ", class(self)))
+  UseMethod("RunDESeq2", self)
+  return(self)
+}
+
+
+#' @title run DESeq2 on an object of class StudyCase
+#' @description run DESeq2 on an object of class StudyCase to test differential expression on each feature of a data table, and order variables by increasing adjusted p-value.
+#' @param self object
+#' @return a clone of the input StudyCase object with an added
+#' DataTableWithTrainTestSets containing the log2norm data table
+#' where features have been re-ordered by increasing adjusted p-value.
+#' @export
+RunDESeq2.StudyCase <- function(self) {
+
+  message.with.time("Defining gene order according to DESeq2 differential expression")
+
+  self$datasetsForTest$log2norm_DESeq2_sorted <- self$datasetsForTest$log2norm
+
+  ## include the DESeq2 result table in the resulting data object
+  self$datasetsForTest$log2norm_DESeq2_sorted$DESeq2  <-
+    DEGordering(self$datasetsForTest$filtered,
+                method = "DESeq2", randomized = TRUE )
+
+  ## Specify te data type
+  self$datasetsForTest$log2norm_DESeq2_sorted$dataType <- "log2norm_DESeq2_ordered"
+
+  ## Note: we use the log2norm as variables,
+  ## but sort them according to DESeq2,
+  ## which was based on the raw counts
+  self$datasetsForTest$log2norm_DESeq2_sorted$dataTable <-
+    self$datasetsForTest$log2norm_DESeq2_sorted$dataTable[
+      self$datasetsForTest$log2norm_DESeq2_sorted$DESeq2$geneOrder, ]
+
+  return(self)
+}
+
+
+
