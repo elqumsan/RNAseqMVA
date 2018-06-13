@@ -2,8 +2,8 @@
 ## Load a count Table from recount-experiment, merge counts per sample
 ## and apply some pre-filtering (remove zero-variance and near-zero-variance genes).
 studyCases.mem.image <- file.path(
-  project.parameters$global$dir$memoryImages,
-  "loaded_studyCases.Rdata")
+  paste(project.parameters$global$dir$memoryImages,
+  "in_DATE",Sys.Date(),"loaded_studyCases.Rdata",sep = "_"))
 
 
 if (project.parameters$global$reload) {
