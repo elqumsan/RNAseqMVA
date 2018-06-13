@@ -127,7 +127,7 @@ exportTables.StudyCase <- function(self,
   #              file.prefix = "counts_per_sample_")
 
   countsPerSample.file <- file.path(export.dir, paste( self$ID, "_counts_per_sample", extension, sep = ""))
-  message("\t\tExporting count per run in TSV file\t", countPerRun.file)
+  message("\t\tExporting count per sample in TSV file\t", countsPerSample.file)
   write.table(as.data.frame(self$rawData$countsPerSample$dataTable), file = countsPerSample.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
 
   ## Export filtere counts
