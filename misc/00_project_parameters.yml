@@ -26,7 +26,8 @@ global: ## Global parameters are those who are the samee across all study cases
 
   # data.types.to.test: ["log2norm"]
   variables.type: ["all", "top_ordered"]
-  deg.methods: ["DESeq2", "edgeR"]
+  ordering.methods: []
+  # ordering.methods: ["DESeq2", "edgeR", "RF"]
   ## Note: for the number of variables I choose a regular spacing around the total number of samples in order to detect overfitting effects
   nb.variables: [3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 300, 400, 500, 1000, 2000, 5000, 10000] ## Number of variables for variable ordering test
   trainingProportion: [0.66] # ratio of spliting the data set to training and testing sets
