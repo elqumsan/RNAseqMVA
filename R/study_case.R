@@ -106,7 +106,8 @@ StudyCase  <- function (recountID, parameters) {
 
   #### DESeq2-sorted variables ####
   if ("DESeq2" %in% project.parameters$global$ordering.methods) {
-     RunDESeq2(self)
+
+    self$datasetsForTest$log2norm_DESeq2_sorted <-  RunDESeq2(self)
     # message.with.time("Defining gene order according to DESeq2 differential expression")
     #
     # self$log2norm_DESeq2_sorted <- self$datasetsForTest$log2norm
@@ -125,7 +126,7 @@ StudyCase  <- function (recountID, parameters) {
   #### edgeR-sorted variables ####
   if ("edgeR" %in% project.parameters$global$ordering.methods) {
     message.with.time("Defining gene order according to edgeR differential expression")
-    RunedgeR(self)
+    self$datasetsForTest$log2norm_edgeR_sorted <- RunedgeR(self)
     # self$log2norm_edgeR_sorted <- self$datasetsForTest$log2norm
     # self$log2norm_edgeR_sorted$edgeR  <-
     #   DEGordering(self$datasetsForTest$filtered,
@@ -144,7 +145,7 @@ StudyCase  <- function (recountID, parameters) {
 
     message.with.time("Computing variables importance by Random Forest (RF), and ordering features by decreasing importance. ")
     # ## Clone the log2norm object to copy all its parameters
-    RunViRf(self)
+    self$datasetsForTest$log2norm_ViRf_sorted <- RunViRf(self)
 
     # self$log2norm_ViRf_sorted <- self$datasetsForTest$log2norm
     # self$log2norm_ViRf_sorted$dataType <- "log2normViRf"
