@@ -192,3 +192,23 @@ loadRecountExperiment <- function(recountID = recountID,
   return(result)
 }
 
+
+## Mustafa; you make a method of StudyCase from thi rough code
+gene.mean.per.class <- by(t(studyCases[[recountID]]$datasetsForTest$norm$dataTable), INDICES = studyCases[[recountID]]$datasetsForTest$norm$classLabels, FUN = colMeans)
+
+plot(gene.mean.per.class$`Bone marrow` + epsilon,
+     gene.mean.per.class$`Heparinised blood` + epsilon,
+     log="xy")
+
+
+epsilon <- 0.1
+x1 <- gene.mean.per.class$`Bone marrow` + epsilon
+x2 <- gene.mean.per.class$`Heparinised blood` + epsilon
+
+## XY plot
+plot (log2(x1),  log2(x2))
+
+## MA plot
+plot ((log2(x1) + log2(x2))/2, log2(x1) - log2(x2),
+      xlab="A", ylab="M")
+
