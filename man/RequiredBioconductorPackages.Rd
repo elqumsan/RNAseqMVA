@@ -9,8 +9,11 @@ RequiredBioconductorPackages(packages)
 \arguments{
 \item{packages}{a vector containing a list of required BioConductor packages.}
 }
+\value{
+chack and then install all BioConductor packages if it aren't installed.
+}
 \description{
-Load a list of required BioConductor packages. For each specified package, 
+Load a list of required BioConductor packages. For each specified package,
 first check  if it is available on this R instance. If not, automatically install it.
 }
 \author{

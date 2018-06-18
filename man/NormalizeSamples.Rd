@@ -2,7 +2,7 @@
 % Please edit documentation in R/normalize_count_table.R
 \name{NormalizeSamples}
 \alias{NormalizeSamples}
-\title{Normalize RNA-seq count table}
+\title{scaling RNA-seq count table}
 \usage{
 NormalizeSamples(self, classColumn = parameters$classColumn,
   classColors = parameters$classColors, method = "quantile",
@@ -42,7 +42,7 @@ returned DataTableWithClass object.
 \description{
 normalisation of RNA-seq count table.
 More precisely this function runs a sample-wise scaling so that all the samples
-have the same value for auser-defined scaling parameter.
+have the same value for a user-defined scaling parameter.
 By default, we use the quantile 0.75 as scaling factor.
 }
 \examples{

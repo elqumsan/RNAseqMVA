@@ -2,9 +2,18 @@
 % Please edit documentation in R/Data_table_with_classes.R
 \name{summary.default}
 \alias{summary.default}
-\title{finish summary}
+\title{finish summary of an object belonging to class DataTableWithClasses}
 \usage{
 summary.default(self)
+}
+\arguments{
+\item{self}{that is an object which is want to print its properities}
+}
+\value{
+properities of an object
+}
+\description{
+this is default generic funtion in order to print the properities of the object  that is belonge to DataTableWithClasses.
 }
 \author{
 Mustafa AubElQumsan and Jacques van Helden

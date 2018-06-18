@@ -1,6 +1,10 @@
 
 #' @title Save a memory image in order to be able to reload all results without having to recompute everything
 #' @author Jacques van Helden anf Mustafa AbuElQumsan
+#' @description if you want to saving time without of made recomputation thoughout loading last computation process.
+#' @param memory.dir = parameters$dir$memoryImages it is the path the saving the image file.
+#' @param recountID = parameters$recountID Recount ID number.
+#' @param prefix = "RNAseqMVA_image_" such prefix in order to saving the file in this prefix.
 #' @export
 saveMemoryImage <- function(memory.dir = parameters$dir$memoryImages,
                            recountID = parameters$recountID,
@@ -15,6 +19,11 @@ saveMemoryImage <- function(memory.dir = parameters$dir$memoryImages,
 
 #' @title Load a previous analysis previously stored as memoy image
 #' @author Jacques van Helden anf Mustafa AbuElQumsan
+#' @description if you want to loading abeforehand image file which is prepared from the saveMemoryImage ()
+#' @param memory.dir = parameters$dir$memoryImages it is the path the saving the image file.
+#' @param recountID = parameters$recountID Recount ID number.
+#' @param prefix = "RNAseqMVA_image_" such prefix in order to saving the file in this prefix.
+#' @export
 #' @export
 loadMemoryImage <- function(memory.dir = parameters$dir$memoryImages,
                             recountID = parameters$recountID,

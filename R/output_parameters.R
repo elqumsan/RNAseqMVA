@@ -1,4 +1,6 @@
 #' @title return output parameters (output directory, file prefix, figure label)  for a given analysis given its parameterrs (dataset, classifier, permutation or not)
+#' @description for saking of saveing all required output parameters (output dirctory, file prefix and figure label) to facilitate and reduce the  process of plotting
+#' and saving the results in identified workspace.
 #' @author Mustafa ABUELQUMSAN and Jacques van Helden
 #' @param dataset an object of class DataTableWithTrainTestSets
 #' @param classifier is the type of classifier that is used with repeated process.
@@ -7,7 +9,7 @@
 #'
 #' @return a list with the following fields
 #' \itemize {
-#'   \item resultDir: path to the result directory, in which teh result files should be stored.
+#'   \item resultDir: path to the result directory, in which the result files should be stored.
 #'   \item filePrefix: string that should prepend the name of each result file.
 #'   \item figureLabel:  short string with a label for the graphics
 #' }
@@ -17,10 +19,10 @@ outputParameters <- function(dataset,
                              permute = FALSE,
                              createDir = TRUE) {
 
-  ## Check the class of hte dataset
-  if (!is(object = dataset, class2 = "DataTableWithTrainTestSets")) {
-    stop("filePrefix requires an object of class DataTableWithTrainTestSets")
-  }
+  # ## Check the class of hte dataset
+  # if (!is(object = dataset, class2 = "DataTableWithTrainTestSets")) {
+  #   stop("filePrefix requires an object of class DataTableWithTrainTestSets")
+  # }
 
   ##  Verbosity
   message("\tDefining file Prefix for dataset ", dataset$ID,
@@ -57,6 +59,12 @@ outputParameters <- function(dataset,
 
   dir.create(resultDir, showWarnings = FALSE, recursive = TRUE)
 
+  ## Define the path to the tables TSV result directory
+  resultDirTablesTSV <- file.path(dataset$parameters$dir$results,
+                         dataset$ID,
+                         classifier, "tables")
+  dir.create(resultDirTablesTSV, showWarnings = FALSE, recursive = TRUE)
+
   ## Define file prefix
   filePrefix <- paste(sep="_", dataset$ID, classifier_prefix,  dataset$dataType)
   if (permute) {
@@ -75,6 +83,7 @@ outputParameters <- function(dataset,
 
 
   return(list("resultDir" = resultDir,
+              "resultsTablesTSV" =resultDirTablesTSV,
               "filePrefix" = filePrefix,
               "figLabel" = figLabel))
 }

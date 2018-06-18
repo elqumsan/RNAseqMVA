@@ -22,5 +22,5 @@ of the original error tables. The summary statistics is the mean, except for
 the iteration, where the max value of the error table is taken.
 }
 \author{
-Jacques van Helden and Mustaga AbuElQumsan
+Jacques van Helden and Mustafa AbuElQumsan
 }

@@ -6,6 +6,15 @@
 \usage{
 \method{buildAttributes}{default}(self)
 }
+\arguments{
+\item{self}{that is an object has been instantiated.}
+}
+\value{
+print message that inform the instantiate the object has been done.
+}
 \description{
-Just send message with object classes. The class-specific builders should have been be called before.
+Just send message with object classes. The class-specific builders should have been being called before.
+}
+\author{
+Mustafa AbuElQumsan and Jacques van Helden
 }

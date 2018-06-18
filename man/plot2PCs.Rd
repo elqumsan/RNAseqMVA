@@ -22,5 +22,5 @@ plot2PCs(self, main = paste(sep = "", self$ID, "; PCs of log2norm counts"),
 Plot the first and second components of a prcomp() result in a lighter way than the default biplot.
 }
 \author{
-Jacques van Helden
+Jacques van Helden and Mustafa AbuELQumsan
 }

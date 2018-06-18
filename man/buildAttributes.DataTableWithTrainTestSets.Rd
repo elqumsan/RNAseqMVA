@@ -6,16 +6,24 @@
 \usage{
 \method{buildAttributes}{DataTableWithTrainTestSets}(self)
 }
-\description{
-#################### Builde constractor for the selecting Training Sets #########
-#' @title Export the object with train/test sets by stratification sampling
-#' @author Mustafa ABUELQUMSAN and Jacques van Helden
-#' @description sampling is done in each class separately in order to preserve the relative frequencies of classes in training and testing sets
-#' @param self which much belong to the DataTableWithClasses class.
-#'
-#' @export
-selectTrainingSets <- function(self, ...){
-  message("\tExporting the object class  ", class(self), " object with train/test sets")
-  UseMethod("selectTrainingSets", self)
+\arguments{
+\item{self:}{is an object which we stive to initialize it to be has membership of DataTableWithTrainTestSets.}
 }
+\value{
+an object that is became has the attributes of the class DataTableWithTrainTestSets
+ \itemize {
+ \item  iteration: which is number of resampling
+  \item trainPropotion:      which is ratio of train volume from whole of dataset
+  \item statified:           parameter which refer to stratification criteria would be included in analysis or not.
+  \item trainSizePerClass:   which is specify the train volume for each class included in analysis.
+  \item trianIndices:        which are whole indices for training process.
+  \item testIndices:         which are whole indices for the testing process.
+
+}
+}
+\description{
+build special attributes for an object wherein to be initialized to belonge to DataTableWithTrainTestSets
+}
+\author{
+Mustafa AbuELQumsan and Jacques van Helden
 }

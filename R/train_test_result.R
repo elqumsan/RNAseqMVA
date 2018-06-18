@@ -1,15 +1,36 @@
-#' @title Class to handle the results of  Training-Testing evaluation for a given classifier
+#' @title Class to handle the results of Training-Testing evaluation for a given classifier
 #' @author Jacques van Helden and Mustafa AbuElQumsan
-#' @descripiton EachAn object of this class contains the primary results of a training-testing evaluation of a classifier
+#' @description  Each an object of this class contains the primary results of a training-testing evaluation of a classifier
 #' @param dataset the dataset on which the classifier ran
 #' @param classifier the classifier used to produce this result
+#' @param iteration is the number of resampling for sake of much more precision to evaluate used classifier.
+#' @param trainPredictedClasses are the classes that are predicted based on training the classifier with trainIndices.
+#' @param testPredicatedClasses are the classes that are predicated based on training an classifier with testIndices.
 #' @param call  the function call used to produce this result
 #'
-#' @return an object of class TrainResult containing the following attributes
+#' @return an object of class TrainTestResult containing the following attributes
 #' \itemize {
-#'   \item trainProportion:  the ratio of the train from all the dataset
-#'   \item trainSize:        the train size from all the dataset
-#'   \item testSize:         the test size "remained size" from all dataset
+#'   \item ID: is that recountID for the test dataset.
+#'   \item classLabels: are labels (classes) for each sample in the targeted dataset.
+#'   \item dataType: are the feature type (preprocessing created data) to analyize the imapct of pre-processing into efficiency of classifer, e.g. (filtered, norm, log2norm, log2norm-Pcs, ....)
+#'   \item parameters: are all general parameter joind with each dataset from methods init_recount_id().
+#'   \item classifier: is the classifier used to produce such results.
+#'   \item iteration: is number of resampling to individuals in order to paly it with classifier.
+#'   \item trainIndices: are the whole indeices for the trainset to be used as the trainset for the classifier ran.
+#'   \item testIndices: are the whole indices for the testset to be paased to classifier as the tesset part.
+#'   \item trainPredictedClasses: all the classes that are predicted based on training the classifier with trainset.
+#'   \item testPredictedClasses: all the classes that are predicted based on training the classifier with testset.
+#'   \item test.contingency: is (testing error) that is a table which contains in raw the actual classes on the testing set and in column predicted classes from classifier on the testing set.wherein that in diagolan is the correct classification and out of diagonal is miscalssifcation error rate for the testing set.
+#'   \item testing.errors: are the class labels that are existed in the actuall classes for the testset and  which are not existed in the predicted classes from the trained classifier.
+#'   \item testing.error.nb: is the sume of the testing.errors.
+#'   \item testing.error.rate: is the training.error.nb divided by whole counts of the testing errors.
+#'   \item train.contingency: is (learning error) the table contain in the raw actual class and in column predicted class and in diagonal is the corect classification and out of diagonal is misclassification errors.
+#'   \item training.errors: are the class labels that are founded in the actuall classes for the trainset and which are not existed in the predicted classes from the trained classifier.
+#'   \item training.error.nb: is the sum of the training.errors
+#'   \item training.error.rate: is the training.error.nb divided by overall counts of the training errors.
+#'   \item trainProportion:  the ratio of the trainset from all the dataset.
+#'   \item trainSize:        is volume of the train size from all the dataset it is computed by multiple number of individuals in the trainProportion magnitude.
+#'   \item testSize:         the test size "remained size" from all dataset after we remove the trainSize from targeted dataset
 #' }
 
 #'
@@ -54,7 +75,7 @@ TrainTestResult <- function(dataset,
 
 
   ################################################################################
-  ## Compute testing misclassification reate
+  ## Compute testing misclassification rate
   object$test.contingency <- table(object$classLabels[object$testIndex], testPredictedClasses) ## Compute contingency table
   ## A misclassificaiton error is defined as an observation for which the predicted class differs from the known class
   object$testing.errors <- object$classLabels[object$testIndex] != object$testPredictedClasses
@@ -102,11 +123,18 @@ TrainTestResult <- function(dataset,
   object$trainSize <-length(object$trainIndex)
   object$testSize <-length(object$testIndex)
 
+
+  exportTables(object)
+
   return(object)
 }
 
 
-
+#' @title  heat map is a fales color image with pattern added to the left side and to the top.
+#' @author Jacques van Helden and Mustafa AbuElQumsan
+#' @description  to show reordering of the rows and columns according to some set of values(row or column means) within the restrictions imposed by pattern is carried out.
+#' @param  object is the object belonge to TrainTestresult that have summary about the results of Training-Testing evaluation of the given classifier.
+#' @return heatmap figure for the object belonge to the TrainTestresult.
 #' @export
 heatmap.TrainTestResult <- function(object) {
 
@@ -118,11 +146,15 @@ heatmap.TrainTestResult <- function(object) {
 }
 
 
-
+#' @title   printing the attribute of object that had TraiTestResult class.
+#' @author Mustafa AbuElQumsan and Jacques van Helden.
+#' @description  showcasting the some useful attributes of the object had TrainTestResult in order to seen the results of Training-Testing evaluation of the given classifier.
+#' @param  object is the object belonge to TrainTestresult that have summary about the results of Training-Testing evaluation of the given classifier.
+#' @return showcase some the object belonge to the TrainTestresult that are Test (misclassifiaction rate) and Train (learning error).
 #' @export
 print.TrainTestResult <- function(object) {
   cat("Train-test result\n")
-  cat("\tTest misclassificationr rate = ", object$testing.error.rate, "\n")
-  cat("\tTrain (learning) misclassificationr rate = ", object$training.error.rate, "\n")
+  cat("\tTest misclassification rate = ", object$testing.error.rate, "\n")
+  cat("\tTrain (learning) misclassification rate = ", object$training.error.rate, "\n")
 
 }

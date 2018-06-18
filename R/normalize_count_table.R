@@ -1,8 +1,8 @@
-#' @title Normalize RNA-seq count table
+#' @title scaling RNA-seq count table
 #' @author Jacques van Helden and Mustafa AbuElqumsan
 #' @description normalisation of RNA-seq count table.
 #' More precisely this function runs a sample-wise scaling so that all the samples
-#' have the same value for auser-defined scaling parameter.
+#' have the same value for a user-defined scaling parameter.
 #' By default, we use the quantile 0.75 as scaling factor.
 #'
 #' @param self an object belonging to the class DataTableWithClasses

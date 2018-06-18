@@ -7,6 +7,16 @@
 loadMemoryImage(memory.dir = parameters$dir$memoryImages,
   recountID = parameters$recountID, prefix = "RNAseqMVA_image_")
 }
+\arguments{
+\item{memory.dir}{= parameters$dir$memoryImages it is the path the saving the image file.}
+
+\item{recountID}{= parameters$recountID Recount ID number.}
+
+\item{prefix}{= "RNAseqMVA_image_" such prefix in order to saving the file in this prefix.}
+}
+\description{
+if you want to loading abeforehand image file which is prepared from the saveMemoryImage ()
+}
 \author{
 Jacques van Helden anf Mustafa AbuElQumsan
 }

@@ -6,3 +6,30 @@
 \usage{
 buildAttributes(self)
 }
+\arguments{
+\item{self}{which is dataTable (a data.frame) with one row per feature (genes) and one column per individuals (sample)}
+}
+\value{
+an object that has all required attributes as in the following attributes.
+\itemize {
+ \item nbSamples:  that is the number of samples in relatedness object.
+ \item nbGenes:    that is the number of genes in  relatedness object.
+ \item sampleNames: that is the names of all samples involved in related object.
+ \item geneNames:   that is names of all genes in the relatedness object.
+ \item classLabels: that is the class labels for all the samples in the relatedness object.
+ \item classNames:  that is the names of all classes included in the relatedness object.
+ \item nbClasses:   that is the overall number of the classes involved in the relatedness object.
+ \item classProperities: that is the data.frame composed of two columns one for the class name, number of samples in each class, train size per class
+ \item samplesPerClass: such paraperter are involved in classProperities.
+ \item classFrequencies: such parameter means the ratio of certain samples for somehow class so as to the whole samples into the dataTable.
+ \item randExpectedHitRate: it is corss product for the classFrequensies .
+ \item randExpectedMisclassificationRate: it is 1 - randExpectedHitRate.
+ \item sampleColors: such parameter for visualisation of the sample by putting some useful colors.
+}
+}
+\description{
+building all the attributes for the object based on its own class. in order to give it some certian features based on its own class e.g. we have DataTableWithClases, dataTableWithTrainTestSets, ect.
+}
+\author{
+Mustafa AbuELQumsan and Jacques van Helden
+}

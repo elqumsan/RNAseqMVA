@@ -1,5 +1,5 @@
 #' @title Plot two components of prcomp transform
-#' @author Jacques van Helden
+#' @author Jacques van Helden and Mustafa AbuELQumsan
 #' @description Plot the first and second components of a prcomp() result in a lighter way than the default biplot.
 #' @param self an object of class DataTableWithClasses containing a field prcomp (produced by prcompt function)
 #' @param main main title is built by default by can be replaced

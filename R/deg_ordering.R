@@ -4,12 +4,13 @@
 #' @description Order the variables (columns) of a count table in preparation for supervised
 #' classification, by running differential expression analysis with either DESeq2 or edgeR.
 #'
-#' @param dataTable matrix or data frame with raw counts (reads per gene), one column per gene and one row per sample.
-#' @param classes a vector of class labels (conditions, tissues, genotypes, treatment, ...) associated to each sample.
+#' @param dataTableWithClasses an object containing both the data table and the class label vector.
 #' @param method="DESeq2"  choice of method for differential expression analysis. Supported: "DESeq2" , "edgeR".
 #' @param edgeRDispEst="tagwise" method used by edgeR to estimate the dispersion. Supported: common, trended, tagwise.
 #' @param ... all additional parmeters are passed to the differentail expression method (DEseq2 or edgeR).
-#'
+#' @import DESeq2
+#' @import edgeR
+#' @import limma
 #' @return a list with 2 tables:
 #' 1) result$geneOrder: a vector of gene names ordered by increasing p-value.
 #' 2) result$orderedDataTable ordered count table where columns (genes) have been ordered by increasing p-value.
@@ -26,34 +27,37 @@
 #'
 #' recountID <- "SRP048759"
 #' studyCases <- loadCounts(recountID = recountID, mergeRuns = T, classColumn = "tissue")
-#' degOrderdPValues <- DEGordering(dataTable = studyCases$dataTable, classes =  studyCases$classes, method = "edgeR")
+#' degOrderdPValues <- DEGordering(dataTableWithClasses = studyCases$dataTable, classes =  studyCases$classes, method = "edgeR")
 #' ## degPValues<- degPValues[order(degPValues$padj) ,]
 #'
 #' choose the method of differential expression analysis
 #'
 #' @export
-DEGordering <- function( dataTable,
-                       classes,
+DEGordering <- function(dataTableWithClasses,
+#                       classes,
                        method = "DESeq2",
                        randomized= TRUE,
                        edgeRDispEst="tagwise"){
 
+
+  if(!is(dataTableWithClasses, class2 = "DataTableWithClasses")) {
+    stop("The function DEGordering() requires an object of class DataTableWithClasses")
+  }
+
+  classes <-   dataTableWithClasses$classLabels
+  dataTable <-  dataTableWithClasses$dataTable
+
   result <- list()
-  # library(RCurl)
-  # dir.main  <- getURL("https://github.com/elqumsan/RNAseqMVA/blob/master/R/required_libraries.R",
-  #                     ssl.verifypeer = F, followlocation = T)
-  # eval(parse(text = dir.main), envir = .GlobalEnv)
-  # # loading required libraries
-  # dir.main <- c("https://github.com/elqumsan/RNAseqMVA/tree/master/R")
-  dir.main <- c("~/RNAseqMVA/R/")
-  source(file.path(dir.main,"required_libraries.R"))
-  requiredBioconductor <- c("DESeq2", "edgeR")
-  RequiredBioconductorPackages(requiredBioconductor)
+
+#  dir.main <- c("~/RNAseqMVA/R/")
+#  source(file.path(dir.main,"required_libraries.R"))
+#  requiredBioconductor <- c("DESeq2", "edgeR")
+#  RequiredBioconductorPackages(requiredBioconductor)
 
   if (method == "DESeq2") {
-    message("\t\tInstantaite DESeq2 object ")
+    message("\t\tInstantiate DESeq2 object ")
     ## Create a DESeqDataset object from the count table
-    dds <- DESeqDataSetFromMatrix((dataTable), as.data.frame(classes), ~ classes  )
+    dds <- DESeqDataSetFromMatrix(dataTable, as.data.frame(classes), ~ classes  )
 
     ## Run  differential expression analysis with DESeq2
     dds <- DESeq(dds)
@@ -89,17 +93,20 @@ DEGordering <- function( dataTable,
       "stat",
       "pvalue",
       "padj" )
+
+    message("\tFinishing from DESeq2 differntial expression analysis")
+
     if (randomized){
-    #result$DEG.DESeq2.randomized <- result$DEG.DESeq2
-    result$geneRandomized <-sample( result$geneOrder, replace = F)
-    result$randomizedDataTable <- result$orderedDataTable[sample(result$geneRandomized) ,]
-    result$randomized <- "randomized-DESeq2"
+      #result$DEG.DESeq2.randomized <- result$DEG.DESeq2
+      result$geneRandomized <-sample( result$geneOrder, replace = F)
+      result$randomizedDataTable <- result$orderedDataTable[sample(result$geneRandomized) ,]
+      result$randomized <- "randomized-DESeq2"
     }
 
   } else if (method == "edgeR") {
 
     ## Build a "model matrix" from the class labels
-    message("\t\tInstantaite edgeR object ")
+    message("\t\tInstantiating edgeR object ")
 
     designMat <- model.matrix(~ classes)
     #dim(designMat)
@@ -130,9 +137,10 @@ DEGordering <- function( dataTable,
 
     ## Fit edgeR model for differential expression analysis
     message("\t\tedgeR model fitting")
-    fit <- glmFit(dgList, designMat)
-    lrt <- glmLRT(fit)
-
+    fit <-   glmFit(dgList, designMat)
+#    message("\tFinishig fit settable for closure the fitted object from edgeR ")
+    lrt <-  glmLRT(fit)
+#   message("\tFinishig lrt settable for closure the fitted object from edgeR ")
     #View(lrt$table)
 
     ## we can explore the results from topTags function
@@ -157,6 +165,8 @@ DEGordering <- function( dataTable,
 
     result$orderedDataTable <- dataTable[result$geneOrder, ]
     result$method <- "edgeR"
+    message("\tFinishing from edgeR differntial expression analysis")
+
 
     if (randomized){
       #result$DEG.edgeR.randomized <- result$DEG.edgeR

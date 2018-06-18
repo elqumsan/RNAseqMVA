@@ -7,47 +7,51 @@ image.dir <- file.path( parameters$dir$memoryImages, parameters$recountID)
 dir.create(image.dir, showWarnings = FALSE, recursive = TRUE)
 image.file <- file.path(image.dir, paste(sep = "", "train_test_no._of_PCs_",parameters$recountID , ".Rdata"))
 
-#data.type <- "log2norm.prcomp.centred"
-#data.type <- "log2norm"
-#data.type <- parameters$data.types["prcomp"]
-#data.type <- "log2norm.prcomp.centred.scaled"
 
-##### Define all the train indices for all the iterations, in order to using the same training\testing parts with different classifiers and data type. #####
-# if (parameters$identicalTrainTest) {
-#   ## New option: define all the train indices for all the iterations, in order to use the same training/testing sets between dfferent classifiers and data types
-#   trainIndices <- list()
-#   for(i in 1:parameters$iterations) {
-#     n <- nrow(log2norm$Counts)
-#     train.size <- round(parameters$trainingProportion * n)
-#     trainIndices [[i]] <- sample(1:n, size = train.size, replace = FALSE)
-#   }
-# } else {
-#   ## First option: select different indices at each experiment
-#   trainIndices = NULL
-# }
+## For debug: reset the parameteres for all the study cases
+## This is used to re-run the analyses on each study case after having changed some parameters in the yaml-specific configuration file
+reload.parameters <- TRUE
+if (reload.parameters) {
+  project.parameters <- yaml.load_file(configFile)
+  project.parameters <- initParallelComputing(project.parameters)
+  if(exists("studyCases")) {
+    for (recountID in names(studyCases)) {
+      parameters <- initRecountID(recountID, project.parameters)
+      studyCases[[recountID]]$parameters <- parameters
+      for (dataSetName in names(studyCases[[recountID]]$datasetsForTest)) {
+        pc.numbers <- c(2, 3, 4, 5, 6, 7,
+                        seq(from=10, to=nrow(studyCases[[recountID]]$datasetsForTest$log2normPCs$dataTable)-1, by = 10), nrow(studyCases[[recountID]]$datasetsForTest$log2normPCs$dataTable))
 
-#### iterate over permutation status ####
-# pc.numbers <- c(2, 3, 4, 5, 6, 7,
-#                 seq(from=10, to=ncol(log2norm.prcomp.centred.scaled$x)-1, by = 10), ncol(log2norm.prcomp.centred.scaled$x))
-# pc.nb <- 4 ## Default or quick test
+        studyCases[[recountID]]$parameters$pc.numbers <- pc.numbers
+        studyCases[[recountID]]$datasetsForTest[[dataSetName]]$parameters <- parameters
+      }
+      #  print (studyCases[[recountID]]$parameters$dir$tablesDetail)
+    }
+  }
+}
 
-
-if (parameters$compute) {
+if (project.parameters$global$compute) {
 
   train.test.results.all.PCs.per.classifier <- list()
-  studyCases$PCsVar <- PCsWithTrainTestSets(studyCases$filtered)
-  dataset <- studyCases$PCsVar
 
-  for (classifier in parameters$classifiers) {
+  ## Loop over recountIDs
+   for (recountID in selectedRecountIDs) {
+
+   #  train.test.results.all.PCs.per.classifier[[recountID]] <- list() ## Instantiate an entry per recountID
+     parameters <- studyCases[[recountID]]$parameters
+  #studyCases$PCsVar <- PCsWithTrainTestSets(studyCases$filtered)
+  dataset <- studyCases[[recountID]]$datasetsForTest$log2normPCs$dataTable
+
+  for (classifier in project.parameters$global$classifiers) {
 
   ## List to store all results
   train.test.results.No.PCs <- list()
 
   message.with.time("Train/test all computations with constant training proportion :",
-                    signif(parameters$trainingProportion, digits = 3) )
+                    signif(project.parameters$global$trainingProportion, digits = 3) )
   #for (k in parameters$knn$k) {
   #    for (classifier in classifier) {
-  message.with.time("\tTrain/test, k=", parameters$knn$k, "; classifier=", classifier)
+  message.with.time("\tTrain/test, ", "; classifier=", classifier)
   ## iterate over data types
   #   for (data.type in parameters$data.types) {
   # if (data.type == "raw") {
@@ -77,9 +81,12 @@ if (parameters$compute) {
 
 
   #### Associate each analysis of real data with a permutation test ####
-  for (permute in c(FALSE, TRUE)) {
+  permute <- FALSE
+  for (permute in project.parameters$global$permute) {
+    data.type <- "log2normPCs"
 
-   # datasets <- list(studyCases$filtered, studyCases$norm ,studyCases$log2norm)
+  dataset   <-studyCases[[recountID]]$datasetsForTest[[data.type]]
+    # datasets <- list(studyCases$filtered, studyCases$norm ,studyCases$log2norm)
 
 
 
@@ -108,20 +115,26 @@ if (parameters$compute) {
 
 
     #### Iterate over PC numbers ####
-    for (pc.nb in dataset$pc.numbers) {
+    for (pc.nb in studyCases[[recountID]]$parameters$pc.numbers) {
 
       ## Select the first N principal components
-      first.pcs <- data.frame(dataset$PCs[,1:pc.nb])
-      colnames(first.pcs) <- colnames(dataset$PCs)[1:pc.nb]
-      dataset$firstPCs[[pc.nb]] <- first.pcs
+      first.pcs <- data.frame(t(dataset$prcomp$x[,1:pc.nb]))
+      rownames(first.pcs) <- rownames(t(dataset$prcomp$x[,1:pc.nb]))
+       dataset$dataTable <- first.pcs
+
+      # dataset$firstPCs[[pc.nb]] <- first.pcs
      # variable.type <- paste(sep="", "PC_1-", pc.nb)
 
       ## define experiment prefix
+      # currentOutputParameters <- outputParameters(dataset = dataset, classifier = classifier,permute = permute, createDir = TRUE)
       exp.prefix <-
         paste(sep = "_", classifier, dataset$ID  , dataset$dataType, "nb_of_PCs", pc.nb)
       if (permute) {
-        exp.prefix <- paste(sep = "_", exp.prefix, perm.prefix)
+        exp.prefix <- paste(sep = "_", exp.prefix,parameters$perm.prefix)
       }# end if permuted class
+
+      message (format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", paste("Experiment prefix: ", exp.prefix))
+
 
       train.test.results.No.PCs[[exp.prefix]] <-
         IterateTrainingTesting (
@@ -132,28 +145,32 @@ if (parameters$compute) {
           classifier = classifier,
          # variable.type = "PC_comp",
           #trainingProportion = parameters$trainingProportion,
-          file.prefix = exp.prefix,
-          permute = permute,
-          k = parameters$knn$k,
-          verbose = parameters$verbose
+          # file.prefix = exp.prefix,
+          permute = permute
+          # k = parameters$knn$k,
+          # verbose = parameters$verbose
         )
       } # end iteration over nb of PCs
 
    } # end of permutation
 
+
   #### Print the results of the effect of the number of PCs on the efficiancy of each classifier classifier ####
   ErrorRateBoxPlot(experimentList = train.test.results.No.PCs,
                    classifier = classifier,
-                   data.type = parameters$data.types["prcomp"],
+                   data.type = dataset$dataType,
                    #variable.type = "number_of_PCs",
                    main = paste("Impact of the number of PCs on,", classifier, "\n,",parameters$recountID,";",
                                 parameters$iterations , "iterations,",
-                                dataset$dataType , sep = ""),
-                   variablesType = dataset$variablesType)
+                                dataset$dataType , sep = "")
+                   #variablesType = project.parameters$global$variables.type[[2]]
+  )
 
-  train.test.results.all.PCs.per.classifier[[classifier]] <- train.test.results.No.PCs
 
+#  train.test.results.all.PCs.per.classifier[[recountID]][[classifier]] <- train.test.results.No.PCs
    }  # end of loop over classifiers
+
+  } # end loop over recountIDs
  }  # end of if computation
 
 
