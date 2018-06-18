@@ -7,7 +7,7 @@
 MergeRuns(runs)
 }
 \arguments{
-\item{runs}{an object of the class countTableWithClasses}
+\item{runs}{an object of the class DataTableWithClasses}
 
 \item{sampleIdColumn="geo_accession"}{name of the column of the pheno table which contains the sample IDs. GEO accession is preferred because it is widely used, but it is sometimes not defined. In such case, the "sample" column should be used.}
 
@@ -16,7 +16,7 @@ MergeRuns(runs)
 \value{
 this is original cout table witout multipl runs per sample
  \itemize{
-   \item mergedRuns thia is the count table after marging the runs to be original count table after get ride of the multipl run per sample.
+   \item mergedRuns that is the count table after marging the runs to be original count table after get ride of the multipl run per sample.
  }
 mergedRuns
 }
