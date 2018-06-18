@@ -7,7 +7,7 @@
 \method{RunedgeR}{StudyCase}(self)
 }
 \arguments{
-\item{self}{object}
+\item{self}{object belong to StudyCase class}
 }
 \value{
 a clone of the input StudyCase object with an added
@@ -16,4 +16,7 @@ where features have been re-ordered by increasing adjusted p-value.
 }
 \description{
 run edgeR on an object of class StudyCase to test differential expression on each feature of a data table, and order variables by increasing adjusted p-value.
+}
+\author{
+Mustafa AbuElQumsan and Jacques van Helden
 }

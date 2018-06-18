@@ -7,7 +7,7 @@
 MergeRuns(runs)
 }
 \arguments{
-\item{runs}{an object of the class DataTableWithClasses}
+\item{runs}{an object of the class countTableWithClasses}
 
 \item{sampleIdColumn="geo_accession"}{name of the column of the pheno table which contains the sample IDs. GEO accession is preferred because it is widely used, but it is sometimes not defined. In such case, the "sample" column should be used.}
 

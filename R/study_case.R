@@ -1,7 +1,6 @@
 #' @title Create a StudyCase object, load RecountID dataset, and generate datasets.
 #' @author Jacques van Helden and Mustafa AbuElQumsan
 #' @description Create a StudyCase object, load RecountID dataset, and run preprocessing to generate the DataTableWitthClasses objects.
-
 #' @param recountID A valide ID for an object of the ReCount2 database
 #' @param parameters recountID-specific parameters specified in a YAML-formatted configuration file
 #'
@@ -107,7 +106,8 @@ StudyCase  <- function (recountID, parameters) {
 
   #### DESeq2-sorted variables ####
   if ("DESeq2" %in% project.parameters$global$ordering.methods) {
-    RunDESeq2(self)
+
+   RunDESeq2(self)
     # message.with.time("Defining gene order according to DESeq2 differential expression")
     #
     # self$log2norm_DESeq2_sorted <- self$datasetsForTest$log2norm
@@ -126,18 +126,18 @@ StudyCase  <- function (recountID, parameters) {
   #### edgeR-sorted variables ####
   if ("edgeR" %in% project.parameters$global$ordering.methods) {
     message.with.time("Defining gene order according to edgeR differential expression")
-
-    self$log2norm_edgeR_sorted <- self$datasetsForTest$log2norm
-    self$log2norm_edgeR_sorted$edgeR  <-
-      DEGordering(self$datasetsForTest$filtered,
-                  method = "edgeR", randomized = TRUE )
-    self$DEGdataSets$edgeR$dataType <- "log2norm_edgeR_ordered"
-
-    ## Note: we use the log2norm as variables,
-    ## but sort them according to edgeR,
-    ## which was based on the raw counts
-    self$log2norm_edgeR_sorted$dataTable <-
-      self$log2norm_edgeR_sorted$dataTable[self$log2norm_edgeR_sorted$edgeR$geneOrder, ]
+     RunedgeR(self)
+    # self$log2norm_edgeR_sorted <- self$datasetsForTest$log2norm
+    # self$log2norm_edgeR_sorted$edgeR  <-
+    #   DEGordering(self$datasetsForTest$filtered,
+    #               method = "edgeR", randomized = TRUE )
+    # self$DEGdataSets$edgeR$dataType <- "log2norm_edgeR_ordered"
+    #
+    # ## Note: we use the log2norm as variables,
+    # ## but sort them according to edgeR,
+    # ## which was based on the raw counts
+    # self$log2norm_edgeR_sorted$dataTable <-
+    #   self$log2norm_edgeR_sorted$dataTable[self$log2norm_edgeR_sorted$edgeR$geneOrder, ]
   }
 
 
@@ -145,24 +145,24 @@ StudyCase  <- function (recountID, parameters) {
 
     message.with.time("Computing variables importance by Random Forest (RF), and ordering features by decreasing importance. ")
     # ## Clone the log2norm object to copy all its parameters
+    RunViRf(self)
 
-
-    self$log2norm_ViRf_sorted <- self$datasetsForTest$log2norm
-    self$log2norm_ViRf_sorted$dataType <- "log2normViRf"
-    rf.model  <- randomForest(
-      x = t(result$log2norm$dataTable),
-      y =  as.factor( result$log2norm$classLabels),
-      xtest = t(result$log2norm$dataTable), importance = T, keep.forest = T)
-    variable.importance <- importance(rf.model, type = 1, scale = F)
-    ordered.varaible.importance <-order(variable.importance[,1],decreasing = T)
-    ordered.dataTable.by.importace <-result$log2norm$dataTable[ordered.varaible.importance, ]
-    sig.variables <- round(nrow(ordered.dataTable.by.importace) * 0.75)
-    ordered.dataTable.by.importance  <- ordered.dataTable.by.importace[1:sig.variables, ]
-    self$log2norm_ViRf_sorted$viRf <- rf.model
-    self$log2norm_ViRf_sorted$ordereviRf <- ordered.varaible.importance
-    self$log2norm_ViRf_sorted$sigviRf <- ordered.dataTable.by.importance
-    self$log2norm_ViRf_sorted$orderedDataTable <- ordered.dataTable.by.importace
-    self$log2norm_ViRf_sorted$dataTable <- ordered.dataTable.by.importace
+    # self$log2norm_ViRf_sorted <- self$datasetsForTest$log2norm
+    # self$log2norm_ViRf_sorted$dataType <- "log2normViRf"
+    # rf.model  <- randomForest(
+    #   x = t(result$log2norm$dataTable),
+    #   y =  as.factor( result$log2norm$classLabels),
+    #   xtest = t(result$log2norm$dataTable), importance = T, keep.forest = T)
+    # variable.importance <- importance(rf.model, type = 1, scale = F)
+    # ordered.varaible.importance <-order(variable.importance[,1],decreasing = T)
+    # ordered.dataTable.by.importace <-result$log2norm$dataTable[ordered.varaible.importance, ]
+    # sig.variables <- round(nrow(ordered.dataTable.by.importace) * 0.75)
+    # ordered.dataTable.by.importance  <- ordered.dataTable.by.importace[1:sig.variables, ]
+    # self$log2norm_ViRf_sorted$viRf <- rf.model
+    # self$log2norm_ViRf_sorted$ordereviRf <- ordered.varaible.importance
+    # self$log2norm_ViRf_sorted$sigviRf <- ordered.dataTable.by.importance
+    # self$log2norm_ViRf_sorted$orderedDataTable <- ordered.dataTable.by.importace
+    # self$log2norm_ViRf_sorted$dataTable <- ordered.dataTable.by.importace
   }
 
   message("\t\tInstantiated an object of class StudyCase for recountID\t", recountID)
@@ -204,8 +204,9 @@ print.StudyCase <- function(self){
 
 
 #' @title run edgeR to test differential expression on each feature of a data table.
-#' @description
-#' @param self object
+#' @description run edgeR on an object of class StudyCase to test differential expression on each feature of a data table, and order variables by increasing adjusted p-value.
+#' @author Mustafa AbuElQumsan and Jacques van Helden
+#' @param self object belong to StudyCase class
 #' @return an object of the same class as the input object
 #' @export
 RunedgeR <- function(self) {
@@ -217,7 +218,8 @@ RunedgeR <- function(self) {
 
 #' @title run edgeR on an object of class StudyCase
 #' @description run edgeR on an object of class StudyCase to test differential expression on each feature of a data table, and order variables by increasing adjusted p-value.
-#' @param self object
+#' @author Mustafa AbuElQumsan and Jacques van Helden
+#' @param self object belong to StudyCase class
 #' @return a clone of the input StudyCase object with an added
 #' DataTableWithTrainTestSets containing the log2norm data table
 #' where features have been re-ordered by increasing adjusted p-value.
@@ -248,8 +250,9 @@ RunedgeR.StudyCase <- function(self) {
 
 
 #' @title run DESeq2 to test differential expression on each feature of a data table.
-#' @description
-#' @param self object
+#' @description run DESeq2 on an object of class StudyCase to test differential expression on each feature of a data table, and order variables by increasing adjusted p-value.
+#' @author Mustafa AbuElQumsan and Jacques van Helden
+#' @param self object belong to StudyCase class
 #' @return an object of the same class as the input object
 #' @export
 RunDESeq2 <- function(self) {
@@ -261,7 +264,8 @@ RunDESeq2 <- function(self) {
 
 #' @title run DESeq2 on an object of class StudyCase
 #' @description run DESeq2 on an object of class StudyCase to test differential expression on each feature of a data table, and order variables by increasing adjusted p-value.
-#' @param self object
+#' @author Mustafa AbuElQumsan and Jacques van Helden
+#' @param self object belong to StudyCase class.
 #' @return a clone of the input StudyCase object with an added
 #' DataTableWithTrainTestSets containing the log2norm data table
 #' where features have been re-ordered by increasing adjusted p-value.
@@ -292,3 +296,49 @@ RunDESeq2.StudyCase <- function(self) {
 
 
 
+#' @title run variable importance by random Forest to on an object of class StudyCase.
+#' @description run variable importance by random Forest to test importance on each feature of a data table.
+#' @author Mustafa AbuElQumsan and Jacques van Helden
+#' @param self object belong to StudyCase class.
+#' @return an object of the same class as the input object
+#' @export
+RunViRf <- function(self) {
+  message("\tRunning variable importance from Random Forest (RunViRf) for object of class ", paste(collapse=", ", class(self)))
+  UseMethod("RunViRf", self)
+  return(self)
+}
+
+
+#' @title run variable importance by random Forest on an object of class StudyCase
+#' @description run variable importance by random Forest on an object of class StudyCase to test importance on each feature of a data table, and order variables by decreasing the importance of features in dataTable.
+#' @author Mustafa AbuElQumsan and Jacques van Helden
+#' @param self object belong to StudyCase class.
+#' @return a clone of the input StudyCase object with an added
+#' DataTableWithTrainTestSets containing the log2norm data table
+#' where features have been re-ordered by decreasing the importance of the features.
+#' @export
+RunViRf.StudyCase <- function(self) {
+  message.with.time("Defining gene order according to variable importance by random Forest")
+
+  self$datasetsForTest$log2norm_ViRf_sorted <- self$datasetsForTest$log2norm
+  self$datasetsForTest$log2norm_ViRf_sorted$dataType <- "log2normViRf"
+
+  rf.model  <- randomForest(
+    x = t(self$datasetsForTest$log2norm$dataTable),
+    y =  as.factor( self$datasetsForTest$log2norm$classLabels),
+    xtest = t(self$datasetsForTest$log2norm$dataTable), importance = T, keep.forest = T)
+  variable.importance <- importance(rf.model, type = 1, scale = F)
+  ordered.varaible.importance <-order(variable.importance[,1],decreasing = T)
+
+  ordered.dataTable.by.importace <-self$datasetsForTest$log2norm$dataTable[ordered.varaible.importance, ]
+  sig.variables <- round(nrow(ordered.dataTable.by.importace) * 0.75)
+  ordered.dataTable.by.importance  <- ordered.dataTable.by.importace[1:sig.variables, ]
+
+  self$datasetsForTest$log2norm_ViRf_sorted$viRf <- rf.model
+  self$datasetsForTest$log2norm_ViRf_sorted$ordereviRf <- ordered.varaible.importance
+  self$datasetsForTest$log2norm_ViRf_sorted$sigviRf <- ordered.dataTable.by.importance
+  self$datasetsForTest$log2norm_ViRf_sorted$orderedDataTable <- ordered.dataTable.by.importace
+  self$datasetsForTest$log2norm_ViRf_sorted$dataTable <- ordered.dataTable.by.importace
+  return(self)
+
+}

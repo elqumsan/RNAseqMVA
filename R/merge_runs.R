@@ -3,7 +3,7 @@
 #' @description In ReCount data, some samples are sequenced over several runs, which increases the coverage but creates problems
 #'  # because technical replicates come from the same sample and are thus not independent.
 #' # We thus merge the runs per sample, in order to obtain a single vector of read counts per sample.
-#' @param runs an object of the class DataTableWithClasses
+#' @param runs an object of the class countTableWithClasses
 #' @param sampleIdColumn="geo_accession"  name of the column of the pheno table which contains the sample IDs. GEO accession is preferred because it is widely used, but it is sometimes not defined. In such case, the "sample" column should be used.
 #' @param verbose=FALSE if TRUE, write messages to indicate the progressing of the tasks
 #' @return  this is original cout table witout multipl runs per sample
@@ -19,15 +19,15 @@ MergeRuns <- function(runs) {
   message.with.time("MergeRuns()\t", "recountID = ", parameters$recountID)
 
 
-  ## Check that the run argument belobgs to the class DataTableWithClasses
+  ## Check that the run argument belobgs to the class countTableWithClasses
   # class(runs)
   ## Check the class of input object
-  if (!is(runs, "DataTableWithClasses")) {
-    stop("MergeRuns(): 'runs' parameter must belong to class DataTableWithClasses. ")
+  if (!is(runs, "countTableWithClasses")) {
+    stop("MergeRuns(): 'runs' parameter must belong to class countTableWithClasses. ")
   }
 
 
-  ## Check required parameters
+rameters
   parameters <- runs$parameters
   for (p in c("sampleIdColumn", "classColumn", "verbose")) {
     if (is.null(parameters[[p]])) {
@@ -39,7 +39,7 @@ MergeRuns <- function(runs) {
   }
 
   ## Extract gene names from the run count table
-  geneNames <- rownames(runs$dataTable)
+  geneNames <- rownames(runs$countTable)
   nbGenes <- length(runs$geneNames)
 
   ## Extract sample names from the specified column of the pheno table
@@ -48,15 +48,15 @@ MergeRuns <- function(runs) {
 
   message("\tMerging runs from count table (",
           nbGenes, " genes, ",
-          ncol(runs$dataTable), " runs), ",
+          ncol(runs$countTable), " runs), ",
           nbSamples, " unique samples. ",
           "\n\tColumn from the pheno table used todefine sample IDs: ", sampleIdColumn)
   ## Build an empty count table with the right dimensions
-  dataTable <- data.frame(matrix(nrow=nrow(runs$dataTable),
+  countTable <- data.frame(matrix(nrow=nrow(runs$countTable),
                                      ncol=nbSamples))
-  colnames(dataTable) <- sampleNames
-  rownames(dataTable) <- geneNames
-  # View(dataTable[1:10, 1:20])
+  colnames(countTable) <- sampleNames
+  rownames(countTable) <- geneNames
+  # View(countTable[1:10, 1:20])
 
   ## Collect the counts for each sample by summing the counts of the corresponding runs.
   s <- 0
@@ -65,12 +65,12 @@ MergeRuns <- function(runs) {
     # if (verbose) { message("\tmerging counts for sample ", s, "/", mergedRuns$nbSamples, " ", sample) }
     iterate <- grep(pattern = sample, x = runs$phenoTable[, sampleIdColumn])
     if (length( iterate ) > 1) {
-      dataTable[,sample] <- apply(runs$dataTable[, iterate],1,sum)
+      countTable[,sample] <- apply(runs$countTable[, iterate],1,sum)
     } else {
-      dataTable[,sample] <- runs$dataTable[, iterate]
+      countTable[,sample] <- runs$countTable[, iterate]
     }
   }
-  # View(dataTable[1:10, 1:20])
+  # View(countTable[1:10, 1:20])
 
   ## Prepare a phenotable with all fields that are identical between runs
   ## This is tricky.
@@ -86,14 +86,14 @@ MergeRuns <- function(runs) {
   phenoTable <- runs$phenoTable[sample.rows, sampleFields]
   rownames(phenoTable) <- phenoTable[,sampleIdColumn]
   # View(mergedRuns$phenoTable)
-  if (nbSamples!=  ncol(dataTable)) {
+  if (nbSamples!=  ncol(countTable)) {
     stop("The number of columns in the count table must equal the number of samples. ")
   }
 
 #  message("\tCount table contains ", nbSamples, " samples (columns) and ", nbGenes, " genes (rows). ")
 
-  ## Instantiate a new object of the class DataTableWithClasses, with the merged runs
-  mergedRuns <- DataTableWithClasses(dataTable = dataTable,
+  ## Instantiate a new object of the class countTableWithClasses, with the merged runs
+  mergedRuns <- countTableWithClasses(countTable = countTable,
                                       phenoTable = phenoTable,
                                       # classColumn = classColumn,
                                       # classColors = runs$classColors,
