@@ -107,7 +107,7 @@ StudyCase  <- function (recountID, parameters) {
   #### DESeq2-sorted variables ####
   if ("DESeq2" %in% project.parameters$global$ordering.methods) {
 
-   RunDESeq2(self)
+    self <- RunDESeq2(self)
     # message.with.time("Defining gene order according to DESeq2 differential expression")
     #
     # self$log2norm_DESeq2_sorted <- self$datasetsForTest$log2norm
@@ -126,7 +126,7 @@ StudyCase  <- function (recountID, parameters) {
   #### edgeR-sorted variables ####
   if ("edgeR" %in% project.parameters$global$ordering.methods) {
     message.with.time("Defining gene order according to edgeR differential expression")
-     RunedgeR(self)
+    self <- RunedgeR(self)
     # self$log2norm_edgeR_sorted <- self$datasetsForTest$log2norm
     # self$log2norm_edgeR_sorted$edgeR  <-
     #   DEGordering(self$datasetsForTest$filtered,
@@ -145,7 +145,7 @@ StudyCase  <- function (recountID, parameters) {
 
     message.with.time("Computing variables importance by Random Forest (RF), and ordering features by decreasing importance. ")
     # ## Clone the log2norm object to copy all its parameters
-    RunViRf(self)
+    self <- RunViRf(self)
 
     # self$log2norm_ViRf_sorted <- self$datasetsForTest$log2norm
     # self$log2norm_ViRf_sorted$dataType <- "log2normViRf"
@@ -211,7 +211,7 @@ print.StudyCase <- function(self){
 #' @export
 RunedgeR <- function(self) {
   message("\tRunning edgeR for object of class ", paste(collapse=", ", class(self)))
-  UseMethod("RunedgeR", self)
+  self <- UseMethod("RunedgeR", self)
   return(self)
 }
 
@@ -257,7 +257,7 @@ RunedgeR.StudyCase <- function(self) {
 #' @export
 RunDESeq2 <- function(self) {
   message("\tRunning DESeq2 for object of class ", paste(collapse=", ", class(self)))
-  UseMethod("RunDESeq2", self)
+  self <- UseMethod("RunDESeq2", self)
   return(self)
 }
 
@@ -304,7 +304,7 @@ RunDESeq2.StudyCase <- function(self) {
 #' @export
 RunViRf <- function(self) {
   message("\tRunning variable importance from Random Forest (RunViRf) for object of class ", paste(collapse=", ", class(self)))
-  UseMethod("RunViRf", self)
+  self <- UseMethod("RunViRf", self)
   return(self)
 }
 
