@@ -7,6 +7,10 @@
 ## choose the data.type in return we will pass the data.type for each experiment.
 ## Choice of the classifier
 
+## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
+allVariables.mem.image <- file.path(
+  project.parameters$global$dir$memoryImages,
+  paste(sep="", "classif_eval_all_variables_", Sys.Date(), ".Rdata"))
 
 ## For debug: reset the parameters for all the study cases
 ## This is used to re-run the analyses on each study case after
@@ -26,9 +30,6 @@ if (reload.parameters) {
     }
   }
 }
-
-## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
-memory.image.file <- file.path(project.parameters$global$dir$memoryImages, "classifier_eval_with_all_variables.Rdata")
 
 
 ## Run the whole computation if required
@@ -101,7 +102,7 @@ if (project.parameters$global$compute) {
             permute = permute
           )
 
-      } # End iterations over datasets
+      } # End iterations over data types
     } # End iterations over permutation
 
 
@@ -126,31 +127,14 @@ if (project.parameters$global$compute) {
     # train.test.results.all.variables.per.classifier[[recountID]][[classifier]] <- train.test.results.all.variables
 
   } # end loop over classifiers
-} # end loop over recountIDs
+} # end if compute
 
 ## Save a memory image that can be re-loaded next time to avoid re-computing all the normalisation and so on.
 if (project.parameters$global$save.image) {
   dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
-  message.with.time("Saving memory image after eval of all variables: ", memory.image.file)
-  save.image(file = memory.image.file)
+  message.with.time("Saving memory image after eval of all variables: ", allVariables.mem.image)
+  save.image(file = allVariables.mem.image)
 }
-
-##### if computation not required, you can load the image file without any computations ####
-# } else {
-#   # reload previous results if exist
-#   if (file.exists(memory.image.file)) {
-#     message ("Reloading memory image ", memory.image.file)
-#     load(memory.image.file)
-#   } else {
-#     stop("Cannot reload memory image file ", memory.image.file)
-#   }
-
-}  # end of "if compute"
-
-
-} # end else if compute statment
-
-
 
 ###############################################################################################
 #### What is better to using all PCs versus all variables with KNN classifier? ####
