@@ -16,7 +16,7 @@ MergeRuns(runs)
 \value{
 this is original cout table witout multipl runs per sample
  \itemize{
-   \item mergedRuns thia is the count table after marging the runs to be original count table after get ride of the multipl run per sample.
+   \item mergedRuns that is the count table after marging the runs to be original count table after get ride of the multipl run per sample.
  }
 mergedRuns
 }
