@@ -2,8 +2,8 @@
 ## Load a count Table from recount-experiment, merge counts per sample
 ## and apply some pre-filtering (remove zero-variance and near-zero-variance genes).
 studyCases.mem.image <- file.path(
-  paste(project.parameters$global$dir$memoryImages,
-  "in_DATE",Sys.Date(),"loaded_studyCases.Rdata",sep = "_"))
+  project.parameters$global$dir$memoryImages,
+  paste(sep="", "loaded_studyCases_", Sys.Date(), ".Rdata"))
 
 
 if (project.parameters$global$reload) {
@@ -16,7 +16,7 @@ if (project.parameters$global$reload) {
 
   studyCases <- list() ## a list containing all the loaded datasets + their pre-processed data
 
-
+  #recountID <- "SRP056295"
   recountID <- "SRP042620" ## For quick test and debugging
   for (recountID in selectedRecountIDs) {
 
