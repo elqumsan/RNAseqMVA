@@ -197,16 +197,16 @@ loadRecountExperiment <- function(recountID = recountID,
 
 
 ## Histogram of mean counts per gene for a give class (Bone marrow here)
-counts <- as.vector(unlist(studyCases[[recountID]]$datasetsForTest$filtered$dataTable))
-hist(log2(counts + epsilon), breaks=100,
-     main = paste(recountID,
-                  " – Histogram of log2(counts)"),
-     xlab = "log2(counts)",
-     ylab = "Number of genes",
-     col="#CCBBFF")
-legend("topright",
-       legend = paste("Max counts per gene =",
-                      prettyNum(max(counts), big.mark = ",")))
+# counts <- as.vector(unlist(studyCases[[recountID]]$datasetsForTest$filtered$dataTable))
+# hist(log2(counts + epsilon), breaks=100,
+#      main = paste(recountID,
+#                   " – Histogram of log2(counts)"),
+#      xlab = "log2(counts)",
+#      ylab = "Number of genes",
+#      col="#CCBBFF")
+# legend("topright",
+#        legend = paste("Max counts per gene =",
+#                       prettyNum(max(counts), big.mark = ",")))
 
 
 normcounts <-studyCases[[recountID]]$datasetsForTest$norm$dataTable
