@@ -344,8 +344,24 @@ RunViRf.StudyCase <- function(self) {
 }
 
 
+#' @title Draw an histogram with the raw counts per gene
+#' @description to carify the distribution of the raw counts per gene.
+#' @author Mustafa AbuElQumsan and Jacques van Helden
+#' @param self object belong to StudyCase class.
+#' @return an object of the same class as the input object
+#' @export
+histCountsPerGeneClass <- function(self) {
+  message("\tRunning Drawing an histogram with the raw count per gene for object of class ", paste(collapse=", ", class(self)))
+ # self <- UseMethod("histCountsPerGeneClass", self)
+  UseMethod("histCountsPerGeneClass", self)
+ # return(self)
+}
+
 #' @title Draw an histogram with the raw  counts per gene
 #' @author Jacques van Helden & Mustafa AbuElQumsan
+#' @param self object belong to StudyCase class.
+#' @return an object of the same class as the input object
+#' @export
 histCountsPerGeneClass.StudyCase <- function(self) {
   counts <- as.vector(unlist(self$datasetsForTest$filtered$dataTable))
   hist(log2(counts + epsilon), breaks=100,
@@ -360,6 +376,17 @@ histCountsPerGeneClass.StudyCase <- function(self) {
 }
 
 #' @title Draw an XY plot to compare the mean counts per gene for two user-specified class
+#' @description Drawing an XY plot to compare the mean counts per gene for two user-specified class of the raw counts per gene.
+#' @author Mustafa AbuElQumsan and Jacques van Helden
+#' @param self object belong to StudyCase class.
+#' @return an object of the same class as the input object
+#' @export
+XYplot <- function(self) {
+  message("\tRunning Drawing an XY plot to compare the mean counts per gene with the raw count per gene for object of class ", paste(collapse=", ", class(self)))
+  # self <- UseMethod("histCountsPerGeneClass", self)
+  UseMethod("XYplot", self)
+  # return(self)
+}
 XYplot.StudyCase <- function(self,
                              class1,
                              class2) {
