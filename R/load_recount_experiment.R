@@ -209,37 +209,37 @@ loadRecountExperiment <- function(recountID = recountID,
 #                       prettyNum(max(counts), big.mark = ",")))
 
 
-normcounts <-studyCases[[recountID]]$datasetsForTest$norm$dataTable
-gene.mean.per.class <- by(t(normcounts), INDICES = studyCases[[recountID]]$datasetsForTest$norm$classLabels, FUN = colMeans)
-
-epsilon <- 0.1
-x1 <- gene.mean.per.class$`Bone marrow` + epsilon
-x2 <- gene.mean.per.class$`Heparinised blood` + epsilon
-
-
-## XY plot
-plot (x = log2(x1),
-      y = log2(x2),
-      main = paste(recountID, "\nlog2(scaled counts) per gene"),
-      xlab = "Bone marrow ",
-      ylab = "Heparinised blood",
-      las = 1,
-      col = densCols(x = log2(x1), y = log2(x2)),
-      panel.first = grid())
-abline(a = 0, b = 1, col = "black", lwd = 1)
-
-## MA plot
-A <- (log2(x1) + log2(x2))/2
-M <- log2(x1) - log2(x2)
-plot (x = A, y = M,
-      main = paste(recountID, "\nMA plot"),
-      xlab = "A", ylab = "M",
-      col = densCols(x = A, y = M),
-      panel.first = grid())
-abline(h = 0, col = "black", lwd = 1)
-
-
-# plot(gene.mean.per.class$`Bone marrow` + epsilon,
-#      gene.mean.per.class$`Heparinised blood` + epsilon,
-#      log="xy")
+# normcounts <-studyCases[[recountID]]$datasetsForTest$norm$dataTable
+# gene.mean.per.class <- by(t(normcounts), INDICES = studyCases[[recountID]]$datasetsForTest$norm$classLabels, FUN = colMeans)
+#
+# epsilon <- 0.1
+# x1 <- gene.mean.per.class$`Bone marrow` + epsilon
+# x2 <- gene.mean.per.class$`Heparinised blood` + epsilon
+#
+#
+# ## XY plot
+# plot (x = log2(x1),
+#       y = log2(x2),
+#       main = paste(recountID, "\nlog2(scaled counts) per gene"),
+#       xlab = "Bone marrow ",
+#       ylab = "Heparinised blood",
+#       las = 1,
+#       col = densCols(x = log2(x1), y = log2(x2)),
+#       panel.first = grid())
+# abline(a = 0, b = 1, col = "black", lwd = 1)
+#
+# ## MA plot
+# A <- (log2(x1) + log2(x2))/2
+# M <- log2(x1) - log2(x2)
+# plot (x = A, y = M,
+#       main = paste(recountID, "\nMA plot"),
+#       xlab = "A", ylab = "M",
+#       col = densCols(x = A, y = M),
+#       panel.first = grid())
+# abline(h = 0, col = "black", lwd = 1)
+#
+#
+# # plot(gene.mean.per.class$`Bone marrow` + epsilon,
+# #      gene.mean.per.class$`Heparinised blood` + epsilon,
+# #      log="xy")
 
