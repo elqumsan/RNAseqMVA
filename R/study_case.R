@@ -104,3 +104,109 @@ summary.StudyCase<- function (object){
   print( paste("rawDataTables are belonge to ", studyCases[[recountID]]$rawData$countsPerSample, "DataTablesWithClasses"))
 }
 
+<<<<<<< HEAD
+=======
+
+
+#' @title run variable importance by random Forest to on an object of class StudyCase.
+#' @description run variable importance by random Forest to test importance on each feature of a data table.
+#' @author Mustafa AbuElQumsan and Jacques van Helden
+#' @param self object belong to StudyCase class.
+#' @return an object of the same class as the input object
+#' @export
+RunViRf <- function(self) {
+  message("\tRunning variable importance from Random Forest (RunViRf) for object of class ", paste(collapse=", ", class(self)))
+  self <- UseMethod("RunViRf", self)
+  return(self)
+}
+
+
+#' @title run variable importance by random Forest on an object of class StudyCase
+#' @description run variable importance by random Forest on an object of class StudyCase to test importance on each feature of a data table, and order variables by decreasing the importance of features in dataTable.
+#' @author Mustafa AbuElQumsan and Jacques van Helden
+#' @param self object belong to StudyCase class.
+#' @return a clone of the input StudyCase object with an added
+#' DataTableWithTrainTestSets containing the log2norm data table
+#' where features have been re-ordered by decreasing the importance of the features.
+#' @export
+RunViRf.StudyCase <- function(self) {
+  message.with.time("Defining gene order according to variable importance by random Forest")
+
+  self$datasetsForTest$log2norm_ViRf_sorted <- self$datasetsForTest$log2norm
+  self$datasetsForTest$log2norm_ViRf_sorted$dataType <- "log2normViRf"
+
+  rf.model  <- randomForest(
+    x = t(self$datasetsForTest$log2norm$dataTable),
+    y =  as.factor( self$datasetsForTest$log2norm$classLabels),
+    xtest = t(self$datasetsForTest$log2norm$dataTable), importance = T, keep.forest = T)
+  variable.importance <- importance(rf.model, type = 1, scale = F)
+  ordered.varaible.importance <-order(variable.importance[,1],decreasing = T)
+
+  ordered.dataTable.by.importace <-self$datasetsForTest$log2norm$dataTable[ordered.varaible.importance, ]
+  sig.variables <- round(nrow(ordered.dataTable.by.importace) * 0.75)
+  ordered.dataTable.by.importance  <- ordered.dataTable.by.importace[1:sig.variables, ]
+
+  self$datasetsForTest$log2norm_ViRf_sorted$viRf <- rf.model
+  self$datasetsForTest$log2norm_ViRf_sorted$ordereviRf <- ordered.varaible.importance
+  self$datasetsForTest$log2norm_ViRf_sorted$sigviRf <- ordered.dataTable.by.importance
+  self$datasetsForTest$log2norm_ViRf_sorted$orderedDataTable <- ordered.dataTable.by.importace
+  self$datasetsForTest$log2norm_ViRf_sorted$dataTable <- ordered.dataTable.by.importace
+  return(self)
+
+}
+
+
+#' @title Draw an histogram with the raw  counts per gene
+#' @author Jacques van Helden & Mustafa AbuElQumsan
+histCountsPerGeneClass.StudyCase <- function(self) {
+  counts <- as.vector(unlist(self$datasetsForTest$filtered$dataTable))
+  hist(log2(counts + epsilon), breaks=100,
+       main = paste(recountID,
+                    " – Histogram of log2(counts)"),
+       xlab = "log2(counts)",
+       ylab = "Number of genes",
+       col="#CCBBFF")
+  legend("topright",
+         legend = paste("Max counts per gene =",
+                        prettyNum(max(counts), big.mark = ",")))
+}
+
+#' @title Draw an XY plot to compare the mean counts per gene for two user-specified class
+XYplot.StudyCase <- function(self,
+                             class1,
+                             class2) {
+
+  normcounts <- self$datasetsForTest$norm$dataTable
+  gene.mean.per.class <- by(
+    t(normcounts),
+    INDICES = self$datasetsForTest$norm$classLabels, FUN = colMeans)
+
+  epsilon <- 0.1
+  x1 <- gene.mean.per.class[[class1]] + epsilon
+  x2 <- gene.mean.per.class[[class2]] + epsilon
+
+
+  ## XY plot
+  plot (x = log2(x1),
+        y = log2(x2),
+        main = paste(recountID, "\nlog2(scaled counts) per gene"),
+        xlab = "Bone marrow ",
+        ylab = "Heparinised blood",
+        las = 1,
+        col = densCols(x = log2(x1), y = log2(x2)),
+        panel.first = grid())
+  abline(a = 0, b = 1, col = "black", lwd = 1)
+
+  ## MA plot
+  A <- (log2(x1) + log2(x2))/2
+  M <- log2(x1) - log2(x2)
+  plot (x = A, y = M,
+        main = paste(recountID, "\nMA plot"),
+        xlab = "A", ylab = "M",
+        col = densCols(x = A, y = M),
+        panel.first = grid())
+  abline(h = 0, col = "black", lwd = 1)
+
+}
+
+>>>>>>> f2616f4f21f0586c16190bc4b2ba7826ad19420d
