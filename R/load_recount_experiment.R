@@ -194,21 +194,52 @@ loadRecountExperiment <- function(recountID = recountID,
 
 
 ## Mustafa; you make a method of StudyCase from thi rough code
-gene.mean.per.class <- by(t(studyCases[[recountID]]$datasetsForTest$norm$dataTable), INDICES = studyCases[[recountID]]$datasetsForTest$norm$classLabels, FUN = colMeans)
 
-plot(gene.mean.per.class$`Bone marrow` + epsilon,
-     gene.mean.per.class$`Heparinised blood` + epsilon,
-     log="xy")
 
+## Histogram of mean counts per gene for a give class (Bone marrow here)
+# counts <- as.vector(unlist(studyCases[[recountID]]$datasetsForTest$filtered$dataTable))
+# hist(log2(counts + epsilon), breaks=100,
+#      main = paste(recountID,
+#                   " – Histogram of log2(counts)"),
+#      xlab = "log2(counts)",
+#      ylab = "Number of genes",
+#      col="#CCBBFF")
+# legend("topright",
+#        legend = paste("Max counts per gene =",
+#                       prettyNum(max(counts), big.mark = ",")))
+
+
+normcounts <-studyCases[[recountID]]$datasetsForTest$norm$dataTable
+gene.mean.per.class <- by(t(normcounts), INDICES = studyCases[[recountID]]$datasetsForTest$norm$classLabels, FUN = colMeans)
 
 epsilon <- 0.1
 x1 <- gene.mean.per.class$`Bone marrow` + epsilon
 x2 <- gene.mean.per.class$`Heparinised blood` + epsilon
 
+
 ## XY plot
-plot (log2(x1),  log2(x2))
+plot (x = log2(x1),
+      y = log2(x2),
+      main = paste(recountID, "\nlog2(scaled counts) per gene"),
+      xlab = "Bone marrow ",
+      ylab = "Heparinised blood",
+      las = 1,
+      col = densCols(x = log2(x1), y = log2(x2)),
+      panel.first = grid())
+abline(a = 0, b = 1, col = "black", lwd = 1)
 
 ## MA plot
-plot ((log2(x1) + log2(x2))/2, log2(x1) - log2(x2),
-      xlab="A", ylab="M")
+A <- (log2(x1) + log2(x2))/2
+M <- log2(x1) - log2(x2)
+plot (x = A, y = M,
+      main = paste(recountID, "\nMA plot"),
+      xlab = "A", ylab = "M",
+      col = densCols(x = A, y = M),
+      panel.first = grid())
+abline(h = 0, col = "black", lwd = 1)
+
+
+# plot(gene.mean.per.class$`Bone marrow` + epsilon,
+#      gene.mean.per.class$`Heparinised blood` + epsilon,
+#      log="xy")
 
