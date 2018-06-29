@@ -104,8 +104,6 @@ summary.StudyCase<- function (object){
   print( paste("rawDataTables are belonge to ", studyCases[[recountID]]$rawData$countsPerSample, "DataTablesWithClasses"))
 }
 
-<<<<<<< HEAD
-=======
 
 
 #' @title run variable importance by random Forest to on an object of class StudyCase.
@@ -209,4 +207,4 @@ XYplot.StudyCase <- function(self,
 
 }
 
->>>>>>> f2616f4f21f0586c16190bc4b2ba7826ad19420d
+
