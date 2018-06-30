@@ -4,8 +4,9 @@
 \alias{ErrorRateBoxPlot}
 \title{Function for boxplot the error rate}
 \usage{
-ErrorRateBoxPlot(experimentList, classifier, data.type, fig.height = 10,
-  fig.width = 4 + 0.2 * length(experimentList),
+ErrorRateBoxPlot(experimentList, classifier, data.type,
+  expMisclassificationRate = NULL, horizontal = TRUE, fig.height = 10,
+  fig.width = 4 + 0.2 * length(experimentList), cex.axis = 0.8,
   experimentLabels = names(experimentList), main = paste(sep = "",
   parameters$recountID, "; ", classifier, "\\n", data.type, "; ",
   parameters$iterations, "iterations"), boxplotFile = NULL,
@@ -16,6 +17,8 @@ ErrorRateBoxPlot(experimentList, classifier, data.type, fig.height = 10,
 \item{experimentList}{this is list of experiment where each cell of list error rate of the single experiment with special parameters}
 
 \item{classifier}{such are represent which classifier have been used in the analysis}
+
+\item{expMisclassificationRate}{user-specified value for the expected misclassification rate}
 
 \item{main}{is the main title of the boxplot}
 
@@ -28,8 +31,6 @@ ErrorRateBoxPlot(experimentList, classifier, data.type, fig.height = 10,
 \item{permLegend}{legend for the IterateTrainingTesting with permuted class lables.}
 
 \item{dataType}{data type(s), used to build the file prefix}
-
-\item{variablesType}{variable types (e.g. all, DEG, ...), used to build the file prefix}
 }
 \description{
 this function takes the experiment List from the error rate that are collected from the experiment.

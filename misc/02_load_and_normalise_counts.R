@@ -268,4 +268,5 @@ if (project.parameters$global$save.image) {
 ## Indicate that this script has finished running
 message.with.time("finished executing 02_load_and_normalise_counts.R")
 
-
+## Temporary
+source('misc/06_all_variables_vs_all_PCs.R')

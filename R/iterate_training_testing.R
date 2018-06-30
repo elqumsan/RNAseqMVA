@@ -36,7 +36,7 @@ IterateTrainingTesting <- function (dataset, ...) {
 #' @export
 IterateTrainingTesting.DataTableWithClasses <- function (dataset, ...) {
   message("\tRunning IterateTrainingTesting() with object of class\t", "DataTableWithClasses")
-  testTable <- NextMethod("IterateTrainingTesting",dataset)
+  testTable <- NextMethod("IterateTrainingTesting", dataset)
   return(testTable)
 }
 
@@ -50,7 +50,7 @@ IterateTrainingTesting.DataTableWithClasses <- function (dataset, ...) {
 #'
 #' @export
 IterateTrainingTesting.default <- function(dataset, ...){
-  message("\tFinished from IterateTrainingTesting() with object of class\t", paste(collapse = ",", class(dataset)))
+  message("\tFinished IterateTrainingTesting() with object of class\t", paste(collapse = ",", class(dataset)))
 }
 
 
