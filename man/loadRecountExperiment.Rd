@@ -5,8 +5,7 @@
 \title{Loading one count table from Recount repository by given experiment ID and then having two option one made merge run to prevent
 redundancy between multipl runs per sample.}
 \usage{
-loadRecountExperiment(recountID = recountID, parameters,
-  forceDownload = FALSE, ...)
+loadRecountExperiment(recountID, parameters, forceDownload = FALSE, ...)
 }
 \arguments{
 \item{recountID}{identifier of one study in ReCount database}

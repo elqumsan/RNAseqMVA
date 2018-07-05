@@ -76,7 +76,7 @@ loadCounts <- function(recountID,
   ################################################
   # loading count Data from recount_experiment, Via our wrapper which will Automatically merge the runs by
   # sample in order to obtain sample-wise count rather than run-wise counts.
-  experiment <- loadRecountExperiment(recountID=recountID, parameters, ...)
+  experiment <- loadRecountExperiment(recountID = recountID, parameters = parameters, ...)
                                      #  mergeRuns=mergeRuns,
                                      #  sampleIdColumn=sampleIdColumn,
                                      #  dir.workspace = dir.workspace,

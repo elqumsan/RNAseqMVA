@@ -45,7 +45,7 @@
 #' @import S4Vectors
 #'
 #' @export
-loadRecountExperiment <- function(recountID = recountID,
+loadRecountExperiment <- function(recountID,
                                   parameters,
                                   # dir.workspace = parameters$dir$workspace,
                                   # mergeRuns = parameters$mergeRuns,
@@ -118,7 +118,7 @@ loadRecountExperiment <- function(recountID = recountID,
   if (verbose) {
     message("\tScaling counts")
   }
-  rse <- scale_counts(rse_gene, by="mapped_reads")
+  rse <- scale_counts(rse_gene, by = "mapped_reads")
 
   #### Extract a matrix with the counts per feature for each run ####
   if (verbose) {
