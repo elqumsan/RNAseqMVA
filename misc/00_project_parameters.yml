@@ -16,8 +16,8 @@ global: ## Global parameters are those who are the samee across all study cases
   save.tables: TRUE ## If TRUE, save tab-delimited files with the results
   save.image: TRUE
   draw.plot : TRUE
-  classifiers: ["svm", "knn"]
-  # classifiers: ["svm", "knn","rf"]
+#  classifiers: ["svm", "knn"]
+   classifiers: ["svm", "knn","rf"]
   # classifiers: ["knn","rf","svm"] # TO ADD LATER: "lda", "qda" + the one suggested by Aitor
 
   data.types: ["countsPerRun", "originalCounts", "filtered", "norm", "log2norm", "log2normPCs", "DEG", "V.importance"]
