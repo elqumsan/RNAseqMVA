@@ -111,7 +111,7 @@ if (project.parameters$global$compute) {
 
       ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
                        classifier = classifier,
-                       #experimentLabels = short.labels,
+                       experimentLabels = short.labels,
                        horizontal = FALSE,
                        fig.height = 8,
                        data.type = "diverse-data-types",
