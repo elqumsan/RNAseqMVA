@@ -10,7 +10,7 @@
 ## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
 allVariables.mem.image <- file.path(
   project.parameters$global$dir$memoryImages,
-  paste(sep="", "classif_eval_all_variables_", Sys.Date(), ".Rdata"))
+  paste(sep = "", "classif_eval_all_variables_", Sys.Date(), ".Rdata"))
 
 ## For debug: reset the parameters for all the study cases
 ## This is used to re-run the analyses on each study case after
@@ -19,7 +19,7 @@ reload.parameters <- TRUE
 if (reload.parameters) {
   project.parameters <- yaml.load_file(configFile)
   project.parameters <- initParallelComputing(project.parameters)
-  if(exists("studyCases")) {
+  if (exists("studyCases")) {
     for (recountID in names(studyCases)) {
       parameters <- initRecountID(recountID, project.parameters)
       studyCases[[recountID]]$parameters <- parameters
