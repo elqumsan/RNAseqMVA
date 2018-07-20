@@ -66,9 +66,7 @@
 #'  \item minSamplesPerClass: 15 ## THERE IS A BUG TO FIX: if we set this parameter to 10 (for example) the class labels must be adapted by suppressing the
 #'  \item nearZeroVarFilter: TRUE
 #'  \item na.rm: TRUE
-
 #' }
-
 #' @export
 initParallelComputing <- function(project.parameters) {
   if (!is.null(project.parameters$global$jobs)) {
