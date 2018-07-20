@@ -42,4 +42,4 @@ if (exists( "DEGordering" ,  mode="function")){
 #     source("~/RNAseqMVA/R/required_libraries.R")
 }else {
     message("such function are not provided in the RNAseqMVA package,!!!")
-  }
+}
