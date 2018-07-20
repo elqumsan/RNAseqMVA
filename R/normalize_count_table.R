@@ -36,8 +36,8 @@
 #'
 #' @export
 NormalizeSamples <- function(self,
-                             method = parameters$standardization$method,
-                             quantile = parameters$standardization$quantile,
+                             method = "quantile",
+                             quantile = 0.75,
                              log2 = TRUE,
                              epsilon = 0.1) {
 
@@ -47,30 +47,6 @@ NormalizeSamples <- function(self,
     message.with.time("Starting NormalizeSamples() for Recount experiment ID ", self[["ID"]])
   }
 
-  ## Check required parameters
-  for (p in c("standardization")) {
-    if (is.null(parameters[[p]])) {
-      stop("NormalizeSamples()\tMissing required parameter: '", p,
-           "'.\n\tPlease check configuration file. ")
-    } else {
-      assign(p, parameters[[p]])
-    }
-  }
-
-  if (is.null(parameters$standardization$method)) {
-    stop("NormalizeSamples()\tMissing required parameter: standardization method")
-  }
-  method = parameters$standardization$method
-
-  # method = parameters$standardization$method,
-  # quantile = parameters$standardization$quantile,
-
-  # counts <- self$dataTable
-  # phenoTable <- self$phenoTable
-  # classLabels  <- self$classLabels
-
-
-  #dim(self$dataTable)
   ## Compute sample-wise statistics
   message("\t", "Computing sample-wise statistics\t", recountID)
   sampleStats <- data.frame(
@@ -93,10 +69,9 @@ NormalizeSamples <- function(self,
   }
 
   if (method == "quantile") {
-    if (is.null(parameters$standardization$quantile)) {
+    if (!exists("quantile")) {
       stop("NormalizeSamples()\tMissing required parameter: standardization quantile")
     }
-    quantile = parameters$standardization$quantile
 
     message("\tNormalizing counts. Method = edgeR RLE.")
     d <- DGEList(counts = self$dataTable, group = self$classLabels)
