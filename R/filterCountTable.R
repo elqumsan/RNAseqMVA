@@ -32,8 +32,6 @@
 #' filteredData <- filterDataTable(dataTable, phenoTable, classColumn=c("tissue", "cell.type"), minSamplesPerClass=5)
 #' table(filteredData$classLabels)
 #'
-#' @import recount
-#' @import SummarizedExperiment
 #' @import caret
 #' @import lattice
 #' @import ggplot2
@@ -44,6 +42,9 @@ filterDataTable <- function(rawCounts,
                              # nearZeroVarFilter = parameters$nearZeroVarFilter,
                              draw.plot = TRUE) {
 
+  requiredBioconductor(c("recount", "SummarizedExperiment"))
+
+  
   message.with.time("Filtering count table")
 
   ## Check validity of the input class

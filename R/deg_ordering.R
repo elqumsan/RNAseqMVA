@@ -8,9 +8,6 @@
 #' @param method="DESeq2"  choice of method for differential expression analysis. Supported: "DESeq2" , "edgeR".
 #' @param edgeRDispEst="tagwise" method used by edgeR to estimate the dispersion. Supported: common, trended, tagwise.
 #' @param ... all additional parmeters are passed to the differentail expression method (DEseq2 or edgeR).
-#' @import DESeq2
-#' @import edgeR
-#' @import limma
 #' @return a list with 2 tables:
 #' 1) result$geneOrder: a vector of gene names ordered by increasing p-value.
 #' 2) result$orderedDataTable ordered count table where columns (genes) have been ordered by increasing p-value.
@@ -40,7 +37,9 @@ DEGordering <- function(dataTableWithClasses,
                        edgeRDispEst="tagwise"){
 
 
-  if(!is(dataTableWithClasses, class2 = "DataTableWithClasses")) {
+  requiredBioconductor(c("DESeq2", "edgeR", "limma"))
+
+  if (!is(dataTableWithClasses, class2 = "DataTableWithClasses")) {
     stop("The function DEGordering() requires an object of class DataTableWithClasses")
   }
 

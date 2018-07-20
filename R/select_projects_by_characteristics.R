@@ -16,13 +16,15 @@
 #' selectProjectsByCharacteristics(recount.metadata,
 #'    query.charact = "disease status",
 #'    run.barplot = TRUE)
-#' @import recount
 #' @export
 selectProjectsByCharacteristics <- function(recount.metadata,
                                             query.charact,
                                             run.kable = FALSE,
                                             run.barplot = FALSE) {
 
+  requiredBioconductor(c("recount"))
+
+  
   result <- list()
   result$query.charact <- query.charact
 

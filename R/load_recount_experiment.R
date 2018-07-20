@@ -40,10 +40,6 @@
 #'         \item originalCounts: count table after merge runs proccess in order to get ride of multipl runs per sample.
 #'    }
 #'
-#' @import recount
-#' @import SummarizedExperiment
-#' @import S4Vectors
-#'
 #' @export
 loadRecountExperiment <- function(recountID,
                                   parameters,
@@ -56,6 +52,10 @@ loadRecountExperiment <- function(recountID,
                                   # verbose = parameters$verbose,
                                   forceDownload = FALSE,
                                   ...) {
+
+  requiredBioconductor(c("recount", "SummarizedExperiment", "S4Vectors"))
+
+  
   message.with.time("loadRecountExperiment()\trecountID = ", recountID)
 
   ## Check required parameters

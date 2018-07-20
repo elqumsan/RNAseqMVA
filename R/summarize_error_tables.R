@@ -10,13 +10,13 @@
 #' The files should be formatted as tab-separated values.
 #' Each row corresponds to one iteration.
 #'
-#' @import recount
-#'
 #' @export
 SummarizeErrorTable <- function (files,
                                  stopIfMissing = TRUE,
                                  labels = files) {
 
+  requiredBioconductor("recount")
+                         
   ## Check if there are missing files
   missing.files <- files[!file.exists(files)]
   if (length(missing.files) > 0) {

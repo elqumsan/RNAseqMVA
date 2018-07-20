@@ -3,11 +3,13 @@
 #' @description This is a bit tricky: we have to parse a string describing several attributes.
 #' @param  runPheno it is the Run pheno table which may be containt duplicate in the rus for the same sample, and it give us the actual length for a pheno table
 #' @return phenoTable with data.frame properities in order to be much earier in handle it smoothly.
-#' @import recount
-#' @import SummarizedExperiment
 #'
 #' @export
 geocharFromPheno <- function(runPheno) {
+
+  requiredBioconductor(c("recount", "SummarizedExperiment"))
+
+  
   message("\tExtracting geo characteristics")
   geochar.list <- lapply(split(
     runPheno,

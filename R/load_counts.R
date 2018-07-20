@@ -35,14 +35,17 @@
 #' x <- loadCounts( recountID = "SRP057196", mergeRuns=T,
 #'     classColumn = c("tissue", "cell.type"), minSamplesPerClass=5)
 #'
-#' @import recount
-#' @import SummarizedExperiment
-#' @import S4Vectors
+#' ## RCurl and XML are Required for recount but not declared in dependencies
+#' @import RCurl
+#' @import XML
 #' @import caret
 #' @export
 loadCounts <- function(recountID,
                        parameters,
                        ... ) {
+
+  requiredBioconductor(c("recount", "SummarizedExperiment", "S4Vectors"))
+
   message.with.time("Starting loadCounts() for Recount ID ", recountID)
 
   ## Check required parameters
