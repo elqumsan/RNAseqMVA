@@ -2,7 +2,7 @@
 % Please edit documentation in R/required_libraries.R
 \name{RequiredBioconductorPackages}
 \alias{RequiredBioconductorPackages}
-\title{Load required packages from BioConductor, and install them if necessary.}
+\title{Load required packages from BioConductor, afte having installed them if necessary.}
 \usage{
 RequiredBioconductorPackages(packages)
 }

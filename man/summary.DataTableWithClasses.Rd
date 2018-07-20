@@ -4,7 +4,7 @@
 \alias{summary.DataTableWithClasses}
 \title{print a summary of an object belonging to class DataTableWithClasses}
 \usage{
-summary.DataTableWithClasses(self)
+\method{summary}{DataTableWithClasses}(self)
 }
 \value{
 print the summary of such object by utilizing generic function

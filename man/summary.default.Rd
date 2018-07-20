@@ -4,7 +4,7 @@
 \alias{summary.default}
 \title{finish summary of an object belonging to class DataTableWithClasses}
 \usage{
-summary.default(self)
+\method{summary}{default}(self)
 }
 \arguments{
 \item{self}{that is an object which is want to print its properities}

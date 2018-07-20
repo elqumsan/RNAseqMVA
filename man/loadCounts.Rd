@@ -52,6 +52,7 @@ x <- loadCounts( recountID = "SRP048759", mergeRuns=T, classColumn = "tissue")
 x <- loadCounts( recountID = "SRP057196", mergeRuns=T,
     classColumn = c("tissue", "cell.type"), minSamplesPerClass=5)
 
+## RCurl and XML are Required for recount but not declared in dependencies
 }
 \author{
 Mustafa ABUELQUMSAN and Jacques van Helden

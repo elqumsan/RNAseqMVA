@@ -2,16 +2,37 @@ require("RNAseqMVA")
 
 message.with.time("Loading required libraries")
 
-require("yaml")
 require("roxygen2") ## MUSTAFA: do we really required roxygen2 and devtools to run the scripts ? They are required for building the package, but maybe not for running the analyses
-require("devtools") ## MUSTAFA: do we really required roxygen2 and devtools to run the scripts ? They are required for building the package, but maybe not for running the analyses
+#require("devtools") ## MUSTAFA: do we really required roxygen2 and devtools to run the scripts ? They are required for building the package, but maybe not for running the analyses
 
 # loading required libraries
-requiredCRAN <- c('devtools', 'class', "randomForest","broom", "roxygen2","scatterplot3d","e1071","foreach","doParallel")
+requiredCRAN <- c('RCurl', # Undeclared dependency of recount
+                  'XML', # Undeclared dependency of recount
+                  'yaml',  # Required for the config file
+                  'devtools',
+                  'caret',
+                  'class',
+                  "randomForest",
+                  "broom",
+                  "roxygen2",
+                  "scatterplot3d",
+                  "e1071",
+                  "foreach",
+                  "doParallel",
+                  "doMC")
 RequiredCRANPackages(requiredCRAN)
 
-## JvH: Mustafa, please add the other required packages, in particular recount
-requiredBioconductor <- c("recount")
+## Bioconductor packages required for the analyses.
+## These cannot be declared with @import, since they are cannot be installed via install.packages()
+requiredBioconductor <- c(
+  "IRanges", # Seems to be required for derfinder but not automatically installed
+  "derfinder",
+  "recount",
+  "DESeq2",
+  "limma",
+  "edgeR",
+  "S4Vectors",
+  "SummarizedExperiment")
 RequiredBioconductorPackages(requiredBioconductor)
 
 configFile <- "~/RNAseqMVA/misc/00_project_parameters.yml"

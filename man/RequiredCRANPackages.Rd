@@ -2,7 +2,7 @@
 % Please edit documentation in R/required_libraries.R
 \name{RequiredCRANPackages}
 \alias{RequiredCRANPackages}
-\title{Load required packages from CRAN, and install them if necessary.}
+\title{Load required packages from CRAN, after having installed them if necessary.}
 \usage{
 RequiredCRANPackages(packages)
 }

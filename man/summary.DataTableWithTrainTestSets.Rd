@@ -4,7 +4,7 @@
 \alias{summary.DataTableWithTrainTestSets}
 \title{print a summary of an object belonging to class DataTableWithTrainTestSets}
 \usage{
-summary.DataTableWithTrainTestSets(x)
+\method{summary}{DataTableWithTrainTestSets}(x)
 }
 \arguments{
 \item{self}{is the targeted object for print its properities.}
