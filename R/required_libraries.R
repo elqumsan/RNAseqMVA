@@ -10,7 +10,7 @@
 #' @param packages a vector containing a list of required CRAN packages.
 #' @return chack and then install all CRAN packages if it aren't installed.
 #' @export
-RequiredCRANPackages <- function (packages) {
+RequiredCRANPackages <- function(packages) {
   for (pkg in packages) {
     if (!require(pkg, character.only = TRUE)) {
       install.packages(pkg)
@@ -26,7 +26,7 @@ RequiredCRANPackages <- function (packages) {
 #' @param packages a vector containing a list of required BioConductor packages.
 #' @return chack and then install all BioConductor packages if it aren't installed.
 #' @export
-RequiredBioconductorPackages <-function (packages) {
+RequiredBioconductorPackages <- function(packages) {
   for (pkg in packages) {
     if (!require(pkg, character.only = TRUE)) {
       source('http://bioconductor.org/biocLite.R')
