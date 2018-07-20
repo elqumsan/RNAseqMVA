@@ -36,12 +36,11 @@
 #'
 #' @export
 NormalizeSamples <- function(self,
-                            classColumn = parameters$classColumn,
-                            classColors = parameters$classColors,
-                            method="quantile",
-                            quantile=0.75,
-                            log2=TRUE,
-                            epsilon=0.1) {
+                             parameters,
+                             # method = parameters$standardization$method,
+                             # quantile = parameters$standardization$quantile,
+                             log2 = TRUE,
+                             epsilon = 0.1) {
 
   if (log2) {
     message.with.time("Starting log2 NormalizeSamples() for Recount experiment ID ", self[["ID"]])
@@ -49,6 +48,23 @@ NormalizeSamples <- function(self,
     message.with.time("Starting NormalizeSamples() for Recount experiment ID ", self[["ID"]])
   }
 
+  ## Check required parameters
+  for (p in c("standardization")) {
+    if (is.null(parameters[[p]])) {
+      stop("NormalizeSamples()\tMissing required parameter: '", p,
+           "'.\n\tPlease check configuration file. ")
+    } else {
+      assign(p, parameters[[p]])
+    }
+  }
+
+  if (is.null(parameters$standardization$method)) {
+    stop("NormalizeSamples()\tMissing required parameter: standardization method")
+  }
+  method = parameters$standardization$method
+
+  # method = parameters$standardization$method,
+  # quantile = parameters$standardization$quantile,
 
   # counts <- self$dataTable
   # phenoTable <- self$phenoTable
@@ -59,13 +75,13 @@ NormalizeSamples <- function(self,
   ## Compute sample-wise statistics
   message("\t", "Computing sample-wise statistics\t", recountID)
   sampleStats <- data.frame(
-    sum = apply(self$dataTable, 2, sum, na.rm=TRUE),
-    min = apply(self$dataTable, 2, min, na.rm=TRUE),
-    mean = apply(self$dataTable, 2, mean, na.rm=TRUE),
-    Q1 = apply(self$dataTable, 2, quantile, na.rm=TRUE, probs=0.25),
-    median = apply(self$dataTable, 2, median, na.rm=TRUE),
-    Q3 = apply(self$dataTable, 2, quantile, na.rm=TRUE, probs=0.75),
-    max = apply(self$dataTable, 2, max, na.rm=TRUE),
+    sum = apply(self$dataTable, 2, sum, na.rm = TRUE),
+    min = apply(self$dataTable, 2, min, na.rm = TRUE),
+    mean = apply(self$dataTable, 2, mean, na.rm = TRUE),
+    Q1 = apply(self$dataTable, 2, quantile, na.rm = TRUE, probs = 0.25),
+    median = apply(self$dataTable, 2, median, na.rm = TRUE),
+    Q3 = apply(self$dataTable, 2, quantile, na.rm = TRUE, probs = 0.75),
+    max = apply(self$dataTable, 2, max, na.rm = TRUE),
     zero.values = apply(self$dataTable == 0, 2, sum),
     na.values = apply(is.na(self$dataTable), 2, sum),
    # infinite.values = apply(is.infinite(self$dataTable), 2, sum)
@@ -74,24 +90,56 @@ NormalizeSamples <- function(self,
 
   ## check it the original data contains NA values
   if (sum(sampleStats$na.values) > 0) {
-    message ("\tRaw counts contain ", sum(sampleStats$na.values), " NA values. ")
+    message("\tRaw counts contain ", sum(sampleStats$na.values), " NA values. ")
   }
 
   if (method == "quantile") {
-    message("\tNormalizing counts. Scaling factor: sample quantile ", quantile)
-    sampleStats$norm.quantile <- apply(self$dataTable, 2, quantile, na.rm=TRUE, probs=quantile)
-    sampleStats$scaling.factor <- sampleStats$norm.quantile
+    if (is.null(parameters$standardization$quantile)) {
+      stop("NormalizeSamples()\tMissing required parameter: standardization quantile")
+    }
+    quantile = parameters$standardization$quantile
+
+    message("\tNormalizing counts. Method = edgeR RLE.")
+    d <- DGEList(counts = self$dataTable, group = self$classLabels)
+    # d$samples$group <- relevel(d$samples$group) ## Ensure that condition 2 is considered as the reference
+    d <- calcNormFactors(d, method = "upperquartile", p = quantile)                 ## Compute normalizing factors
+    sampleStats$scaling.factor <- d$samples$norm.factors
+    # message("\tNormalizing counts. Scaling factor: sample quantile ", quantile)
+    # sampleStats$norm.quantile <- apply(self$dataTable, 2, quantile, na.rm = TRUE, probs = quantile)
+    # sampleStats$scaling.factor <- sampleStats$norm.quantile
+
   } else if (method == "mean") {
     message("\tNormalizing counts. Scaling factor: sample mean.  ")
     ## Note: mean is very sensitive to outliers, which are very problematic with RNAseq data
-  #  sampleStats$scaling.factor <- apply(self$dataTable, 2, quantile, na.rm=TRUE, probs=quantile)
+  #  sampleStats$scaling.factor <- apply(self$dataTable, 2, quantile, na.rm = TRUE, probs=quantile)
     sampleStats$scaling.factor <- sampleStats$mean
+
   } else if (method == "median") {
     message("\tNormalizing counts. Scaling factor: sample median.  ")
     sampleStats$scaling.factor <- sampleStats$median
+
   } else if (method == "sum") {
-    message("\tNormalizing counts. Scaling factor: sample sum (= libsum)  ")
+    message("\tNormalizing counts. Scaling factor: sample sum (= libsum = total counts)  ")
     sampleStats$scaling.factor <- sampleStats$sum
+
+  } else if (method == "TMM") {
+    message("\tNormalizing counts. Method = edgeR TMM.")
+    d <- DGEList(counts = self$dataTable, group = self$classLabels)
+    # d$samples$group <- relevel(d$samples$group) ## Ensure that condition 2 is considered as the reference
+    d <- calcNormFactors(d, method = "TMM")                 ## Compute normalizing factors
+    sampleStats$scaling.factor <- d$samples$norm.factors
+
+  } else if (method == "RLE") {
+    message("\tNormalizing counts. Method = edgeR RLE.")
+    d <- DGEList(counts = self$dataTable, group = self$classLabels)
+    # d$samples$group <- relevel(d$samples$group) ## Ensure that condition 2 is considered as the reference
+    d <- calcNormFactors(d, method = "RLE")                 ## Compute normalizing factors
+    sampleStats$scaling.factor <- d$samples$norm.factors
+
+  } else if (method == "DESeq2") {
+    message("\tNormalizing counts. Method = DESeq2.")
+    stop("NormalizeSamples method DESeq2 NEEDS TO BE IMPLEMENTED")
+
   } else {
     stop(method, " is not a valid method for NormalizeSamples()")
   }
@@ -102,7 +150,7 @@ NormalizeSamples <- function(self,
 
   # apply(self$dataTable[, zeroScaledSamples]==0, 2, sum)
   message("\tDiscarding ", sum(zeroScaledSamples), " samples because their scaling factor is null. ")
-  message("\tDiscarded samples: ", paste(collapse="; ", discaredSampleNames))
+  message("\tDiscarded samples: ", paste(collapse = "; ", discaredSampleNames))
 
   ## Compute normalised counts
   normTarget <- median(sampleStats$scaling.factor[!zeroScaledSamples])
@@ -121,22 +169,6 @@ NormalizeSamples <- function(self,
     ## We should certainly not use na.omit, because this removes any sample that would have any NA value.
     ## Instead, we need to understand why there are NA values in the original count table.
     normCounts <- log2(normCounts + epsilon)
-    # result <- DataTableWithClasses(dataTable = normCounts,
-    #                                 phenoTable = phenoTable,
-    #                                 classColumn = classColumn,
-    #                                 classColors = classColors ,
-    #                                 dataType = "log2Normalized.counts")
-    # dim(normCounts)
-    # normCounts <-na.omit(normCounts) ## THIS WAS REDOING THE SAME AS ABOVE
-
-  } else {
-
-    # result <- DataTableWithClasses(dataTable = normCounts,
-    #                                 phenoTable = phenoTable,
-    #                                 classColumn = classColumn,
-    #                                 classColors = classColors,
-    #                                 dataType = "Normalized.counts")
-
   }
 
   result <- self
