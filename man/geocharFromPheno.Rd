@@ -2,7 +2,7 @@
 % Please edit documentation in R/geochar_from_pheno.R
 \name{geocharFromPheno}
 \alias{geocharFromPheno}
-\title{Extract the conditions from the "characteristics" column of the coldata.}
+\title{Extract the conditions from the "characteristics" column of Recount pheno Table}
 \usage{
 geocharFromPheno(runPheno)
 }
