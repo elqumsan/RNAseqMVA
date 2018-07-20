@@ -16,12 +16,14 @@ StudyCase  <- function (recountID, parameters) {
   ## Run loadCounts method to get the counts per run + counts per sample + filtered counts
   result <- loadCounts(recountID = recountID,
                        parameters = parameters)
+  # class(result$filtered)
 
-  ## Select training and testing sets on the filtered table with raw counts
-  ## These wil then be passed to all the derived count tables (normalised, DGE, ...)
-
+  ## Cast the filtered counts from class DataTableWithClasses to class DataTableWithTrainTestSets.
+  ## This will also append attributes with selected training and testing sets on the filtered table with raw counts
+  ## These wil then be passed to all the derived count tables (normalised, DGE, ...).
   result$filtered <- DataTableWithTrainTestSets(result$filtered)
-  #result$filtered <-  UseMethod("DataTableWithTrainTestSets",result$filtered)
+  # class(result$filtered)
+
 
   ##### Normalize the counts without log2 transformation (first test) #####
   ##
@@ -30,12 +32,11 @@ StudyCase  <- function (recountID, parameters) {
 
   ###### Normalization method for the recount Table after merge and filtered it ########
   # dim(result$studyCases$norm$counts)
-  message.with.time("Normalizing counts based on 75th percentile")
   result$norm <- NormalizeSamples(
     self = result$filtered,
-    classColumn = result$parameters$classColumn,
-    classColors = result$parameters$classColors,
-    method = "quantile", quantile=0.75, log2 = FALSE)
+    method = parameters$global$standardization$method,
+    quantile = parameters$global$standardization$quantile,
+    log2 = FALSE)
 
 
   ##### Normalize counts with log2 transformation (second test) #####
@@ -43,12 +44,14 @@ StudyCase  <- function (recountID, parameters) {
   ## Note: this method takes a table with one column per sample and one
   ## row per gene, we thus have to transpose the raw count table.
   # if (parameters$compute) {
+
+  ## TO DO: REPLACE THIS BY A SIMPLE log2 computaton
   message.with.time("Normalizing counts based on 75th percentile + log2 transformation")
   result$log2norm <- NormalizeSamples(
     self = result$filtered,
-    classColumn = result$parameters$classColumn,
-    method = "quantile", quantile=0.75,
-    log2 = TRUE, epsilon=0.1)
+    method = parameters$global$standardization$method,
+    quantile = parameters$global$standardization$quantile,
+    log2 = TRUE, epsilon = 0.1)
 
   #### Derive an object having as features the principal components of log2norm ####
 
