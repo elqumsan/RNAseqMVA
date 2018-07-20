@@ -42,7 +42,7 @@ filterDataTable <- function(rawCounts,
                              # nearZeroVarFilter = parameters$nearZeroVarFilter,
                              draw.plot = TRUE) {
 
-  requiredBioconductor(c("recount", "SummarizedExperiment"))
+  RequiredBioconductorPackages(c("recount", "SummarizedExperiment"))
 
   
   message.with.time("Filtering count table")

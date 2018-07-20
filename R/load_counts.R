@@ -44,7 +44,7 @@ loadCounts <- function(recountID,
                        parameters,
                        ... ) {
 
-  requiredBioconductor(c("recount", "SummarizedExperiment", "S4Vectors"))
+  RequiredBioconductorPackages(c("recount", "SummarizedExperiment", "S4Vectors"))
 
   message.with.time("Starting loadCounts() for Recount ID ", recountID)
 

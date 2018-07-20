@@ -37,7 +37,7 @@ DEGordering <- function(dataTableWithClasses,
                        edgeRDispEst="tagwise"){
 
 
-  requiredBioconductor(c("DESeq2", "edgeR", "limma"))
+  RequiredBioconductorPackages(c("DESeq2", "edgeR", "limma"))
 
   if (!is(dataTableWithClasses, class2 = "DataTableWithClasses")) {
     stop("The function DEGordering() requires an object of class DataTableWithClasses")
@@ -47,11 +47,6 @@ DEGordering <- function(dataTableWithClasses,
   dataTable <-  dataTableWithClasses$dataTable
 
   result <- list()
-
-#  dir.main <- c("~/RNAseqMVA/R/")
-#  source(file.path(dir.main,"required_libraries.R"))
-#  requiredBioconductor <- c("DESeq2", "edgeR")
-#  RequiredBioconductorPackages(requiredBioconductor)
 
   if (method == "DESeq2") {
     message("\t\tInstantiate DESeq2 object ")

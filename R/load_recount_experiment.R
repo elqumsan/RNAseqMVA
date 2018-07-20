@@ -53,9 +53,9 @@ loadRecountExperiment <- function(recountID,
                                   forceDownload = FALSE,
                                   ...) {
 
-  requiredBioconductor(c("recount", "SummarizedExperiment", "S4Vectors"))
+  RequiredBioconductorPackages(c("recount", "SummarizedExperiment", "S4Vectors"))
 
-  
+
   message.with.time("loadRecountExperiment()\trecountID = ", recountID)
 
   ## Check required parameters
@@ -138,8 +138,8 @@ loadRecountExperiment <- function(recountID,
     message("\tBuilding pheno table")
   }
   phenoTable <- colData(rse) ## phenotype per run
-  geo.characteristics <- recount::geo_characteristics(phenoTable)
-  geochar <- geocharFromPheno(phenoTable)
+#  geo.characteristics <- recount::geo_characteristics(phenoTable)
+  geochar <- geocharFromPheno(runPheno = phenoTable)
   phenoTable <- cbind(phenoTable, geochar)
   # View(phenoTable)
   # names(phenoTable)
