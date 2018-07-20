@@ -36,9 +36,8 @@
 #'
 #' @export
 NormalizeSamples <- function(self,
-                             parameters,
-                             # method = parameters$standardization$method,
-                             # quantile = parameters$standardization$quantile,
+                             method = parameters$standardization$method,
+                             quantile = parameters$standardization$quantile,
                              log2 = TRUE,
                              epsilon = 0.1) {
 
