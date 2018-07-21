@@ -138,51 +138,60 @@ exportTables.StudyCase <- function(self,
   message("\t\tExporting filtered DataTable in TSV file\t", filtered.file)
   write.table(as.data.frame(self$datasetsForTest$filtered$dataTable), file = filtered.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
 
+  ## Export the different tables of normalized values
+  for (datasetName in names(self$datasetsForTest)) {
+    file <- file.path(export.dir, paste(self$ID, "_", datasetName, extension, sep = ""))
+    message("\t\tExporting scaled DataTable in TSV file\t", file)
+    write.table(as.data.frame(self$datasetsForTest[[datasetName]]$dataTable),
+                file = file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
 
-  ## Export normalized counts
-  # exportTables(self$datasetsForTest$norm,
-  #              export.dir = file.path(export.dir, self$ID),
-  #              file.prefix = "norm_counts_")
-  scaled.file <- file.path(export.dir, paste( self$ID, "_scaled", extension, sep = ""))
-  message("\t\tExporting scaled DataTable in TSV file\t", scaled.file)
-  write.table(as.data.frame(self$datasetsForTest$norm$dataTable), file = scaled.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
-
-  ## Export log2-transformed normalised counts
-  # exportTables(self$datasetsForTest$log2norm,
-  #              export.dir = paste(export.dir, self$ID, sep = "/"),
-  #              file.prefix = "log2norm_counts_")
-  log2norm.file <- file.path(export.dir, paste( self$ID, "_log2norm", extension, sep = ""))
-  message("\t\tExporting log2norm DataTable in TSV file\t", log2norm.file)
-  write.table(as.data.frame(self$datasetsForTest$log2norm$dataTable), file = log2norm.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
+  }
 
 
-
-  ## Export principal components of log2-transformed normalised counts
-  # exportTables(self$datasetsForTest$log2normPCs,
-  #              export.dir = file.path(export.dir, self$ID),
-  #              file.prefix = "log2norm_counts_")
-
-  log2normPCs.file <- file.path(export.dir, paste( self$ID, "_log2normPCs", extension, sep = ""))
-  message("\t\tExporting log2normPCs DataTable in TSV file\t", log2normPCs.file)
-  write.table(as.data.frame(self$datasetsForTest$log2normPCs$dataTable), file = log2normPCs.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
-
-  ## Export log2norm counts sorted by DESeq2 p-value of differential analysis
-  # exportTables(self$datasetsForTest$log2norm_DESeq2_sorted,
-  #              export.dir = file.path(export.dir, self$ID),
-  #              file.prefix = "log2norm_counts_DESeq2_sorted_")
-
-  log2norm_DESeq2_sorted.file <- file.path(export.dir, paste( self$ID, "_log2norm_DESeq2_sorted", extension, sep = ""))
-  message("\t\tExporting log2norm_DESeq2_sorted DataTable in TSV file\t", log2norm_DESeq2_sorted.file)
-  write.table(as.data.frame(self$log2norm_DESeq2_sorted$dataTable ), file = log2norm_DESeq2_sorted.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
-
-  ## Export log2norm counts sorted by edgeR p-value of differential analysis
-  # exportTables(self$datasetsForTest$log2norm_edgeR_sorted,
-  #              export.dir = file.path(export.dir, self$ID),
-  #              file.prefix = "log2norm_counts_DESeq2_sorted_")
-
-  log2norm_edgeR_sorted.file <- file.path(export.dir, paste( self$ID, "_log2norm_edgeR_sorted", extension, sep = ""))
-  message("\t\tExporting log2norm_edgeR_sorted DataTable in TSV file\t", log2norm_edgeR_sorted.file)
-  write.table(as.data.frame(self$log2norm_edgeR_sorted$dataTable ), file = log2norm_edgeR_sorted.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
+  # ## Export normalized counts
+  # # exportTables(self$datasetsForTest$norm,
+  # #              export.dir = file.path(export.dir, self$ID),
+  # #              file.prefix = "norm_counts_")
+  # scaled.file <- file.path(export.dir, paste( self$ID, "_scaled", extension, sep = ""))
+  # message("\t\tExporting scaled DataTable in TSV file\t", scaled.file)
+  # write.table(as.data.frame(self$datasetsForTest$norm$dataTable), file = scaled.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
+  #
+  # ## Export log2-transformed normalised counts
+  # # exportTables(self$datasetsForTest$log2norm,
+  # #              export.dir = paste(export.dir, self$ID, sep = "/"),
+  # #              file.prefix = "log2norm_counts_")
+  # log2norm.file <- file.path(export.dir, paste( self$ID, "_log2norm", extension, sep = ""))
+  # message("\t\tExporting log2norm DataTable in TSV file\t", log2norm.file)
+  # write.table(as.data.frame(self$datasetsForTest$log2norm$dataTable), file = log2norm.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
+  #
+  #
+  #
+  # ## Export principal components of log2-transformed normalised counts
+  # # exportTables(self$datasetsForTest$log2normPCs,
+  # #              export.dir = file.path(export.dir, self$ID),
+  # #              file.prefix = "log2norm_counts_")
+  #
+  # log2normPCs.file <- file.path(export.dir, paste( self$ID, "_log2normPCs", extension, sep = ""))
+  # message("\t\tExporting log2normPCs DataTable in TSV file\t", log2normPCs.file)
+  # write.table(as.data.frame(self$datasetsForTest$log2normPCs$dataTable), file = log2normPCs.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
+  #
+  # ## Export log2norm counts sorted by DESeq2 p-value of differential analysis
+  # # exportTables(self$datasetsForTest$log2norm_DESeq2_sorted,
+  # #              export.dir = file.path(export.dir, self$ID),
+  # #              file.prefix = "log2norm_counts_DESeq2_sorted_")
+  #
+  # log2norm_DESeq2_sorted.file <- file.path(export.dir, paste( self$ID, "_log2norm_DESeq2_sorted", extension, sep = ""))
+  # message("\t\tExporting log2norm_DESeq2_sorted DataTable in TSV file\t", log2norm_DESeq2_sorted.file)
+  # write.table(as.data.frame(self$log2norm_DESeq2_sorted$dataTable ), file = log2norm_DESeq2_sorted.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
+  #
+  # ## Export log2norm counts sorted by edgeR p-value of differential analysis
+  # # exportTables(self$datasetsForTest$log2norm_edgeR_sorted,
+  # #              export.dir = file.path(export.dir, self$ID),
+  # #              file.prefix = "log2norm_counts_DESeq2_sorted_")
+  #
+  # log2norm_edgeR_sorted.file <- file.path(export.dir, paste( self$ID, "_log2norm_edgeR_sorted", extension, sep = ""))
+  # message("\t\tExporting log2norm_edgeR_sorted DataTable in TSV file\t", log2norm_edgeR_sorted.file)
+  # write.table(as.data.frame(self$log2norm_edgeR_sorted$dataTable ), file = log2norm_edgeR_sorted.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
 
 
   NextMethod("exportTables", self)
