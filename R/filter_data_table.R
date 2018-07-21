@@ -5,8 +5,7 @@
 #' and variables (e.g. genes) of
 #' a count table in order to prepare it for classification.
 #' @param countsWithClasses an object of the class DataTableWithClasses
-#' @param minSamplesPerClass=parameters$minSamplesPerClass minimum nuimber of samples per class to keep
-#' @param nearZeroVarFilter=parameters$nearZeroVarFilter if TRUE, applyb caret::nearZeroVariance() to filter out poor predictor genes
+#' @param parameters parameters (can be loaded from the config file)
 #' @param draw.plot=TRUE if TRUE, draw an histogram of variance per gene.
 #'
 #' @examples
@@ -37,6 +36,7 @@
 #' @import ggplot2
 #' @export
 filterDataTable <- function(rawCounts,
+                            parameters,
                              # na.rm = parameters$na.rm,
                              # minSamplesPerClass = parameters$minSamplesPerClass,
                              # nearZeroVarFilter = parameters$nearZeroVarFilter,
@@ -44,7 +44,7 @@ filterDataTable <- function(rawCounts,
 
   RequiredBioconductorPackages(c("recount", "SummarizedExperiment"))
 
-  
+
   message.with.time("Filtering count table")
 
   ## Check validity of the input class
