@@ -60,6 +60,10 @@ NormalizeSamples <- function(self,
     method.name <- method
   }
 
+  if (log2) {
+    method.name <- paste(sep = "", method_name, "_log2")
+  }
+
   ## Compute sample-wise statistics
   message("\t", "Computing sample-wise statistics\t", recountID)
   if (is.null(self$sampleStats)) {
