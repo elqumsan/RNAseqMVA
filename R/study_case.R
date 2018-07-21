@@ -34,10 +34,10 @@ StudyCase  <- function(recountID, parameters) {
   ## Note: this method takes a table with one column per sample and one
   ## row per gene, we thus have to transpose the raw count table.
 
-
+  ## Get standardization methods and options from parameters
   standardization.methods <- parameters$standardization$method
   quantile <- parameters$standardization$quantile
-
+  dataNames <- vector()
   # method <- "quantile"
   for (method in standardization.methods) {
 
@@ -53,45 +53,34 @@ StudyCase  <- function(recountID, parameters) {
       method = method,
       quantile = quantile,
       log2 = FALSE)
-
+    # hist(result[[method.name]][["dataTable"]], breaks=1000)
+    dataNames <- append(dataNames, method.name)
 
     ##### Normalize counts with log2 transformation (second test) #####
-    ##
-    ## Note: this method takes a table with one column per sample and one
-    ## row per gene, we thus have to transpose the raw count table.
-    # if (parameters$compute) {
-
-    ## TO DO: REPLACE THIS BY A SIMPLE log2 computaton
+    message("\tComputing log2-transformed normalised counts")
     log2.name <- paste(sep = "", method.name, "_log2")
     result[[log2.name]] <- result[[method]]
     result[[log2.name]][["dataType"]] <- log2.name
     result[[log2.name]][["dataTable"]] <- log2(result[[method]][["dataTable"]] + epsilon)
-    # result$log2norm <- NormalizeSamples(
-    #   self = result$filtered,
-    #   method = parameters$standardization$method,
-    #   quantile = parameters$standardization$quantile,
-    #   log2 = TRUE, epsilon = 0.1)
+    dataNames <- append(dataNames, log2.name)
+    # hist(result[[log2.name]][["dataTable"]], breaks=100)
+
 
     #### Derive an object having as features the principal components of log2norm ####
-
-    ## Clone the log2norm object to copy all its parameters
-    result$log2normPCs <- result$log2norm
-    result$log2normPCs$dataType <- "log2normPCs"
-    # names(result$log2normPCs)
-
+    message("\tComputing principal components")
+    pc.name <- paste(sep = "", log2.name, "_PC")
+    result[[pc.name]] <- result[[log2.name]] ## Clone the log2norm object to copy all its parameters
+    result[[pc.name]][["dataType"]] <- pc.name
     ## Compute principal components
-    result$log2normPCs$prcomp <-
-      prcomp( t(na.omit(result$log2norm$dataTable)),
+    result[[pc.name]]$prcomp <-
+      prcomp( t(na.omit(result[[pc.name]]$dataTable)),
               center = TRUE,
               scale. = FALSE)
     ## Replace log2 normalised counts by principal components
-    result$log2normPCs$dataTable <- t(result$log2normPCs$prcomp$x)
-    # dim(result$log2norm$dataTable)
-    # rownames(result$log2norm$dataTable)
-    # dim(result$log2normPCs$dataTable)
-    # rownames(result$log2normPCs$dataTable)
-    # View(result$log2normPCs$dataTable)
-    # biplot(result$log2normPCs$prcomp,cex=0.2) ## This is too heavy
+    result[[pc.name]]$dataTable <- t(result[[pc.name]]$prcomp$x)
+    # names(result[[pc.name]])
+    dataNames <- append(dataNames, pc.name)
+    # hist(result[[pc.name]][["dataTable"]], breaks=200)
 
   }
 
@@ -117,15 +106,20 @@ StudyCase  <- function(recountID, parameters) {
         countsPerSample = result$originalCounts),
       datasetsForTest = list(
         filtered = result$filtered,
-        norm = result$norm,
-        log2norm = result$log2norm,
-        log2normPCs = result$log2normPCs
+        # norm = result$norm,
+        # log2norm = result[[pc.name]],
+        # log2normPCs = result$log2normPCs
 #        log2normViRf = result$log2normViRf# ,
 #        log2norm_DESeq2_sorted = result$log2norm_DESeq2_sorted,
 #        log2norm_edgeR_sorted = result$log2norm_edgeR_sorted
       )
     ),
     class="StudyCase")
+
+  ## Append the normalised data types to the StudyCase object
+  for (name in dataNames) {
+    self$datasetsForTest[[name]] <- result[[name]]
+  }
 
   #### DESeq2-sorted variables ####
   if ("DESeq2" %in% project.parameters$global$ordering.methods) {
