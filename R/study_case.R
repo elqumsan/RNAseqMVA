@@ -8,8 +8,12 @@
 #'
 #' @export
 
-StudyCase  <- function (recountID, parameters) {
+StudyCase  <- function(recountID, parameters) {
 
+  if (is.null(parameters$epsilon)) {
+    epsilon = 0.1
+    message("epsilon (pseudo-count) not defined in config file -> using default value (", epsilon, ")")
+  }
 
   message.with.time("Loading count table from recount", "; recountID = ", parameters$recountID)
 
@@ -30,50 +34,66 @@ StudyCase  <- function (recountID, parameters) {
   ## Note: this method takes a table with one column per sample and one
   ## row per gene, we thus have to transpose the raw count table.
 
-  ###### Normalization method for the recount Table after merge and filtered it ########
-  # dim(result$studyCases$norm$counts)
-  result$norm <- NormalizeSamples(
-    self = result$filtered,
-    method = parameters$global$standardization$method,
-    quantile = parameters$global$standardization$quantile,
-    log2 = FALSE)
+
+  standardization.methods <- parameters$standardization$method
+  quantile <- parameters$standardization$quantile
+
+  # method <- "quantile"
+  for (method in standardization.methods) {
+
+    ###### Normalization method for the recount Table after merge and filtered it ########
+    # dim(result$studyCases$norm$counts)
+    if (method == "quantile") {
+      method.name <- paste(sep = "", "q", quantile)
+    } else {
+      method.name <- method
+    }
+    result[[method.name]] <- NormalizeSamples(
+      self = result$filtered,
+      method = method,
+      quantile = quantile,
+      log2 = FALSE)
 
 
-  ##### Normalize counts with log2 transformation (second test) #####
-  ##
-  ## Note: this method takes a table with one column per sample and one
-  ## row per gene, we thus have to transpose the raw count table.
-  # if (parameters$compute) {
+    ##### Normalize counts with log2 transformation (second test) #####
+    ##
+    ## Note: this method takes a table with one column per sample and one
+    ## row per gene, we thus have to transpose the raw count table.
+    # if (parameters$compute) {
 
-  ## TO DO: REPLACE THIS BY A SIMPLE log2 computaton
-  message.with.time("Normalizing counts based on 75th percentile + log2 transformation")
-  result$log2norm <- NormalizeSamples(
-    self = result$filtered,
-    method = parameters$global$standardization$method,
-    quantile = parameters$global$standardization$quantile,
-    log2 = TRUE, epsilon = 0.1)
+    ## TO DO: REPLACE THIS BY A SIMPLE log2 computaton
+    log2.name <- paste(sep = "", method.name, "_log2")
+    result[[log2.name]] <- result[[method]]
+    result[[log2.name]][["dataType"]] <- log2.name
+    result[[log2.name]][["dataTable"]] <- log2(result[[method]][["dataTable"]] + epsilon)
+    # result$log2norm <- NormalizeSamples(
+    #   self = result$filtered,
+    #   method = parameters$standardization$method,
+    #   quantile = parameters$standardization$quantile,
+    #   log2 = TRUE, epsilon = 0.1)
 
-  #### Derive an object having as features the principal components of log2norm ####
+    #### Derive an object having as features the principal components of log2norm ####
 
-  ## Clone the log2norm object to copy all its parameters
-  result$log2normPCs <- result$log2norm
-  result$log2normPCs$dataType <- "log2normPCs"
-  # names(result$log2normPCs)
+    ## Clone the log2norm object to copy all its parameters
+    result$log2normPCs <- result$log2norm
+    result$log2normPCs$dataType <- "log2normPCs"
+    # names(result$log2normPCs)
 
-  ## Compute principal components
-  result$log2normPCs$prcomp <-
-    prcomp( t(na.omit(result$log2norm$dataTable)),
-            center = TRUE,
-            scale. = FALSE)
-  ## Replace log2 normalised counts by principal components
-  result$log2normPCs$dataTable <- t(result$log2normPCs$prcomp$x)
-  # dim(result$log2norm$dataTable)
-  # rownames(result$log2norm$dataTable)
-  # dim(result$log2normPCs$dataTable)
-  # rownames(result$log2normPCs$dataTable)
-  # View(result$log2normPCs$dataTable)
-  # biplot(result$log2normPCs$prcomp,cex=0.2) ## This is too heavy
+    ## Compute principal components
+    result$log2normPCs$prcomp <-
+      prcomp( t(na.omit(result$log2norm$dataTable)),
+              center = TRUE,
+              scale. = FALSE)
+    ## Replace log2 normalised counts by principal components
+    result$log2normPCs$dataTable <- t(result$log2normPCs$prcomp$x)
+    # dim(result$log2norm$dataTable)
+    # rownames(result$log2norm$dataTable)
+    # dim(result$log2normPCs$dataTable)
+    # rownames(result$log2normPCs$dataTable)
+    # View(result$log2normPCs$dataTable)
+    # biplot(result$log2normPCs$prcomp,cex=0.2) ## This is too heavy
 
+  }
 
   ##### instantiate object from ged-dataSet from Differential analysis with DESeq2 and edgeR to define gene (variable) order ####
   # message.with.time("instantiate object of Differential analysis with DESeq2 and edgeR to define gene (variable) order")
@@ -87,7 +107,7 @@ StudyCase  <- function (recountID, parameters) {
   #                                          method = project.parameters$global$ordering.methods[2] , randomized = TRUE )
   # result$DEGdataSets$edgeR$dataType <- "edgeRorderedVariables"
 
-   ## Build a first version of the object based on passed parameters
+  ## Build a first version of the object based on passed parameters
   self <- structure(
     list(
       ID = recountID,
