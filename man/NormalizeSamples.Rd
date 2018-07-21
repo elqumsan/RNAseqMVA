@@ -4,7 +4,8 @@
 \alias{NormalizeSamples}
 \title{scaling RNA-seq count table}
 \usage{
-NormalizeSamples(self, parameters, log2 = TRUE, epsilon = 0.1)
+NormalizeSamples(self, method = "quantile", quantile = 0.75, log2 = TRUE,
+  epsilon = 0.1)
 }
 \arguments{
 \item{self}{an object belonging to the class DataTableWithClasses
