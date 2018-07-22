@@ -9,7 +9,7 @@
 #' @export
 #'
 plot2PCs <- function(self,
-                     main = paste(sep="", self$ID, "; PCs of log2norm counts"),
+                     main = paste(sep = "", self$ID, "; PCs of ", self$dataType),
                      col = self$sampleColors,
                      pcs = c(1,2),
                      ...) {
