@@ -4,7 +4,7 @@
 \alias{plot2PCs}
 \title{Plot two components of prcomp transform}
 \usage{
-plot2PCs(self, main = paste(sep = "", self$ID, "; PCs of log2norm counts"),
+plot2PCs(self, main = paste(sep = "", self$ID, "; PCs of ", self$dataType),
   col = self$sampleColors, pcs = c(1, 2), ...)
 }
 \arguments{
