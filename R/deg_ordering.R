@@ -51,7 +51,7 @@ DEGordering <- function(dataTableWithClasses,
   if (method == "DESeq2") {
     message("\t\tInstantiate DESeq2 object ")
     ## Create a DESeqDataset object from the count table
-    dds <- DESeqDataSetFromMatrix(dataTable, as.data.frame(classes), ~ classes  )
+    dds <- DESeqDataSetFromMatrix(dataTable, as.data.frame(classes), ~ classes)
 
     ## Run  differential expression analysis with DESeq2
     dds <- DESeq(dds)
