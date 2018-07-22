@@ -41,7 +41,7 @@ loadCounts <- function(recountID,
   message.with.time("Starting loadCounts() for Recount ID ", recountID)
 
   ## Check required parameters
-  for (p in c("classColumn", "mergeRuns", "sampleIdColumn", "minSamplesPerClass", "na.rm")) {
+  for (p in c("classColumn", "mergeRuns", "sampleIdColumn")) {
     if (is.null(parameters[[p]])) {
       stop("Missing required parameter: '", p,
            "'.\n\tPlease check configuration file. ")
@@ -106,7 +106,7 @@ loadCounts <- function(recountID,
 
   ################################################
   #### Filter zero-variance and near-zero variance variables from the count table #####
-  experiment$filtered <- filterDataTable(rawCounts = experiment$originalCounts, parameters)
+  experiment$filtered <- filterDataTable(rawCounts = experiment$originalCounts) #, parameters)
 
 
   ##### Check the dimensions of filtered experiment #####
