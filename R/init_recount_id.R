@@ -3,7 +3,7 @@
 #' @param recountID must be a valid ID row Recount2 database (SRP...)
 #' @param project.parameters project parameters (read from the YAML-formatted file)
 #' @return all project.parameters for the related recount ID.
-#' \itemize {
+#' \itemize{
 #'      \item global: ## Global parameters are those who are the samee across all study cases
 #'      \item  dir: ## Directories
 #'      \item   main: "~/RNAseqMVA"

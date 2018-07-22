@@ -9,7 +9,7 @@
 #' @param classifier is a type of the classifier.
 #' @param permute=FALSE permute the calss labels to measure misclassifciation rate without relevant learning
 #' @return
-#'  \itemize {
+#'  \itemize{
 #'      \item dataset = it is data table one row for the individual (sample) and one culomn for the feature (gene).
 #'      \item classifier = what is the tested classifier, KNN, RF, SVM and LDA.
 #'      \item iteration = nomber of resampling.

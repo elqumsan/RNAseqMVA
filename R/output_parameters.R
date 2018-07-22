@@ -8,7 +8,7 @@
 #' @param createDir=TRUE if TRUE, the result directory is created automatically if it does not exist
 #'
 #' @return a list with the following fields
-#' \itemize {
+#' \itemize{
 #'   \item resultDir: path to the result directory, in which the result files should be stored.
 #'   \item filePrefix: string that should prepend the name of each result file.
 #'   \item figureLabel:  short string with a label for the graphics

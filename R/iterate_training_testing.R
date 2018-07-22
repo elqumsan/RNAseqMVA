@@ -8,7 +8,7 @@
 #' @param file.prefix in order to let us to save file from the IterateTrainingTesting
 #'
 #' @return an object which is Misclassification error rate for the specified number for resampling
-#' \itemize {
+#' \itemize{
 #'      \item testTable: that is the table that is contains misclassification error rate for specified  number of resampling.
 #'
 #' }
@@ -29,7 +29,7 @@ IterateTrainingTesting <- function (dataset, ...) {
 #' @param dataset an object of class DataTableWithTrainTestSets
 #' @param ... is any else parameter may be passed with such method.
 #' @return an object which is Misclassification error rate for the specified number for resampling
-#'     \itemize {
+#'     \itemize{
 #'         \item testTable: that is the table that is contains misclassification error rate for specified  number of resampling.
 #'       }
 #'
@@ -66,7 +66,7 @@ IterateTrainingTesting.default <- function(dataset, ...){
 #' @param file.prefix in order to let us to save file from the IterateTrainingTesting
 #'
 #' @return an object which is Misclassification error rate for the specified number for resampling
-#'     \itemize {
+#'     \itemize{
 #'         \item testTable: that is the table that is contains misclassification error rate for specified  number of resampling. for an object belonge to DataTableWithTrainTestSets.
 #'       }
 #' @export
