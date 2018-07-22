@@ -84,10 +84,10 @@ initRecountID <- function(recountID, project.parameters) {
   ## Overwrite default parameters wih project-specific parameters
   selected.parameters <- project.parameters[[recountID]]
   if (is.null(selected.parameters)) {
-    message("No specific parameters for recount ID ", recountID)
-    message("Using generic parameters from the yaml file. ")
+    message("\tNo specific parameters for recount ID ", recountID)
+    message("\tUsing generic parameters from the yaml file. ")
   } else {
-    message("Using specific parameters specfied in yaml file for recount ID ", recountID)
+    message("\tUsing specific parameters specfied in yaml file for recount ID ", recountID)
     parameters[names(selected.parameters)] <- project.parameters[[recountID]]
     names(parameters$data.types) <- parameters$data.types
     names(parameters$variables.type) <- parameters$variables.type
@@ -130,14 +130,17 @@ initRecountID <- function(recountID, project.parameters) {
   ## Result directory
   parameters$dir$results <- file.path(parameters$dir$workspace, "results")
   dir.create(parameters$dir$results, showWarnings = FALSE, recursive = TRUE)
+  message("\t\tresults\t", parameters$dir$results)
 
   ## Sub-directory to save the general figures of this study case
   parameters$dir$figures <- file.path(parameters$dir$results, recountID, "figures")
   dir.create(path = parameters$dir$figures, recursive = TRUE, showWarnings = FALSE)
+  message("\t\tfigures\t", parameters$dir$figures)
 
   ## Sub-directory to save the tab-separated value (TSV) files
   parameters$dir$tsv <- file.path(parameters$dir$results,recountID, "TSV")
   dir.create(path = parameters$dir$tsv, recursive = TRUE, showWarnings = FALSE)
+  message("\t\tTSV\t", parameters$dir$tsv)
 
 
   #### Define the classifier-specific directories where tables and figures will be stored. ####
@@ -145,12 +148,15 @@ initRecountID <- function(recountID, project.parameters) {
 
   parameters$dir$classifiers <- file.path(parameters$dir$results, recountID, parameters$classifiers)
   names(parameters$dir$classifiers) <- parameters$classifiers
+  message("\t\tclassifiers\t", parameters$dir$classifiers)
 
   parameters$dir$classifier_tables <- file.path(parameters$dir$classifiers, "tables")
   names(parameters$dir$classifier_tables) <- parameters$classifiers
+  message("\t\tclassifier_tables\t", parameters$dir$classifier_tables)
 
   parameters$dir$classifier_figures <- file.path(parameters$dir$classifiers, "figures")
   names(parameters$dir$classifier_figures) <- parameters$classifiers
+  message("\t\tclassifier_figures\t", parameters$dir$classifier_figures)
 
 #  parameters$dir$figuresDetail <- file.path(parameters$dir$figures, "detailFigures")
 #  names(parameters$dir$figuresDetail) <- parameters$classifiers
@@ -160,7 +166,8 @@ initRecountID <- function(recountID, project.parameters) {
 
   ## Create all the recountID-specific sub-directories
   for (dir in c(parameters$dir$classifiers,
-                parameters$dir$classifier_tables, parameters$dir$classifier_figures,
+                parameters$dir$classifier_tables,
+                parameters$dir$classifier_figures
 #                parameters$dir$figuresDetail,
 #                parameters$dir$tablesDetail
                 )) {
@@ -173,10 +180,12 @@ initRecountID <- function(recountID, project.parameters) {
   ## Directory for impact of Normalization and log2 into counts (and the study of its impact)
   parameters$dir$NormalizationImpact <- file.path(parameters$dir$results, recountID , paste("impact_of_normalisation", sep = ""))
   dir.create(parameters$dir$NormalizationImpact, showWarnings = F, recursive = T)
+  message("\t\tNormalizationImpact\t", parameters$dir$NormalizationImpact)
 
   ## Directory for the visualization of Principal component for counts (and the study of its impact)
   parameters$dir$PCviz <- file.path(parameters$dir$results, recountID , paste( "visualization_of_PCs", sep = ""))
   dir.create(parameters$dir$PCviz, showWarnings = F, recursive = T)
+  message("\t\tPCviz\t", parameters$dir$PCviz)
 
   # View(parameters)
   return(parameters)
