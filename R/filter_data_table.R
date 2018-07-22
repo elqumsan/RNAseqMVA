@@ -263,6 +263,13 @@ plotFilterHistograms <- function(dataset,
   }
   varPerGene <- dataset$varPerGeneRaw
 
+  ## Get list of kept genes
+  if (is.null(dataset$keptGenes)) {
+    stop("plotFilterHistograms()\tdataset must contain a field keptGenes as computed by filterDataTable()")
+  }
+  keptGenes <- dataset$keptGenes
+
+
   ## Near-zero filter
   parameters <- dataset$parameters
   if (is.null(parameters$filtering$nearZeroVarFilter)) {
@@ -294,6 +301,12 @@ plotFilterHistograms <- function(dataset,
 
 
   if (nearZeroVarFilter) {
+    ## Get list of near-zero variance genes
+    if (is.null(dataset$nearZeroVarGenes)) {
+      stop("plotFilterHistograms()\tdataset must contain a field nearZeroVarGenes as computed by filterDataTable()")
+    }
+    nearZeroVarGenes <- dataset$nearZeroVarGenes
+
     hist(log2(varPerGene[nearZeroVarGenes]),
          breaks = varbreaks,
          col = "red", border = "orange",
@@ -311,7 +324,7 @@ plotFilterHistograms <- function(dataset,
        xlim = xlim)
 
   ## Count the number of zero values per gene
-  zerosPerGene <- apply(rawCounts$dataTable == 0, 1, sum)
+  zerosPerGene <- apply(dataset$dataTable == 0, 1, sum)
   zerobreaks <- seq(from = 0, to = max(zerosPerGene + 1), length.out = 50)
   # zerobreaks <- seq(from=0, to=max(zerosPerGene+1), by=1)
 
