@@ -10,16 +10,17 @@
 
 StudyCase  <- function(recountID, parameters) {
 
-  if (is.null(parameters$epsilon)) {
+  if (is.null(parameters$standardization$epsilon)) {
     epsilon = 0.1
     message("epsilon (pseudo-count) not defined in config file -> using default value (", epsilon, ")")
+  } else {
+    epsilon <- parameters$standardization$epsilon
   }
 
   message.with.time("Loading count table from recount", "; recountID = ", parameters$recountID)
 
   ## Run loadCounts method to get the counts per run + counts per sample + filtered counts
-  result <- loadCounts(recountID = recountID,
-                       parameters = parameters)
+  result <- loadCounts(recountID = recountID, parameters = parameters)
   # class(result$filtered)
 
   ## Cast the filtered counts from class DataTableWithClasses to class DataTableWithTrainTestSets.
@@ -57,29 +58,66 @@ StudyCase  <- function(recountID, parameters) {
     dataNames <- append(dataNames, method.name)
 
     ##### Normalize counts with log2 transformation (second test) #####
-    message("\tComputing log2-transformed normalised counts")
-    log2.name <- paste(sep = "", method.name, "_log2")
-    result[[log2.name]] <- result[[method]]
-    result[[log2.name]][["dataType"]] <- log2.name
-    result[[log2.name]][["dataTable"]] <- log2(result[[method]][["dataTable"]] + epsilon)
-    dataNames <- append(dataNames, log2.name)
-    # hist(result[[log2.name]][["dataTable"]], breaks=100)
-
+    if (method != "RLE") { ## RLE is already log2-transformed
+      message("\tComputing log2-transformed normalised counts")
+      log2.name <- paste(sep = "", method.name, "_log2")
+      result[[log2.name]] <- result[[method.name]]
+      result[[log2.name]][["dataType"]] <- log2.name
+      result[[log2.name]][["dataTable"]] <- log2(result[[method.name]][["dataTable"]] + epsilon)
+      dataNames <- append(dataNames, log2.name)
+      # hist(result[[log2.name]][["dataTable"]], breaks=100)
+    }
 
     #### Derive an object having as features the principal components of log2norm ####
     message("\tComputing principal components")
-    pc.name <- paste(sep = "", log2.name, "_PC")
-    result[[pc.name]] <- result[[log2.name]] ## Clone the log2norm object to copy all its parameters
+    if (method == "RLE") {
+      ## RLE is already log2-transformed
+      pc.name <- paste(sep = "", method.name, "_PC")
+      result[[pc.name]] <- result[[method.name]] ## Clone the log2norm object to copy all its parameters
+    } else {
+      pc.name <- paste(sep = "", log2.name, "_PC")
+      result[[pc.name]] <- result[[log2.name]] ## Clone the log2norm object to copy all its parameters
+    }
     result[[pc.name]][["dataType"]] <- pc.name
+    dataNames <- append(dataNames, pc.name)
+
+    counts.for.pc <- result[[pc.name]]$dataTable # Suppress rows containing NA values
+    # dim(counts.for.pc)
+
+    ## Filter out samples with Infinite values
+    ## (results from null size factor -> infinite scaling factor)
+    samples.with.inf <- apply(is.infinite(counts.for.pc), 2, sum) > 0
+    if (sum(samples.with.inf) > 0) {
+      message("\tDiscarding ", sum(samples.with.inf), " samples with infinite values (due to null size factor)")
+      counts.for.pc <- counts.for.pc[, !samples.with.inf]
+      message("\t\tRemaining: ",
+              nrow(counts.for.pc), " features (rows) x ",
+              ncol(counts.for.pc), " samples (columns).")
+
+
+    }
+    #    inf.per.feature <- apply(is.infinite(counts.for.pc), 1, sum)
+    #    dim(counts.for.pc[,inf.per.sample == 0])
+    #    dim(counts.for.pc[inf.per.feature == 0, ])
+
+    ## Remove features with NA values
+    features.with.NA <-  apply(is.na(counts.for.pc), 1, sum) > 0
+    if (sum(features.with.NA) > 0) {
+      message("Discarding ", sum(features.with.NA), " samples with infinite values (due to null size factor)")
+      counts.for.pc <- na.omit(counts.for.pc) # Suppress rows containing NA values
+      message("\t\tRemaining: ",
+              nrow(counts.for.pc), " features (rows) x ",
+              ncol(counts.for.pc), " samples (columns).")
+    }
+
     ## Compute principal components
     result[[pc.name]]$prcomp <-
-      prcomp( t(na.omit(result[[pc.name]]$dataTable)),
-              center = TRUE,
-              scale. = FALSE)
+      prcomp(t(counts.for.pc),
+             center = TRUE,
+             scale. = FALSE)
     ## Replace log2 normalised counts by principal components
     result[[pc.name]]$dataTable <- t(result[[pc.name]]$prcomp$x)
     # names(result[[pc.name]])
-    dataNames <- append(dataNames, pc.name)
     # hist(result[[pc.name]][["dataTable"]], breaks=200)
 
   }
@@ -105,21 +143,15 @@ StudyCase  <- function(recountID, parameters) {
         countsPerRun = result$countsPerRun,
         countsPerSample = result$originalCounts),
       datasetsForTest = list(
-        filtered = result$filtered,
-        # norm = result$norm,
-        # log2norm = result[[pc.name]],
-        # log2normPCs = result$log2normPCs
-#        log2normViRf = result$log2normViRf# ,
-#        log2norm_DESeq2_sorted = result$log2norm_DESeq2_sorted,
-#        log2norm_edgeR_sorted = result$log2norm_edgeR_sorted
-      )
+        filtered = result$filtered)
     ),
-    class="StudyCase")
+    class = "StudyCase")
 
   ## Append the normalised data types to the StudyCase object
   for (name in dataNames) {
     self$datasetsForTest[[name]] <- result[[name]]
   }
+  self$normalisedDataNames <- dataNames
 
   #### DESeq2-sorted variables ####
   if ("DESeq2" %in% project.parameters$global$ordering.methods) {
