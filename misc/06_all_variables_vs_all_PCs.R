@@ -39,18 +39,21 @@ if (project.parameters$global$compute) {
   train.test.results.all.variables.per.classifier <- list()
 
   ## Loop over recountIDs
+  # recountID <- "SRP042620"
   for (recountID in selectedRecountIDs) {
+
+    message.with.time("Running train/test with all variables for recountID\t", recountID)
 
     train.test.results.all.variables.per.classifier[[recountID]] <- list() ## Instantiate an entry per recountID
 
     ## Get the recountID-specific parameters from the loaded object
     parameters <- studyCases[[recountID]]$parameters
 
-    message.with.time("Running train/test with all variables for recountID\t", recountID)
 
+    studyCase <- studyCases[[recountID]]
     ## Loop over classifiers
-    classifier <- "svm" ## For quick test
-    for (classifier in project.parameters$global$classifiers) {
+    # classifier <- "svm" ## For quick test
+    for (classifier in parameters$classifiers) {
       short.labels <- vector() ## Initiate the list of short labels for the plots
 
       ## List to store all results
@@ -60,15 +63,21 @@ if (project.parameters$global$compute) {
       permute <- FALSE ## Default for quick test without iterating over all cases
       for (permute in project.parameters$global$permute) {
 
+        #### Data types to analyse ####
+        ## If not specified in config file, take all datasetsForTest
+        if (is.null(parameters$data.types.to.test)) {
+          parameters$data.types.to.test <- names(studyCase$datasetsForTest)
+        }
+
         ## Loop over data types
-        data.type <- "log2normPCs" ## For test
-        for (data.type in project.parameters$global$data.types.to.test) {
+        data.type <- "q0.75_log2_PC" ## For quick test
+        for (data.type in parameters$data.types.to.test) {
           message.with.time("\tRunning train/test with all variables",
                             "\n\trecountID: ", recountID,
                             "\n\tData type: ", data.type,
                             "\n\tClassifier: ", classifier,
                             "\n\tpermuted class labels: ", permute)
-          dataset <- studyCases[[recountID]]$datasetsForTest[[data.type]]
+          dataset <- studyCase$datasetsForTest[[data.type]]
           # class(dataset)
           # summary(dataset)
 
@@ -95,7 +104,7 @@ if (project.parameters$global$compute) {
           outParam <- outputParameters(dataset, classifier, permute, createDir = TRUE)
 
           train.test.results.all.variables[[outParam$filePrefix]] <-
-            IterateTrainingTesting (
+            IterateTrainingTesting(
               dataset,
               classifier = classifier,
               permute = permute
