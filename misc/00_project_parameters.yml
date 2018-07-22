@@ -7,12 +7,15 @@ global: ## Global parameters are those who are the samee across all study cases
     memoryImages: "~/RNAseqMVA_workspace/memory_images"
 
   filtering:
-    NA: TRUE            # Discard features with NA values
+    ## Filtering options
+    na.rm: TRUE          # Discard features with NA values
     null.variance: TRUE # Discard features with null variance
-    NZ.variance: TRUE  # near-zero variance filtering
+    nearZeroVarFilter: FALSE # near-zero variance filtering. I disactivate this option because it is particularly bad for single-cell RNA-seq, and it is not specially interesting from bulk RNA-seq
+    minSamplesPerClass: 15 ## THERE IS A BUG TO FIX: if we set this parameter to 10 (for example) the class labels must be adapted by suppressing the
 
   standardization:
     methods: ["quantile", "TMM", "RLE"]
+    nozero: TRUE ## Discard zeros before computing library size factors
     quantile: 0.75  ## quantile used as library size factor
     epsilon: 0.1    ## For log2 transformation
 
@@ -72,10 +75,6 @@ default:
   mergeRuns: TRUE ## Whether or not to merge runs per sample
   sampleIdColumn: "geo_accession"
 
-  ## Filtering options
-  minSamplesPerClass: 15 ## THERE IS A BUG TO FIX: if we set this parameter to 10 (for example) the class labels must be adapted by suppressing the
-  nearZeroVarFilter: TRUE
-  na.rm: TRUE
 
 
 
