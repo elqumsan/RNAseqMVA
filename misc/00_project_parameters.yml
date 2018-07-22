@@ -20,7 +20,7 @@ global: ## Global parameters are those who are the samee across all study cases
     epsilon: 0.1    ## For log2 transformation
 
   perm.prefix: "permLabels"
-  jobs: "none" ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
+  jobs: "4" ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
   #  iterations: 50, ## Number of iterations for the classiifers
   iterations: 10 ## Number of iterations for the classiifers
 
@@ -35,7 +35,8 @@ global: ## Global parameters are those who are the samee across all study cases
 
   data.types: ["countsPerRun", "originalCounts", "filtered", "norm", "log2norm", "log2normPCs", "DEG", "V.importance"]
   #data.types.to.test: ["log2normPCs"]
-  data.types.to.test: ["filtered", "norm", "log2norm", "log2normPCs"]
+  # data.types.to.test: ["filtered", "norm", "log2norm", "log2normPCs"]
+  data.types.to.test:
 
   # data.types.to.test: ["log2norm"]
   variables.type: ["all"]
