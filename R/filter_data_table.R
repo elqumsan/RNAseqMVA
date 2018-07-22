@@ -109,7 +109,7 @@ filterDataTable <- function(rawCounts,
 
   ## Detect genes with zero variance
   message("\tDetecting genes with zero variance")
-  varPerGene <- apply(rawCounts$dataTable, 1 , var, na.rm=TRUE) # Compute variance per gene (row)
+  varPerGene <- apply(rawCounts$dataTable, 1 , var, na.rm = TRUE) # Compute variance per gene (row)
   # table(varPerGene == 0)
 
   # sum(zeroVarGenes == 0) # count genes with zero variance
@@ -139,99 +139,6 @@ filterDataTable <- function(rawCounts,
   ## Extract the table of counts with the subset of kept genes at the end of the different gene filters.
   filteredDataTable <- rawCounts$dataTable[keptGenes,]
   # dim(filteredDataTable)
-
-  ## Plot an histogram to compare variance distribution  between all genes and those with  near-zero variance
-  if (draw.plot) {
-    plot.file <- file.path(parameters$dir$NormalizationImpact, "var_per_gene_hist.pdf")
-    message("\tVariance per gene histograms\t", plot.file)
-    pdf(plot.file, width=7, height=12)
-
-    logVarPerGene <- log2(varPerGene)
-    noInfVar <- !is.infinite(logVarPerGene)
-    xmin <- floor(min(logVarPerGene[noInfVar]))
-    xmax <- ceiling(max(logVarPerGene[noInfVar]))
-    xlim <- c(xmax, xmin)
-    varbreaks <- seq(from=xmin,  to=xmax, by=0.1)
-    if (nearZeroVarFilter) {
-      par(mfrow=c(4,1))
-    } else {
-      par(mfrow=c(3,1))
-    }
-    hist(log2(varPerGene[noInfVar]),
-         breaks=varbreaks,
-         col="gray", border = "gray",
-         main = paste("All non-zero var genes; ", parameters$recountID),
-         xlab="log2(varPerGene)",
-         ylab="Number of genes")
-#    legend("topright", parameters$recountID)
-
-
-    if (nearZeroVarFilter) {
-      hist(log2(varPerGene[nearZeroVarGenes]),
-         breaks=varbreaks,
-         col="red", border = "orange",
-         main = "Near zero variance",
-         xlab="log2(varPerGene)",
-         ylab="Number of genes")
-    }
-    hist(log2(varPerGene[keptGenes]),
-         breaks=varbreaks,
-         col="darkgreen", border = "#00BB00",
-         main = "Kept genes",
-         xlab="log2(varPerGene)",
-         ylab="Number of genes")
-
-    ## Count the number of zero values per gene
-    zerosPerGene <- apply(rawCounts$dataTable == 0, 1, sum)
-    zerobreaks <- seq(from=0, to=max(zerosPerGene+1), length.out =50)
-    # zerobreaks <- seq(from=0, to=max(zerosPerGene+1), by=1)
-
-    #### Histogram of zero values per gene. ####
-    ##
-    ## Displayed in green (color for kept genes) because we will then
-    ## overlay the histograms of near zero var (orange) and zero var (red),
-    ## so that the remaining part of the histogram will correspond to genes
-    ## kept.
-    hist(zerosPerGene,
-         breaks = zerobreaks,
-         main = "Zeros per gene",
-         xlab = "Number of zero values",
-         ylab = "Number of genes",
-         col = "#00BB00", border = "#00BB00")
-    if (nearZeroVarFilter) {
-      hist(zerosPerGene[union(nearZeroVarGenes, zeroVarGenes)],
-         breaks = zerobreaks,
-         add = TRUE, col="orange", border="orange")
-    }
-    hist(zerosPerGene[zeroVarGenes],
-         breaks = zerobreaks,
-         add = TRUE, col = "red", border = "red")
-    if (nearZeroVarFilter) {
-      legend("topleft",
-             legend=paste(
-               sep= ": ",
-               c("Kept genes", "Near-zero variance", "Zero variance"),
-               c(length(keptGenes), length(nearZeroVarGenes), length(zeroVarGenes))),
-             lwd=5,
-             col=c("#00BB00", "orange", "red")
-      )
-    } else {
-      legend("topleft",
-             legend=paste(
-               sep= ": ",
-               c("Kept genes",  "Zero variance"),
-               c(length(keptGenes), length(zeroVarGenes))),
-             lwd=5,
-             col=c("#00BB00", "red"))
-
-    }
-    #    hist(zerosPerGene[nearZeroVarGenes])
-
-    par(mfrow=c(1,1))
-
-    silence <- dev.off()
-
-  }
 
 
   ################################################################
@@ -288,7 +195,7 @@ filterDataTable <- function(rawCounts,
                                   parameters = rawCounts$parameters)
 
   # class(result)
-  summary(result)
+  # summary(result)
 
   # result$dataTable <- filteredDataTable
   # result$phenoTable <- filteredPhenoTable
@@ -302,6 +209,14 @@ filterDataTable <- function(rawCounts,
   result$nearZeroVarGenes <- nearZeroVarGenes
   result$keptGenes <- keptGenes
   result$keptClasses <- keptClasses
+  result$varPerGeneRaw <- varPerGene
+  result$varPerGeneFiltered <- apply(result$dataTable, 1 , var, na.rm = TRUE) # Compute variance per gene (row)
+
+  ## Plot an histogram to compare variance distribution  between all genes and those with  near-zero variance
+  if (draw.plot) {
+    plotFilterHistograms(result, plot.file = file.path(parameters$dir$NormalizationImpact, "var_per_gene_hist.pdf"))
+  }
+
 
   message.with.time("Finished filterDataTable() for Recount experiment ID ", parameters$recountID)
   ################################################################################
@@ -322,4 +237,124 @@ filterDataTable <- function(rawCounts,
 
   return(result)
 
+}
+
+#' @title plot histograms of the variance distributions at different steps of the filtering process
+#' @author Jacques van Helden
+#' @param dataset an object of class DatasetWithClasses returned by filterDataTable()
+#' @param plot.file=NULL save the plot in a specified pdf file
+#' @export
+plotFilterHistograms <- function(dataset,
+                                 plot.file = NULL) {
+
+  message("\tVariance per gene histograms\t", plot.file)
+  if (!is.null(plot.file)) {
+    pdf(plot.file, width = 7, height = 12)
+  }
+
+  ## Check the class of input object
+  if (!is(dataset, "DataTableWithClasses")) {
+    stop("plotFilterHistograms()\tdataset should belong to class DataTableWithClasses. ")
+  }
+
+  ## Get variance per gene
+  if (is.null(dataset$varPerGene)) {
+    stop("plotFilterHistograms()\tdataset must contain a field varPerGene as computed by filterDataTable()")
+  }
+  varPerGene <- dataset$varPerGene
+
+  ## Near-zero filter
+  parameters <- dataset$parameters
+  if (is.null(parameters$filtering$nearZeroVarFilter)) {
+    nearZeroVarFilter <- FALSE
+  } else {
+    nearZeroVarFilter <- parameters$filtering$nearZeroVarFilter
+  }
+
+
+  logVarPerGene <- log2(varPerGene)
+  noInfVar <- !is.infinite(logVarPerGene)
+  xmin <- floor(min(logVarPerGene[noInfVar]))
+  xmax <- ceiling(max(logVarPerGene[noInfVar]))
+  xlim <- c(xmax, xmin)
+  varbreaks <- seq(from = xmin,  to = xmax, by  = 0.1)
+  if (nearZeroVarFilter) {
+    par(mfrow = c(4,1))
+  } else {
+    par(mfrow = c(3,1))
+  }
+  hist(log2(varPerGene[noInfVar]),
+       breaks = varbreaks,
+       col = "gray", border = "gray",
+       main = paste("All non-zero var genes; ", parameters$recountID),
+       xlab = "log2(varPerGene)",
+       ylab = "Number of genes")
+  #    legend("topright", parameters$recountID)
+
+
+  if (nearZeroVarFilter) {
+    hist(log2(varPerGene[nearZeroVarGenes]),
+         breaks = varbreaks,
+         col = "red", border = "orange",
+         main = "Near zero variance",
+         xlab = "log2(varPerGene)",
+         ylab = "Number of genes")
+  }
+  hist(log2(varPerGene[keptGenes]),
+       breaks = varbreaks,
+       col = "darkgreen", border = "#00BB00",
+       main = "Kept genes",
+       xlab = "log2(varPerGene)",
+       ylab = "Number of genes")
+
+  ## Count the number of zero values per gene
+  zerosPerGene <- apply(rawCounts$dataTable == 0, 1, sum)
+  zerobreaks <- seq(from = 0, to = max(zerosPerGene + 1), length.out = 50)
+  # zerobreaks <- seq(from=0, to=max(zerosPerGene+1), by=1)
+
+  #### Histogram of zero values per gene. ####
+  ##
+  ## Displayed in green (color for kept genes) because we will then
+  ## overlay the histograms of near zero var (orange) and zero var (red),
+  ## so that the remaining part of the histogram will correspond to genes
+  ## kept.
+  hist(zerosPerGene,
+       breaks = zerobreaks,
+       main = "Zeros per gene",
+       xlab = "Number of zero values",
+       ylab = "Number of genes",
+       col = "#00BB00", border = "#00BB00")
+  if (nearZeroVarFilter) {
+    hist(zerosPerGene[union(nearZeroVarGenes, zeroVarGenes)],
+         breaks = zerobreaks,
+         add = TRUE, col = "orange", border = "orange")
+  }
+  hist(zerosPerGene[zeroVarGenes],
+       breaks = zerobreaks,
+       add = TRUE, col = "red", border = "red")
+  if (nearZeroVarFilter) {
+    legend("topleft",
+           legend = paste(
+             sep = ": ",
+             c("Kept genes", "Near-zero variance", "Zero variance"),
+             c(length(keptGenes), length(nearZeroVarGenes), length(zeroVarGenes))),
+           lwd = 5,
+           col = c("#00BB00", "orange", "red")
+    )
+  } else {
+    legend("top",
+           legend = paste(
+             sep = ": ",
+             c("Kept genes",  "Zero variance"),
+             c(length(keptGenes), length(zeroVarGenes))),
+           lwd = 5,
+           col = c("#00BB00", "red"))
+
+  }
+  #    hist(zerosPerGene[nearZeroVarGenes])
+
+  par(mfrow = c(1,1))
+  if (!is.null(plot.file)) {
+    silence <- dev.off()
+  }
 }
