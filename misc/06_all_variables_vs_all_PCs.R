@@ -12,6 +12,8 @@ allVariables.mem.image <- file.path(
   project.parameters$global$dir$memoryImages,
   paste(sep = "", "classif_eval_all_variables_", Sys.Date(), ".Rdata"))
 
+
+
 ## For debug: reset the parameters for all the study cases
 ## This is used to re-run the analyses on each study case after
 ## having changed some parameters in the yaml-specific configuration file
@@ -31,12 +33,12 @@ if (reload.parameters) {
   }
 }
 
+train.test.results.all.variables.per.classifier <- list()
 
 ## Run the whole computation if required
 ## (this can take several hours depending on the number of datasets and classifier methods)
 if (project.parameters$global$compute) {
 
-  train.test.results.all.variables.per.classifier <- list()
 
   ## Loop over recountIDs
   # recountID <- "SRP042620"
@@ -134,7 +136,9 @@ if (project.parameters$global$compute) {
                                     "; ", classifier,
                                     "\n all features; ",
                                     project.parameters$global$iterations, " iterations"))
-      # train.test.results.all.variables.per.classifier[[recountID]][[classifier]] <- train.test.results.all.variables
+
+      ## We store the training-testing result in a single list for further processing
+      train.test.results.all.variables.per.classifier[[recountID]][[classifier]] <- train.test.results.all.variables
 
     } # end loop over classifiers
   } # end loop over RecountIDs
