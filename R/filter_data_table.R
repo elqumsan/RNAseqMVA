@@ -186,13 +186,13 @@ filterDataTable <- function(rawCounts,
 
 
   ## Return unfiltered count table + phenotable + countsWithClasses$classLabels
-  result <- DataTableWithClasses(dataTable= filteredDataTable,
-                                  phenoTable =  filteredPhenoTable,
-                                  # classColumn = rawCounts$classColumn,
-                                  # classColors = rawCounts$classColors,
-                                  # variablesType = "all",
-                                  dataType = "filtered_counts",
-                                  parameters = rawCounts$parameters)
+  result <- DataTableWithClasses(dataTable = filteredDataTable,
+                                 phenoTable =  filteredPhenoTable,
+                                 # classColumn = rawCounts$classColumn,
+                                 # classColors = rawCounts$classColors,
+                                 # variablesType = "all",
+                                 dataType = "filtered_counts",
+                                 parameters = rawCounts$parameters)
 
   # class(result)
   # summary(result)
@@ -214,7 +214,9 @@ filterDataTable <- function(rawCounts,
 
   ## Plot an histogram to compare variance distribution  between all genes and those with  near-zero variance
   if (draw.plot) {
-    plotFilterHistograms(result, plot.file = file.path(parameters$dir$NormalizationImpact, "var_per_gene_hist.pdf"))
+    plotFilterHistograms(result, plot.file = file.path(
+      parameters$dir$NormalizationImpact,
+      paste(sep = "_", parameters$recountID, "filtering_variance_per_gene_hist.pdf")))
   }
 
 
@@ -269,6 +271,11 @@ plotFilterHistograms <- function(dataset,
   }
   keptGenes <- dataset$keptGenes
 
+  ## Get list of genes with zero variance
+  if (is.null(dataset$zeroVarGenes)) {
+    stop("plotFilterHistograms()\tdataset must contain a field zeroVarGenes as computed by filterDataTable()")
+  }
+  zeroVarGenes <- dataset$zeroVarGenes
 
   ## Near-zero filter
   parameters <- dataset$parameters
@@ -277,7 +284,6 @@ plotFilterHistograms <- function(dataset,
   } else {
     nearZeroVarFilter <- parameters$filtering$nearZeroVarFilter
   }
-
 
   logVarPerGene <- log2(varPerGene)
   noInfVar <- !is.infinite(logVarPerGene)
@@ -306,6 +312,7 @@ plotFilterHistograms <- function(dataset,
       stop("plotFilterHistograms()\tdataset must contain a field nearZeroVarGenes as computed by filterDataTable()")
     }
     nearZeroVarGenes <- dataset$nearZeroVarGenes
+
 
     hist(log2(varPerGene[nearZeroVarGenes]),
          breaks = varbreaks,
