@@ -4,8 +4,8 @@
 #' @description Apply various filters on the observations (e.g. biological samples)
 #' and variables (e.g. genes) of
 #' a count table in order to prepare it for classification.
-#' @param countsWithClasses an object of the class DataTableWithClasses
-#' @param parameters parameters (can be loaded from the config file)
+#' @param countsWithClasses an object of the class DataTableWithClasses.
+#' This object contains the data table + the parameters (including filtering parameters).
 #' @param draw.plot=TRUE if TRUE, draw an histogram of variance per gene.
 #'
 #' @examples
@@ -36,11 +36,7 @@
 #' @import ggplot2
 #' @export
 filterDataTable <- function(rawCounts,
-                            parameters,
-                             # na.rm = parameters$na.rm,
-                             # minSamplesPerClass = parameters$minSamplesPerClass,
-                             # nearZeroVarFilter = parameters$nearZeroVarFilter,
-                             draw.plot = TRUE) {
+                            draw.plot = TRUE) {
 
   RequiredBioconductorPackages(c("recount", "SummarizedExperiment"))
 
@@ -49,7 +45,7 @@ filterDataTable <- function(rawCounts,
 
   ## Check validity of the input class
   if (!is(rawCounts, "DataTableWithClasses")) {
-    stop("filterDataTable() requires an object of class raw counts per sample")
+    stop("filterDataTable() requires an object of class DataTableWithClasses")
   }
 
 
@@ -57,25 +53,41 @@ filterDataTable <- function(rawCounts,
   parameters <- rawCounts$parameters
 
   ## Check required parameters
-  for (p in c("na.rm", "minSamplesPerClass", "nearZeroVarFilter")) {
-    if (is.null(parameters[[p]])) {
-      stop("Missing required parameter: '", p,
-           "'.\n\tPlease check configuration file. ")
-    } else {
-      assign(p, parameters[[p]])
-    }
+  if (is.null(parameters$filtering$na.rm)) {
+    message("\tfilterDataTable()\tundefined filtering parameter: na.rm. Setting to default (TRUE).")
+    parameters$filtering$na.rm <- TRUE
   }
+  na.rm <- parameters$filtering$na.rm
+
+  if (is.null(parameters$filtering$na.rm)) {
+    message("\tfilterDataTable()\tundefined filtering parameter: minSamplesPerClass. Setting to default (10).")
+    parameters$filtering$minSamplesPerClass <- 10
+  }
+  minSamplesPerClass <- parameters$filtering$minSamplesPerClass
+
+  if (is.null(parameters$filtering$nearZeroVarFilter)) {
+    message("\tfilterDataTable()\tundefined filtering parameter: nearZeroVarFilter. Setting to default (FALSE).")
+    parameters$filtering$nearZeroVarFilter <- FALSE
+  }
+  nearZeroVarFilter <- parameters$filtering$nearZeroVarFilter
+
+  ## Set the updated parameters to the object
+  rawCounts$parameters <- parameters
+
+  # for (p in c("na.rm", "minSamplesPerClass", "nearZeroVarFilter")) {
+  #   if (is.null(parameters[[p]])) {
+  #     stop("Missing required parameter: '", p,
+  #          "'.\n\tPlease check configuration file. ")
+  #   } else {
+  #     assign(p, parameters[[p]])
+  #   }
+  # }
 
 
 
   ## Initialise a vector with the genes that will be kept through the different filtering stpes.
   keptGenes <- rawCounts$geneNames
 
-
-#  result <- list()
-  # class(rawCounts)
-  # class(result) <- "DataTableWithClasses"
-  # result$dataType <- "filtered counts"
 
   ## Check if there are NA values, and discard all genes having at least one NA value
   if (sum(is.na(rawCounts$dataTable)) > 0) {
