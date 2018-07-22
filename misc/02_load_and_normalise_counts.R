@@ -36,7 +36,6 @@ if (project.parameters$global$reload) {
     #### Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files ###
     exportTables(studyCases[[recountID]])
 
-
     ## TO DO LATER: CHECK IF THESE FIGURES ARE WELL GENERATED, AND INCOROPORATE THEM IN THE plot.figure methods
 
     # plot.file <- file.path(parameters$dir$NormalizationImpact, "log2normCount_hist.pdf")
@@ -123,7 +122,7 @@ for (recountID in selectedRecountIDs) {
   }
 }
 rownames(studyCasesStats) <- studyCasesStats$recountID
-studyCasesStats$pc.NA <-100*studyCasesStats$genes.NA / studyCasesStats$genes.ori
+studyCasesStats$pc.NA <- 100*studyCasesStats$genes.NA / studyCasesStats$genes.ori
 studyCasesStats$pc.zeroVar <- 100*studyCasesStats$genes.zeroVar / studyCasesStats$genes.ori
 studyCasesStats$pc.NZfilter <- 100*studyCasesStats$genes.NZfilter / studyCasesStats$genes.ori
 studyCasesStats$pc.kept <-  100*studyCasesStats$genes.filtered / studyCasesStats$genes.ori
@@ -151,46 +150,50 @@ gene.pc <- gene.pc[order(gene.pc$pc.kept, decreasing = FALSE), ]
 figure.file <- paste("experiments_summaries.pdf")
 barPlot.file <- file.path(parameters$dir$results,figure.file)
 message("Filtering summary barplot: ", barPlot.file)
-pdf(file = barPlot.file, width=7, height=2+1*nrow(studyCasesStats))
+pdf(file = barPlot.file, width = 7, height = 2 + 1 * nrow(studyCasesStats))
 save.margins <- par("mar")
-par(mar= c(5,7,5,1))
+par(mar = c(5,7,5,1))
 
-kept.label <- paste(sep="",round(digits=0, gene.pc$pc.kept), "%")
-ypos <- barplot(t(gene.pc), las=1, horiz = TRUE,
+kept.label <- paste(sep = "", round(digits = 0, gene.pc$pc.kept), "%")
+ypos <- barplot(t(gene.pc), las = 1, horiz = TRUE,
                 col = c("black", "red", "orange", "#44DD44"),
                 legend.text = c("NA values", "Zero var", "NZ filter", "kept"),
                 main = "Filtering impact on study cases",
                 xlab = "Proportions of genes",
-                #                 names.arg = paste(sep="", rownames(gene.pc), " (", kept.label, ")"),
-                xlim=c(0, 170))
+                xlim = c(0, 170))
 text(x = 100, kept.label, y = ypos, pos = 4)
 
 par(mar = save.margins)  ## Restore original graphical parameter
-silence<- dev.off()      ## Close graphical device
+silence <- dev.off()      ## Close graphical device
 
 #### Draw a barplot with the number of samples per class ####
-figure.file <- paste("samples_per_classes.pdf")
-barPlot.file <- file.path(parameters$dir$results,figure.file)
-message("Samples per classes barplot: ", barPlot.file)
-pdf(file = barPlot.file, width=8, height=12)
-save.margins <- par("mar")
-par(mfrow=c(4,2))
-par(mar=c(4,15,5,1))
 for (recountID in names(studyCases)) {
+  dir.figures <- file.path(parameters$dir$results, recountID, "figures")
+  dir.create(dir.figures, recursive = TRUE, showWarnings = FALSE)
+  figure.file <- paste(sep = "", recountID, "_samples_per_classes.pdf")
+  barPlot.file <- file.path(dir.figures, figure.file)
+  message("Samples per classes barplot: ", barPlot.file)
+  pdf(file = barPlot.file, width = 5, height = 8)
+  par.ori <- par(no.readonly = TRUE)
+  # par(mfrow = c(4,2))
+  classNames <- studyCases[[recountID]]$rawData$countsPerSample$classNames
+  classNameLen <- max(nchar(classNames))
+  par(mar = c(4, 1 + classNameLen*0.3, 5, 1))
+  # par("mar")
   heights <- barplot(
     sort(studyCases[[recountID]]$rawData$countsPerSample$samplesPerClass, decreasing = TRUE),
-    horiz = TRUE, las=1, cex.names = 0.7, main=recountID,
-    xlab="Samples per class", col="white")
+    horiz = TRUE, las = 1, cex.names = 0.7, main = recountID,
+    xlab = "Samples per class", col = "white")
   barplot(sort(studyCases[[recountID]]$datasetsForTest$filtered$samplesPerClass, decreasing = TRUE),
-          add=TRUE, horiz = TRUE, las=1, cex.names = 0.7,
-          main=recountID, xlab="Samples per class",
+          add = TRUE, horiz = TRUE, las = 1, cex.names = 0.7,
+          main = recountID, xlab = "Samples per class",
           col = studyCases[[recountID]]$datasetsForTest$filtered$classColors)
 #          col="#00BB00")
-  abline(v = studyCases[[recountID]]$parameters$minSamplesPerClass, col="red")
+  abline(v = studyCases[[recountID]]$parameters$filtering$minSamplesPerClass, col = "red")
+  par(mfrow = c(1,1))
+  par(par.ori)
+  silence <- dev.off()
 }
-par(mfrow=c(1,1))
-par(mar = save.margins)
-silence<- dev.off()
 
 #######################################################
 # loadedObjects.dataType <- data.frame()
@@ -220,10 +223,10 @@ for (recountID in selectedRecountIDs) {
   message("plotDir = ", plotDir)
 
   ## Variance barplot of the components
-  PCplot.file <- file.path(plotDir, paste(sep="", recountID, "_log2norm_prcomp_variance.pdf"))
+  PCplot.file <- file.path(plotDir, paste(sep = "", recountID, "_log2norm_prcomp_variance.pdf"))
   message("PC variance plot: ", PCplot.file)
-  pdf(file = PCplot.file, width=7, height=5)
-  plot(studyCases[[recountID]]$datasetsForTest$log2normPCs$prcomp, col="#BBDDEE", xlab="Components")
+  pdf(file = PCplot.file, width = 7, height = 5)
+  plot(studyCases[[recountID]]$datasetsForTest$log2normPCs$prcomp, col = "#BBDDEE", xlab = "Components")
   silence <- dev.off()
 
   #biplot(studyCases[[recountID]]$datasetsForTest$log2normPCs$prcomp, pc.biplot = TRUE)
