@@ -11,7 +11,7 @@
 StudyCase  <- function(recountID, parameters) {
 
   if (is.null(parameters$standardization$epsilon)) {
-    epsilon = 0.1
+    epsilon <- 0.1
     message("epsilon (pseudo-count) not defined in config file -> using default value (", epsilon, ")")
   } else {
     epsilon <- parameters$standardization$epsilon
@@ -40,6 +40,7 @@ StudyCase  <- function(recountID, parameters) {
   quantile <- parameters$standardization$quantile
   dataNames <- vector()
   # method <- "quantile"
+  # method <- "DESeq2"
   for (method in standardization.methods) {
 
     ###### Normalization method for the recount Table after merge and filtered it ########
@@ -54,7 +55,8 @@ StudyCase  <- function(recountID, parameters) {
       method = method,
       quantile = quantile,
       log2 = FALSE)
-    # hist(result[[method.name]][["dataTable"]], breaks=1000)
+    # hist(unlist(result[["filtered"]][["dataTable"]]), breaks=1000)
+    # hist(unlist(result[[method.name]][["dataTable"]]), breaks=1000)
     dataNames <- append(dataNames, method.name)
 
     ##### Normalize counts with log2 transformation (second test) #####
