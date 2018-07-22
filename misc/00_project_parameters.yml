@@ -14,7 +14,7 @@ global: ## Global parameters are those who are the samee across all study cases
     minSamplesPerClass: 15 ## THERE IS A BUG TO FIX: if we set this parameter to 10 (for example) the class labels must be adapted by suppressing the
 
   standardization:
-    methods: ["quantile", "TMM", "RLE"]
+    methods: ["quantile", "TMM", "RLE", "DESeq2"]
     nozero: TRUE ## Discard zeros before computing library size factors
     quantile: 0.75  ## quantile used as library size factor
     epsilon: 0.1    ## For log2 transformation
