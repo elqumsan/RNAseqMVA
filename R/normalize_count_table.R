@@ -12,17 +12,32 @@
 #' The phenoTable of the input object may be filtered out adapted it in case samples would be suppressed because they have a scaling factor of 0.
 #' @param classLabels the class labels associated each sample of the count table. Should be provided in order to adapt it in case samples would be suppressed because they have a scaling factor of 0.
 #'
-#' @param method="quantile" normalization method. Supported: sum, mean, media, quantile.
-#' Preferred method: quantile = 0.75. Quantiles are more robust to outliers than the mean
+#' @param method="quantile" normalization method.
+#' Supported normalization methods: sum, mean, median, quantile, TMM, RLE, DESeq2.
+#'
+#' Sum and mean are really not recommended because very sensitive to outliers.
+#' They are implemented only for the sake of comparison.
+#'
+#' Quantile: Preferred quantile = 0.75. Quantiles are more robust to outliers than the mean
 #' or sum. The median is sometimes weak in RNA-seq data, the 75th percentile (quantile 0.75)
 #' seems a good tradeoff between robustness and representativity (taking into account a
 #' representative proportion of the total counts per samples).
-#' Note that median is the same as quantile 0.5.
+#'
+#' Median: actually runs quantile-based scaling factor with quantile=0.5.
+#'
+#' TMM: trimmed mean of M-values proposed by Robinson and Oshlack (2010), computed via edgeR::calcNormFactors().
+#'
+#' RLE: relative log expression proposed by Anders and Huber (2010), computed via edgeR::calcNormFactors().
+#'
+#' DESeq2: compute size factors via DESeq2::estimateSizeFactors()
 #'
 #' @param quantile=0.75 quantile used as scaling factor when quantile method is selected.
+#'
 #' @param log2=FALSE apply a log2 transformation
+#'
 #' @param epsilon=0.1 value added to all counts before applying the log2 transformation
 #' in order to avoid zero counts.
+#'
 #' @param detailed.sample.stats=FALSE compute detailed sample stats (takes some seconds)
 #'
 #' @return the function returns an object of class DataTableWithClasses, where the dataTable
@@ -43,11 +58,35 @@ NormalizeSamples <- function(self,
                              detailed.sample.stats = FALSE) {
 
   ## Start message
-  if (log2) {
-    message.with.time("Starting log2 NormalizeSamples() for Recount experiment ID ", self[["ID"]])
-  } else{
-    message.with.time("Starting NormalizeSamples() for Recount experiment ID ", self[["ID"]])
+  # if (log2) {
+  #   message.with.time("Starting log2 NormalizeSamples() for Recount experiment ID ", self[["ID"]])
+  # } else{
+  #   message.with.time("Starting NormalizeSamples() for Recount experiment ID ", self[["ID"]])
+  # }
+
+  ## Define method name
+  if (method == "quantile") {
+    if (!exists("quantile")) {
+      stop("NormalizeSamples()\tMissing required parameter: standardization quantile")
+    }
+    if (is.null(quantile)) {
+      stop("NormalizeSamples()\tquantile-based scaling requires a non-null quantile parameter.")
+    }
+    method.name <- paste(sep = "", "q", quantile)
+  } else {
+    method.name <- method
   }
+
+  ## Median will be treated as quantile 0.5
+  if (method == "median") {
+    quantile <- 0.5
+  }
+
+  ## Append log2 suffix if log2-transformation is activated
+  if (log2) {
+    method.name <- paste(sep = "", method.name, "_log2")
+  }
+  message("\t", "Normalizing\t", recountID, "\tmethod: ", method.name)
 
   ## Extract the count matrix
   counts <- self$dataTable
@@ -71,29 +110,6 @@ NormalizeSamples <- function(self,
     counts <- self$dataTable
   }
 
-  ## Check parameters for quantile method
-  if (method == "quantile") {
-    if (!exists("quantile")) {
-      stop("NormalizeSamples()\tMissing required parameter: standardization quantile")
-    }
-    if (is.null(quantile)) {
-      stop("NormalizeSamples()\tquantile-based scaling requires a non-null quantile parameter.")
-    }
-    method.name <- paste(sep = "", "q", quantile)
-  } else {
-    method.name <- method
-  }
-
-  ## Median will be treated as quantile 0.5
-  if (method == "median") {
-    quantile <- 0.5
-  }
-
-  ## Append log2 suffix if log2-transformation is activated
-  if (log2) {
-    method.name <- paste(sep = "", method.name, "_log2")
-  }
-  message("\t", "Normalizing\t", recountID, "\tmethod: ", method.name)
 
   ## Compute sample-wise statistics
   message("\t\t", "Computing sample-wise statistics\t", recountID)
@@ -156,24 +172,11 @@ NormalizeSamples <- function(self,
       ## Compute quantile-based scaling factor via edgeR
       ## NOTE (2018-07-21) : with single-cell data containing MANY zeros, this returns Inf scaling factors for almost all the samples
       message("\t\tNormalizing counts with edgeR::calcNormFactors(method=upperquartile, p=", quantile,")")
-      d <- DGEList(counts = counts, group = self$classLabels)
+      d <- DGEList(counts = self$dataTable, group = self$classLabels)
       # d$samples$group <- relevel(d$samples$group)
       d <- calcNormFactors(d, method = "upperquartile", p = quantile)                 ## Compute normalizing factors
       sampleStats$scaling.factor <- d$samples$norm.factors
       sampleStats$size.factor <- 1/sampleStats$scaling.factor
-
-    # } else if (nozero) {
-    #   message("\tNormalizing counts. Scaling factor: sample quantile ", quantile, " of non-null counts.")
-    #   non.null.counts <- self$dataTable
-    #   # View(head(non.null.counts))
-    #   non.null.counts[non.null.counts  == 0] <- NA
-    #   # View(head(non.null.counts))
-    #   sampleStats$norm.quantile <- apply(non.null.counts, 2, quantile, na.rm = TRUE, probs = quantile)
-    #   sampleStats$size.factor <-  sampleStats$norm.quantile
-    #   sampleStats$scaling.factor <- 1 / sampleStats$size.factor
-    #   sampleStats$scaling.factor <- sampleStats$scaling.factor / mean(sampleStats$scaling.factor[!is.infinite(sampleStats$scaling.factor)])
-    #   # mean(sampleStats$scaling.factor[!is.infinite(sampleStats$scaling.factor)])
-    #   # hist(sampleStats$scaling.factor, breaks = 1000)
 
     } else {
       message("\t\tScaling factor: sample quantile ", quantile)
@@ -203,7 +206,7 @@ NormalizeSamples <- function(self,
 
   } else if (method == "TMM") {
     message("\t\tRunning edgeR::calcNormFactors(method='TMM').")
-    d <- DGEList(counts = counts, group = self$classLabels)
+    d <- DGEList(counts = self$dataTable, group = self$classLabels)
     # d$samples$group <- relevel(d$samples$group) ## Ensure that condition 2 is considered as the reference
     d <- calcNormFactors(d, method = "TMM")                 ## Compute normalizing factors
     sampleStats$scaling.factor <- d$samples$norm.factors
@@ -212,7 +215,7 @@ NormalizeSamples <- function(self,
   } else if (method == "RLE") {
     ## Run edgeR to compute the relative log expression defined by Anders and Huber (2010).
     message("\t\tRunning edgeR::calcNormFactors(method='RLE').")
-    d <- DGEList(counts = counts, group = self$classLabels)
+    d <- DGEList(counts = self$dataTable, group = self$classLabels)
     # d$samples$group <- relevel(d$samples$group) ## Ensure that condition 2 is considered as the reference
     d <- calcNormFactors(d, method = "RLE")                 ## Compute normalizing factors
     sampleStats$scaling.factor <- d$samples$norm.factors
@@ -220,7 +223,13 @@ NormalizeSamples <- function(self,
 
   } else if (method == "DESeq2") {
     message("\t\tRunning DESeq2::estimateSizeFactors()")
-    dds <- DESeqDataSetFromMatrix(counts, colData = data.frame(classes = self$classLabels), ~ classes  )
+    ## Replace non-alphanumeric charactersi by "_" in class labels, to avoid message from DESeq2
+    classLabels <- gsub(pattern = "[^[:alnum:] ]", replacement = "_", self$classLabels)
+    classLabels <- gsub(pattern = " ", replacement = "_", classLabels)
+    unique(classLabels)
+    dds <- DESeqDataSetFromMatrix(
+      countData = self$dataTable,
+      colData = data.frame(classes = classLabels), ~ classes)
     dds <- estimateSizeFactors(dds)
     sampleStats$size.factor <- sizeFactors(dds)
     sampleStats$scaling.factor <- 1/sampleStats$size.factor
@@ -231,7 +240,7 @@ NormalizeSamples <- function(self,
     message("\t\tRunning DESeq2::vsd()")
     stop("NOT FINISHED THE IMPLEMENTATION YET")
     ## Create a DESeqDataset object from the count table
-    dds <- DESeqDataSetFromMatrix(counts, colData = data.frame(classes = self$classLabels), ~ classes  )
+    dds <- DESeqDataSetFromMatrix(counts = self$dataTable, colData = data.frame(classes = self$classLabels), ~ classes  )
     vsd <- vst(dds, blind = FALSE)
     names(vsd)
     ## QUESTION: HOW DO I GET THE SIZE FACTORS FROM THE RESULTING OBJECT ?
