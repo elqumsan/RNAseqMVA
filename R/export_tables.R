@@ -45,18 +45,18 @@ exportTables.DataTableWithClasses <- function (self,
   ############## Exporting the count table ####################
   count.file <- file.path(export.dir, paste(file.prefix, self$ID, "_count_table", extension, sep = ""))
   message("\t\tExporting count table in TSV file\t", count.file)
-  write.table(self$dataTable, file = count.file, row.names = FALSE, quote=FALSE, sep = "\t")
+  write.table(self$dataTable, file = count.file, row.names = FALSE, quote = FALSE, sep = "\t")
 
   ############## Exporting the  Pheno Table ####################
   pheno.file <- file.path(export.dir, paste(file.prefix, self$ID, "_pheno_table", extension, sep = ""))
   message("\t\tExporting  pheno table in TSV file\t", pheno.file)
-  write.table(self$phenoTable, file = pheno.file, row.names = FALSE, quote=FALSE, sep = "\t")
+  write.table(self$phenoTable, file = pheno.file, row.names = FALSE, quote = FALSE, sep = "\t")
 
   ############## Exporting the class labels ####################
   classLabel.file <- file.path(export.dir, paste(file.prefix, self$ID, "_class_labels", extension, sep = ""))
   message("\t\tExporting class labels in TSV file\t", classLabel.file)
   write.table(data.frame(sampleName = self$sampleNames, classLabel = self$classLabels),
-              file = classLabel.file, row.names = FALSE, quote=FALSE, sep = "\t")
+              file = classLabel.file, row.names = FALSE, quote = FALSE, sep = "\t")
 
   NextMethod("exportTables", self)
 }
@@ -82,11 +82,11 @@ exportTables.DataTableWithTrainTestSets <- function (self,
   ############## Exporting train and test indices ####################
   trainIndices.file <- file.path(export.dir, paste(file.prefix, self$ID, "_trainindices", extension, sep = ""))
   message("\t\tExporting count table in TSV file\t", trainIndices.file)
-  write.table(as.data.frame(self$trainTestProperties$trainIndices), file = trainIndices.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
+  write.table(as.data.frame(self$trainTestProperties$trainIndices), file = trainIndices.file, row.names = TRUE, col.names = NA,  quote = FALSE, sep = "\t")
 
   testIndices.file <- file.path(export.dir, paste(file.prefix, self$ID, "_testindices", extension, sep = ""))
   message("\t\tExporting count table in TSV file\t", testIndices.file)
-  write.table(as.data.frame(self$testTestProperties$testIndices), file = testIndices.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
+  write.table(as.data.frame(self$testTestProperties$testIndices), file = testIndices.file, row.names = TRUE, col.names = NA,  quote = FALSE, sep = "\t")
 
 
   NextMethod("exportTables", self)
@@ -117,8 +117,9 @@ exportTables.StudyCase <- function(self,
 
   countsPerRun.file <- file.path(export.dir, paste( self$ID, "_counts_per_run", extension, sep = ""))
   message("\t\tExporting count per run in TSV file\t", countsPerRun.file)
-  write.table(as.data.frame(self$rawData$countsPerRun$dataTable), file = countsPerRun.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
-
+  write.table(as.data.frame(self$rawData$countsPerRun$dataTable), file = countsPerRun.file, row.names = TRUE, col.names = NA, quote = FALSE, sep = "\t")
+  # system(paste("head -n 10 ", countsPerRun.file, " | cut -f 1-5"))
+  # View(head(self$rawData$countsPerRun$dataTable))
 
 
   ## Export raw counts per sample
@@ -128,7 +129,7 @@ exportTables.StudyCase <- function(self,
 
   countsPerSample.file <- file.path(export.dir, paste( self$ID, "_counts_per_sample", extension, sep = ""))
   message("\t\tExporting count per sample in TSV file\t", countsPerSample.file)
-  write.table(as.data.frame(self$rawData$countsPerSample$dataTable), file = countsPerSample.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
+  write.table(as.data.frame(self$rawData$countsPerSample$dataTable), file = countsPerSample.file, row.names = TRUE, col.names = NA,  quote = FALSE, sep = "\t")
 
   ## Export filtere counts
   # exportTables(self$datasetsForTest$filtered,
@@ -136,14 +137,14 @@ exportTables.StudyCase <- function(self,
   #              file.prefix = "filtered_counts_")
   filtered.file <- file.path(export.dir, paste( self$ID, "_filtered", extension, sep = ""))
   message("\t\tExporting filtered DataTable in TSV file\t", filtered.file)
-  write.table(as.data.frame(self$datasetsForTest$filtered$dataTable), file = filtered.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
+  write.table(as.data.frame(self$datasetsForTest$filtered$dataTable), file = filtered.file, row.names = TRUE, col.names = NA,  quote = FALSE, sep = "\t")
 
   ## Export the different tables of normalized values
   for (datasetName in names(self$datasetsForTest)) {
     file <- file.path(export.dir, paste(self$ID, "_", datasetName, extension, sep = ""))
     message("\t\tExporting scaled DataTable in TSV file\t", file)
     write.table(as.data.frame(self$datasetsForTest[[datasetName]]$dataTable),
-                file = file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
+                file = file, row.names = TRUE, col.names = NA,  quote = FALSE, sep = "\t")
 
   }
 
@@ -154,7 +155,7 @@ exportTables.StudyCase <- function(self,
   # #              file.prefix = "norm_counts_")
   # scaled.file <- file.path(export.dir, paste( self$ID, "_scaled", extension, sep = ""))
   # message("\t\tExporting scaled DataTable in TSV file\t", scaled.file)
-  # write.table(as.data.frame(self$datasetsForTest$norm$dataTable), file = scaled.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
+  # write.table(as.data.frame(self$datasetsForTest$norm$dataTable), file = scaled.file, row.names = TRUE, col.names = NA,  quote = FALSE, sep = "\t")
   #
   # ## Export log2-transformed normalised counts
   # # exportTables(self$datasetsForTest$log2norm,
@@ -162,7 +163,7 @@ exportTables.StudyCase <- function(self,
   # #              file.prefix = "log2norm_counts_")
   # log2norm.file <- file.path(export.dir, paste( self$ID, "_log2norm", extension, sep = ""))
   # message("\t\tExporting log2norm DataTable in TSV file\t", log2norm.file)
-  # write.table(as.data.frame(self$datasetsForTest$log2norm$dataTable), file = log2norm.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
+  # write.table(as.data.frame(self$datasetsForTest$log2norm$dataTable), file = log2norm.file, row.names = TRUE, col.names = NA,  quote = FALSE, sep = "\t")
   #
   #
   #
@@ -173,7 +174,7 @@ exportTables.StudyCase <- function(self,
   #
   # log2normPCs.file <- file.path(export.dir, paste( self$ID, "_log2normPCs", extension, sep = ""))
   # message("\t\tExporting log2normPCs DataTable in TSV file\t", log2normPCs.file)
-  # write.table(as.data.frame(self$datasetsForTest$log2normPCs$dataTable), file = log2normPCs.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
+  # write.table(as.data.frame(self$datasetsForTest$log2normPCs$dataTable), file = log2normPCs.file, row.names = TRUE, col.names = NA,  quote = FALSE, sep = "\t")
   #
   # ## Export log2norm counts sorted by DESeq2 p-value of differential analysis
   # # exportTables(self$datasetsForTest$log2norm_DESeq2_sorted,
@@ -182,7 +183,7 @@ exportTables.StudyCase <- function(self,
   #
   # log2norm_DESeq2_sorted.file <- file.path(export.dir, paste( self$ID, "_log2norm_DESeq2_sorted", extension, sep = ""))
   # message("\t\tExporting log2norm_DESeq2_sorted DataTable in TSV file\t", log2norm_DESeq2_sorted.file)
-  # write.table(as.data.frame(self$log2norm_DESeq2_sorted$dataTable ), file = log2norm_DESeq2_sorted.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
+  # write.table(as.data.frame(self$log2norm_DESeq2_sorted$dataTable ), file = log2norm_DESeq2_sorted.file, row.names = TRUE, col.names = NA,  quote = FALSE, sep = "\t")
   #
   # ## Export log2norm counts sorted by edgeR p-value of differential analysis
   # # exportTables(self$datasetsForTest$log2norm_edgeR_sorted,
@@ -191,7 +192,7 @@ exportTables.StudyCase <- function(self,
   #
   # log2norm_edgeR_sorted.file <- file.path(export.dir, paste( self$ID, "_log2norm_edgeR_sorted", extension, sep = ""))
   # message("\t\tExporting log2norm_edgeR_sorted DataTable in TSV file\t", log2norm_edgeR_sorted.file)
-  # write.table(as.data.frame(self$log2norm_edgeR_sorted$dataTable ), file = log2norm_edgeR_sorted.file, row.names = FALSE, col.names = FALSE, quote=FALSE, sep = "\t")
+  # write.table(as.data.frame(self$log2norm_edgeR_sorted$dataTable ), file = log2norm_edgeR_sorted.file, row.names = TRUE, col.names = NA,  quote = FALSE, sep = "\t")
 
 
   NextMethod("exportTables", self)
@@ -216,7 +217,7 @@ exportTables.StudyCase <- function(self,
 #'   ############## Exporting the count table ####################
 #'   trainTestResult.file <- file.path(export.dir, paste( self$ID, "_Train_Test_Result", extension, sep = ""))
 #'   message("\t\tExporting count table in TSV file\t",trainTestResult.file)
-#'   write.table(self$stats, file = trainTestResult.file, row.names = FALSE, quote=FALSE, sep = "\t")
+#'   write.table(self$stats, file = trainTestResult.file, row.names = FALSE, quote = FALSE, sep = "\t")
 #'
 #' NextMethod("exportTables", object)
 #'
