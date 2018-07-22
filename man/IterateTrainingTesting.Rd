@@ -17,7 +17,7 @@ IterateTrainingTesting(dataset, ...)
 }
 \value{
 an object which is Misclassification error rate for the specified number for resampling
-\itemize {
+\itemize{
      \item testTable: that is the table that is contains misclassification error rate for specified  number of resampling.
 
 }

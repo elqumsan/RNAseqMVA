@@ -11,7 +11,7 @@ buildAttributes(self)
 }
 \value{
 an object that has all required attributes as in the following attributes.
-\itemize {
+\itemize{
  \item nbSamples:  that is the number of samples in relatedness object.
  \item nbGenes:    that is the number of genes in  relatedness object.
  \item sampleNames: that is the names of all samples involved in related object.

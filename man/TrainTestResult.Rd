@@ -22,7 +22,7 @@ TrainTestResult(dataset, classifier, iteration, trainPredictedClasses,
 }
 \value{
 an object of class TrainTestResult containing the following attributes
-\itemize {
+\itemize{
   \item ID: is that recountID for the test dataset.
   \item classLabels: are labels (classes) for each sample in the targeted dataset.
   \item dataType: are the feature type (preprocessing created data) to analyize the imapct of pre-processing into efficiency of classifer, e.g. (filtered, norm, log2norm, log2norm-Pcs, ....)

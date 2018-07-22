@@ -11,7 +11,7 @@ initParallelComputing(project.parameters)
 }
 \value{
 all project.parameters for the related recount ID.
-\itemize {
+\itemize{
     \item global: ## Global parameters are those who are the samee across all study cases
      \item  dir: ## Directories
      \item   main: "~/RNAseqMVA"

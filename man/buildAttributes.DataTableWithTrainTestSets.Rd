@@ -11,7 +11,7 @@
 }
 \value{
 an object that is became has the attributes of the class DataTableWithTrainTestSets
- \itemize {
+ \itemize{
  \item  iteration: which is number of resampling
   \item trainPropotion:      which is ratio of train volume from whole of dataset
   \item statified:           parameter which refer to stratification criteria would be included in analysis or not.

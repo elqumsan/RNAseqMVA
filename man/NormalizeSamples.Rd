@@ -16,12 +16,24 @@ The phenoTable of the input object may be filtered out adapted it in case sample
 
 \item{classLabels}{the class labels associated each sample of the count table. Should be provided in order to adapt it in case samples would be suppressed because they have a scaling factor of 0.}
 
-\item{method="quantile"}{normalization method. Supported: sum, mean, media, quantile.
-Preferred method: quantile = 0.75. Quantiles are more robust to outliers than the mean
+\item{method="quantile"}{normalization method.
+Supported normalization methods: sum, mean, median, quantile, TMM, RLE, DESeq2.
+
+Sum and mean are really not recommended because very sensitive to outliers.
+They are implemented only for the sake of comparison.
+
+Quantile: Preferred quantile = 0.75. Quantiles are more robust to outliers than the mean
 or sum. The median is sometimes weak in RNA-seq data, the 75th percentile (quantile 0.75)
 seems a good tradeoff between robustness and representativity (taking into account a
 representative proportion of the total counts per samples).
-Note that median is the same as quantile 0.5.}
+
+Median: actually runs quantile-based scaling factor with quantile=0.5.
+
+TMM: trimmed mean of M-values proposed by Robinson and Oshlack (2010), computed via edgeR::calcNormFactors().
+
+RLE: relative log expression proposed by Anders and Huber (2010), computed via edgeR::calcNormFactors().
+
+DESeq2: compute size factors via DESeq2::estimateSizeFactors()}
 
 \item{quantile=0.75}{quantile used as scaling factor when quantile method is selected.}
 

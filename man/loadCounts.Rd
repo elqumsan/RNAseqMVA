@@ -18,7 +18,7 @@ it is returen the two feature types:
  1) for the original counts that means implicitly the raw count table before making ang pre-processing proccess.
  2) for the filtered count that means implicitly the raw count after made the pre-processing proccess,
 
-  \itemize {
+  \itemize{
      \item filtered: count table after applying the pre-processing proccess.
 
   }

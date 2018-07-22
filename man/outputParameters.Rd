@@ -17,7 +17,7 @@ outputParameters(dataset, classifier, permute = FALSE, createDir = TRUE)
 }
 \value{
 a list with the following fields
-\itemize {
+\itemize{
   \item resultDir: path to the result directory, in which the result files should be stored.
   \item filePrefix: string that should prepend the name of each result file.
   \item figureLabel:  short string with a label for the graphics
