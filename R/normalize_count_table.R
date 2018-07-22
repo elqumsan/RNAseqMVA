@@ -20,12 +20,13 @@
 #' Note that median is the same as quantile 0.5.
 #'
 #' @param quantile=0.75 quantile used as scaling factor when quantile method is selected.
-#' @param log2=TRUE apply a log2 transformation
+#' @param log2=FALSE apply a log2 transformation
 #' @param epsilon=0.1 value added to all counts before applying the log2 transformation
 #' in order to avoid zero counts.
+#' @param detailed.sample.stats=FALSE compute detailed sample stats (takes some seconds)
 #'
 #' @return the function returns an object of class DataTableWithClasses, where the dataTable
-#' coontains the normalised counts. Note that the normalized count table may have a smaller
+#' contains the normalised counts. Note that the normalized count table may have a smaller
 #' number of samples than the input count table because if some samples have a scaling
 #' factor of 0 they will be filtered out. In such case, the phenoTable and classLabels will
 #' be filtered out in the same way to ensure consistency  of the attributes of the
@@ -33,13 +34,13 @@
 #'
 #'
 #' @examples
-#'
 #' @export
 NormalizeSamples <- function(self,
                              method = "quantile",
                              quantile = 0.75,
-                             log2 = TRUE,
-                             epsilon = 0.1) {
+                             log2 = FALSE,
+                             epsilon = 0.1,
+                             detailed.sample.stats = FALSE) {
 
   ## Start message
   if (log2) {
@@ -48,6 +49,29 @@ NormalizeSamples <- function(self,
     message.with.time("Starting NormalizeSamples() for Recount experiment ID ", self[["ID"]])
   }
 
+  ## Extract the count matrix
+  counts <- self$dataTable
+  parameters <- self$parameters
+
+  ## if required, discard the zero counts before computing size factors
+  if (is.null(parameters$standardization$nozero)) {
+    ## By default, nozero parameter is activated
+    nozero <- TRUE
+    # View(head(non.null.counts))
+  } else {
+    nozero <- parameters$standardization$nozero
+  }
+  counts.nozero <- counts
+  counts.nozero[counts  == 0] <- NA
+  if (nozero) {
+    message("\t\tIgnoring zero values for normalization")
+    # View(head(non.null.counts))
+    counts <- counts.nozero
+  } else {
+    counts <- self$dataTable
+  }
+
+  ## Check parameters for quantile method
   if (method == "quantile") {
     if (!exists("quantile")) {
       stop("NormalizeSamples()\tMissing required parameter: standardization quantile")
@@ -60,97 +84,192 @@ NormalizeSamples <- function(self,
     method.name <- method
   }
 
-  if (log2) {
-    method.name <- paste(sep = "", method_name, "_log2")
+  ## Median will be treated as quantile 0.5
+  if (method == "median") {
+    quantile <- 0.5
   }
+
+  ## Append log2 suffix if log2-transformation is activated
+  if (log2) {
+    method.name <- paste(sep = "", method.name, "_log2")
+  }
+  message("\t", "Normalizing\t", recountID, "\tmethod: ", method.name)
 
   ## Compute sample-wise statistics
-  message("\t", "Computing sample-wise statistics\t", recountID)
-  if (is.null(self$sampleStats)) {
-    sampleStats <- data.frame(
-      sum = apply(self$dataTable, 2, sum, na.rm = TRUE),
-      min = apply(self$dataTable, 2, min, na.rm = TRUE),
-      mean = apply(self$dataTable, 2, mean, na.rm = TRUE),
-      Q1 = apply(self$dataTable, 2, quantile, na.rm = TRUE, probs = 0.25),
-      median = apply(self$dataTable, 2, median, na.rm = TRUE),
-      Q3 = apply(self$dataTable, 2, quantile, na.rm = TRUE, probs = 0.75),
-      max = apply(self$dataTable, 2, max, na.rm = TRUE),
-      zero.values = apply(self$dataTable == 0, 2, sum),
-      na.values = apply(is.na(self$dataTable), 2, sum),
-      # infinite.values = apply(is.infinite(self$dataTable), 2, sum)
-      infinite.values = length(is.infinite(unlist(self$dataTable)) == TRUE)
-    )
-  } else {
-    sampleStats <- self$sampleStats
-  }
-  ## check it the original data contains NA values
+  message("\t\t", "Computing sample-wise statistics\t", recountID)
+  sampleStats <- data.frame(
+    zero.values = apply(self$dataTable == 0, 2, sum),
+    na.values = apply(is.na(self$dataTable), 2, sum),
+    sum = apply(self$dataTable, 2, sum, na.rm = TRUE),
+    mean = apply(self$dataTable, 2, mean, na.rm = TRUE),
+    mean.nozero = apply(counts.nozero, 2, mean, na.rm = TRUE))
+  # head(sampleStats)
+  ## Report number of NA and zero values
+  message("\t\tOrginal data table contains ",
+          format(x = sum(sampleStats$zero.values), big.mark = ","),
+          " zeros ")
   if (sum(sampleStats$na.values) > 0) {
-    message("\tRaw counts contain ", sum(sampleStats$na.values), " NA values. ")
+    message("\t\tRaw counts contain ",
+            format(x = sum(sampleStats$na.values), big.mark = ","),
+            " NA values. ")
   }
 
-  if (method == "quantile") {
+  if (detailed.sample.stats) {
+    sampleStats$min <- apply(self$dataTable, 2, min, na.rm = TRUE)
+    sampleStats$Q1 <- apply(self$dataTable, 2, quantile, na.rm = TRUE, probs = 0.25)
+    sampleStats$median <- apply(self$dataTable, 2, median, na.rm = TRUE)
+    sampleStats$Q3 <- apply(self$dataTable, 2, quantile, na.rm = TRUE, probs = 0.75)
+    sampleStats$max <- apply(self$dataTable, 2, max, na.rm = TRUE)
+    sampleStats$infinite.values <- apply(is.infinite(as.matrix(self$dataTable)), 2, sum)
 
-    message("\tNormalizing counts with edgeR::calcNormFactors(method=upperquartile, p=", quantile,")")
-    d <- DGEList(counts = self$dataTable, group = self$classLabels)
-    # d$samples$group <- relevel(d$samples$group) ## Ensure that condition 2 is considered as the reference
-    d <- calcNormFactors(d, method = "upperquartile", p = quantile)                 ## Compute normalizing factors
-    sampleStats$scaling.factor <- d$samples$norm.factors
-    # message("\tNormalizing counts. Scaling factor: sample quantile ", quantile)
-    # sampleStats$norm.quantile <- apply(self$dataTable, 2, quantile, na.rm = TRUE, probs = quantile)
-    # sampleStats$scaling.factor <- sampleStats$norm.quantile
+    ## Compute statistics of zero-ommited data table
+    if (nozero) {
+      sampleStats.nozero <- data.frame(
+        sum = apply(counts, 2, sum, na.rm = TRUE),
+        mean = apply(counts, 2, mean, na.rm = TRUE),
+        min = apply(counts, 2, min, na.rm = TRUE),
+        Q1 = apply(counts, 2, quantile, na.rm = TRUE, probs = 0.25),
+        median = apply(counts, 2, median, na.rm = TRUE),
+        Q3 = apply(counts, 2, quantile, na.rm = TRUE, probs = 0.75),
+        max = apply(counts, 2, max, na.rm = TRUE),
+        zero.values = apply(counts == 0, 2, sum),
+        na.values = apply(is.na(counts), 2, sum),
+        infinite.values = apply(is.infinite(as.matrix(counts)), 2, sum)
+      )
+      self$sampleStats.nozero <- sampleStats.nozero
 
-  } else if (method == "mean") {
-    message("\tNormalizing counts. Scaling factor: sample mean.  ")
+      ## Report number of NA and zero values
+      message("\t\tZero-ommited data-table contains ",
+              format(x = sum(sampleStats.nozero$na.values), big.mark = ","),
+              " NA values. ")
+    }
+  }
+  self$sampleStats <- sampleStats
+  # head(self$sampleStats)
+
+
+  if (method %in% c("quantile", "median")) {
+
+    quantile.method <- "RNAseqMVA"
+    if (quantile.method == "edgeR") {
+
+      ## Compute quantile-based scaling factor via edgeR
+      ## NOTE (2018-07-21) : with single-cell data containing MANY zeros, this returns Inf scaling factors for almost all the samples
+      message("\t\tNormalizing counts with edgeR::calcNormFactors(method=upperquartile, p=", quantile,")")
+      d <- DGEList(counts = counts, group = self$classLabels)
+      # d$samples$group <- relevel(d$samples$group)
+      d <- calcNormFactors(d, method = "upperquartile", p = quantile)                 ## Compute normalizing factors
+      sampleStats$scaling.factor <- d$samples$norm.factors
+      sampleStats$size.factor <- 1/sampleStats$scaling.factor
+
+    # } else if (nozero) {
+    #   message("\tNormalizing counts. Scaling factor: sample quantile ", quantile, " of non-null counts.")
+    #   non.null.counts <- self$dataTable
+    #   # View(head(non.null.counts))
+    #   non.null.counts[non.null.counts  == 0] <- NA
+    #   # View(head(non.null.counts))
+    #   sampleStats$norm.quantile <- apply(non.null.counts, 2, quantile, na.rm = TRUE, probs = quantile)
+    #   sampleStats$size.factor <-  sampleStats$norm.quantile
+    #   sampleStats$scaling.factor <- 1 / sampleStats$size.factor
+    #   sampleStats$scaling.factor <- sampleStats$scaling.factor / mean(sampleStats$scaling.factor[!is.infinite(sampleStats$scaling.factor)])
+    #   # mean(sampleStats$scaling.factor[!is.infinite(sampleStats$scaling.factor)])
+    #   # hist(sampleStats$scaling.factor, breaks = 1000)
+
+    } else {
+      message("\t\tScaling factor: sample quantile ", quantile)
+      sampleStats$norm.quantile <- apply(counts, 2, quantile, na.rm = TRUE, probs = quantile)
+      sampleStats$size.factor <-  sampleStats$norm.quantile
+      sampleStats$scaling.factor <- 1 / sampleStats$norm.quantile
+      sampleStats$scaling.factor <- sampleStats$scaling.factor / mean(sampleStats$scaling.factor[!is.infinite(sampleStats$scaling.factor)])
+      # mean(sampleStats$scaling.factor[!is.infinite(sampleStats$scaling.factor)])
+      # hist(sampleStats$scaling.factor, breaks = 1000)
+    }
+    null.scaling <- sum(sampleStats$size.factor == 0)
+    # inf.scaling <- sum(is.infinite(sampleStats$scaling.factor))
+    if (null.scaling > 1) {
+      message("\t\tdiscarding ", null.scaling, " samples with null value for quantile ", quantile)
+    }
+
+  } else if (method %in% c("mean", "libsum", "TC", "sum")) {
+    message("\t\tScaling factor: library size (equivalent for sum, mean, total counts).  ")
     ## Note: mean is very sensitive to outliers, which are very problematic with RNAseq data
-  #  sampleStats$scaling.factor <- apply(self$dataTable, 2, quantile, na.rm = TRUE, probs=quantile)
-    sampleStats$scaling.factor <- sampleStats$mean
+  #  sampleStats$scaling.factor <- apply(counts, 2, quantile, na.rm = TRUE, probs=quantile)
+    sampleStats$size.factor <- sampleStats$mean
+    sampleStats$scaling.factor <- 1 / sampleStats$size.factor
+    sampleStats$scaling.factor <- sampleStats$scaling.factor / mean(sampleStats$scaling.factor)
+    # hist(sampleStats$scaling.factor, breaks = 1000)
+    # mean(sampleStats$scaling.factor)
 
-  } else if (method == "median") {
-    message("\tNormalizing counts. Scaling factor: sample median of non-null counts.  ")
-    message("\t\tusing edgeR::calcNormFactors(method=upperquartile, p=", 0.5,")")
-    d <- DGEList(counts = self$dataTable, group = self$classLabels)
-    # d$samples$group <- relevel(d$samples$group) ## Ensure that condition 2 is considered as the reference
-    d <- calcNormFactors(d, method = "upperquartile", p = 0.5)                 ## Compute normalizing factors
-    sampleStats$scaling.factor <- d$samples$norm.factors
-    #    sampleStats$scaling.factor <- sampleStats$median
-
-  } else if (method == "sum") {
-    message("\tNormalizing counts. Scaling factor: sample sum (= libsum = total counts)  ")
-    sampleStats$scaling.factor <- sampleStats$sum
 
   } else if (method == "TMM") {
-    message("\tNormalizing counts. Method = edgeR TMM.")
-    d <- DGEList(counts = self$dataTable, group = self$classLabels)
+    message("\t\tRunning edgeR::calcNormFactors(method='TMM').")
+    d <- DGEList(counts = counts, group = self$classLabels)
     # d$samples$group <- relevel(d$samples$group) ## Ensure that condition 2 is considered as the reference
     d <- calcNormFactors(d, method = "TMM")                 ## Compute normalizing factors
     sampleStats$scaling.factor <- d$samples$norm.factors
+    sampleStats$size.factor <- 1/sampleStats$scaling.factor
 
   } else if (method == "RLE") {
-    message("\tNormalizing counts. Method = edgeR RLE.")
-    d <- DGEList(counts = self$dataTable, group = self$classLabels)
+    ## Run edgeR to compute the relative log expression defined by Anders and Huber (2010).
+    message("\t\tRunning edgeR::calcNormFactors(method='RLE').")
+    d <- DGEList(counts = counts, group = self$classLabels)
     # d$samples$group <- relevel(d$samples$group) ## Ensure that condition 2 is considered as the reference
     d <- calcNormFactors(d, method = "RLE")                 ## Compute normalizing factors
     sampleStats$scaling.factor <- d$samples$norm.factors
+    sampleStats$size.factor <- 1/sampleStats$scaling.factor
 
   } else if (method == "DESeq2") {
-    message("\tNormalizing counts. Method = DESeq2.")
-    stop("NormalizeSamples method DESeq2 NEEDS TO BE IMPLEMENTED")
+    message("\t\tRunning DESeq2::estimateSizeFactors()")
+    dds <- DESeqDataSetFromMatrix(counts, colData = data.frame(classes = self$classLabels), ~ classes  )
+    dds <- estimateSizeFactors(dds)
+    sampleStats$size.factor <- sizeFactors(dds)
+    sampleStats$scaling.factor <- 1/sampleStats$size.factor
+    # plot(sampleStats$size.factor, sampleStats$sum) ## THE DIFFERENCE IS QUITE IMPRESSIVE
+
+  } else if (method == "VSD") {
+    # Compute variance stabilizing transformations (VST) via DESeq2 (Tibshirani 1988; Huber et al. 2003; Anders and Huber 2010)
+    message("\t\tRunning DESeq2::vsd()")
+    stop("NOT FINISHED THE IMPLEMENTATION YET")
+    ## Create a DESeqDataset object from the count table
+    dds <- DESeqDataSetFromMatrix(counts, colData = data.frame(classes = self$classLabels), ~ classes  )
+    vsd <- vst(dds, blind = FALSE)
+    names(vsd)
+    ## QUESTION: HOW DO I GET THE SIZE FACTORS FROM THE RESULTING OBJECT ?
+
+#    rld <- rlog(dds, blind = FALSE)
+
+    # View(vsd)
+    # head(assay(vsd), 3)
+    # library("pheatmap")
+    # library("vsn")
+    # meanSdPlot(assay(vsd))
+
+    ## Run  differential expression analysis with DESeq2
+#    dds <- DESeq(dds)
+
+
+#    rld <- rlog(dds, blind=FALSE)
 
   } else {
     stop(method, " is not a valid method for NormalizeSamples()")
   }
 
   ## Detect problems related to null scaling factors, which may happen in some datasets due to a very large number of zeros.
-  zeroScaledSamples <- sampleStats$scaling.factor == 0
-  discaredSampleNames <- colnames(self$dataTable[, zeroScaledSamples])
-  if (sum(zeroScaledSamples) > 0) {
-    message("\tDiscarding ", sum(zeroScaledSamples), " samples because their scaling factor is null. ")
-    message("\tDiscarded samples: ", paste(collapse = "; ", discaredSampleNames))
+  discardedSamples <-
+    (sampleStats$size.factor == 0) |
+    is.infinite(sampleStats$scaling.factor) |
+    is.na(sampleStats$size.factor)
+  discaredSampleNames <- vector()
+  if (sum(discardedSamples) > 0) {
+    discaredSampleNames <- colnames(counts[, discardedSamples])
+    message("\t\tDiscarding ", sum(discardedSamples), " samples because their size factor is null or NA. ")
+    message("\t\tDiscarded samples: ", paste(collapse = "; ", discaredSampleNames))
   }
 
   ## Compute normalised counts
-  normTarget <- median(sampleStats$scaling.factor[!zeroScaledSamples])
-  normCounts <- t(t(self$dataTable[, !zeroScaledSamples]) / sampleStats$scaling.factor[!zeroScaledSamples]) * normTarget
+  normTarget <- mean(sampleStats$scaling.factor[!discardedSamples]) ## Ensure library eize equality before and after standardization
+  sampleStats$scaling.factor <- sampleStats$scaling.factor * normTarget
+  normCounts <- t(t(self$dataTable[, !discardedSamples]) * sampleStats$scaling.factor)
 
   ## Run log2 transformation if required
   if (log2) {
@@ -164,26 +283,26 @@ NormalizeSamples <- function(self,
   if (method == "quantile") {
     result$quantile <- quantile
   }
+  result$nozero <- nozero
   result$sampleStats <- sampleStats
   result$discaredSampleNames <- discaredSampleNames
   result$dataTable <- normCounts
 
   ## In case samples have been discarded, re-build the object to
   ## ensure consistency between sample- and class-dependent attributes
-  if (sum(zeroScaledSamples) > 0) {
-    result$phenoTable <- self$phenoTable[!zeroScaledSamples,]
+  if (sum(discardedSamples) > 0) {
+    result$phenoTable <- self$phenoTable[!discardedSamples,]
 
     ## Update  sample-related parameters
-    result$sampleNames <- self$sampleNames[!zeroScaledSamples]
+    result$sampleNames <- self$sampleNames[!discardedSamples]
     result$nbSamples <- length(result$sampleNames)
 
     ## Re-build class-related parameters
     result <- buildAttributes(result)
   }
 
-
-
-  message("\tDimensions of the log2 normalized count table: ", result$nbGenes, " genes x ", result$nbSamples, " samples. ")
-  message.with.time("\tFinished NormalizeSamples() for Recount experiment ID ", result[["ID"]])
+  message("\t\tDimensions before normalization: ", format(big.mark = ",", nrow(self$dataTable)), " features x ", ncol(self$dataTable), " samples. ")
+  message("\t\tDimensions after normalization: ", format(big.mark = ",", result$nbGenes), " features x ", result$nbSamples, " samples. ")
+  # message.with.time("\tFinished NormalizeSamples() for Recount experiment ID ", result[["ID"]])
   return(result)
 }
