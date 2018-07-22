@@ -167,12 +167,13 @@ par(mar = save.margins)  ## Restore original graphical parameter
 silence <- dev.off()      ## Close graphical device
 
 #### Draw a barplot with the number of samples per class ####
+message("exporting barplots with number of samples per class")
 for (recountID in names(studyCases)) {
   dir.figures <- file.path(parameters$dir$results, recountID, "figures")
   dir.create(dir.figures, recursive = TRUE, showWarnings = FALSE)
   figure.file <- paste(sep = "", recountID, "_samples_per_classes.pdf")
   barPlot.file <- file.path(dir.figures, figure.file)
-  message("Samples per classes barplot: ", barPlot.file)
+  message("\t", recountID, "\tSamples per classes barplot: ", barPlot.file)
   pdf(file = barPlot.file, width = 5, height = 8)
   par.ori <- par(no.readonly = TRUE)
   # par(mfrow = c(4,2))
@@ -195,29 +196,9 @@ for (recountID in names(studyCases)) {
   silence <- dev.off()
 }
 
-#######################################################
-# loadedObjects.dataType <- data.frame()
-#
-# for(recountID in selectedRecountIDs){
-#   loadedDataType <-
-#     data.frame(
-#       "originalCounts" = studyCases[[recountID]]$originalCounts ,
-#       "filtere" = studyCases[[recountID]]$filtered,
-#       "norm" = studyCases[[recountID]]$norm,
-#       "log2norm" = studyCases[[recountID]]$log2norm )
-#
-#   if (ncol(loadedDataType)== 0){
-#     loadedObjects.dataType <- loadedDataType
-#   }else {
-#     loadedObjects.dataType <-rbind(loadedObjects.dataType, loadedDataType)
-#
-#   }
-#
-# }
-#
-
 
 #### Principal component plots ####
+message("\n\tExporting principal component plots")
 for (recountID in selectedRecountIDs) {
   message("\tPC plots for study case ", recountID)
   studyCase <- studyCases[[recountID]]
@@ -275,13 +256,11 @@ for (recountID in selectedRecountIDs) {
 #### Plot variance per gene at different levels of filtering ####
 for (recountID in selectedRecountIDs) {
   filteredDataset <- studyCases[[recountID]]$datasetsForTest$filtered
-  plotFilterHistograms(filteredDataset)
+  plotFilterHistograms(filteredDataset) #,  plot.file = file.path(parameters$dir$NormalizationImpact, "var_per_gene_hist.pdf"))
   names(filteredDataset)
 }
 
-
-
-## Save a memory image that can be re-loaded next time
+#### Save a memory image that can be re-loaded next time ####
 ## to avoid re-computing all the normalisation and so on.
 if (project.parameters$global$save.image) {
   dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
