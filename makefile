@@ -6,6 +6,7 @@ targets:
 	@echo "	parameters		display the general parameters"
 	@echo "	convert_pc_plots_all_study_cases	convert PC plots from pdf to ${IMG_FORMAT} for all study cases"
 	@echo "	sync_pc_plots_all_study_cases	synchronize PC plots from workspace to the manuscript folder"
+	@echo "	ws_dir_to_rsatix	synchronize a given subdiretory of the workspace to the shared space on rsatix"
 
 # SRP035988 SRP042620 SRP056295 SRP057196 SRP061240 SRP062966 SRP066834
 IMG_FORMAT=png
@@ -67,3 +68,12 @@ sync_pc_plots_all_study_cases:
 		${MAKE} sync_pc_plots_one_study_case STUDY_CASE=$${i}; \
 	done
 
+RSATIX=rsat-tagc.univ-mrs.fr
+RSATIX_LOGIN=rnaseqmva@${RSATIX}
+RSATIX_WS=/workspace/RNAseqMVA/RNAseqMVA_workspace
+SHARED=${RSATIX}:
+LOCAL_WS=~/RNAseqMVA_workspace/
+TO_SYNC=memory_images
+ws_dir_to_rsatix:
+	@echo "Synchrinizing memory images to shared space on ${RSATIX}"
+	@rsync -ruptvl ${LOCAL_WS}/${TO_SYNC} ${RSATIX_LOGIN}:${RSATIX_WS}/
