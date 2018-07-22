@@ -72,37 +72,10 @@ loadCounts <- function(recountID,
   # loading count Data from recount_experiment, Via our wrapper which will Automatically merge the runs by
   # sample in order to obtain sample-wise count rather than run-wise counts.
   experiment <- loadRecountExperiment(recountID = recountID, parameters = parameters, ...)
-                                     #  mergeRuns=mergeRuns,
-                                     #  sampleIdColumn=sampleIdColumn,
-                                     #  dir.workspace = dir.workspace,
-                                     #  classColumn = classColumn,
-                                     #  na.rm = na.rm,
-                                     # ...)
-
-
-  ## JhV: I suppress this na filtering from here because we want to keep the NA values in
-  ## the original count table, and anyway wae do eliminate them in the filtering function.
-
-  # ## If requested, suppress the NA values
-  # if (na.rm) {
-  #   message("\tSuppressing rows (genes) with NA values")
-  #   dataTable <- na.omit(experiment$originalCounts$dataTable)
-  #   # dim(dataTable)
-  # }
-
-  ## This control is not necessary anymore since this is done when building the DataTableWithClasses object.
-  # ##### Check the dimensions of original experiment #####
-  # if (experiment$originalCounts$nbSamples != length(experiment$originalCounts$classLabels)){
-  #   stop("The number of samples (", experiment$originalCounts$nbSamples, ") differs from the number class labels (", length(experiment$original$classLabels),")")
-  # }
-
 
   message("\toriginal dataTable contains ",
           nrow(experiment$originalCounts$dataTable), " rows (genes) and ",
           ncol(experiment$originalCounts$dataTable), " columns (samples).")
-  #dataTable <-as.data.frame(t(experiment$runCounts))
-
-
 
   ################################################
   #### Filter zero-variance and near-zero variance variables from the count table #####
