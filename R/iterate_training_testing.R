@@ -16,7 +16,7 @@
 #' @import doParallel
 #' @export
 #'
-IterateTrainingTesting <- function (dataset, ...) {
+IterateTrainingTesting <- function(dataset, ...) {
   message("\tRunning IterateTrainingTesting() with object of class\t", paste( collapse  = ",",class(dataset) ) )
   testTable <- UseMethod("IterateTrainingTesting", dataset)
   return(testTable)
@@ -34,7 +34,7 @@ IterateTrainingTesting <- function (dataset, ...) {
 #'       }
 #'
 #' @export
-IterateTrainingTesting.DataTableWithClasses <- function (dataset, ...) {
+IterateTrainingTesting.DataTableWithClasses <- function(dataset, ...) {
   message("\tRunning IterateTrainingTesting() with object of class\t", "DataTableWithClasses")
   testTable <- NextMethod("IterateTrainingTesting", dataset)
   return(testTable)
@@ -63,18 +63,19 @@ IterateTrainingTesting.default <- function(dataset, ...){
 #' @param dataset an object of class DataTableWithTrainTestSets
 #' @param classifier is the type of classifier that is used with repeated process.
 #' @param permute is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier
-#' @param file.prefix in order to let us to save file from the IterateTrainingTesting
+#' @param file.prefix prefix for files. If NULL, files will not be saved.
 #'
 #' @return an object which is Misclassification error rate for the specified number for resampling
 #'     \itemize{
 #'         \item testTable: that is the table that is contains misclassification error rate for specified  number of resampling. for an object belonge to DataTableWithTrainTestSets.
 #'       }
 #' @export
-IterateTrainingTesting.DataTableWithTrainTestSets <- function (dataset,
-                                                               classifier, # supported: knn or rf
-                                                               permute = FALSE, # permute the class labels before running the test
-                                                               file.prefix = NULL # prefix for the saved files. If not provided, will be automatically generated
-                                                               ) {
+IterateTrainingTesting.DataTableWithTrainTestSets <- function(
+  dataset,
+  classifier, # supported: knn or rf
+  permute = FALSE, # permute the class labels before running the test
+  file.prefix = paste(sep = "_", dataset$ID, dataset$dataType, classifier) # prefix for the saved files. If not provided, will be automatically generated
+) {
 
 
   startTime <- Sys.time()
@@ -154,33 +155,33 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function (dataset,
                                            classifier = classifier,
                                            permute = permute)
 
-      testTable <- rbind (testTable, oneTest$stats)
+      testTable <- rbind(testTable, oneTest$stats)
     }
   } ## end if project.parameters$parallel
 
 
-  ## Save the result table for KNN training/testing evaluation
-  testTable.file <- file.path(parameters$dir$classifier_tables[classifier], paste(sep="", file.prefix, ".tsv"))
+  ## Save the result table for training/testing evaluation
+  testTable.file <- file.path(parameters$dir$classifier_tables[classifier], paste(sep = "", file.prefix, ".tsv"))
 
-  write.table(file=testTable.file,
+  write.table(file = testTable.file,
               x = testTable,
-              row.names = TRUE, col.names = NA, sep="\t", quote=FALSE)
+              row.names = FALSE, col.names = TRUE, sep = "\t", quote = FALSE)
 
   ## Export a summary about the error rate
-  errorSummary.file <- file.path(parameters$dir$classifier_tables[classifier], paste(sep="", file.prefix, "_summary.tsv"))
-  write.table(tidy(summary(testTable$testing.error.rate)),
-              quote=FALSE, sep="\t", row.names=TRUE, col.names = NA,
+  errorSummary.file <- file.path(parameters$dir$classifier_tables[classifier], paste(sep = "", file.prefix, "_summary.tsv"))
+  write.table(summary(data.frame(testTable$testing.error.rate)),
+              quote = FALSE, sep = "\t", row.names = TRUE, col.names = NA,
               file = errorSummary.file)
 
   ## Plot a box plot of training versus testing error
   boxplot.file <- file.path(
     parameters$dir$classifier_figures[classifier],
-    paste(sep="", file.prefix, "_R", iterations, "_learning_vs_test_error_boxplot.pdf"))
+    paste(sep = "", file.prefix, "_R", iterations, "_learning_vs_test_error_boxplot.pdf"))
 
-  pdf(file=boxplot.file, width = 7, height = 5)
-  main <- paste(sep="", classifier, "; ", dataset$dataType, " counts; ", dataset$variablesType, " variables")
+  pdf(file = boxplot.file, width = 7, height = 5)
+  main <- paste(sep = "", recountID, "\n", classifier, "; ", dataset$dataType, "; all variables")
   if (permute) {
-    main <- paste(sep="", main, "; permuted labels")
+    main <- paste(sep = "", main, "; permuted labels")
   }
   boxplot(testTable[, c("training.error.rate", "testing.error.rate")],
           ylim=c(0,1),
@@ -190,9 +191,9 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function (dataset,
   ## Compute elapsed time
   endTime <- Sys.time();
   elapsedTime <- endTime - startTime
-  elapsedTimeFile <- file.path(parameters$dir$classifier_tables[classifier], paste(sep="", file.prefix, "_elapsed_time.txt"))
+  elapsedTimeFile <- file.path(parameters$dir$classifier_tables[classifier], paste(sep = "", file.prefix, "_elapsed_time.txt"))
   write(file = elapsedTimeFile, x = paste(startTime, endTime, elapsedTime))
-  message("Elapsed Time file: ", elapsedTimeFile)
+  message("\t\tElapsed Time file: ", elapsedTimeFile)
   NextMethod("IterateTrainingTesting", dataset)
   return(testTable)
 }
