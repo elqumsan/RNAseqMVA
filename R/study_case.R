@@ -61,7 +61,7 @@ StudyCase  <- function(recountID, parameters) {
 
     ##### Normalize counts with log2 transformation (second test) #####
     if (method != "RLE") { ## RLE is already log2-transformed
-      message("\tComputing log2-transformed normalised counts")
+      message("\t\tComputing log2-transformed normalised counts")
       log2.name <- paste(sep = "", method.name, "_log2")
       result[[log2.name]] <- result[[method.name]]
       result[[log2.name]][["dataType"]] <- log2.name
@@ -71,7 +71,7 @@ StudyCase  <- function(recountID, parameters) {
     }
 
     #### Derive an object having as features the principal components of log2norm ####
-    message("\tComputing principal components")
+    message("\t\tComputing principal components")
     if (method == "RLE") {
       ## RLE is already log2-transformed
       pc.name <- paste(sep = "", method.name, "_PC")
