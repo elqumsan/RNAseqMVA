@@ -247,7 +247,7 @@ filterDataTable <- function(rawCounts,
 plotFilterHistograms <- function(dataset,
                                  plot.file = NULL) {
 
-  message("\tVariance per gene histograms\t", plot.file)
+  message("\t", dataset$ID, "\tVariance per gene histograms\t", plot.file)
   if (!is.null(plot.file)) {
     pdf(plot.file, width = 7, height = 12)
   }
@@ -258,10 +258,10 @@ plotFilterHistograms <- function(dataset,
   }
 
   ## Get variance per gene
-  if (is.null(dataset$varPerGene)) {
-    stop("plotFilterHistograms()\tdataset must contain a field varPerGene as computed by filterDataTable()")
+  if (is.null(dataset$varPerGeneRaw)) {
+    stop("plotFilterHistograms()\tdataset must contain a field varPerGeneRaw as computed by filterDataTable()")
   }
-  varPerGene <- dataset$varPerGene
+  varPerGene <- dataset$varPerGeneRaw
 
   ## Near-zero filter
   parameters <- dataset$parameters
@@ -276,7 +276,7 @@ plotFilterHistograms <- function(dataset,
   noInfVar <- !is.infinite(logVarPerGene)
   xmin <- floor(min(logVarPerGene[noInfVar]))
   xmax <- ceiling(max(logVarPerGene[noInfVar]))
-  xlim <- c(xmax, xmin)
+  xlim <- c(xmin, xmax)
   varbreaks <- seq(from = xmin,  to = xmax, by  = 0.1)
   if (nearZeroVarFilter) {
     par(mfrow = c(4,1))
@@ -288,7 +288,8 @@ plotFilterHistograms <- function(dataset,
        col = "gray", border = "gray",
        main = paste("All non-zero var genes; ", parameters$recountID),
        xlab = "log2(varPerGene)",
-       ylab = "Number of genes")
+       ylab = "Number of genes",
+       xlim = xlim)
   #    legend("topright", parameters$recountID)
 
 
@@ -298,14 +299,16 @@ plotFilterHistograms <- function(dataset,
          col = "red", border = "orange",
          main = "Near zero variance",
          xlab = "log2(varPerGene)",
-         ylab = "Number of genes")
+         ylab = "Number of genes",
+         xlim = xlim)
   }
   hist(log2(varPerGene[keptGenes]),
        breaks = varbreaks,
        col = "darkgreen", border = "#00BB00",
        main = "Kept genes",
        xlab = "log2(varPerGene)",
-       ylab = "Number of genes")
+       ylab = "Number of genes",
+       xlim = xlim)
 
   ## Count the number of zero values per gene
   zerosPerGene <- apply(rawCounts$dataTable == 0, 1, sum)
