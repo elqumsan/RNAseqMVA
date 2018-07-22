@@ -7,7 +7,7 @@
 #' @param trainingProportion=parameters$trainingProportion proportion of samples to sample for each training set
 #'
 #' @return object of class DataTableWithTrainTestSets containing the following attributes
-#' \itemize {
+#' \itemize{
 #'  \item  iteration: which is number of resampling
 #'   \item trainPropotion:      which is ratio of train volume from whole of dataset
 #'   \item statified:           parameter which refer to stratification criteria would be included in analysis or not.
@@ -93,7 +93,7 @@ print.DataTableWithTrainTestSets <- function(x) {
 #' @description build special attributes for an object wherein to be initialized to belonge to DataTableWithTrainTestSets
 #' @param self: is an object which we stive to initialize it to be has membership of DataTableWithTrainTestSets.
 #' @return  an object that is became has the attributes of the class DataTableWithTrainTestSets
-#'  \itemize {
+#'  \itemize{
 #'  \item  iteration: which is number of resampling
 #'   \item trainPropotion:      which is ratio of train volume from whole of dataset
 #'   \item statified:           parameter which refer to stratification criteria would be included in analysis or not.
