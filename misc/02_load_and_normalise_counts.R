@@ -255,9 +255,12 @@ for (recountID in selectedRecountIDs) {
 
 #### Plot variance per gene at different levels of filtering ####
 for (recountID in selectedRecountIDs) {
-  filteredDataset <- studyCases[[recountID]]$datasetsForTest$filtered
-  plotFilterHistograms(filteredDataset) #,  plot.file = file.path(parameters$dir$NormalizationImpact, "var_per_gene_hist.pdf"))
-  names(filteredDataset)
+#  plotFilterHistograms(filteredDataset) #,  plot.file = file.path(parameters$dir$NormalizationImpact, "var_per_gene_hist.pdf"))
+  plotFilterHistograms(
+    studyCases[[recountID]]$datasetsForTest$filtered,
+    plot.file = file.path(
+      parameters$dir$NormalizationImpact,
+      paste(sep = "_", parameters$recountID, "filtering_variance_per_gene_hist.pdf")))
 }
 
 #### Save a memory image that can be re-loaded next time ####
