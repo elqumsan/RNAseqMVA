@@ -3,8 +3,8 @@
 #' @author Mustafa AbuElQumsan and Jacques van Helden
 #' @param self an object, which must belong to a compatible class
 #' @export
-exportTables <- function (self, ...) {
-  message("Exporting object of class ", class(self), " to tables")
+exportTables <- function(self, ...) {
+  message("\t\tExporting object of class ", class(self), " to tables")
   #  message("Looking for a function named ", paste("exportTables", class(self), sep="."))
   UseMethod("exportTables", self)
 }
@@ -15,7 +15,7 @@ exportTables <- function (self, ...) {
 #' @param self  an object, which must belong to a compatible class
 #'
 #' @export
-exportTables.default <- function (self, ...) {
+exportTables.default <- function(self, ...) {
   message("\t\tFinished exporting tables")
   #  message("Looking for a function named ", paste("exportTables", class(self), sep="."))
   cat("\n") ## This avoids to print NULL in the console
@@ -31,7 +31,7 @@ exportTables.default <- function (self, ...) {
 #' @param file.prefix file prefix to build the different tables
 #' @param extension=".tsv" extension for the exported files (tab-separated values)
 #' @export
-exportTables.DataTableWithClasses <- function (self,
+exportTables.DataTableWithClasses <- function(self,
                                                 export.dir = self$parameters$dir$tsv,
                                                 file.prefix,
                                                 extension=".tsv") {
@@ -68,7 +68,7 @@ exportTables.DataTableWithClasses <- function (self,
 #' @param file.prefix file prefix to build the different tables
 #' @param extension=".tsv" extension for the exported files (tab-separated values)
 #' @export
-exportTables.DataTableWithTrainTestSets <- function (self,
+exportTables.DataTableWithTrainTestSets <- function(self,
                                                 export.dir,
                                                 file.prefix,
                                                 extension=".tsv") {
