@@ -12,13 +12,13 @@ requiredCRAN <- c('RCurl', # Undeclared dependency of recount
                   'devtools',
                   'caret',
                   'class',
-                  "randomForest",
                   "broom",
                   "roxygen2",
                   "scatterplot3d",
                   "e1071",
                   "foreach",
                   "doParallel",
+                  "pheatmap", # Heatmaps with extended control on dimensions
                   "doMC")
 RequiredCRANPackages(requiredCRAN)
 
@@ -28,6 +28,7 @@ requiredBioconductor <- c(
   "IRanges", # Seems to be required for derfinder but not automatically installed
   "derfinder",
   "recount",
+  "vsn", ## For RNA-seq plots from Huber
   "DESeq2",
   "limma",
   "edgeR",
@@ -71,8 +72,8 @@ TO DO: detect such cases and stop with explicit message before any analysis.
 # selectedRecountIDs <- c("SRP057196") ## single-cell of vairous cell types in different brain tissues
 # selectedRecountIDs <- c("SRP056295")
 # selectedRecountIDs <- c("SRP042620")
-selectedRecountIDs <- c("SRP057196", "SRP042620") #, "SRP056295")
-# selectedRecountIDs <- setdiff(recountIDs, names(recountIDs.with.problems))
+#selectedRecountIDs <- c("SRP057196", "SRP042620") #, "SRP056295")
+selectedRecountIDs <- setdiff(recountIDs, names(recountIDs.with.problems))
 
 message("\tSelected ", length(selectedRecountIDs)," recount IDs: ", paste(collapse = "; ", selectedRecountIDs))
 #selectedRecountIDs <- recountIDs
