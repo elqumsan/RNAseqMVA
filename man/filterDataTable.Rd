@@ -8,11 +8,8 @@ a count table in order to prepare it for classification.}
 filterDataTable(rawCounts, draw.plot = TRUE)
 }
 \arguments{
-\item{countsWithClasses}{an object of the class DataTableWithClasses}
-
-\item{minSamplesPerClass=parameters$minSamplesPerClass}{minimum nuimber of samples per class to keep}
-
-\item{nearZeroVarFilter=parameters$nearZeroVarFilter}{if TRUE, applyb caret::nearZeroVariance() to filter out poor predictor genes}
+\item{countsWithClasses}{an object of the class DataTableWithClasses.
+This object contains the data table + the parameters (including filtering parameters).}
 
 \item{draw.plot=TRUE}{if TRUE, draw an histogram of variance per gene.}
 }

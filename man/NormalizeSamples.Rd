@@ -4,8 +4,8 @@
 \alias{NormalizeSamples}
 \title{scaling RNA-seq count table}
 \usage{
-NormalizeSamples(self, method = "quantile", quantile = 0.75, log2 = TRUE,
-  epsilon = 0.1)
+NormalizeSamples(self, method = "quantile", quantile = 0.75, log2 = FALSE,
+  epsilon = 0.1, detailed.sample.stats = FALSE)
 }
 \arguments{
 \item{self}{an object belonging to the class DataTableWithClasses
@@ -25,14 +25,16 @@ Note that median is the same as quantile 0.5.}
 
 \item{quantile=0.75}{quantile used as scaling factor when quantile method is selected.}
 
-\item{log2=TRUE}{apply a log2 transformation}
+\item{log2=FALSE}{apply a log2 transformation}
 
 \item{epsilon=0.1}{value added to all counts before applying the log2 transformation
 in order to avoid zero counts.}
+
+\item{detailed.sample.stats=FALSE}{compute detailed sample stats (takes some seconds)}
 }
 \value{
 the function returns an object of class DataTableWithClasses, where the dataTable
-coontains the normalised counts. Note that the normalized count table may have a smaller
+contains the normalised counts. Note that the normalized count table may have a smaller
 number of samples than the input count table because if some samples have a scaling
 factor of 0 they will be filtered out. In such case, the phenoTable and classLabels will
 be filtered out in the same way to ensure consistency  of the attributes of the
@@ -43,9 +45,6 @@ normalisation of RNA-seq count table.
 More precisely this function runs a sample-wise scaling so that all the samples
 have the same value for a user-defined scaling parameter.
 By default, we use the quantile 0.75 as scaling factor.
-}
-\examples{
-
 }
 \author{
 Jacques van Helden and Mustafa AbuElqumsan

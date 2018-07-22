@@ -11,19 +11,7 @@ loadCounts(recountID, parameters, ...)
 
 \item{...}{additional parameters are passed to loadRecountExperiment()}
 
-\item{mergeRuns}{to wrapper the rus by sample}
-
-\item{sampleIdColumn="geo_accession"}{name of the column of the pheno table which contains the sample IDs.}
-
-\item{classColumn=parameters$classColumn}{name of a column of the pheno table which contains the class labels.
-In some cases classes must be built by concatenating several columns of the pheno table (e.g. "tissue" and "cell.type" for dataset SRP057196),
-This can be achieved by providing a vector of column names from the pheno table. In this case, class names}
-
-\item{minSamplesPerClass=parameters$minSamplesPerClass}{min number of samples per class for the filtering.  Passed to filterDataTable()}
-
-\item{dir.workspace=parameters$dir$workspace}{Directory in which the data and results will be stored.}
-
-\item{na.rm=TRUE}{if TRUE, omit all the rows (genes) that contain NA values. True by default because these NA values are problematic for classification methods.}
+\item{paramters}{list of parameters (supposedly loaded from the yaml configuration file)}
 }
 \value{
 it is returen the two feature types:
