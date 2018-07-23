@@ -5,6 +5,7 @@ require("roxygen2") ## MUSTAFA: do we really required roxygen2 and devtools to r
 
 # loading required libraries
 requiredCRAN <- c(
+    'dplyr', # Required for caret (depedency of dependency)
     'RCurl', # Undeclared dependency of recount
     'XML', # Undeclared dependency of recount
     'Rcpp',  # Wrongly declared dependency for xml2, itself required for roxygen2
