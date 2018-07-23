@@ -29,8 +29,8 @@ global: ## Global parameters are those who are the samee across all study cases
   save.tables: TRUE ## If TRUE, save tab-delimited files with the results
   save.image: TRUE
   draw.plot : TRUE
-  classifiers: ["svm"]
-#  classifiers: ["svm", "knn", "rf" ]
+#  classifiers: ["svm""]
+  classifiers: ["svm", "knn", "rf" ]
   # classifiers: ["knn","rf","svm"] # TO ADD LATER: "lda", "qda" + the one suggested by Aitor
 
   data.types: ["countsPerRun", "originalCounts", "filtered", "norm", "log2norm", "log2normPCs", "DEG", "V.importance"]
@@ -145,7 +145,7 @@ SRP066834:
 
 SRP039694:
   description: "Hepatocellular carcinoma (HCC) is one of the most common and lethal cancers worldwide and has a poor prognosis. Promoters represent an essential regulatory element of gene transcription in human genome. In order to understand the promoter methylation in relation with gene transcription in HCCs, We applied a liquid hybridization capture-based bisulfite sequencing (LHC-BS) approach to examine the promoter methylome of HCCs, for which we customized 150,407 capture probes and enabled coverage of 91.8% of the RefSeq gene promoters within human genome. We found the differential promoter DNA methylation between HCCs and peripheral normal tissues. Then we integrated promoter methylomic and transcriptomic profiling and described gene expression and regulation in HCCs. Lastly, We validated the key genes in larger number of samples and screened candidate genes aberrantly regulated by DNA methylation in human HCCs. Overall design: RNA-seq for 8 pairs of HCC tumor and non-tumor liver (NTL) samples.	"
-  description: "Hepatocellular carcinoma (HCC)"
+  short_label: "Hepatocellular carcinoma (HCC)"
   classColumn: "tissue"
 
 SRP008976:
