@@ -10,9 +10,16 @@
 ## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
 allVariables.mem.image <- file.path(
   project.parameters$global$dir$memoryImages,
-  paste(sep = "", "classif_eval_all_variables_", Sys.Date(), ".Rdata"))
+  paste(sep = "", "classif_eval_all_variables_",
+      paste(collapse = "-", selectedRecountIDs),
+      "_", Sys.Date(), ".Rdata"))
 
 
+# ## TEMP
+# studyCases.mem.image <- "~/RNAseqMVA_workspace/memory_images/loaded_studyCases_2018-07-22.Rdata"
+# message("Reloading study cases from previously stored memory image")
+# message("\t", studyCases.mem.image)
+# load(studyCases.mem.image)
 
 ## For debug: reset the parameters for all the study cases
 ## This is used to re-run the analyses on each study case after

@@ -3,7 +3,9 @@
 ## and apply some pre-filtering (remove zero-variance and near-zero-variance genes).
 studyCases.mem.image <- file.path(
   project.parameters$global$dir$memoryImages,
-  paste(sep = "", "loaded_studyCases_", Sys.Date(), ".Rdata"))
+  paste(sep = "", "loaded_studyCases_",
+        paste(collapse = "-", selectedRecountIDs),
+        "_", Sys.Date(), ".Rdata"))
 
 
 if (project.parameters$global$reload) {
