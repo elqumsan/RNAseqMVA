@@ -38,7 +38,7 @@
 filterDataTable <- function(rawCounts,
                             draw.plot = TRUE) {
 
-  RequiredBioconductorPackages(c("recount", "SummarizedExperiment"))
+  LoadRequiredBioconductorPackages(c("recount", "SummarizedExperiment"))
 
 
   message.with.time("Filtering count table")
