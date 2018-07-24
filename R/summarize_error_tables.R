@@ -15,7 +15,7 @@ SummarizeErrorTable <- function (files,
                                  stopIfMissing = TRUE,
                                  labels = files) {
 
-  RequiredBioconductorPackages("recount")
+  LoadRequiredBioconductorPackages("recount")
                          
   ## Check if there are missing files
   missing.files <- files[!file.exists(files)]

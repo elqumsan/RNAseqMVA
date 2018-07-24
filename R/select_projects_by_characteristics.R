@@ -22,7 +22,7 @@ selectProjectsByCharacteristics <- function(recount.metadata,
                                             run.kable = FALSE,
                                             run.barplot = FALSE) {
 
-  RequiredBioconductorPackages(c("recount"))
+  LoadRequiredBioconductorPackages(c("recount"))
 
   
   result <- list()

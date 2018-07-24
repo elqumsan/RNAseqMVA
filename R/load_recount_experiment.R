@@ -53,7 +53,7 @@ loadRecountExperiment <- function(recountID,
                                   forceDownload = FALSE,
                                   ...) {
 
-  RequiredBioconductorPackages(c("recount", "SummarizedExperiment", "S4Vectors"))
+  LoadRequiredBioconductorPackages(c("recount", "SummarizedExperiment", "S4Vectors"))
 
 
   message.with.time("loadRecountExperiment()\trecountID = ", recountID)

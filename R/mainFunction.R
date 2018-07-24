@@ -38,7 +38,7 @@ if (exists( "DEGordering" ,  mode="function")){
 #     source("~/RNAseqMVA/R/IterateTrainingTesting.R")
 # }else if(exists("RequiredCRANPackages", mode = "function")){
 #     source("~/RNAseqMVA/R/required_libraries.R")
-# } else if (exists("RequiredBioconductorPackages" , mode = "function")){
+# } else if (exists("LoadRequiredBioconductorPackages" , mode = "function")){
 #     source("~/RNAseqMVA/R/required_libraries.R")
 }else {
     message("such function are not provided in the RNAseqMVA package,!!!")

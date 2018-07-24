@@ -7,7 +7,7 @@
 #' @export
 geocharFromPheno <- function(runPheno) {
 
-  RequiredBioconductorPackages(c("recount", "SummarizedExperiment"))
+  LoadRequiredBioconductorPackages(c("recount", "SummarizedExperiment"))
 
   message("\tExtracting geo characteristicsfrom Recount pheno table")
   geo.characteristics <- recount::geo_characteristics(runPheno)

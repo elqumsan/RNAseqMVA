@@ -20,7 +20,7 @@
 #'
 #' ###################################################
 #' ## loading required packages
-#' RequiredBioconductorPackages(packages = c("DESeq2","edgeR"))
+#' LoadRequiredBioconductorPackages(packages = c("DESeq2","edgeR"))
 #'
 #' recountID <- "SRP048759"
 #' studyCases <- loadCounts(recountID = recountID, mergeRuns = T, classColumn = "tissue")
@@ -37,7 +37,7 @@ DEGordering <- function(dataTableWithClasses,
                        edgeRDispEst="tagwise"){
 
 
-  RequiredBioconductorPackages(c("DESeq2", "edgeR", "limma"))
+  LoadRequiredBioconductorPackages(c("DESeq2", "edgeR", "limma"))
 
   if (!is(dataTableWithClasses, class2 = "DataTableWithClasses")) {
     stop("The function DEGordering() requires an object of class DataTableWithClasses")

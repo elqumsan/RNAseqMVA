@@ -15,4 +15,4 @@ requiredBioconductor <- c(
   "edgeR",
   "S4Vectors",
   "SummarizedExperiment")
-# RequiredBioconductorPackages(requiredBioconductor)
+# LoadRequiredBioconductorPackages(requiredBioconductor)
