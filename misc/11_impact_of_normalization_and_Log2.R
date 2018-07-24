@@ -244,11 +244,11 @@ message.with.time(" finishing from drawing plots describing count table statisti
 
 # loading required libraries
 # requiredCRAN <- c('class', "randomForest","broom", "devtools")
-# RequiredCRANPackages(requiredCRAN)
+# LoadRequiredCRANPackages(requiredCRAN)
 #
 #
 # requiredBioconductor <- c("recount")
-# RequiredBioconductorPackages(requiredBioconductor)
+# LoadRequiredBioconductorPackages(requiredBioconductor)
 ################################################################
 ## Load a count Table from recount-experiment, merge counts per sample
 ## and apply some pre-filtering (remove zero-variance and near-zero-variance genes).
