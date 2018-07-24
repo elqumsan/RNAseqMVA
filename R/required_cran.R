@@ -24,16 +24,3 @@ requiredCRAN <- c(
     "doMC")
 # RequiredCRANPackages(requiredCRAN)
 
-## Bioconductor packages required for the analyses.
-## These cannot be declared with @import, since they are cannot be installed via install.packages()
-requiredBioconductor <- c(
-  "IRanges", # Seems to be required for derfinder but not automatically installed
-  "derfinder",
-  "recount",
-  "vsn", ## For RNA-seq plots from Huber
-  "DESeq2",
-  "limma",
-  "edgeR",
-  "S4Vectors",
-  "SummarizedExperiment")
-# RequiredBioconductorPackages(requiredBioconductor)
