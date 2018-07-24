@@ -49,10 +49,6 @@ loadCounts <- function(recountID,
       assign(p, parameters[[p]])
     }
   }
-  # classColumn = parameters$classColumn
-  # mergeRuns = parameters$mergeRuns
-  # sampleIdColumn = parameters$sampleIdColumn
-  # minSamplesPerClass = parameters$minSamplesPerClass
 
   ## Check required directory
   if (is.null(parameters$dir$workspace)) {
@@ -62,11 +58,6 @@ loadCounts <- function(recountID,
     dir.create(dir.workspace, recursive = TRUE, showWarnings = FALSE)
   }
 
-
-  ################################################
-  # loading required libraries and install them if required
-  # requiredpackage <- c("caret")
-  # RequiredCRANPackages(requiredpackage)
 
   ################################################
   # loading count Data from recount_experiment, Via our wrapper which will Automatically merge the runs by
