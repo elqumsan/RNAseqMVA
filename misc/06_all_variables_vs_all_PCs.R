@@ -24,7 +24,7 @@ allVariables.mem.image <- file.path(
 ## For debug: reset the parameters for all the study cases
 ## This is used to re-run the analyses on each study case after
 ## having changed some parameters in the yaml-specific configuration file
-reload.parameters <- TRUE
+reload.parameters <- FALSE
 if (reload.parameters) {
   project.parameters <- yaml.load_file(configFile)
   project.parameters <- initParallelComputing(project.parameters)
