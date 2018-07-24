@@ -6,6 +6,3 @@ source('R/load_required_bioconductor_packages.R')
 LoadRequiredCRANPackages(requiredCRAN)
 LoadRequiredBioconductorPackages(requiredBioconductor)
 
-## END OF SCRIPT
-#################################################################
-
