@@ -1,13 +1,5 @@
 require("RNAseqMVA")
 
-source('R/required_bioconductor.R')
-source('R/required_cran.R')
-source('R/check_required_cran_packages.R')
-source('R/check_required_bioconductor_packages.R')
-
-LoadRequiredCRANPackages(requiredCRAN)
-LoadRequiredBioconductorPackages(requiredBioconductor)
-
 configFile <- "~/RNAseqMVA/misc/00_project_parameters.yml"
 message.with.time("Loading parameters from YAM file ", configFile)
 
@@ -15,11 +7,11 @@ message.with.time("Loading parameters from YAM file ", configFile)
 ## These parameters will then be used to overwrite the default parameters.
 project.parameters <- yaml.load_file(configFile)
 
+selectedRecountIDs <- project.parameters$global[["selected_recount_ids"]]
 
 ## Get all recount IDs
 recountIDs <- grep(pattern = "^SRP", x = names(project.parameters), value = TRUE)
 message("\tYAML config file contains ", length(recountIDs)," recount IDs.")
-
 
 recountIDs.with.problems <- c("SRP003611" = "the number of samples drops after run merging",
                               "SRP039694" = '	Building class-specific attributes for DataTableWithClasses	SRP039694
@@ -41,11 +33,13 @@ TO DO: detect such cases and stop with explicit message before any analysis.
                               ")
 
 ## Optional: select a subset of the recountIDs
-selectedRecountIDs <- c("SRP057196") ## single-cell of vairous cell types in different brain tissues
-# selectedRecountIDs <- c("SRP056295")
+# selectedRecountIDs <- c("SRP057196") ## single-cell of vairous cell types in different brain tissues
+#selectedRecountIDs <- c("SRP056295") ## Human leukemia
 # selectedRecountIDs <- c("SRP042620")
 #selectedRecountIDs <- c("SRP042620", "SRP057196") #, "SRP056295")
 #selectedRecountIDs <- setdiff(recountIDs, names(recountIDs.with.problems))
+
+
 
 message("\tSelected ", length(selectedRecountIDs)," recount IDs: ", paste(collapse = "; ", selectedRecountIDs))
 #selectedRecountIDs <- recountIDs
