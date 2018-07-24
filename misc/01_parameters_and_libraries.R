@@ -3,6 +3,8 @@ require("RNAseqMVA")
 source('R/required_libraries.R')
 source('R/check_dependencies.R')
 
+RequiredCRANPackages(requiredCRAN)
+RequiredBioconductorPackages(requiredBioconductor)
 
 configFile <- "~/RNAseqMVA/misc/00_project_parameters.yml"
 message.with.time("Loading parameters from YAM file ", configFile)

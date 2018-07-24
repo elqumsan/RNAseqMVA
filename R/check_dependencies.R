@@ -22,7 +22,7 @@ requiredCRAN <- c(
     "doParallel",
     "pheatmap", # Heatmaps with extended control on dimensions
     "doMC")
-RequiredCRANPackages(requiredCRAN)
+# RequiredCRANPackages(requiredCRAN)
 
 ## Bioconductor packages required for the analyses.
 ## These cannot be declared with @import, since they are cannot be installed via install.packages()
@@ -36,4 +36,4 @@ requiredBioconductor <- c(
   "edgeR",
   "S4Vectors",
   "SummarizedExperiment")
-RequiredBioconductorPackages(requiredBioconductor)
+# RequiredBioconductorPackages(requiredBioconductor)
