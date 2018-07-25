@@ -1,10 +1,11 @@
 require("RNAseqMVA")
 
+## Define the path of the YAML-formatted configuration file
 configFile <- "~/RNAseqMVA/misc/00_project_parameters.yml"
-message.with.time("Loading parameters from YAM file ", configFile)
 
 ## Read global and study case-specific parameters from a yaml-formatted file.
 ## These parameters will then be used to overwrite the default parameters.
+message.with.time("Loading parameters from YAM file ", configFile)
 project.parameters <- yaml.load_file(configFile)
 
 selectedRecountIDs <- project.parameters$global[["selected_recount_ids"]]
