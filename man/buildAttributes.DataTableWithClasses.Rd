@@ -6,6 +6,9 @@
 \usage{
 \method{buildAttributes}{DataTableWithClasses}(self)
 }
+\arguments{
+\item{self}{an object of class DataTableWithClasses}
+}
 \value{
 the same object with added fields to describe sample classes and derived
 attributes. Sample classes are extracted from the phenoTable, using column(s)

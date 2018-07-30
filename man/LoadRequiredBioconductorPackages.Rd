@@ -4,7 +4,7 @@
 \alias{LoadRequiredBioconductorPackages}
 \title{Load required packages from BioConductor, afte having installed them if necessary.}
 \usage{
-LoadRequiredBioconductorPackages(packages)
+LoadRequiredBioconductorPackages(packages, verbose = 0)
 }
 \arguments{
 \item{packages}{a vector containing a list of required BioConductor packages.}

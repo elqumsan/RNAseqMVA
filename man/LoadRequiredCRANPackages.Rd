@@ -4,7 +4,7 @@
 \alias{LoadRequiredCRANPackages}
 \title{Load required packages from CRAN, after having installed them if necessary.}
 \usage{
-LoadRequiredCRANPackages(packages)
+LoadRequiredCRANPackages(packages, verbose = 0)
 }
 \arguments{
 \item{packages}{a vector containing a list of required CRAN packages.}

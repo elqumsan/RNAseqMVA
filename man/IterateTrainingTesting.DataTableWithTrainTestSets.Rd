@@ -4,9 +4,9 @@
 \alias{IterateTrainingTesting.DataTableWithTrainTestSets}
 \title{Iterate training/testing procedures with a given classifier and a given data type, with object has class DataTableWithTrainTestSets.}
 \usage{
-\method{IterateTrainingTesting}{DataTableWithTrainTestSets}(dataset, classifier,
-  permute = FALSE, file.prefix = paste(sep = "_", dataset$ID,
-  dataset$dataType, classifier))
+\method{IterateTrainingTesting}{DataTableWithTrainTestSets}(dataset,
+  classifier, permute = FALSE, file.prefix = paste(sep = "_",
+  dataset$ID, dataset$dataType, classifier))
 }
 \arguments{
 \item{dataset}{an object of class DataTableWithTrainTestSets}

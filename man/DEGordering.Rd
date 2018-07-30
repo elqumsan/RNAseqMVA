@@ -36,7 +36,7 @@ classification, by running differential expression analysis with either DESeq2 o
 
 ###################################################
 ## loading required packages
-RequiredBioconductorPackages(packages = c("DESeq2","edgeR"))
+LoadRequiredBioconductorPackages(packages = c("DESeq2","edgeR"))
 
 recountID <- "SRP048759"
 studyCases <- loadCounts(recountID = recountID, mergeRuns = T, classColumn = "tissue")
