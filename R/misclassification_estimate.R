@@ -5,7 +5,7 @@
 #' # Random sampling (random partitioning) estimation of the misclassification rate.
 #'
 #' @param dataset  an object of class DataTableWithTrainTestSets
-#' @iteration current iteration number (the MisclassificationEstimate function is typically called iteratively) and it called number of resampling.
+#' @param iteration current iteration number (the MisclassificationEstimate function is typically called iteratively) and it called number of resampling.
 #' @param classifier is a type of the classifier.
 #' @param permute=FALSE permute the calss labels to measure misclassifciation rate without relevant learning
 #' @return
