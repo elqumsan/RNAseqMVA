@@ -1,6 +1,8 @@
 global: ## Global parameters are those who are the samee across all study cases
   selected_recount_ids: ['SRP061240']
 
+#SRP042161
+
   dir: ## Directories
     main: "~/RNAseqMVA"
     workspace: "~/RNAseqMVA_workspace"
@@ -22,7 +24,7 @@ global: ## Global parameters are those who are the samee across all study cases
     epsilon: 0.1    ## For log2 transformation
 
   perm.prefix: "permLabels"
-  jobs: "20" ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
+  jobs: "none" ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
   #  iterations: 50, ## Number of iterations for the classiifers
   iterations: 10 ## Number of iterations for the classiifers
 
@@ -31,11 +33,12 @@ global: ## Global parameters are those who are the samee across all study cases
   save.tables: TRUE ## If TRUE, save tab-delimited files with the results
   save.image: TRUE
   draw.plot : TRUE
-#  classifiers: ["svm""]
-  classifiers: ["svm", "knn", "rf" ]
+  classifiers: ["svm"]
+#  classifiers: ["svm", "knn", "rf" ]
   # classifiers: ["knn","rf","svm"] # TO ADD LATER: "lda", "qda" + the one suggested by Aitor
 
-  data.types: ["countsPerRun", "originalCounts", "filtered", "norm", "log2norm", "log2normPCs", "DEG", "V.importance"]
+  ## Mustafa, I suppress data.types because I don't think we need them anymore
+  # data.types: ["countsPerRun", "originalCounts", "filtered", "norm", "log2norm", "log2normPCs", "DEG", "V.importance"]
   #data.types.to.test: ["log2normPCs"]
   # data.types.to.test: ["filtered", "norm", "log2norm", "log2normPCs"]
   data.types.to.test:
@@ -173,4 +176,5 @@ SRP042161: # PROBLEM
   classColumn: ["patient id", "cell type", "subtype"]
 
 # crash                "SRP042161", ##
+
 
