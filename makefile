@@ -6,7 +6,8 @@ targets:
 	@echo "	parameters		display the general parameters"
 	@echo "	convert_pc_plots_all_study_cases	convert PC plots from pdf to ${IMG_FORMAT} for all study cases"
 	@echo "	sync_pc_plots_all_study_cases	synchronize PC plots from workspace to the manuscript folder"
-	@echo "	ws_dir_to_rsatix	synchronize a given subdirectory of the workspace to the shared space on rsatix"
+	@echo "	ws_dir_to_rsatix	synchronize a directory (default: TO_SYNC=${TO_SYNC}) from your workspace to the shared space on rsatix"
+	@echo "	ws_dir_from_rsatix	synchronize a directory from the workspace on rsatix to your workspace"
 
 # SRP035988 SRP042620 SRP056295 SRP057196 SRP061240 SRP062966 SRP066834
 IMG_FORMAT=png
@@ -74,12 +75,26 @@ RSATIX_LOGIN=rnaseqmva@${RSATIX}
 RSATIX_WS=/workspace/RNAseqMVA/RNAseqMVA_workspace
 LOCAL_WS=~/RNAseqMVA_workspace/
 TO_SYNC=memory_images
-SOURCE=${LOCAL_WS}/${TO_SYNC}
-TARGET=${LOGIN}@${RSATIX}:${RSATIX_WS}/
+RSYNC_OPT=
+OUT_SOURCE=${LOCAL_WS}/${TO_SYNC}
+OUT_TARGET=${LOGIN}@${RSATIX}:${RSATIX_WS}/
 ws_dir_to_rsatix:
-	@echo "Synchronizing directory to shared space on ${RSATIX}"
+	@echo "Synchronizing directory from your workspace to shared space on ${RSATIX}"
 	@echo "	LOCAL_WS	${LOCAL_WS}"
 	@echo "	TO_SYNC		${TO_SYNC}"
-	@echo "	SOURCE		${SOURCE}"
-	@echo "	TARGET		${TARGET}"
-	@rsync -ruptvl ${SOURCE} ${TARGET}
+	@echo "	RSYNC_OPT	${RSYNC_OPT}"
+	@echo "	OUT_SOURCE	${OUT_SOURCE}"
+	@echo "	OUT_TARGET	${OUT_TARGET}"
+	@rsync -ruptvl ${RSYNC_OPT} ${OUT_SOURCE} ${OUT_TARGET}
+
+IN_SOURCE=${LOGIN}@${RSATIX}:${RSATIX_WS}/${TO_SYNC}
+IN_TARGET=${LOCAL_WS}
+ws_dir_from_rsatix:
+	@echo "Synchronizing directory from ${RSATIX} shared space to your workspace"
+	@echo "	LOCAL_WS	${LOCAL_WS}"
+	@echo "	TO_SYNC		${TO_SYNC}"
+	@echo "	RSYNC_OPT	${RSYNC_OPT}"
+	@echo "	IN_SOURCE	${IN_SOURCE}"
+	@echo "	IN_TARGET	${IN_TARGET}"
+	@rsync -ruptvl ${RSYNC_OPT} ${IN_SOURCE} ${IN_TARGET}
+
