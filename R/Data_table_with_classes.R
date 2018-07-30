@@ -147,7 +147,7 @@ print.DataTableWithClasses <- function(x) {
 #' @description Derive the attributes of an object from the count table and pheno table.
 #' This includes the definition of sample and gene names, as well as the association of
 #' classes to samples, based on the classColumn(s) specified in the parameters.
-#' @parameters self an object of class DataTableWithClasses
+#' @param self an object of class DataTableWithClasses
 #' @return the same object with added fields to describe sample classes and derived
 #' attributes. Sample classes are extracted from the phenoTable, using column(s)
 #' specified in self$classColumn.
