@@ -48,7 +48,6 @@
 #' returned DataTableWithClass object.
 #'
 #'
-#' @examples
 #' @export
 NormalizeSamples <- function(self,
                              method = "quantile",
