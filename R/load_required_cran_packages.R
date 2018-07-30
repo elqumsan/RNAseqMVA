@@ -10,11 +10,13 @@
 #' @param packages a vector containing a list of required CRAN packages.
 #' @return chack and then install all CRAN packages if it aren't installed.
 #' @export
-LoadRequiredCRANPackages <- function(packages) {
+LoadRequiredCRANPackages <- function(packages, verbose = 0) {
   for (pkg in packages) {
     if (!require(pkg, character.only = TRUE)) {
+      if (verbose >= 1) { message("\tInstalling required CRAN library\t", pkg) }
       install.packages(pkg, dependencies = TRUE)
     }
+    if (verbose >= 1) { message("\tLoading required CRAN library\t", pkg) }
     library(pkg, character.only = TRUE)
   }
 }
