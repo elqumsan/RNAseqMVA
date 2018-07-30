@@ -49,7 +49,7 @@ MergeRuns <- function(runs) {
           nbGenes, " genes, ",
           ncol(runs$dataTable), " runs), ",
           nbSamples, " unique samples. ",
-          "\n\tColumn from the pheno table used todefine sample IDs: ", sampleIdColumn)
+          "\n\tColumn from the pheno table used to define sample IDs: ", sampleIdColumn)
   ## Build an empty count table with the right dimensions
   dataTable <- data.frame(matrix(nrow=nrow(runs$dataTable),
                                      ncol=nbSamples))
