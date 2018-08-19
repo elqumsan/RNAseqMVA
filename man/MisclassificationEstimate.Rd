@@ -10,6 +10,8 @@ MisclassificationEstimate(dataset, iteration, classifier,
 \arguments{
 \item{dataset}{an object of class DataTableWithTrainTestSets}
 
+\item{iteration}{current iteration number (the MisclassificationEstimate function is typically called iteratively) and it called number of resampling.}
+
 \item{classifier}{is a type of the classifier.}
 
 \item{permute=FALSE}{permute the calss labels to measure misclassifciation rate without relevant learning}

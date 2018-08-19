@@ -12,6 +12,8 @@ filterDataTable(rawCounts, draw.plot = TRUE)
 This object contains the data table + the parameters (including filtering parameters).}
 
 \item{draw.plot=TRUE}{if TRUE, draw an histogram of variance per gene.}
+
+\item{plot.heigh=NULL}{htigh of the pdf plot. If NULL, computed autopatically depending on the number of panels.}
 }
 \description{
 Apply various filters on the observations (e.g. biological samples)
