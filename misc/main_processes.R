@@ -6,11 +6,11 @@ source('misc/01b_load_parameters.R')
 source('misc/02_load_and_normalise_counts.R')
 source('misc/06_all_variables_vs_all_PCs.R')
 
-
+message("ALL ANALYSES PERFORMED")
 
 stop("OLD CODE COMES HEREAFTER")
 
-if (parameters$compute){
+if (parameters$compute) {
 
   ###### calling the some from miscellaneous file for study the supervised classification methods ####
   ##### loading all parameters and lirraries ####
