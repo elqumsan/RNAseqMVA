@@ -289,11 +289,10 @@ plotFilterHistograms <- function(dataset,
   ## Open pdf file if required
   if (!is.null(plot.file)) {
     if (is.null(plot.height)) {
-      plot.height <- nb.panels * 3
+      plot.height <- nb.panels * 2.5
     }
     pdf(plot.file, width = 7, height = plot.height)
   }
-
 
 
   logVarPerGene <- log2(varPerGene)
