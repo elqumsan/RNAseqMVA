@@ -7,6 +7,7 @@
 #' @param countsWithClasses an object of the class DataTableWithClasses.
 #' This object contains the data table + the parameters (including filtering parameters).
 #' @param draw.plot=TRUE if TRUE, draw an histogram of variance per gene.
+#' @param plot.heigh=NULL htigh of the pdf plot. If NULL, computed autopatically depending on the number of panels.
 #'
 #' @examples
 #' ## Load a data set
@@ -247,12 +248,10 @@ filterDataTable <- function(rawCounts,
 #' @param plot.file=NULL save the plot in a specified pdf file
 #' @export
 plotFilterHistograms <- function(dataset,
-                                 plot.file = NULL) {
+                                 plot.file = NULL,
+                                 plot.height=NULL) {
 
   message("\t", dataset$ID, "\tVariance per gene histograms\t", plot.file)
-  if (!is.null(plot.file)) {
-    pdf(plot.file, width = 7, height = 12)
-  }
 
   ## Check the class of input object
   if (!is(dataset, "DataTableWithClasses")) {
@@ -281,9 +280,21 @@ plotFilterHistograms <- function(dataset,
   parameters <- dataset$parameters
   if (is.null(parameters$filtering$nearZeroVarFilter)) {
     nearZeroVarFilter <- FALSE
+    nb.panels <- 3
   } else {
     nearZeroVarFilter <- parameters$filtering$nearZeroVarFilter
+    nb.panels <- 4
   }
+
+  ## Open pdf file if required
+  if (!is.null(plot.file)) {
+    if (is.null(plot.height)) {
+      plot.height <- nb.panels * 3
+    }
+    pdf(plot.file, width = 7, height = plot.height)
+  }
+
+
 
   logVarPerGene <- log2(varPerGene)
   noInfVar <- !is.infinite(logVarPerGene)
