@@ -57,6 +57,11 @@ global: ## Global parameters are those who are the samee across all study cases
   permute: [FALSE, TRUE]
   verbose: TRUE
 
+  deg_analysis:
+    methods: ["edgeR"] ## Methods for differential expression analysis. Supported: "edgeR", "DESeq2"
+    alpha: 0.05 ## Threshold on adjusted p-value
+
+
   knn:
     k: 10
     k_values: [3, 5, 7, 10, 15]
