@@ -4,8 +4,7 @@
 \alias{MisclassificationEstimate}
 \title{RNA-Seq classifier evaluation to assesse the performance of the classifier}
 \usage{
-MisclassificationEstimate(dataset, iteration, classifier,
-  permute = FALSE)
+MisclassificationEstimate(dataset, iteration, classifier, permute = FALSE)
 }
 \arguments{
 \item{dataset}{an object of class DataTableWithTrainTestSets}

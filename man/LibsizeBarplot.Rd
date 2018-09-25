@@ -34,9 +34,6 @@ LibsizeBarplot(counts, sample.labels = colnames(counts),
 
 \item{height=length(sample.labels)/3+2}{height of the plot file (if not specified, will be adapted to the number of samples)}
 }
-\description{
-Draw a barplot with the number of million reads per sample
-}
 \author{
 Jacques van Helden
 }

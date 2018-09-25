@@ -57,9 +57,6 @@ draw.plot : TRUE
      \item na.rm: TRUE
 }
 }
-\description{
-Intialise parameters and directories for a give recount ID.
-}
 \author{
 Jacques van Helden and Mustafa AbuElQumsan
 }
