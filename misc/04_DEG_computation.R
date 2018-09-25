@@ -1,13 +1,28 @@
 #' @title ordaring the varaibles by using the P-Value for all variables
 #' @author Mustafa ABUELQUMSAN and Jacques van Helden
 #' @description  in such constructor we build count table with ordaring the variables based on the most significance.
-#' @param self it is filtered count table object
+#' @param self an object of class DataTableWithClass, whose
+#'
+#' @examples
+#' ## Detect differentially expressed genes for the breast cancer study case
+#'
+#' ## Retrieve the filtered counts form a study case
+#' recountID <- "SRP042620"
+#' studyCase <- studyCases[[recountID]]
+#' attributes(studyCase)
+#' filteredDataSet <- studyCase["datasetsForTest"]$datasetsForTest[["filtered"]]
+#' class(filteredDataSet)
+#'
+#' ## Run edgeR
+#'
+#'
+#' ## Run DESeq2
 #'
 #'
 #' @export
 #### Differential analysis with DESeq2 and edgeR to define gene (variable) order ####
 DataTableWithDEG <- function(self,
-                              DEGmethods = parameters$deg.methods,
+                              DEGmethods = project.parameters$global$ordering.methods,
                               ...){
 
   if(parameters$compute){
