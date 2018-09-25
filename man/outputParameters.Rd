@@ -4,8 +4,7 @@
 \alias{outputParameters}
 \title{return output parameters (output directory, file prefix, figure label)  for a given analysis given its parameterrs (dataset, classifier, permutation or not)}
 \usage{
-outputParameters(dataset, classifier, permute = FALSE,
-  createDir = TRUE)
+outputParameters(dataset, classifier, permute = FALSE, createDir = TRUE)
 }
 \arguments{
 \item{dataset}{an object of class DataTableWithTrainTestSets}
