@@ -88,7 +88,7 @@ DEGordering <- function(dataTableWithClasses,
       "pvalue",
       "padj" )
 
-    message("\tFinishing from DESeq2 differntial expression analysis")
+    message("\tFinishing from DESeq2 differential expression analysis")
 
     if (randomized){
       #result$DEG.DESeq2.randomized <- result$DEG.DESeq2
