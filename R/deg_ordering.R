@@ -28,7 +28,8 @@
 #' ## loading required packages
 #'
 #' recountID <- "SRP048759"
-#' studyCases <- loadCounts(recountID = recountID, mergeRuns = T, classColumn = "tissue")
+#' recountID <- "SRP042620"
+#' studyCases <- loadCounts(recountID = recountID, parameters = project.parameters[[recountID]])
 #' filteredCounts <- studyCases[[recountID]]$datasetsForTest$filtered
 #' degOrderdPValues <- DEGordering(countDataset = filteredCounts, method = "edgeR")
 #' ## degPValues<- degPValues[order(degPValues$padj) ,]
@@ -151,7 +152,7 @@ DEGordering <- function(countDataset,
     message("\t\tedgeR model fitting with glmQLFit()")
     fit <- glmQLFit(dgList, designMat)
     # #    message("\tFinishig fit settable for closure the fitted object from edgeR ")
-    # lrt <-  glmLRT(fit)
+    lrt <-  glmLRT(fit)
     # #   message("\tFinishig lrt settable for closure the fitted object from edgeR ")
     # View(lrt$table)
 
@@ -188,8 +189,11 @@ DEGordering <- function(countDataset,
     # head(qlf$table)
     # View(qlf$table)
 
-    with(topTags(qlf), plot(logCPM, PValue, pch=16, cex=0.2, log="y"))
-
+    #    with(as.data.frame(), plot(logCPM, PValue, pch=16, cex=0.2, log="y"))
+    # qlf.frame <- as.data.frame(topTags(qlf))
+    # names(qlf.frame)
+    # plot(qlf.frame$logCPM, qlf.frame$PValue, pch=16, cex=0.2, log="y")
+    # plot(lrt$table$logCPM, lrt$table$PValue, pch=16, cex=0.2, log="y")
     ## we can explore the results from topTags function
     ## which give us top DE tags in data frame for a given pair of groups was ranked by p-value or
     ## absolute log-fold change.
@@ -202,7 +206,7 @@ DEGordering <- function(countDataset,
       message("Beware: edgR reported ", na.padj, " NA for the adjusted p-value.")
       message("we will revome all genes that heve NA values",na.padj,  "to avoid the some problimatics when we passing it for the classifiers")
       #lrt$table$PValue <- na.omit(lrt$table$PValue)
-      lrt$table <-na.omit(lrt$table)
+      lrt$table <- na.omit(lrt$table)
     }
     geneOrderIndex <- order(lrt$table$PValue, decreasing = FALSE)
     result$geneOrder <- as.vector(rownames(na.omit(as.data.frame(countDataset$dataTable)))[geneOrderIndex])
