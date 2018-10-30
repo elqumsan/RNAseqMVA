@@ -1,10 +1,10 @@
-message("Checking required libraries")
 
-require("roxygen2") ## MUSTAFA: do we really required roxygen2 and devtools to run the scripts ? They are required for building the package, but maybe not for running the analyses
+#require("roxygen2") ## MUSTAFA: do we really required roxygen2 and devtools to run the scripts ? They are required for building the package, but maybe not for running the analyses
 #require("devtools") ## MUSTAFA: do we really required roxygen2 and devtools to run the scripts ? They are required for building the package, but maybe not for running the analyses
 
 # loading required libraries
 requiredCRAN <- c(
+    'roxygen2',
     'dplyr', # Required for caret (depedency of dependency)
     'RCurl', # Undeclared dependency of recount
     'XML', # Undeclared dependency of recount
@@ -23,4 +23,6 @@ requiredCRAN <- c(
     "pheatmap", # Heatmaps with extended control on dimensions
     "doMC")
 # RequiredCRANPackages(requiredCRAN)
+
+message("Required CRAN libraries:\n\t", paste(collapse="\n\t", requiredCRAN))
 

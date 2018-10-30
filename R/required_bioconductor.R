@@ -1,6 +1,5 @@
-message("Checking required libraries")
 
-require("roxygen2") ## MUSTAFA: do we really required roxygen2 and devtools to run the scripts ? They are required for building the package, but maybe not for running the analyses
+#require("roxygen2") ## MUSTAFA: do we really required roxygen2 and devtools to run the scripts ? They are required for building the package, but maybe not for running the analyses
 #require("devtools") ## MUSTAFA: do we really required roxygen2 and devtools to run the scripts ? They are required for building the package, but maybe not for running the analyses
 
 ## Bioconductor packages required for the analyses.
@@ -16,3 +15,5 @@ requiredBioconductor <- c(
   "S4Vectors",
   "SummarizedExperiment")
 # LoadRequiredBioconductorPackages(requiredBioconductor)
+
+message("Required Bioconductor libraries:\n\t", paste(collapse="\n\t", requiredBioconductor))
