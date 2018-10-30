@@ -258,12 +258,28 @@ for (recountID in selectedRecountIDs) {
 #### Plot variance per gene at different levels of filtering ####
 for (recountID in selectedRecountIDs) {
 #  plotFilterHistograms(filteredDataset) #,  plot.file = file.path(parameters$dir$NormalizationImpact, "var_per_gene_hist.pdf"))
+  filtered <- studyCases[[recountID]]$datasetsForTest$filtered
+
   plotFilterHistograms(
-    studyCases[[recountID]]$datasetsForTest$filtered,
+    filtered,
+#    plot.height = 8,
     plot.file = file.path(
       parameters$dir$NormalizationImpact,
       paste(sep = "_", parameters$recountID, "filtering_variance_per_gene_hist.pdf")))
+
+  # raw <- studyCases[[recountID]]$rawData$countsPerSample
+  # raw.libsizes <- apply(raw$dataTable, 2, sum)
+  plot.file <- file.path(
+    parameters$dir$NormalizationImpact,
+    paste(sep = "_", parameters$recountID, "filtered_ranked_libsizes.pdf"))
+
+  LibsizeRankPlot(count.table = filtered$dataTable, plot.file = plot.file)
+
+  # system(paste("open", plot.file))
+
 }
+
+
 
 #### Save a memory image that can be re-loaded next time ####
 ## to avoid re-computing all the normalisation and so on.
