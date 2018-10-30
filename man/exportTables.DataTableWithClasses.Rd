@@ -5,8 +5,7 @@
 \title{Export the different fields of an object of class DataTableWithClasses in tab-separated values text files.}
 \usage{
 \method{exportTables}{DataTableWithClasses}(self,
-  export.dir = self$parameters$dir$tsv, file.prefix,
-  extension = ".tsv")
+  export.dir = self$parameters$dir$tsv, file.prefix, extension = ".tsv")
 }
 \arguments{
 \item{self}{an object, which must belong to a compatible class}
@@ -16,9 +15,6 @@
 \item{file.prefix}{file prefix to build the different tables}
 
 \item{extension=".tsv"}{extension for the exported files (tab-separated values)}
-}
-\description{
-Export the different fields of an object of class DataTableWithClasses in tab-separated values text files.
 }
 \author{
 Mustafa AbuElQumsan and Jacques van Helden

@@ -13,9 +13,12 @@ Imports:
     S4Vectors
 Suggests:
     DESeq2,
-    devtools (>= 1.6)
+    devtools (>= 1.6),
+    knitr,
+    rmarkdown
 Description: utilities to run multivariate analysis methods on RNA-seq data.
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.0
+VignetteBuilder: knitr

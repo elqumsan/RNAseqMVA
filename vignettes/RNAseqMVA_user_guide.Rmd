@@ -1,0 +1,25 @@
+---
+title: "RNAseqMVA user guide"
+author: "Mustafa AbuElQumsan and Jacques van Helden"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Quick tour
+
+... write the smallest possible succession of commands that enable to achieve some result and display the corresponding figure. 
+
+# Configuration
+
+... explain how to modify optins with the yaml file

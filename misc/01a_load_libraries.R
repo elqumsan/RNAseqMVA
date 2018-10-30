@@ -1,4 +1,4 @@
-#### Loading the required external librares (CRAN, BioConductor) for RNAseqMVA ####
+### Loading the required external librares (CRAN, BioConductor) for RNAseqMVA ####
 
 ## Define the lists of required libraries
 source('R/required_bioconductor.R')

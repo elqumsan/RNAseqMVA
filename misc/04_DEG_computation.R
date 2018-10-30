@@ -1,13 +1,84 @@
-#' @title ordaring the varaibles by using the P-Value for all variables
-#' @author Mustafa ABUELQUMSAN and Jacques van Helden
-#' @description  in such constructor we build count table with ordaring the variables based on the most significance.
-#' @param self it is filtered count table object
-#'
-#'
-#' @export
+## This script takes as input a pre-loaded study cases
+## and runs differential expression on the filtered counts
+##
+## Authors: Mustafa AbuElQumsan and Jacques van Helden
+##
+## Prerequisite: study cases can be loaded either by running
+## the scripts 02_load_and_normalise_counts.R, or by reloading
+## a memory image previously stored by this script.
+##
+## Example
+##   load("../RNAseqMVA_workspace/memory_images/loaded_studyCases_SRP042620_[DATE].Rdata")
+##    recountID <- "SRP042620"
+
+## TO DO
+## - Mustafa: update the flow chart of the scripts,
+##   and show the connection between this one and 02
+
+## The flowchart shows the chaining between operations.
+## The class diagram shows the oganisation of the objects: methods, attribtues and links between classes.
+
+## Get the selected study case
+studyCase <- studyCases[[recountID]]
+# class(studyCase) ## Check the class (shoud be StudyCase)
+# attributes(studyCase) ## Check the attributes
+
+## Select the filtered dataset for this study case
+filteredDataSet <- studyCase["datasetsForTest"]$datasetsForTest[["filtered"]]
+# class(filteredDataSet)
+# attributes(filteredDataSet)
+
+## Check the DEG methods specified in the YAML configuration file
+deg.methods <- project.parameters$global$deg_analysis$methods
+if (is.null(deg.methods)) {
+  stop("At least one DEG method should be specified in the YAML configuration file")
+}
+message("\tDEG method(s)\t", paste(collapse=", ", deg.methods))
+
+## Check that alpha was defined, if not use a standard default value
+alpha <- project.parameters$global$deg_analysis$alpha
+if (is.null(alpha)) {
+  alpha <- 0.05
+  message("The alpha parameter was not defined in the YAML config file, using default. ")
+}
+message("\talpha\t", alpha)
+
+
+deg.results <- list()
+
+#### edgeR-sorted variables ####
+for (method in deg.methods) {
+  message.with.time("Running differential analysis with ", method)
+  deg.results[[method]] <- DEGordering(dataTableWithClasses = filteredDataSet, method = method)
+  # class(deg.results[[method]])
+  # names(deg.results[[method]])
+  # View(deg.results[[method]])
+
+
+  hist(deg.results[[method]]$DEGtable$padj, breaks=seq(0, 1, 0.05))
+  hist(deg.results[[method]]$DEGtable$log2FC, breaks = 100)
+
+  ## Select the genes declared positive (null hypothesis rejected)
+  ## Select genes that pass the alpha threshold on adjuste p-value
+  alpha.selection <- deg.results[[method]]$DEGtable$padj < alpha
+  sum(alpha.selection)
+
+  ## Select genes passing the threshold on log2 fold change
+  ## TO DO
+
+  ## Gene clustering
+
+  ## Draw a heatmap of clustered genes
+
+  ## Sample clustering (with only the genes declared positive)
+}
+
+
+
+
 #### Differential analysis with DESeq2 and edgeR to define gene (variable) order ####
 DataTableWithDEG <- function(self,
-                              DEGmethods = parameters$deg.methods,
+                              DEGmethods = project.parameters$global$ordering.methods,
                               ...){
 
   if(parameters$compute){

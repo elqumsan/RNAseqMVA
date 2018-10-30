@@ -1,5 +1,5 @@
 global: ## Global parameters are those who are the samee across all study cases
-  selected_recount_ids: ['SRP061240']
+  selected_recount_ids: ['SRP042620']
 #  selected_recount_ids: ['SRP042161']
 
 #SRP042161
@@ -47,7 +47,7 @@ global: ## Global parameters are those who are the samee across all study cases
   # data.types.to.test: ["log2norm"]
   variables.type: ["all"]
   #variables.type: ["all", "top_ordered"]
-  ordering.methods: [] ## Supported: "RF", "edgeR", "DESeq2"
+  ordering.methods: ["edgeR"] ## Supported: "RF", "edgeR", "DESeq2"
   # ordering.methods: ["edgeR", "RF", "DESeq2"] ## Supported: "RF", "edgeR", "DESeq2"
   # ordering.methods: ["DESeq2", "edgeR", "RF"]
   ## Note: for the number of variables I choose a regular spacing around the total number of samples in order to detect overfitting effects
@@ -56,6 +56,11 @@ global: ## Global parameters are those who are the samee across all study cases
   identicalTrainTest: TRUE
   permute: [FALSE, TRUE]
   verbose: TRUE
+
+  deg_analysis:
+    methods: ["edgeR"] ## Methods for differential expression analysis. Supported: "edgeR", "DESeq2"
+    alpha: 0.05 ## Threshold on adjusted p-value
+
 
   knn:
     k: 10
