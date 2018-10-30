@@ -283,8 +283,7 @@ RunedgeR.StudyCase <- function(self) {
 
   ## include the edgeR result table in the resulting data object
   self$datasetsForTest$log2norm_edgeR_sorted$edgeR  <-
-    DEGordering(self$datasetsForTest$filtered,
-                method = "edgeR", randomized = TRUE )
+    DEGordering(countDataset = self$datasetsForTest$filtered, method = "edgeR")
 
   ## Specify te data type
   self$datasetsForTest$log2norm_edgeR_sorted$dataType <- "log2norm_edgeR_ordered"
@@ -329,8 +328,7 @@ RunDESeq2.StudyCase <- function(self) {
 
   ## include the DESeq2 result table in the resulting data object
   self$datasetsForTest$log2norm_DESeq2_sorted$DESeq2  <-
-    DEGordering(self$datasetsForTest$filtered,
-                method = "DESeq2", randomized = TRUE )
+    DEGordering(self$datasetsForTest$filtered, method = "DESeq2")
 
   ## Specify te data type
   self$datasetsForTest$log2norm_DESeq2_sorted$dataType <- "log2norm_DESeq2_ordered"
