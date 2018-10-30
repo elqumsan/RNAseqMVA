@@ -2,7 +2,7 @@
 % Please edit documentation in R/message_with_time.R
 \name{message.with.time}
 \alias{message.with.time}
-\title{print a message preceded by currrent tume}
+\title{print a message preceded by currrent time}
 \usage{
 message.with.time(...)
 }
@@ -13,7 +13,7 @@ message.with.time(...)
 report message with time for each proccess.
 }
 \description{
-such function in order to be able to compute the time has been exploit through the computation process.
+Print a message prepended with the current time in reverse order (YYYY-MM-DD) in order to match alphabetical order with chronological order.
 }
 \author{
 Jacques van Helden and Mustafa AbuElQumsan

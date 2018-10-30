@@ -4,24 +4,30 @@
 \alias{DEGordering}
 \title{Variable ordering according to the p-values returned by differential expression analysis.}
 \usage{
-DEGordering(dataTableWithClasses, method = "DESeq2", randomized = TRUE,
-  edgeRDispEst = "tagwise")
+DEGordering(countDataset, method = "DESeq2", permuteLabels = FALSE,
+  alpha = 0.05)
 }
 \arguments{
-\item{dataTableWithClasses}{an object containing both the data table and the class label vector.}
+\item{countDataset}{an object of class DataTableWithClasses containing counts of reads per features. Importantly, edgeR and DESeq2 require non-normalized counts as input.}
+
+\item{permuteLabels=FALSE}{if TRUE, class labels are permuted before running the differential analysis, in order to run a negative control (empirical approximation of the null hypothesis)}
 
 \item{method="DESeq2"}{choice of method for differential expression analysis. Supported: "DESeq2" , "edgeR".}
 
-\item{edgeRDispEst="tagwise"}{method used by edgeR to estimate the dispersion. Supported: common, trended, tagwise.}
+\item{alpha=0.05}{threshold on adjusted p-value (FDR) to call genes positive}
 
-\item{...}{all additional parmeters are passed to the differentail expression method (DEseq2 or edgeR).}
+\item{...}{all additional parmeters are passed to the differential expression method (DEseq2 or edgeR).}
 }
 \value{
-a list with 2 tables:
-1) result$geneOrder: a vector of gene names ordered by increasing p-value.
-2) result$orderedDataTable ordered count table where columns (genes) have been ordered by increasing p-value.
-3) result$DEGtable a table with one row per gene, and one column per DEG statistics (mean, log-ratio, nominal and adjusted p-values, ...)
-
+a list with the following fields.
+\itemize{
+\item method: method specified in the function call
+\item permuteLabels: Boolean variable indicating whether the test was led with permuted class labels (negative control)
+\item classLabels: vector with the class labels used for the analysis (the ones from the original data, or the permuted ones if the option permuteLabels was TRUE)
+\item geneOrder: a vector of gene names ordered by increasing p-value.
+\item DEGtable a table with one row per gene, and one column per DEG statistics (mean, log-ratio, nominal and adjusted p-values, ...)
+\item orderedDataTable ordered count table where rows (genes) have been ordered by increasing p-value.
+}
 Note that genes are ordered according to nominal p-value (pvalue) rather than
 adjusted p-value (padj) because DESeq2 produces NA values for the padj.
 }
@@ -36,14 +42,13 @@ classification, by running differential expression analysis with either DESeq2 o
 
 ###################################################
 ## loading required packages
-LoadRequiredBioconductorPackages(packages = c("DESeq2","edgeR"))
 
 recountID <- "SRP048759"
-studyCases <- loadCounts(recountID = recountID, mergeRuns = T, classColumn = "tissue")
-degOrderdPValues <- DEGordering(dataTableWithClasses = studyCases$dataTable, classes =  studyCases$classes, method = "edgeR")
+recountID <- "SRP042620"
+studyCases <- loadCounts(recountID = recountID, parameters = project.parameters[[recountID]])
+filteredCounts <- studyCases[[recountID]]$datasetsForTest$filtered
+degOrderdPValues <- DEGordering(countDataset = filteredCounts, method = "edgeR")
 ## degPValues<- degPValues[order(degPValues$padj) ,]
-
-choose the method of differential expression analysis
 
 }
 \author{
