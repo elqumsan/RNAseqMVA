@@ -12,3 +12,12 @@ source('R/load_required_bioconductor_packages.R')
 LoadRequiredCRANPackages(requiredCRAN)
 LoadRequiredBioconductorPackages(requiredBioconductor)
 
+## Install derfinder
+if (!require(derfinder)) {
+  install.packages("BiocManager")
+  BiocManager::install("derfinder")
+
+  ## Check that you have a valid Bioconductor installation
+  BiocManager::valid()
+}
+
