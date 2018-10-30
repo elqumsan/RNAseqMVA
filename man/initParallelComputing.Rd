@@ -2,7 +2,7 @@
 % Please edit documentation in R/init_parallel_computing.R
 \name{initParallelComputing}
 \alias{initParallelComputing}
-\title{initialise parameters for parallel computing with foreach and doParallel packages}
+\title{initialise parameters for parallel computing with foreach and doParallel package.}
 \usage{
 initParallelComputing(project.parameters)
 }
