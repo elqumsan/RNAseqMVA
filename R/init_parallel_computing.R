@@ -1,4 +1,4 @@
-#' @title initialise parameters for parallel computing with foreach and doParallel packages
+#' @title initialise parameters for parallel computing with foreach and doParallel package.
 #' @author Mustafa AbuELQumsan and Jacques van Helden.
 #' @description  by such all required paremater will be initialised for parallel computing by utilizing foreach and doParallel.
 #' @param project.parameters that are specified in yaml configuration file in oder to set all default and global variables.
