@@ -14,13 +14,11 @@
 #' @author Jacques van Helden and Mustafa AbuElQumsan
 #' @description reduction all real varaibles in count Table to the n numbers from Principal component. among the biological samples from a DataTableWithClasses.
 #' @param self an object of the class DataTableWithClasses
-
 #' @export
-
-PCsWithTrainTestSets <- function( self,
-                                         stratified=TRUE,
-                                         iterations = parameters$iterations,
-                                         trainingProportion = parameters$trainingProportion) {
+PCsWithTrainTestSets <- function(self,
+                                 stratified=TRUE,
+                                 iterations = parameters$iterations,
+                                 trainingProportion = parameters$trainingProportion) {
 
   message.with.time("Selecting ", iterations, " training sets, with training proportion = ", trainingProportion)
 
