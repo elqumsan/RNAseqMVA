@@ -1,6 +1,4 @@
 ###### main steps for the analysis supervised classification methods by RNAseq Data #####
-
-
 source('misc/01a_load_libraries.R')
 source('misc/01b_load_parameters.R')
 source('misc/02_load_and_normalise_counts.R')
