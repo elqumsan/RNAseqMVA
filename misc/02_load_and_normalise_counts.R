@@ -136,12 +136,6 @@ kable(t(studyCasesStats))
 write.table(x = t(studyCasesStats), file = file.path(parameters$dir$results, "experiment_summaries.tsv"),
             quote = FALSE, sep = "\t", row.names = TRUE, col.names = FALSE)
 
-## YOUR MISSION: GENERATE A BARPLOT or a set of piecharts SHOWING THE FOLLOWING NUMBERS for the different study cases
-## - NA(to be added to the result of filtering)
-## - zero var
-## - near zero var
-## - kept genes
-## The total shoud give the same result as initial.genes
 
 gene.pc <- studyCasesStats[, c("pc.NA", "pc.zeroVar", "pc.NZfilter", "pc.kept")]
 row.names(gene.pc) <- studyCasesStats$recountID
@@ -149,7 +143,8 @@ row.names(gene.pc) <- studyCasesStats$recountID
 gene.pc <- gene.pc[order(gene.pc$pc.kept, decreasing = FALSE), ]
 ## apply(gene.pc, 1, sum) ## The sums must give 100 for each experiment
 
-figure.file <- paste("experiments_summaries.pdf")
+####  Gene filtering barplots:  proportions of genes filtered out or kept in each study case ####
+figure.file <- paste("gene_filtering_summaries.pdf")
 barPlot.file <- file.path(parameters$dir$results,figure.file)
 message("Filtering summary barplot: ", barPlot.file)
 pdf(file = barPlot.file, width = 7, height = 2 + 1 * nrow(studyCasesStats))
