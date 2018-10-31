@@ -18,14 +18,14 @@ LibsizeRankPlot <- function(count.table,
     pdf(file = plot.file, width = plot.width, height = plot.heigh)
   }
   filtered.libsizes <- apply(count.table, 2, sum) / 1e+6
+  ymin <- min(filtered.libsizes)
+  ymax <- max(filtered.libsizes)
   plot(sort(filtered.libsizes, decreasing = TRUE),
        type = "h", col = "grey", las = 1,
        xlab = "Sample rank",
        ylab = "sample size (Mreads)",
        ylim = c(0, ymax),
        main = paste(sep = "", recountID, " \n", "library sizes"))
-  ymin <- min(filtered.libsizes)
-  ymax <- max(filtered.libsizes)
   abline(h = ymin, col = "orange", lwd = 2)
   abline(h = ymax, col = "#22BB44", lwd = 2)
   arrows(length = 0.1, angle = 15, lwd = 2, col = "red", code = 3,
