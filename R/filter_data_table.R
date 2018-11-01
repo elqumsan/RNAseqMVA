@@ -167,13 +167,13 @@ filterDataTable <- function(rawCounts,
   discardedClasses <- names(samplesPerClass)[samplesPerClass < minSamplesPerClass]
   keptClasses <- names(samplesPerClass)[samplesPerClass >= minSamplesPerClass]
   keptSamples <- filteredClassLabels %in% keptClasses
-  if (length (discardedClasses) > 0) {
-    message("\tDiscarding ", length (discardedClasses), " classes containing less than ", minSamplesPerClass, " samples")
-    message("\tDiscarded classes\t", paste(collapse=",", discardedClasses))
+  if (length(discardedClasses) > 0) {
+    message("\tDiscarding ", length(discardedClasses), " classes containing less than ", minSamplesPerClass, " samples")
+    message("\tDiscarded classes\t", paste(collapse = ",", discardedClasses))
   }
   message("\tKeeping ", sum(keptSamples), " samples from ",
           length(keptClasses), " classes")
-  message("\tKept classes\t", paste(keptClasses, collapse=", "))
+  message("\tKept classes\t", paste(keptClasses, collapse = ", "))
 
 
   ## Update count table, pheno table and countsWithClasses$classLabels vector to keep only the samples belonging to selected classess
@@ -215,9 +215,12 @@ filterDataTable <- function(rawCounts,
 
   ## Plot an histogram to compare variance distribution  between all genes and those with  near-zero variance
   if (draw.plot) {
-    plotFilterHistograms(result, plot.file = file.path(
-      parameters$dir$NormalizationImpact,
-      paste(sep = "_", parameters$recountID, "filtering_variance_per_gene_hist.pdf")))
+    plotFilterHistograms(
+      dataset = result,
+      rawCounts = rawCounts,
+      plot.file = file.path(
+        parameters$dir$NormalizationImpact,
+        paste(sep = "_", parameters$recountID, "filtering_variance_per_gene_hist.pdf")))
   }
 
 
@@ -248,6 +251,7 @@ filterDataTable <- function(rawCounts,
 #' @param plot.file=NULL save the plot in a specified pdf file
 #' @export
 plotFilterHistograms <- function(dataset,
+                                 rawCounts,
                                  plot.file = NULL,
                                  plot.height=NULL) {
 
@@ -341,8 +345,8 @@ plotFilterHistograms <- function(dataset,
        xlim = xlim)
 
   ## Count the number of zero values per gene
-  zerosPerGene <- apply(dataset$dataTable == 0, 1, sum)
-  zerobreaks <- seq(from = 0, to = max(zerosPerGene + 1), length.out = 50)
+  zerosPerGene <- apply(rawCounts$dataTable == 0, 1, sum)
+  zerobreaks <- seq(from = 0, to = max(zerosPerGene + 1))
   # zerobreaks <- seq(from=0, to=max(zerosPerGene+1), by=1)
 
   #### Histogram of zero values per gene. ####
@@ -372,6 +376,7 @@ plotFilterHistograms <- function(dataset,
              c("Kept genes", "Near-zero variance", "Zero variance"),
              c(length(keptGenes), length(nearZeroVarGenes), length(zeroVarGenes))),
            lwd = 5,
+           cex = 0.8,
            col = c("#00BB00", "orange", "red")
     )
   } else {
@@ -381,6 +386,7 @@ plotFilterHistograms <- function(dataset,
              c("Kept genes",  "Zero variance"),
              c(length(keptGenes), length(zeroVarGenes))),
            lwd = 5,
+           cex = 0.8,
            col = c("#00BB00", "red"))
 
   }
