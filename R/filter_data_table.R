@@ -366,7 +366,7 @@ plotFilterHistograms <- function(dataset,
        breaks = zerobreaks,
        add = TRUE, col = "red", border = "red")
   if (nearZeroVarFilter) {
-    legend("topleft",
+    legend("top",
            legend = paste(
              sep = ": ",
              c("Kept genes", "Near-zero variance", "Zero variance"),
