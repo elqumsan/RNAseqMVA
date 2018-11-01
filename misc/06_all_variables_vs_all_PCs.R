@@ -24,7 +24,7 @@ allVariables.mem.image <- file.path(
 ## For debug: reset the parameters for all the study cases
 ## This is used to re-run the analyses on each study case after
 ## having changed some parameters in the yaml-specific configuration file
-reload.parameters <- FALSE
+reload.parameters <- TRUE
 if (reload.parameters) {
   project.parameters <- yaml.load_file(configFile)
   project.parameters <- initParallelComputing(project.parameters)
@@ -76,6 +76,10 @@ if (project.parameters$global$compute) {
         ## If not specified in config file, take all datasetsForTest
         if (is.null(parameters$data.types.to.test)) {
           parameters$data.types.to.test <- names(studyCase$datasetsForTest)
+
+          ## Temporary (2018-11-01): discard edgeR and DESeq2-sorted datasets.
+          ## Actually these are not data types, variable ordering should be treated as a separate variable, not as a separate dataset.
+          parameters$data.types.to.test <- grep(pattern = "_sorted", x = parameters$data.types.to.test, invert = TRUE, value = TRUE)
         }
 
         ## Loop over data types
