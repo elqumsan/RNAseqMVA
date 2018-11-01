@@ -51,9 +51,10 @@ convert_pc_plots_all_study_cases:
 	done
 
 
+EXCLUDE_OPT=--exclude *~ --exclude .DS_Store --exclude .\#*
 sync_one_pcplot:
 	@mkdir -p ${FIGURE_ELEMENTS}
-	rsync ${SOURCE_PC} ${FIGURE_ELEMENTS}/
+	rsync ${EXCLUDE_OPT}${SOURCE_PC} ${FIGURE_ELEMENTS}/
 
 
 sync_pc_plots_one_study_case:
@@ -85,7 +86,8 @@ ws_dir_to_rsatix:
 	@echo "	RSYNC_OPT	${RSYNC_OPT}"
 	@echo "	OUT_SOURCE	${OUT_SOURCE}"
 	@echo "	OUT_TARGET	${OUT_TARGET}"
-	@rsync -ruptvl ${RSYNC_OPT} ${OUT_SOURCE} ${OUT_TARGET}
+	@echo "	EXCLUDE_OPT	${EXCLUDE_OPT}"
+	@rsync -ruptvl ${EXCLUDE_OPT} ${RSYNC_OPT} ${OUT_SOURCE} ${OUT_TARGET}
 
 IN_SOURCE=${LOGIN}@${RSATIX}:${RSATIX_WS}/${TO_SYNC}
 IN_TARGET=${LOCAL_WS}
@@ -96,5 +98,6 @@ ws_dir_from_rsatix:
 	@echo "	RSYNC_OPT	${RSYNC_OPT}"
 	@echo "	IN_SOURCE	${IN_SOURCE}"
 	@echo "	IN_TARGET	${IN_TARGET}"
-	@rsync -ruptvl ${RSYNC_OPT} ${IN_SOURCE} ${IN_TARGET}
+	@echo "	EXCLUDE_OPT	${EXCLUDE_OPT}"
+	@rsync -ruptvl ${EXCLUDE_OPT} ${RSYNC_OPT} ${IN_SOURCE} ${IN_TARGET}
 
