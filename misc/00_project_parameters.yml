@@ -1,13 +1,14 @@
 global: ## Global parameters are those who are the samee across all study cases
-  selected_recount_ids: ['SRP042620']
+#  selected_recount_ids: ['SRP042620']
 #  selected_recount_ids: ['SRP042161']
+  selected_recount_ids: ["SRP042620", "SRP057196", "SRP056295", "SRP035988", "SRP061240", "SRP062966", "SRP066834"]
 
 #SRP042161
 
   dir: ## Directories
     main: "~/RNAseqMVA"
     workspace: "~/RNAseqMVA_workspace"
-    results: "~/RNAseqMVA_workspace/results"
+    results: "~/RNAseqMVA_workspace/results_NZVF"
     TSV: "~/RNAseqMVA_workspace/data"
     memoryImages: "~/RNAseqMVA_workspace/memory_images"
 
@@ -15,7 +16,7 @@ global: ## Global parameters are those who are the samee across all study cases
     ## Filtering options
     na.rm: TRUE          # Discard features with NA values
     null.variance: TRUE # Discard features with null variance
-    nearZeroVarFilter: FALSE # near-zero variance filtering. I disactivate this option because it is particularly bad for single-cell RNA-seq, and it is not specially interesting from bulk RNA-seq
+    nearZeroVarFilter: TRUE # near-zero variance filtering. I disactivate this option because it is particularly bad for single-cell RNA-seq, and it is not specially interesting from bulk RNA-seq
     minSamplesPerClass: 15 ## minmal number of samples per clas (class filtering)
 
   standardization:
