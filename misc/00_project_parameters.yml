@@ -35,7 +35,7 @@ global: ## Global parameters are those who are the samee across all study cases
   save.tables: TRUE ## If TRUE, save tab-delimited files with the results
   save.image: TRUE
   draw.plot : TRUE
-  classifiers: ["svm"]
+  classifiers: ["rf"]
 #  classifiers: ["svm", "knn", "rf" ]
   # classifiers: ["knn","rf","svm"] # TO ADD LATER: "lda", "qda" + the one suggested by Aitor
 
@@ -48,7 +48,7 @@ global: ## Global parameters are those who are the samee across all study cases
   # data.types.to.test: ["log2norm"]
   variables.type: ["all"]
   #variables.type: ["all", "top_ordered"]
-  ordering.methods: ["edgeR"] ## Supported: "RF", "edgeR", "DESeq2"
+  ordering.methods: [] # ["edgeR"] ## Supported: "RF", "edgeR", "DESeq2"
   # ordering.methods: ["edgeR", "RF", "DESeq2"] ## Supported: "RF", "edgeR", "DESeq2"
   # ordering.methods: ["DESeq2", "edgeR", "RF"]
   ## Note: for the number of variables I choose a regular spacing around the total number of samples in order to detect overfitting effects
