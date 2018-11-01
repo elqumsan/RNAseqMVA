@@ -16,3 +16,6 @@ R_backup.zip
 previous_figures.zip
 inst/doc
 *.zip
+#*
+.#*
+\#*
