@@ -256,7 +256,8 @@ for (recountID in selectedRecountIDs) {
   filtered <- studyCases[[recountID]]$datasetsForTest$filtered
 
   plotFilterHistograms(
-    filtered,
+    dataset = filtered,
+    rawCounts = studyCases[[recountID]]$rawData$countsPerSample,
 #    plot.height = 8,
     plot.file = file.path(
       parameters$dir$NormalizationImpact,
@@ -273,8 +274,6 @@ for (recountID in selectedRecountIDs) {
   # system(paste("open", plot.file))
 
 }
-
-
 
 #### Save a memory image that can be re-loaded next time ####
 ## to avoid re-computing all the normalisation and so on.
