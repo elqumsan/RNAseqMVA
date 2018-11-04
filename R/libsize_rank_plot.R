@@ -36,7 +36,7 @@ LibsizeRankPlot <- function(count.table,
 
 
   text(x = length(filtered.libsizes) * 1.02,
-       y = ymax * 0.95,
+       y = ymax * 0.9,
        #       y = (ymax + ymin) / 2,
        col = "#22BB44",
        labels = paste(round(ymax / ymin * 100), "%"),
