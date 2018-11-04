@@ -63,34 +63,6 @@ if (project.parameters$global$reload) {
     # }
 
 
-    # Check studyCases[[recountID]] objects
-
-    # attributes(studyCases[[recountID]])
-    # class(studyCases[[recountID]]$countsPerRun)
-    # class(studyCases[[recountID]]$originalCounts)
-    # class(studyCases[[recountID]]$filtered)
-    # class(studyCases[[recountID]]$norm)
-    # class(studyCases[[recountID]]$log2norm)
-    #
-    #
-    # # unlist(lapply(studyCases[[recountID]]$norm$trainTestProperties$trainIndices, length))
-    # length(unlist(studyCases[[recountID]]$norm$trainTestProperties$trainIndices))
-    # sum(unlist(studyCases[[recountID]]$norm$trainTestProperties$trainIndices) != unlist(studyCases[[recountID]]$filtered$trainTestProperties$trainIndices))
-    # sum(unlist(studyCases[[recountID]]$norm$trainTestProperties$trainIndices) != unlist(studyCases[[recountID]]$log2norm$trainTestProperties$trainIndices))
-
-
-    ##### plotting some figures to explore the nuture of recount data set #####
-    # message.with.time(" plotting some figures to explore distribution for the recount data set ",parameters$recountID)
-    # source("misc/11_impact_of_normalization_and_Log2.R")
-
-    # ##### Exhibiting the geo charactiristics for the current project #####
-    # message.with.time("Exhibit the geo charactiristics for such experiment: ", parameters$recountID, " in order to know the class lable
-    #                   for such experiment")
-    # head( geo.characteristics)
-    # geo.characteristics.file <- file.path("~/RNAseqMVA_workspace", "data", parameters$recountID, "geo.characteristics.tsv")
-    # write.table( geo.characteristics, file = geo.characteristics.file, quote = FALSE,
-    #              row.names = FALSE, sep = "\t" )
-
   } # end loop over recountIDs
   message("Finished loading ", length(studyCases), " study cases")
 }
