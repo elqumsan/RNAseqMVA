@@ -35,7 +35,7 @@ global: ## Global parameters are those who are the samee across all study cases
   save.tables: TRUE ## If TRUE, save tab-delimited files with the results
   save.image: TRUE
   draw.plot : TRUE
-  classifiers: ["svm", "rf"]
+  classifiers: ["svm"]
 #  classifiers: ["svm", "knn", "rf" ]
   # classifiers: ["knn","rf","svm"] # TO ADD LATER: "lda", "qda" + the one suggested by Aitor
 
@@ -61,7 +61,6 @@ global: ## Global parameters are those who are the samee across all study cases
   deg_analysis:
     methods: ["edgeR"] ## Methods for differential expression analysis. Supported: "edgeR", "DESeq2"
     alpha: 0.05 ## Threshold on adjusted p-value
-
 
   knn:
     k: 10
