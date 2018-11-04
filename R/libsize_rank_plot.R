@@ -23,18 +23,22 @@ LibsizeRankPlot <- function(count.table,
   plot(sort(filtered.libsizes, decreasing = TRUE),
        type = "h", col = "grey", las = 1,
        xlab = "Sample rank",
-       ylab = "sample size (Mreads)",
+       ylab = "Library size (Mreads)",
        ylim = c(0, ymax),
        main = paste(sep = "", recountID, " \n", "library sizes"))
   abline(h = ymin, col = "orange", lwd = 2)
   abline(h = ymax, col = "#22BB44", lwd = 2)
-  arrows(length = 0.1, angle = 15, lwd = 2, col = "red", code = 3,
-         x0 = length(filtered.libsizes),
-         x1 = length(filtered.libsizes),
-         y0 = ymin,
+  arrows(length = 0.1, angle = 15, lwd = 2, col = "#22BB44", code = 3,
+         x0 = length(filtered.libsizes) * 1.02,
+         x1 = length(filtered.libsizes) * 1.02,
+         y0 = 0,
          y1 = ymax)
 
-  text(x = length(filtered.libsizes), y = (ymax + ymin) / 2,
+
+  text(x = length(filtered.libsizes) * 1.02,
+       y = ymax * 0.95,
+       #       y = (ymax + ymin) / 2,
+       col = "#22BB44",
        labels = paste(round(ymax / ymin * 100), "%"),
        pos = 2)
   if (!is.null(plot.file)) {
