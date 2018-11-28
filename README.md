@@ -1,7 +1,12 @@
 # RNAseqMVA
 
-Evaluation of multivariate analysis methods for the supervised classification of RNA-seq data
+R package developed to perform an evaluation of multivariate analysis
+methods for the supervised classification of RNA-seq data.
 
+**Authors: ** 
+
+- Mustafa AbuElQumsan 
+- Jacques van Helden (Jacques.van-Helden@univ-amu.fr](mailto:Jacques.van-Helden@univ-amu.fr))
 
 ## Conda environment
 
