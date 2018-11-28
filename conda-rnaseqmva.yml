@@ -1,0 +1,27 @@
+name: rnaseqmva
+
+channels:
+- r
+- conda-forge
+- bioconda
+
+dependencies:
+- r::r-base 
+- r::r-roxygen2	# To build the package doc
+- r::r-dplyr 	  # Required for caret (depedency of dependency)
+- r::r-rcurl 	    # Undeclared dependency of recount
+- r::r-xml 	      # Undeclared dependency of recount
+- r::r-rcpp 	      	# Wrongly declared dependency for xml2, itself required for roxygen2
+- r::r-yaml 		  # Required for the config file
+- r::r-devtools 
+- r::r-caret 
+- r::r-class 
+- r::r-broom 
+- conda-forge::r-scatterplot3d 
+- r::r-e1071 
+- r::r-foreach 
+- r::r-doparallel 
+- conda-forge::r-pheatmap	# Heatmaps with extended control on dimensions
+- r::r-domc
+
+
