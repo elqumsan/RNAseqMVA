@@ -37,13 +37,13 @@ outputParameters <- function(dataset,
     if (is.null(dataset$parameters$svm$kernel)) {
       dataset$parameters$svm$kernel = "linear"
     }
-    classifier_prefix = paste(sep="", "svm_", dataset$parameters$svm$kernel)
+    classifier_prefix = paste(sep = "", "svm_", dataset$parameters$svm$kernel)
   } else if (classifier == "knn") {
     ## For KNN, the prefix includes the value of the k parameter
     if (is.null(dataset$parameters$knn$k)) {
       dataset$parameters$knn$k
     }
-    classifier_prefix = paste(sep="", "knn_k", dataset$parameters$knn$k)
+    classifier_prefix = paste(sep = "", "knn_k", dataset$parameters$knn$k)
 
   } else {
     ## For all other types of calssifer, the variable
@@ -66,20 +66,20 @@ outputParameters <- function(dataset,
   dir.create(resultDirTablesTSV, showWarnings = FALSE, recursive = TRUE)
 
   ## Define file prefix
-  filePrefix <- paste(sep="_", dataset$ID, classifier_prefix,  dataset$dataType)
+  filePrefix <- paste(sep = "_", dataset$ID, classifier_prefix,  dataset$dataType)
   if (permute) {
-    filePrefix <- paste(sep="_", filePrefix, dataset$parameters$perm.prefix)
+    filePrefix <- paste(sep = "_", filePrefix, dataset$parameters$perm.prefix)
   }
   filePrefix <- sub(pattern = " ", replacement = "_", x = filePrefix) ## Avoid spaces in file names
 
   ## Define file label for figures
-  figLabel <- paste(sep=" ", classifier_prefix,  dataset$dataType)
+  figLabel <- paste(sep = " ", classifier_prefix,  dataset$dataType)
   if (permute) {
-    figLabel <- paste(sep=" ", figLabel, dataset$parameters$perm.prefix)
+    figLabel <- paste(sep = " ", figLabel, dataset$parameters$perm.prefix)
   }
   figLabel <- sub(pattern = "_", replacement = " ", x = figLabel) ## For figure labels spaces are more readable than underscores
 
-
+  message("\t\tfilePrefix\t", filePrefix)
 
 
   return(list("resultDir" = resultDir,
