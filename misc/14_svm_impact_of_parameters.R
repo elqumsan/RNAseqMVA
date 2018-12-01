@@ -23,7 +23,7 @@ if (exists("studyCases")) {
 ## List to store the results for all recountIDs
 train.test.results.all.variables.per.svm <- list()
 
-## Loop over recountIDs
+#### Loop over recountIDs ####
 recountID <- names(studyCases)[1]
 for (recountID in selectedRecountIDs) {
 
@@ -37,14 +37,16 @@ for (recountID in selectedRecountIDs) {
   ## Loop over classifiers
   classifier <- "svm"
   svm.kernel <- "linear"
-  for (svm.kernel in project.parameters$global$svm$kernel_values) {
+
+  #### Loop over label permutation ####
+  permute <- FALSE ## Default for quick test without iterating over all cases
+  for (permute in project.parameters$global$permute) {
+
+    #### Loop over kernels ####
+    for (svm.kernel in project.parameters$global$svm$kernel_values) {
 
 
-    #### Associate each analysis of real data with a permutation test ####
-    permute <- FALSE ## Default for quick test without iterating over all cases
-    for (permute in project.parameters$global$permute) {
-
-      ## Loop over data types
+      #### Loop over data types ####
       data.type <- "TMM_log2" ## For test
       for (data.type in project.parameters$global$data.types.to.test) {
         message.with.time("\tRunning train/test with all variables",
@@ -68,11 +70,9 @@ for (recountID in selectedRecountIDs) {
 
         ## Define output parameters
         outParam <- outputParameters(dataset, classifier, permute, createDir = TRUE)
-
-
-        #### Run classifier with all variables (log2-transformed log counts) ####
         exp.prefix <- outParam$filePrefix
 
+        #### Run a training/testing experiment ####
         train.test.results.all.variables.svm[[exp.prefix]] <-
           IterateTrainingTesting(
             dataset,
@@ -86,12 +86,18 @@ for (recountID in selectedRecountIDs) {
   } # end iteration over svm_kernels
 
   #### Plotting the Miscalssification Error rate using all diverse data type all variables with KNN classifier? ####
+  outParam <- outputParameters(dataset, classifier = "svm kernel comparison", permute = FALSE, createDir = TRUE)
+  View(outParam)
   ErrorRateBoxPlot(experimentList = train.test.results.all.variables.svm,
                    classifier = classifier,
                    data.type = "diverse-data-types",
+                   horizontal = TRUE,
+                   boxplotFile = file.path(
+                     outParam$resultDir, "figures",
+                     paste(sep = "", outParam$filePrefix, ".pdf")),
                    main = paste(sep = "",
                                 parameters$recountID,
-                                "; ", classifier, "; ", svm.kernel, " kernel; ",
+                                "; ", classifier, "; ",
                                 "\nall variables; ",
                                 project.parameters$global$iterations, " iterations")
   )
@@ -100,10 +106,16 @@ for (recountID in selectedRecountIDs) {
 } # end loop over recountIDs
 
 
+## Save the results in a separate object, that can be reloaded later
+## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
+save.result.file <- file.path(project.parameters$global$dir$memoryImages, "svm_impact_of_parameters_result.Rdata")
+dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
+save(train.test.results.all.variables.per.svm, file = save.result.file)
+message.with.time("Saving results  after eval of SVM kernels: ", save.result.file)
+
 ## Save a memory image that can be re-loaded next time to avoid re-computing all the normalisation and so on.
 if (project.parameters$global$save.image) {
-  dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
-  message.with.time("Saving memory image after eval of all variables: ", memory.image.file)
+  message.with.time("Saving memory image after eval of SVM kernels: ", memory.image.file)
   save.image(file = memory.image.file)
 }
 
