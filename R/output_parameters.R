@@ -56,6 +56,7 @@ outputParameters <- function(dataset,
   resultDir <- file.path(dataset$parameters$dir$results,
                          dataset$ID,
                          classifier)
+  resultDir <- gsub(pattern = " ", replacement = "_", x = resultDir) ## Avoid spaces in file names
 
   dir.create(resultDir, showWarnings = FALSE, recursive = TRUE)
 
@@ -80,6 +81,8 @@ outputParameters <- function(dataset,
   figLabel <- gsub(pattern = "_", replacement = " ", x = figLabel) ## For figure labels spaces are more readable than underscores
 
   message("\t\tfilePrefix\t", filePrefix)
+  message("\t\tresultDir\t", resultDir)
+  message("\t\tresultDir\t", figLabel)
 
 
   return(list("resultDir" = resultDir,
