@@ -135,7 +135,6 @@ if (project.parameters$global$compute) {
                        experimentLabels = short.labels,
                        horizontal = FALSE,
                        fig.height = 8,
-                       data.type = "diverse-data-types",
                        expMisclassificationRate = dataset$randExpectedMisclassificationRate,
                        # boxplotFile = NULL,
                        boxplotFile = file.path(

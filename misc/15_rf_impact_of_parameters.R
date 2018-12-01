@@ -67,7 +67,7 @@ if (project.parameters$global$compute) {
         for (permute in project.parameters$global$permute) {
 
           ## Loop over data types
-          data.type <- "log2normPCs" ## For test
+          data.type <- "TMM_log2" ## For test
           for (data.type in project.parameters$global$data.types.to.test) {
             message.with.time("\tRunning train/test with all variables",
                               "\n\trecountID: ", recountID,
@@ -122,8 +122,7 @@ if (project.parameters$global$compute) {
         #### Plotting the Miscalssification Error rate using all diverse data type all variables with KNN classifier? ####
         ErrorRateBoxPlot(experimentList = train.test.results.all.variables.rf,
                          classifier = classifier,
-                         data.type = "diverse-data-types",
-                         main = paste(sep="",
+                         main = paste(sep = "",
                                       parameters$recountID,
                                       "; ", classifier,
                                       "\nall variables; ",

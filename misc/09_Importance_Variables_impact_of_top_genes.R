@@ -65,15 +65,13 @@ if (project.parameters$global$compute) {
     for (permute in project.parameters$global$permute) {
 
     #  v.importance <- get("ordered.dataTable.by.importance")
-      data.type <- "log2normViRf"
+      data.type <- "TMM_log2"
       v  <- 1
       for(v in 1:length(studyCases[[recountID]]$parameters$ViRf.numbers)){
         varnb <- studyCases[[recountID]]$parameters$ViRf.numbers[v]
 
         ## For the time being we do this experiment only with log2 normalised counts
         ## since we saw that it improves the result with all variables
-       # data.type <- parameters$data.types["V.importance"]
-       # data.table <- na.omit( as.data.frame(get(data.type)[["orderedDataTable"]]))
         selected.v.importance <- dataset$sigviRf[1:varnb,]
         selected.v.importance.names <-rownames(selected.v.importance)
         ## Make sure that we select gene names present in the selected data type
@@ -96,21 +94,9 @@ if (project.parameters$global$compute) {
         message (format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t", "Experiment prefix: ", exp.prefix)
 
         train.test.results.importance.varaibles[[exp.prefix]] <-
-          IterateTrainingTesting (
-            dataset,
-           # classes = classes,
-           # trainIndices = trainIndices,
-            # trainIndex = sample(log2norm$trainIndex),
-            # testIndex = sample(log2norm$testIndex),
-            #data.type = parameters$data.types["V.importance"],
-            classifier = classifier,
-            #variable.type = variable.type,
-          #  trainingProportion = parameters$trainingProportion,
-           # file.prefix = exp.prefix,
-            permute = permute
-            # k = parameters$knn$k,
-            # verbose = parameters$verbose
-          )
+          IterateTrainingTesting(dataset,
+                                 classifier = classifier,
+                                 permute = permute)
 
 
       } # end of for loop nb.varaibles importance
@@ -122,7 +108,6 @@ if (project.parameters$global$compute) {
     #### Ploting the Misclassification Error rate for ordered varaibles by the importances of each variables #####  ####
     ErrorRateBoxPlot(experimentList = train.test.results.importance.varaibles,
                      classifier = classifier,
-                     data.type = dataset$dataType,
                      main = paste(sep="",
                                   classifier, ": impact of number of variables sorted according\n\t ","the most importance variables by random forest,", "\n",
                                   parameters$recountID, ", ",
@@ -138,32 +123,5 @@ if (project.parameters$global$compute) {
     save.image(file = image.file)
   }
 
-  ##### if compution not required, you can load the image file without any computations ####
-
  # } ## end over recountID
 } # end if Computed statent
-
-
-# else {
-#   # message.with.time("Skipping train/test analysis with DEG-ordered top variables")
-#   # reload previous results if exist
-#   if (file.exists(image.file)) {
-#     message ("Reloading memory image ", image.file)
-#     load(image.file)
-#   } else {
-#     stop("Cannot reload memory image file ", image.file)
-#   }
-#
-# }
-
-###############################################################################################
-#### What is better to using ordered varaibles by the importances of each variables  ####
-# ErrorRateBoxPlot(experimentList = train.test.results.all.importance.varaibles,
-#                  classifier = classifier,
-#                  data.type = parameters$data.types["V.importance"],
-#                  main = paste(sep="",
-#                               classifier, ": all importance variables,", "\n",
-#                               parameters$recountID, ", ",
-#                               parameters$iterations, " iterations, ","\n",
-#                               data.type = "diverse data type"))
-
