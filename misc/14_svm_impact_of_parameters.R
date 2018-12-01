@@ -85,12 +85,11 @@ for (recountID in selectedRecountIDs) {
 
   } # end iteration over svm_kernels
 
-  #### Plotting the Miscalssification Error rate using all diverse data type all variables with KNN classifier? ####
+  #### Plotting the Misclassification Error rate using all diverse data type all variables with KNN classifier? ####
   outParam <- outputParameters(dataset, classifier = "svm kernel comparison", permute = FALSE, createDir = TRUE)
-  View(outParam)
+  dir.create(path = file.path(outParam$resultDir, "figures"), showWarnings = FALSE, recursive = FALSE)
   ErrorRateBoxPlot(experimentList = train.test.results.all.variables.svm,
                    classifier = classifier,
-                   data.type = "diverse-data-types",
                    horizontal = TRUE,
                    boxplotFile = file.path(
                      outParam$resultDir, "figures",

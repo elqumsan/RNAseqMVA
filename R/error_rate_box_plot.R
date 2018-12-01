@@ -10,8 +10,8 @@
 #' @param expColor is colore each box plot that represent the error rate for each experiment with actual class lables.
 #' @param permColor is the coler for the box plot that represent error rate for each experiment with permuted calss lables.
 #' @param expLegend is the legend for the real class lable train/test experiment.
-#' @param  permLegend legend for the IterateTrainingTesting with permuted class lables.
-#' @param dataType data type(s), used to build the file prefix
+#' @param permLegend legend for the IterateTrainingTesting with permuted class lables.
+#' @param legend.place location for the legend, which is passed to legend()
 #'
 #' @examples
 #' compareExperiments(experimentList = train.test.results)
@@ -22,7 +22,6 @@
 #' @export
 ErrorRateBoxPlot <- function (experimentList,
                               classifier,
-                              data.type,
                               expMisclassificationRate = NULL,
                               horizontal = TRUE,
                               fig.height = 10,
@@ -30,13 +29,13 @@ ErrorRateBoxPlot <- function (experimentList,
                               cex.axis = 0.8,
                               experimentLabels = names(experimentList),
                               main = paste(sep = "", parameters$recountID, "; ", classifier,
-                                           "\n", data.type,
-                                           "; ", parameters$iterations, "iterations"),
+                                           "\n", parameters$iterations, "iterations"),
                               boxplotFile = NULL,
                               expColor = "#00BBFF",
                               permColor = "grey",
                               expLegend = "Train/test",
                               permLegend = "Permuted labels",
+                              legend.place = "topright",
                               ....) {
 
 
@@ -77,7 +76,11 @@ ErrorRateBoxPlot <- function (experimentList,
 
   if (!is.null(boxplotFile)) {
     message.with.time("Boxplot file:\t", boxplotFile)
-    pdf(file = boxplotFile, width = fig.width, height = fig.height)
+    if (horizontal) {
+      pdf(file = boxplotFile, width = fig.height, height = fig.width)
+    } else {
+      pdf(file = boxplotFile, width = fig.width, height = fig.height)
+    }
   }
 
   ## Define parameters for the boxplot
@@ -103,7 +106,7 @@ ErrorRateBoxPlot <- function (experimentList,
     boxplot(testing.error.rates[, ncol(testing.error.rates):1],
             horizontal = TRUE,
             xlab = "Misclassification rate",
-            ylim = c(0,1), ## Note: this actuallly corresponds to X limits with horizontal option
+            ylim = c(0,1.3), ## Note: this actuallly corresponds to X limits with horizontal option
             # xlab = experimentLabels,
             main = main,
             las = 1 , cex.axis = cex.axis,
@@ -126,7 +129,7 @@ ErrorRateBoxPlot <- function (experimentList,
     boxplot(testing.error.rates,
             horizontal = FALSE,
             ylab = "Misclassification rate",
-            ylim = c(0,1),
+            ylim = c(0,1.1), ## Leave place for the legend
             # xlab = experimentLabels,
             main = main,
             las = 2 , cex.axis = cex.axis,
@@ -153,7 +156,7 @@ ErrorRateBoxPlot <- function (experimentList,
   # abline(h = , col="red", lwd=3 , lty= 3)
 
   ## Plot legend
-  legend("topleft", lwd = 4,
+  legend(legend.place, lwd = 4,
          bty = "o", bg = "white",
          legend = c("Actual data", "Permuted Labels"),
          col = c(expColor, permColor),
