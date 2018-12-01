@@ -70,20 +70,20 @@ outputParameters <- function(dataset,
   if (permute) {
     filePrefix <- paste(sep = "_", filePrefix, dataset$parameters$perm.prefix)
   }
-  filePrefix <- sub(pattern = " ", replacement = "_", x = filePrefix) ## Avoid spaces in file names
+  filePrefix <- gsub(pattern = " ", replacement = "_", x = filePrefix) ## Avoid spaces in file names
 
   ## Define file label for figures
   figLabel <- paste(sep = " ", classifier_prefix,  dataset$dataType)
   if (permute) {
     figLabel <- paste(sep = " ", figLabel, dataset$parameters$perm.prefix)
   }
-  figLabel <- sub(pattern = "_", replacement = " ", x = figLabel) ## For figure labels spaces are more readable than underscores
+  figLabel <- gsub(pattern = "_", replacement = " ", x = figLabel) ## For figure labels spaces are more readable than underscores
 
   message("\t\tfilePrefix\t", filePrefix)
 
 
   return(list("resultDir" = resultDir,
-              "resultsTablesTSV" =resultDirTablesTSV,
+              "resultsTablesTSV" = resultDirTablesTSV,
               "filePrefix" = filePrefix,
               "figLabel" = figLabel))
 }
