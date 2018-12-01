@@ -20,25 +20,24 @@
 # and draw a box plot
 ##################################################################################
 #' @export
-ErrorRateBoxPlot <- function (
-  experimentList,
-  classifier,
-  data.type,
-  expMisclassificationRate = NULL,
-  horizontal = TRUE,
-  fig.height = 10,
-  fig.width = 4 + 0.2*length(experimentList),
-  cex.axis = 0.8,
-  experimentLabels = names(experimentList),
-  main = paste(sep = "", parameters$recountID, "; ", classifier,
-               "\n", data.type,
-               "; ", parameters$iterations, "iterations"),
-  boxplotFile = NULL,
-  expColor = "#00BBFF",
-  permColor = "grey",
-  expLegend = "Train/test",
-  permLegend = "Permuted labels",
-  ....) {
+ErrorRateBoxPlot <- function (experimentList,
+                              classifier,
+                              data.type,
+                              expMisclassificationRate = NULL,
+                              horizontal = TRUE,
+                              fig.height = 10,
+                              fig.width = 4 + 0.2*length(experimentList),
+                              cex.axis = 0.8,
+                              experimentLabels = names(experimentList),
+                              main = paste(sep = "", parameters$recountID, "; ", classifier,
+                                           "\n", data.type,
+                                           "; ", parameters$iterations, "iterations"),
+                              boxplotFile = NULL,
+                              expColor = "#00BBFF",
+                              permColor = "grey",
+                              expLegend = "Train/test",
+                              permLegend = "Permuted labels",
+                              ....) {
 
 
   testing.error.rates <- data.frame()
@@ -58,8 +57,9 @@ ErrorRateBoxPlot <- function (
     stop("Not a single experiment for all variable composition")
   }
 
-
-  exp <-1
+  ## Collect all error rates in a data frame with 1 column per experiment and
+  ## 1 row per iteration
+  exp <- 1
   for (exp in 1:length(experiment.names)) {
     experimentName <- experiment.names[exp]
     exp.result <- experimentList[[experimentName]]
@@ -70,8 +70,8 @@ ErrorRateBoxPlot <- function (
         cbind(testing.error.rates, exp.result$testing.error.rate)
     }
   } # end iterate the all variables experiment
-
   # dim(testing.error.rates)
+
   colnames(testing.error.rates) <- experimentLabels
   rownames(testing.error.rates) <- 1:nrow(testing.error.rates)
 
@@ -85,41 +85,42 @@ ErrorRateBoxPlot <- function (
   labelMargin <- (2 + max(nchar(experimentLabels)) * 0.45 * cex.axis)
 
   ## Define colors for experiments with actual data and permutation tests
-  testTable.colors <- rep(x = expColor, length.out=ncol(testing.error.rates))
+  testTable.colors <- rep(x = expColor, length.out = ncol(testing.error.rates))
   names(testTable.colors) <- colnames(testing.error.rates)
   permTestExperiments <- grep(names(testTable.colors), pattern = "permLabels")
   if (length(permTestExperiments > 1)) {
     testTable.colors[permTestExperiments] <- permColor
   }
 
-  if(is.null(expMisclassificationRate)) {
-    ## Estimate the expected misclassification rate by computing the
-    ## mean misclassification over all experiments with permuted labels
-    ## Mean misclassification rate for all the label-permuted tests
-    expMisclassificationRate <- mean(apply(testing.error.rates[permTestExperiments], 1, mean))
-    abline(h= expMisclassificationRate, col="red", lwd=3 , lty= "dotted")
-  }
+  ## Estimate the expected misclassification rate by computing the
+  ## mean misclassification over all experiments with permuted labels
+  ## Mean misclassification rate for all the label-permuted tests
+  permLabelMisclassificationRate <- mean(apply(testing.error.rates[permTestExperiments], 1, mean))
 
   if (horizontal) {
-    par(mar=c(5, labelMargin, 5, 1))
+    par(mar = c(5, labelMargin, 5, 1))
     ## Draw the box plot
     boxplot(testing.error.rates[, ncol(testing.error.rates):1],
             horizontal = TRUE,
             xlab = "Misclassification rate",
-            ylim=c(0,1), ## Note: this actuallly corresponds to X limits with horizontal option
+            ylim = c(0,1), ## Note: this actuallly corresponds to X limits with horizontal option
             # xlab = experimentLabels,
             main = main,
-            las=1 , cex.axis = cex.axis,
+            las = 1 , cex.axis = cex.axis,
             col = rev(testTable.colors)
     )
     ## Draw horizontal grid
-    abline(v=seq(from = 0, to = 1, by = 0.1), col="grey", lty="solid")
+    abline(v = seq(from = 0, to = 1, by = 0.1), col = "grey", lty = "solid")
 
     ## Expected misclassification rate
-    abline(v= permLabelMisclassificationRate, col="blue", lwd=1, lty= "dashed")
+    abline(v = permLabelMisclassificationRate, col = "blue", lwd = 1, lty = "dashed")
+    if (!is.null(expMisclassificationRate)) {
+      abline(v = expMisclassificationRate, col = "red", lwd = 3 , lty = "dotted")
+    }
+
 
   } else {
-    par(mar=c(labelMargin, 5, 5, 1))
+    par(mar = c(labelMargin, 5, 5, 1))
 
     ## Draw the box plot
     boxplot(testing.error.rates,
@@ -138,8 +139,10 @@ ErrorRateBoxPlot <- function (
 
     ## Draw a horizontal line with the misclassification
     ## rate that would be expected at random
-    abline(h= expMisclassificationRate, col="blue", lwd=1, lty = "dashed")
-
+    abline(h = permLabelMisclassificationRate, col = "blue", lwd = 1, lty = "dashed")
+    if (!is.null(expMisclassificationRate)) {
+      abline(h = expMisclassificationRate, col = "red", lwd = 3 , lty = "dotted")
+    }
   }
 
 
@@ -151,14 +154,14 @@ ErrorRateBoxPlot <- function (
 
   ## Plot legend
   legend("topleft", lwd = 4,
-         bty="o", bg = "white",
+         bty = "o", bg = "white",
          legend = c("Actual data", "Permuted Labels"),
          col = c(expColor, permColor),
-         cex = 0.8, pch =0.2)
-  par(mar=save.margins)
+         cex = 0.8, pch = 0.2)
+  par(mar = save.margins)
 
-  if (!is.null(boxplotFile)){
-    silence <- dev.off()
+  if (!is.null(boxplotFile)) {
+    silence <- dev.off(); rm(silence)
   }
 }
 
