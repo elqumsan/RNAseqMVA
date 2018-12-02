@@ -23,6 +23,7 @@ dependencies:
 - r::r-foreach 
 - r::r-doparallel 
 - r::r-domc
+- r::r-randomforest
 - conda-forge::r-pheatmap  # Heatmaps with extended control on dimensions
 - conda-forge::r-scatterplot3d 
 
