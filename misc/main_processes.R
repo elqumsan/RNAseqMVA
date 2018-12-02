@@ -1,3 +1,5 @@
+library("RNAseqMVA")
+
 ###### main steps for the analysis supervised classification methods by RNAseq Data #####
 message.with.time(" Loading all parameters and libraries")
 source('misc/01a_load_libraries.R')
