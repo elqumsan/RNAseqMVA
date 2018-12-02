@@ -4,14 +4,14 @@
 \alias{ErrorRateBoxPlot}
 \title{Function for boxplot the error rate}
 \usage{
-ErrorRateBoxPlot(experimentList, classifier, data.type,
+ErrorRateBoxPlot(experimentList, classifier,
   expMisclassificationRate = NULL, horizontal = TRUE,
   fig.height = 10, fig.width = 4 + 0.2 * length(experimentList),
   cex.axis = 0.8, experimentLabels = names(experimentList),
   main = paste(sep = "", parameters$recountID, "; ", classifier, "\\n",
-  data.type, "; ", parameters$iterations, "iterations"),
-  boxplotFile = NULL, expColor = "#00BBFF", permColor = "grey",
-  expLegend = "Train/test", permLegend = "Permuted labels", ....)
+  parameters$iterations, "iterations"), boxplotFile = NULL,
+  expColor = "#00BBFF", permColor = "grey", expLegend = "Train/test",
+  permLegend = "Permuted labels", legend.place = "topright", ....)
 }
 \arguments{
 \item{experimentList}{this is list of experiment where each cell of list error rate of the single experiment with special parameters}
@@ -30,7 +30,7 @@ ErrorRateBoxPlot(experimentList, classifier, data.type,
 
 \item{permLegend}{legend for the IterateTrainingTesting with permuted class lables.}
 
-\item{dataType}{data type(s), used to build the file prefix}
+\item{legend.place}{location for the legend, which is passed to legend()}
 }
 \description{
 this function takes the experiment List from the error rate that are collected from the experiment.

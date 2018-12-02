@@ -6,7 +6,7 @@
 \usage{
 \method{IterateTrainingTesting}{DataTableWithTrainTestSets}(dataset,
   classifier, permute = FALSE, file.prefix = paste(sep = "_",
-  dataset$ID, dataset$dataType, classifier))
+  dataset$ID, dataset$dataType, classifier), verbose = 1)
 }
 \arguments{
 \item{dataset}{an object of class DataTableWithTrainTestSets}
@@ -16,6 +16,8 @@
 \item{permute}{is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier}
 
 \item{file.prefix}{prefix for files. If NULL, files will not be saved.}
+
+\item{verbose=1}{level of verbosity}
 }
 \value{
 an object which is Misclassification error rate for the specified number for resampling
