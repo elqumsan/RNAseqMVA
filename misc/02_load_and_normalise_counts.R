@@ -1,18 +1,24 @@
 #################### Load counts and pheno ####################
 ## Load a count Table from recount-experiment, merge counts per sample
 ## and apply some pre-filtering (remove zero-variance and near-zero-variance genes).
-studyCases.mem.image <- file.path(
-  project.parameters$global$dir$memoryImages,
-  paste(sep = "", "loaded_studyCases_",
-        paste(collapse = "-", selectedRecountIDs),
-        "_", Sys.Date(), ".Rdata"))
 
 
 if (project.parameters$global$reload) {
-  ## Reload previously stored memory image
-  message("Reloading study cases from previously stored memory image")
-  message("\t", studyCases.mem.image)
-  load(studyCases.mem.image)
+    ## Reload previously stored memory image
+    if (!is.null(project.parameters$global$reload.date)) {
+        image.date <- project.parameters$global$reload.date
+    } else {
+        image.date <- Sys.Date()
+    }
+    studyCases.mem.image <- file.path(
+        project.parameters$global$dir$memoryImages,
+        paste(sep = "", "loaded_studyCases_",
+              paste(collapse = "-", selectedRecountIDs),
+              "_", image.date, ".Rdata"))
+    
+    message("Reloading study cases from previously stored memory image")
+    message("\t", studyCases.mem.image)
+    load(studyCases.mem.image)
 } else {
   message("Loading study cases")
 
@@ -266,9 +272,16 @@ dev.off()
 #### Save a memory image that can be re-loaded next time ####
 ## to avoid re-computing all the normalisation and so on.
 if (project.parameters$global$save.image) {
-  dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
-  message.with.time("Saving memory image after loading: ", studyCases.mem.image)
-  save.image(file = studyCases.mem.image)
+    image.date <- Sys.Date()
+    studyCases.mem.image <- file.path(
+        project.parameters$global$dir$memoryImages,
+        paste(sep = "", "loaded_studyCases_",
+              paste(collapse = "-", selectedRecountIDs),
+              "_", image.date, ".Rdata"))
+
+    dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
+    message.with.time("Saving memory image after loading: ", studyCases.mem.image)
+    save.image(file = studyCases.mem.image)
 }
 
 
