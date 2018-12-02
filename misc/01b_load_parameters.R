@@ -1,19 +1,21 @@
 require("RNAseqMVA")
 
-## Define the path of the YAML-formatted configuration file
+##### Path of the YAML-formatted configuration file ####
 configFile <- "~/RNAseqMVA/misc/00_project_parameters.yml"
 
-## Read global and study case-specific parameters from a yaml-formatted file.
+#### Read parameters from the yaml-formatted config file ####
 ## These parameters will then be used to overwrite the default parameters.
 message.with.time("Loading parameters from YAM file ", configFile)
 project.parameters <- yaml.load_file(configFile)
 
-selectedRecountIDs <- project.parameters$global[["selected_recount_ids"]]
 
-## Get all recount IDs
+#### Specify selected recount IDs ####
+selectedRecountIDs <- project.parameters$global[["selected_recount_ids"]]
 recountIDs <- grep(pattern = "^SRP", x = names(project.parameters), value = TRUE)
 message("\tYAML config file contains ", length(recountIDs)," recount IDs.")
+message("\tSelected ", length(selectedRecountIDs)," recount IDs: ", paste(collapse = "; ", selectedRecountIDs))
 
+#### RecountIDs with problems (TO INVESTIGATE / DEBUG LATER) ####
 recountIDs.with.problems <- c("SRP003611" = "the number of samples drops after run merging",
                               "SRP039694" = '	Building class-specific attributes for DataTableWithClasses	SRP039694
 Error in `colnames<-`(`*tmp*`, value = c("Class", "nbSamples")) :
@@ -33,46 +35,22 @@ TO DO: detect such cases and stop with explicit message before any analysis.
                               Error: subscript contains invalid names
                               ")
 
-## Optional: select a subset of the recountIDs
-# selectedRecountIDs <- c("SRP057196") ## single-cell of vairous cell types in different brain tissues
-#selectedRecountIDs <- c("SRP056295") ## Human leukemia
-# selectedRecountIDs <- c("SRP042620")
-#selectedRecountIDs <- c("SRP042620", "SRP057196") #, "SRP056295")
-#selectedRecountIDs <- setdiff(recountIDs, names(recountIDs.with.problems))
+#### Initialise global directories ####
+
+## Directory for cross-study case comparisons
+if (is.null(project.parameters$global$dir$figures)) {
+  project.parameters$global$dir$figures <- file.path(project.parameters$global$dir$results, "figures")
+}
+
+for (d in names(project.parameters$global$dir)) {
+  dir <- project.parameters$global$dir[[d]]
+  if (!dir.exists(dir)) {
+    message("Creating ", d, " directory\t", dir)
+    dir.create(dir, showWarnings = FALSE, recursive = TRUE)
+  }
+}
 
 
-
-message("\tSelected ", length(selectedRecountIDs)," recount IDs: ", paste(collapse = "; ", selectedRecountIDs))
-#selectedRecountIDs <- recountIDs
-
-# recountID <- "SRP042620"   ## Multi-group breast cancer
-# recountID <- "SRP057196"    # individual cells into all of the major neuronal, glial, and vascular cell types in the brain
-
-# recountID <- "SRP003611"   # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
-# recountID <- "SRP061240"   # several types from cancer (pancreatic, colorectal, prostat cancer) against Healthy control
-
-#recountID <- "SRP006574"  # NOT working:  # this Project will constitute the classes that have IRanges object and then it will not have the same length for count Table such leads for STOP
-
-# recountID <- "SRP062966"   # this project Boold disease
-# recountID <- "SRP066834"   # cerebral cancer type.
-# recountID <-  "SRP039694"  # hepatocellular carcinoma
-# recountID <- "SRP008976"   # NOT working properly
-######################### such these projects have promptly working #####################
-# recountID <- "SRP042620"   ## Multi-group breast cancer. working excellent.
-# recountID <- "SRP061240"   # several types from cancer (pancreatic, colorectal, prostat cancer) against Healthy control
-# recountID <- "SRP062966"   # this project Blood disease. working excellent
-
-# recountID <- "SRP056295"  # types of leukemia there is problem with random forest it say there is missing classes BUT actually there aren't any missing in the y class lable
-
-# recountID <- "SRP003611"   # transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)
-# recountID <- "SRP006574"   # NOT working:  # this Project will constitute the classes that have IRanges object and then it will not have the same length for count Table such leads for STOP
-# recountID <- "SRP066834"   # Not working: cerebral cancer type.
-# recountID <-  "SRP039694"  # Not working: hepatocellular carcinoma
-# recountID <- "SRP008976"   # NOT working properly
-# recountID <- "SRP006575"   # Not working
-
-
-# message("\tDefault recountID ", recountID)
 
 #### Initialise cluster processing ####
 if (!is.null(project.parameters$global$jobs)) {
@@ -84,6 +62,5 @@ if (!is.null(project.parameters$global$jobs)) {
 }
 
 
-## END OF SCRIPT
-#################################################################
+#### END OF SCRIPT ####
 

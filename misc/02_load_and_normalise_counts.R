@@ -63,34 +63,6 @@ if (project.parameters$global$reload) {
     # }
 
 
-    # Check studyCases[[recountID]] objects
-
-    # attributes(studyCases[[recountID]])
-    # class(studyCases[[recountID]]$countsPerRun)
-    # class(studyCases[[recountID]]$originalCounts)
-    # class(studyCases[[recountID]]$filtered)
-    # class(studyCases[[recountID]]$norm)
-    # class(studyCases[[recountID]]$log2norm)
-    #
-    #
-    # # unlist(lapply(studyCases[[recountID]]$norm$trainTestProperties$trainIndices, length))
-    # length(unlist(studyCases[[recountID]]$norm$trainTestProperties$trainIndices))
-    # sum(unlist(studyCases[[recountID]]$norm$trainTestProperties$trainIndices) != unlist(studyCases[[recountID]]$filtered$trainTestProperties$trainIndices))
-    # sum(unlist(studyCases[[recountID]]$norm$trainTestProperties$trainIndices) != unlist(studyCases[[recountID]]$log2norm$trainTestProperties$trainIndices))
-
-
-    ##### plotting some figures to explore the nuture of recount data set #####
-    # message.with.time(" plotting some figures to explore distribution for the recount data set ",parameters$recountID)
-    # source("misc/11_impact_of_normalization_and_Log2.R")
-
-    # ##### Exhibiting the geo charactiristics for the current project #####
-    # message.with.time("Exhibit the geo charactiristics for such experiment: ", parameters$recountID, " in order to know the class lable
-    #                   for such experiment")
-    # head( geo.characteristics)
-    # geo.characteristics.file <- file.path("~/RNAseqMVA_workspace", "data", parameters$recountID, "geo.characteristics.tsv")
-    # write.table( geo.characteristics, file = geo.characteristics.file, quote = FALSE,
-    #              row.names = FALSE, sep = "\t" )
-
   } # end loop over recountIDs
   message("Finished loading ", length(studyCases), " study cases")
 }
@@ -145,7 +117,7 @@ gene.pc <- gene.pc[order(gene.pc$pc.kept, decreasing = FALSE), ]
 
 ####  Gene filtering barplots:  proportions of genes filtered out or kept in each study case ####
 figure.file <- paste("gene_filtering_summaries.pdf")
-barPlot.file <- file.path(parameters$dir$results,figure.file)
+barPlot.file <- file.path(project.parameters$global$dir$figures, figure.file)
 message("Filtering summary barplot: ", barPlot.file)
 pdf(file = barPlot.file, width = 7, height = 2 + 1 * nrow(studyCasesStats))
 save.margins <- par("mar")
@@ -252,6 +224,8 @@ for (recountID in selectedRecountIDs) {
 
 #### Plot variance per gene at different levels of filtering ####
 for (recountID in selectedRecountIDs) {
+
+  parameters <- studyCases[[recountID]]$parameters
 #  plotFilterHistograms(filteredDataset) #,  plot.file = file.path(parameters$dir$NormalizationImpact, "var_per_gene_hist.pdf"))
   filtered <- studyCases[[recountID]]$datasetsForTest$filtered
 
@@ -262,18 +236,32 @@ for (recountID in selectedRecountIDs) {
     plot.file = file.path(
       parameters$dir$NormalizationImpact,
       paste(sep = "_", parameters$recountID, "filtering_variance_per_gene_hist.pdf")))
-
-  # raw <- studyCases[[recountID]]$rawData$countsPerSample
-  # raw.libsizes <- apply(raw$dataTable, 2, sum)
-  plot.file <- file.path(
-    parameters$dir$NormalizationImpact,
-    paste(sep = "_", parameters$recountID, "filtered_ranked_libsizes.pdf"))
-
-  LibsizeRankPlot(count.table = filtered$dataTable, plot.file = plot.file)
-
-  # system(paste("open", plot.file))
-
 }
+
+#### Plot library sizes ####
+plot.file <- file.path(
+  project.parameters$global$dir$figures,  "filtered_ranked_libsizes.pdf")
+message("Plotting ranked library sizes\t", plot.file)
+pdf(file = plot.file, width = 7, height = 10)
+par(mfrow = c(4, 2))
+for (recountID in selectedRecountIDs) {
+
+  parameters <- studyCases[[recountID]]$parameters
+  #  plotFilterHistograms(filteredDataset) #,  plot.file = file.path(parameters$dir$NormalizationImpact, "var_per_gene_hist.pdf"))
+  filtered <- studyCases[[recountID]]$datasetsForTest$filtered
+
+  ## Add the plot as panel to compare between study cases
+  LibsizeRankPlot(count.table = filtered$dataTable, plot.file = NULL)
+
+  ## Draw a separate plot in the study case-specific directory
+  LibsizeRankPlot(count.table = filtered$dataTable,
+                  plot.file = file.path(
+                    parameters$dir$NormalizationImpact,
+                    paste(sep = "_", parameters$recountID, "filtered_ranked_libsizes.pdf"))
+  )
+  # system(paste("open", plot.file))
+}
+dev.off()
 
 #### Save a memory image that can be re-loaded next time ####
 ## to avoid re-computing all the normalisation and so on.

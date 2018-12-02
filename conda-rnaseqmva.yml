@@ -1,0 +1,38 @@
+name: rnaseqmva
+
+channels:
+- r
+- conda-forge
+- bioconda
+
+dependencies:
+
+## RCRAN packages
+- r::r-base 
+- r::r-yaml        # Required to load the config file
+- r::r-roxygen2    # To build the package doc
+- r::r-dplyr       # Required for caret (depedency of dependency)
+- r::r-rcurl       # Undeclared dependency of recount
+- r::r-xml         # Undeclared dependency of recount
+- r::r-rcpp        # Wrongly declared dependency for xml2, itself required for roxygen2
+- r::r-devtools   
+- r::r-caret 
+- r::r-class 
+- r::r-broom 
+- r::r-e1071 
+- r::r-foreach 
+- r::r-doparallel 
+- r::r-domc
+- conda-forge::r-pheatmap  # Heatmaps with extended control on dimensions
+- conda-forge::r-scatterplot3d 
+
+## Bioconda
+- bioconda::bioconductor-iranges         # Seems to be required for derfinder but not automatically installed
+- bioconda::bioconductor-derfinder
+- bioconda::bioconductor-recount
+- bioconda::bioconductor-vsn             # For RNA-seq plots from Huber
+- bioconda::bioconductor-deseq2
+- bioconda::bioconductor-limma
+- bioconda::bioconductor-edger
+- bioconda::bioconductor-s4vectors
+- bioconda::bioconductor-summarizedexperiment

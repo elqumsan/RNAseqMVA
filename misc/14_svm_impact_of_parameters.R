@@ -1,21 +1,15 @@
 
-##### All variables versus all PCs. #####
-##
-## QUESTION: is it better to use the PCAs-transformed data, and, if so, is it better to use a subset of the first components or all the components ?
-## For the time being we test this with only one classifier (KNN, default k)  but we will come back to it with other classifiers later.
-## IMPORTANT NOTE : i would like to pay your intention for here we should take " data.type, so that we will not give the user to
-## choose the data.type in return we will pass the data.type for each experiment.
-## Choice of the classifier
+##### Test the impact of kernel on SVM performances
 
 ## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
 memory.image.file <- file.path(project.parameters$global$dir$memoryImages, "svm_impact_of_parameters.Rdata")
-
 
 ## For debug: reset the parameteres for all the study cases
 ## This is used to re-run the analyses on each study case after having changed some parameters in the yaml-specific configuration file
 project.parameters <- yaml.load_file(configFile)
 project.parameters <- initParallelComputing(project.parameters)
-if(exists("studyCases")) {
+if (exists("studyCases")) {
+  recountID <- names(studyCases)[1]
   for (recountID in names(studyCases)) {
     parameters <- initRecountID(recountID, project.parameters)
     studyCases[[recountID]]$parameters <- parameters
@@ -26,145 +20,104 @@ if(exists("studyCases")) {
   }
 }
 
+## List to store the results for all recountIDs
+train.test.results.all.variables.per.svm <- list()
 
-## Run the whole computation if required
-## (this can take several hours depending on the number of datasets and classifier methods)
-if (project.parameters$global$compute) {
+#### Loop over recountIDs ####
+recountID <- names(studyCases)[1]
+for (recountID in selectedRecountIDs) {
 
-  train.test.results.all.variables.per.svm <- list()
+  ## List to store all results for the current recountID
+  train.test.results.all.variables.svm <- list()
 
-  ## Loop over recountIDs
-  for (recountID in selectedRecountIDs) {
+  ## Get the recountID-specific parameters from the loaded object
+  parameters <- studyCases[[recountID]]$parameters
 
-    train.test.results.all.variables.per.svm[[recountID]] <- list() ## Instantiate an entry per recountID
+  message.with.time("Running train/test with all variables to test imapct of svm's parameters for recountID\t", recountID)
+  ## Loop over classifiers
+  classifier <- "svm"
+  svm.kernel <- "linear"
 
-    ## Get the recountID-specific parameters from the loaded object
-    parameters <- studyCases[[recountID]]$parameters
+  #### Loop over label permutation ####
+  permute <- FALSE ## Default for quick test without iterating over all cases
+  for (permute in project.parameters$global$permute) {
 
-    #### TEMPORARY FOR DEBUG ####
-    # parameters$classifiers <- "svm"
-    # parameters$data.types.to.test <- "log2norm"
-    # parameters$data.types.to.test <- "log2normPCs"
-
-    message.with.time("Running train/test with all variables to test imapct of svm's parameters for recountID\t", recountID)
-    ## Loop over classifiers
-    classifier <- "svm"
-
+    #### Loop over kernels ####
     for (svm.kernel in project.parameters$global$svm$kernel_values) {
 
-      ## List to store all results
-      train.test.results.all.variables.svm <- list()
-      #    train.test.results.all.PCs <- list()
 
-      #message.with.time("\tTrain/test, k=", parameters$knn$k, "; classifier=", classifier)
+      #### Loop over data types ####
+      data.type <- "TMM_log2" ## For test
+      for (data.type in project.parameters$global$data.types.to.test) {
+        message.with.time("\tRunning train/test with all variables",
+                          "\n\trecountID: ", recountID,
+                          "\n\tClassifier: ", classifier,
+                          "\n\tpermuted class labels: ", permute,
+                          "\n\tData type: ", data.type)
+        dataset <- studyCases[[recountID]]$datasetsForTest[[data.type]]
+        dataset$parameters$svm$kernel <- svm.kernel
+        # class(dataset)
+        # summary(dataset)
 
+        # Check if the dataset belongs to the class DataTableWithTrainTestSets
+        if (!is(object = dataset, class2 = "DataTableWithTrainTestSets")) {
 
-      #### Associate each analysis of real data with a permutation test ####
-      permute <- FALSE ## Default for quick test without iterating over all cases
-      for (permute in project.parameters$global$permute) {
-
-        ## Loop over data types
-        data.type <- "log2normPCs" ## For test
-        for (data.type in project.parameters$global$data.types.to.test) {
-          message.with.time("\tRunning train/test with all variables",
-                            "\n\trecountID: ", recountID,
-                            "\n\tClassifier: ", classifier,
-                            "\n\tpermuted class labels: ", permute,
-                            "\n\tData type: ", data.type)
-          dataset <- studyCases[[recountID]]$datasetsForTest[[data.type]]
-          dataset$parameters$svm$kernel <- svm.kernel
-          # class(dataset)
-          # summary(dataset)
-
-          # Check if the dataset belongs to the class DataTableWithTrainTestSets
-          if (!is(object = dataset, class2 = "DataTableWithTrainTestSets")) {
-
-            ## Check if the train and test indices  were properly defined
-            if (is.null(dataset$trainTestProperties$trainIndices) || is.null(dataset$trainTestProperties$testIndices)) {
-              stop("you don't have train/test sets to play with classifier ")
-            }
+          ## Check if the train and test indices  were properly defined
+          if (is.null(dataset$trainTestProperties$trainIndices) || is.null(dataset$trainTestProperties$testIndices)) {
+            stop("you don't have train/test sets to play with classifier ")
           }
+        }
 
-          #### Run classifier with all variables (log2-transformed log counts) ####
-          exp.prefix <- filePrefix(dataset,classifier, permute)
-          #  paste(sep = "_", recountID, classifier, dataset$dataType)
-          if (permute) {
-            #  exp.prefix <- paste(sep = "_", exp.prefix, project.parameters$global$perm.prefix)
-            exp.prefix <- filePrefix(dataset,classifier, permute)
-            }
-            # exp.prefix <-
-            #   paste(sep = "_", recountID, classifier, dataset$dataType, svm.kernel)
-            # if (permute) {
-            #   exp.prefix <- paste(sep = "_", exp.prefix, project.parameters$global$perm.prefix)
-            # }# end if permuted class
-            # # print(exp.prefix)
+        ## Define output parameters
+        outParam <- outputParameters(dataset, classifier, permute, createDir = TRUE)
+        exp.prefix <- outParam$filePrefix
 
-            train.test.results.all.variables.svm[[exp.prefix]] <-
-              IterateTrainingTesting (
-                dataset,
-                classifier = classifier,
-                permute = permute#,
-                # k = parameters$knn$k,
-                # verbose = parameters$verbose
-              )
+        #### Run a training/testing experiment ####
+        train.test.results.all.variables.svm[[exp.prefix]] <-
+          IterateTrainingTesting(
+            dataset,
+            classifier = classifier,
+            permute = permute)
 
-          } # End iterations over dataset
+      } # End iterations over dataset
 
-        } # End iterations over permutation
+    } # End iterations over permutation
 
-      } # end iteration over svm_kernels
+  } # end iteration over svm_kernels
 
+  #### Plotting the Misclassification Error rate using all diverse data type all variables with KNN classifier? ####
+  outParam <- outputParameters(dataset, classifier = "svm kernel comparison", permute = FALSE, createDir = TRUE)
+  dir.create(path = file.path(outParam$resultDir, "figures"), showWarnings = FALSE, recursive = FALSE)
+  ErrorRateBoxPlot(experimentList = train.test.results.all.variables.svm,
+                   classifier = classifier,
+                   horizontal = TRUE,
+                   boxplotFile = file.path(
+                     outParam$resultDir, "figures",
+                     paste(sep = "", outParam$filePrefix, ".pdf")),
+                   main = paste(sep = "",
+                                parameters$recountID,
+                                "; ", classifier, "; ",
+                                "\nall variables; ",
+                                project.parameters$global$iterations, " iterations")
+  )
+  train.test.results.all.variables.per.svm[[recountID]][[svm.kernel]] <- train.test.results.all.variables.svm
 
-
-
-        #### Plotting the Miscalssification Error rate using all diverse data type all variables with KNN classifier? ####
-        ErrorRateBoxPlot(experimentList = train.test.results.all.variables.svm,
-                         classifier = classifier,
-                         data.type = "diverse-data-types",
-                         main = paste(sep="",
-                                      parameters$recountID,
-                                      "; ", classifier,
-                                      "\nall variables; ",
-                                      project.parameters$global$iterations, " iterations")
-        )
-        train.test.results.all.variables.per.svm[[recountID]][[svm.kernel]] <- train.test.results.all.variables.svm
-
-      } # end loop over recountIDs
+} # end loop over recountIDs
 
 
-  ## Save a memory image that can be re-loaded next time to avoid re-computing all the normalisation and so on.
-  if (project.parameters$global$save.image) {
-    dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
-    message.with.time("Saving memory image after eval of all variables: ", memory.image.file)
-    save.image(file = memory.image.file)
-  }
+## Save the results in a separate object, that can be reloaded later
+## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
+save.result.file <- file.path(project.parameters$global$dir$memoryImages, "svm_impact_of_parameters_result.Rdata")
+dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
+save(train.test.results.all.variables.per.svm, file = save.result.file)
+message.with.time("Saving results  after eval of SVM kernels: ", save.result.file)
 
-  ##### if computation not required, you can load the image file without any computations ####
-  # } else {
-  #   # reload previous results if exist
-  #   if (file.exists(memory.image.file)) {
-  #     message ("Reloading memory image ", memory.image.file)
-  #     load(memory.image.file)
-  #   } else {
-  #     stop("Cannot reload memory image file ", memory.image.file)
-  #   }
+## Save a memory image that can be re-loaded next time to avoid re-computing all the normalisation and so on.
+if (project.parameters$global$save.image) {
+  message.with.time("Saving memory image after eval of SVM kernels: ", memory.image.file)
+  save.image(file = memory.image.file)
+}
 
 
-
-
-} # end else if compute statment
-
-
-
-###############################################################################################
-#### What is better to using all PCs versus all variables with KNN classifier? ####
-# ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
-#                  classifier = classifier,
-#                  main = paste(sep="",
-#                               classifier, ": all variables vs all PCs,", "\n",
-#                               parameters$recountID, ", ",
-#                               parameters$iterations, " iterations, ","\n",
-#                               data.type = "diverse data type"))
-#
 
 message.with.time("Finished script 13_svm_impact_of_parameters.R")

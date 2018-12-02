@@ -113,25 +113,14 @@ if (project.parameters$global$compute) {
         train.test.results.DEG[[exp.prefix]] <-
           IterateTrainingTesting(DEGdataset,
                          classifier=classifier,
-                      #   iterations = parameters$iterations,
-                          # data.type=data.type,
-                         # classes=classes,
-                        # trainIndex =get( paste(sep = ".", "DEG", deg.method))[["trainIndex"]], testIndex = get( paste(sep = ".","DEG", deg.method))[["testIndex"]],
-                         #variable.type = variable.type,
-                         #trainingProportion = parameters$trainingProportion,
-                         permute = permute
-                      #   file.prefix = exp.prefix
-                      )
+                         permute = permute)
       } # end of for loop over nb.variables
     } # end  of for loop over DEG.methods
   } # end of for loop over permuted lables
 
   #### Print the results of the effect of the number of DEG ordered on the efficiancy of each classifier ####
   ErrorRateBoxPlot(experimentList = train.test.results.DEG,
-                   classifier=classifier,
-                 #  data.type = studyCases[[recountID]]$datasetsForTest$DEGdataSets$DESeq2$dataType,
-                   data.type =  DEG$dataType,
-                 #  variable.type = project.parameters$global$variables.type[2],
+                   classifier = classifier,
                    main = paste(  "impact of number of variables sorted according DEG", "\n",
                                 studyCases[[recountID]]$ID,";",
                                 project.parameters$global$iteration,

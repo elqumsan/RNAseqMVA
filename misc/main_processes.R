@@ -1,11 +1,16 @@
 ###### main steps for the analysis supervised classification methods by RNAseq Data #####
-##
-## To run this script,
-##  source('misc/main_processes.R')
+message.with.time(" Loading all parameters and libraries")
 source('misc/01a_load_libraries.R')
 source('misc/01b_load_parameters.R')
+
+message.with.time("Loading and normalising raw count data")
 source('misc/02_load_and_normalise_counts.R')
+
+message.with.time( "Impact of normalisation on classifier performances")
 source('misc/06_all_variables_vs_all_PCs.R')
+
+message.with.time( "Impact of kernel on SVM performances")
+source('misc/14_svm_impact_of_parameters.R')
 
 message("ALL ANALYSES PERFORMED")
 
@@ -13,17 +18,6 @@ message("ALL ANALYSES PERFORMED")
 ## stop("OLD CODE COMES HEREAFTER")
 
 ## if (parameters$compute) {
-
-##   ###### calling the some from miscellaneous file for study the supervised classification methods ####
-##   ##### loading all parameters and lirraries ####
-##   message.with.time(" Loading all parameters and libraries")
-##   source("~/RNAseqMVA/misc/01_parameters_and_libraries.R")
-##   message.with.time("finishing from Loading all parameters and libraries")
-
-##   #### Loading and normalising raw count data ####
-##   message.with.time("Loading and normalising raw count data")
-##   source("~/RNAseqMVA/misc/02_load_and_normalise_counts.R")
-##   message.with.time("Finishing loading and normalising raw count data")
 
 ##   #### Computation of prcomp for the whole raw count #####
 ##   message.with.time("Computation of prcomp for the raw count data")
@@ -39,11 +33,6 @@ message("ALL ANALYSES PERFORMED")
 ##   message.with.time(" computation of the importance variables by RF methods")
 ##   source("~/RNAseqMVA/misc/05_variables_importance_computation.R")
 ##   message.with.time("Finishig from computation of the importance variables by RF methods")
-
-##   #### analysis impact of all variables for the diverse data type onto efficiency of classifiers ####
-##   message.with.time( "analysis impact of all variables for the diverse data type onto efficiency of classifiers")
-##   source("~/RNAseqMVA/misc/06_all_variables_vs_all_PCs.R")
-##   message.with.time( "finishing analysis impact of all variables for the diverse data type onto efficiency of classifiers")
 
 ##   ###### impact of the number of PCs onto all the classifiers ####
 ##   message.with.time( "analysis the impact of the number of PCs onto the classifiers")
