@@ -16,10 +16,13 @@ allVariables.mem.image <- file.path(
 
 
 # ## TEMP
-# studyCases.mem.image <- "~/RNAseqMVA_workspace/memory_images/loaded_studyCases_2018-07-22.Rdata"
-# message("Reloading study cases from previously stored memory image")
-# message("\t", studyCases.mem.image)
-# load(studyCases.mem.image)
+reload.mem.image <- TRUE
+if (reload.mem.image) {
+    studyCases.mem.image <- "~/RNAseqMVA_workspace/memory_images/loaded_studyCases_SRP042620-SRP057196-SRP056295-SRP035988-SRP061240-SRP062966-SRP066834_2018-11-01.Rdata"
+    message("Reloading study cases from previously stored memory image")
+    message("\t", studyCases.mem.image)
+    load(studyCases.mem.image)
+}
 
 ## For debug: reset the parameters for all the study cases
 ## This is used to re-run the analyses on each study case after
