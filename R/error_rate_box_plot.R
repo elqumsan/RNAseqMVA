@@ -20,59 +20,62 @@
 # and draw a box plot
 ##################################################################################
 #' @export
-ErrorRateBoxPlot <- function (experimentList,
-                              classifier,
-                              expMisclassificationRate = NULL,
-                              horizontal = TRUE,
-                              fig.height = 10,
-                              fig.width = 4 + 0.2*length(experimentList),
-                              cex.axis = 0.8,
-                              experimentLabels = names(experimentList),
-                              main = paste(sep = "", parameters$recountID, "; ", classifier,
-                                           "\n", parameters$iterations, "iterations"),
-                              boxplotFile = NULL,
-                              expColor = "#00BBFF",
-                              permColor = "grey",
-                              expLegend = "Train/test",
-                              permLegend = "Permuted labels",
-                              legend.place = "topright",
-                              ....) {
+ErrorRateBoxPlot <- function(experimentList,
+                             classifier,
+                             expMisclassificationRate = NULL,
+                             horizontal = TRUE,
+                             fig.height = 10,
+                             fig.width = 4 + 0.2*length(experimentList),
+                             cex.axis = 0.8,
+                             experimentLabels = names(experimentList),
+                             main = paste(sep = "", parameters$recountID, "; ", classifier,
+                                          "\n", parameters$iterations, "iterations"),
+                             boxplotFile = NULL,
+                             expColor = "#00BBFF",
+                             permColor = "grey",
+                             expLegend = "Train/test",
+                             permLegend = "Permuted labels",
+                             legend.place = "topright",
+                             ....) {
 
 
-  testing.error.rates <- data.frame()
+  experimentSummary <- SummarizeTrainTestResults(experimentList = experimentList, experimentLabels = experimentLabels)
 
-  ## Get experiment names to access the elements of experiment list
-  experiment.names <- names(experimentList)
+  testing.error.rates <- experimentSummary$testing.error.rates
 
-  ## Check that experiment labels are consistent with experiemnt list
-  if (length(experiment.names) != length(experimentLabels)) {
-    stop("length of experimentLabels (", length(experimentLabels),
-         ") is inconsistent with length of experimentList (", length(experimentList),").")
-  }
 
-  ## Make sure the output directory exists for storing the plots
-  if (is.null(experiment.names) ||
-      length(names(experimentList)) < 1) {
-    stop("Not a single experiment for all variable composition")
-  }
-
-  ## Collect all error rates in a data frame with 1 column per experiment and
-  ## 1 row per iteration
-  exp <- 1
-  for (exp in 1:length(experiment.names)) {
-    experimentName <- experiment.names[exp]
-    exp.result <- experimentList[[experimentName]]
-    if (exp == 1) {
-      testing.error.rates <- data.frame(exp.result$testing.error.rate)
-    } else {
-      testing.error.rates <-
-        cbind(testing.error.rates, exp.result$testing.error.rate)
-    }
-  } # end iterate the all variables experiment
-  # dim(testing.error.rates)
-
-  colnames(testing.error.rates) <- experimentLabels
-  rownames(testing.error.rates) <- 1:nrow(testing.error.rates)
+  # ## Get experiment names to access the elements of experiment list
+  # experiment.names <- names(experimentList)
+  #
+  # ## Check that experiment labels are consistent with experiemnt list
+  # if (length(experiment.names) != length(experimentLabels)) {
+  #   stop("length of experimentLabels (", length(experimentLabels),
+  #        ") is inconsistent with length of experimentList (", length(experimentList),").")
+  # }
+  #
+  # ## Make sure the output directory exists for storing the plots
+  # if (is.null(experiment.names) ||
+  #     length(names(experimentList)) < 1) {
+  #   stop("Not a single experiment for all variable composition")
+  # }
+  #
+  # ## Collect all error rates in a data frame with 1 column per experiment and
+  # ## 1 row per iteration
+  # exp <- 1
+  # for (exp in 1:length(experiment.names)) {
+  #   experimentName <- experiment.names[exp]
+  #   exp.result <- experimentList[[experimentName]]
+  #   if (exp == 1) {
+  #     testing.error.rates <- data.frame(exp.result$testing.error.rate)
+  #   } else {
+  #     testing.error.rates <-
+  #       cbind(testing.error.rates, exp.result$testing.error.rate)
+  #   }
+  # } # end iterate the all variables experiment
+  # # dim(testing.error.rates)
+  #
+  # colnames(testing.error.rates) <- experimentLabels
+  # rownames(testing.error.rates) <- 1:nrow(testing.error.rates)
 
   if (!is.null(boxplotFile)) {
     message.with.time("Boxplot file:\t", boxplotFile)
@@ -85,7 +88,7 @@ ErrorRateBoxPlot <- function (experimentList,
 
   ## Define parameters for the boxplot
   save.margins <- par("mar")
-  labelMargin <- (2 + max(nchar(experimentLabels)) * 0.45 * cex.axis)
+  labelMargin <- (2 + max(nchar(experimentLabels)) * 0.5 * cex.axis)
 
   ## Define colors for experiments with actual data and permutation tests
   testTable.colors <- rep(x = expColor, length.out = ncol(testing.error.rates))
