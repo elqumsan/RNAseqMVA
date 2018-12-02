@@ -1,7 +1,6 @@
-#' @title return output parameters (output directory, file prefix, figure label)  for a given analysis given its parameterrs (dataset, classifier, permutation or not)
-#' @description for saking of saveing all required output parameters (output dirctory, file prefix and figure label) to facilitate and reduce the  process of plotting
-#' and saving the results in identified workspace.
-#' @author Mustafa ABUELQUMSAN and Jacques van Helden
+#' @title Compute output parameters for an RNAseqMVA analysis
+#' @description Compute output parameters (output directory, file prefix, figure label)  for a given analysis given its input parameterrs (recountIR, dataset, classifier, permutation or not).
+#' @author Mustafa AbuElQumsan and Jacques van Helden
 #' @param dataset an object of class DataTableWithTrainTestSets
 #' @param classifier is the type of classifier that is used with repeated process.
 #' @param permute=FALSE is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier
@@ -64,6 +63,7 @@ outputParameters <- function(dataset,
   resultDirTablesTSV <- file.path(dataset$parameters$dir$results,
                          dataset$ID,
                          classifier, "tables")
+  resultDirTablesTSV <- gsub(pattern = " ", replacement = "_", x = resultDirTablesTSV) ## Avoid spaces in file names
   dir.create(resultDirTablesTSV, showWarnings = FALSE, recursive = TRUE)
 
   ## Define file prefix
@@ -82,11 +82,12 @@ outputParameters <- function(dataset,
 
   message("\t\tfilePrefix\t", filePrefix)
   message("\t\tresultDir\t", resultDir)
-  message("\t\tresultDir\t", figLabel)
+  message("\t\tresultDirTablesTSV\t", resultDirTablesTSV)
+  message("\t\tfigLabel\t", figLabel)
 
 
   return(list("resultDir" = resultDir,
-              "resultsTablesTSV" = resultDirTablesTSV,
+              "resultDirTablesTSV" = resultDirTablesTSV,
               "filePrefix" = filePrefix,
               "figLabel" = figLabel))
 }
