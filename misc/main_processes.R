@@ -9,6 +9,9 @@ source('misc/02_load_and_normalise_counts.R')
 message.with.time( "Impact of normalisation on classifier performances")
 source('misc/06_all_variables_vs_all_PCs.R')
 
+message.with.time( "Impact of k on KNN performances")
+source('misc/13_knn_impact_of_parameters.R')
+
 message.with.time( "Impact of kernel on SVM performances")
 source('misc/14_svm_impact_of_parameters.R')
 
