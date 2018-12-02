@@ -18,6 +18,7 @@ requiredCRAN <- c(
     "roxygen2",
     "scatterplot3d",
     "e1071",
+    "randomForest",
     "foreach",
     "doParallel",
     "pheatmap", # Heatmaps with extended control on dimensions
