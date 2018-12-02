@@ -4,7 +4,7 @@
 targets:
 	@echo "Targets"
 	@echo "	parameters		display the general parameters"
-	@echo " build_and_install	Build and install RNAseqMVA package for R"
+	@echo "	build_and_install	Build and install RNAseqMVA package for R"
 	@echo "	convert_pc_plots_all_study_cases	convert PC plots from pdf to ${IMG_FORMAT} for all study cases"
 	@echo "	sync_pc_plots_all_study_cases	synchronize PC plots from workspace to the manuscript folder"
 	@echo "	ws_dir_to_rsatix	synchronize a directory (default: TO_SYNC=${TO_SYNC}) from your workspace to the shared space on rsatix"
