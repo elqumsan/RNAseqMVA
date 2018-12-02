@@ -64,6 +64,7 @@ IterateTrainingTesting.default <- function(dataset, ...){
 #' @param classifier is the type of classifier that is used with repeated process.
 #' @param permute is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier
 #' @param file.prefix prefix for files. If NULL, files will not be saved.
+#' @param verbose=1 level of verbosity
 #'
 #' @return an object which is Misclassification error rate for the specified number for resampling
 #'     \itemize{
@@ -72,9 +73,10 @@ IterateTrainingTesting.default <- function(dataset, ...){
 #' @export
 IterateTrainingTesting.DataTableWithTrainTestSets <- function(
   dataset,
-  classifier, # supported: knn or rf
-  permute = FALSE, # permute the class labels before running the test
-  file.prefix = paste(sep = "_", dataset$ID, dataset$dataType, classifier) # prefix for the saved files. If not provided, will be automatically generated
+  classifier,
+  permute = FALSE,
+  file.prefix = paste(sep = "_", dataset$ID, dataset$dataType, classifier),
+  verbose = 1
 ) {
 
 
@@ -113,15 +115,16 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function(
     stop("Invalid specification of trainIndices: should be a list of vectors, with the same number of vectors as the iterations (", iterations, ").")
   }
 
-
-  message.with.time("\t", "IterateTrainingTesting()",
-                    "\n\tID: ", dataset$ID,
-                    "\n\tclassifier: ", classifier,
-                    "\n\tclassifier kernel:  ", dataset$parameters$svm$kernel,
-                    "\n\tdata type: ", dataset$dataType,
-                    "\n\tvariable type: ", dataset$variablesType,
-                    "\n\tTrain/test iterations: ",   parameters$iterations)
-
+  if (verbose >= 1) {
+    message.with.time("\t", "IterateTrainingTesting()",
+                      "\n\tID: ", dataset$ID,
+                      "\n\tclassifier: ", classifier,
+                      "\n\tclassifier kernel:  ", dataset$parameters$svm$kernel,
+                      "\n\tdata type: ", dataset$dataType,
+                      "\n\tvariable type: ", dataset$variablesType,
+                      "\n\tverbose: ", dataset$verbose,
+                      "\n\tTrain/test iterations: ",   parameters$iterations)
+  }
 
 
   ## Define directory based on the method
@@ -130,25 +133,31 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function(
   ## Iterate train/test cycles
   testTable <- data.frame() ## Instantiate the test table
   if (project.parameters$global$parallel) {
-    message("\t", format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t",
-            recountID, "\t", classifier,
-            "\ttrain/test\t", project.parameters$global$iterations, " iterations with ", project.parameters$global$no_cores, " cores.")
+    if (verbose >= 1) {
+      message("\t", format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t",
+              recountID, "\t", classifier,
+              "\ttrain/test\t", project.parameters$global$iterations, " iterations with ", project.parameters$global$no_cores, " cores.")
+    }
+
     ## Run a foreach loop and get the result back in a data frame with rbind.
     testTable <- foreach(i = 1:parameters$iterations, .combine = rbind) %dopar%
       MisclassificationEstimate(dataset = dataset,
                                 iteration = i,
                                 classifier = classifier,
                                 permute = permute)$stats
+
   } else {
     i <- 1 #iterations
     for (i in 1:parameters$iterations) {
       ## Permute class labels if required
       # computing the testing errors rate for the KNN classfier
       # trainIndex <- trainIndices[[i]]
-      message("\t", format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t",
-              recountID, "\t", classifier,
-              "\ttrain/test iteration ", i , "/", iterations)
+      if (verbose >= 1) {
+        message("\t", format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t",
+                recountID, "\t", classifier,
+                "\ttrain/test iteration ", i , "/", iterations)
 
+      }
 
       oneTest <- MisclassificationEstimate(dataset = dataset,
                                            iteration = i,
@@ -184,15 +193,15 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function(
     main <- paste(sep = "", main, "; permuted labels")
   }
   boxplot(testTable[, c("training.error.rate", "testing.error.rate")],
-          ylim=c(0,1),
-          main=main)
-  silence <- dev.off()
+          ylim = c(0,1),
+          main = main)
+  silence <- dev.off(); rm(silence)
 
   ## Compute elapsed time
   endTime <- Sys.time();
-  elapsedTime <- endTime - startTime
+  elapsedTime <- difftime(endTime, startTime, units = "secs")
   elapsedTimeFile <- file.path(parameters$dir$classifier_tables[classifier], paste(sep = "", file.prefix, "_elapsed_time.txt"))
-  write(file = elapsedTimeFile, x = paste(startTime, endTime, elapsedTime))
+  write(file = elapsedTimeFile, x = paste(sep = "\t", startTime, endTime, signif(digits = 3, elapsedTime)))
   message("\t\tElapsed Time file: ", elapsedTimeFile)
   NextMethod("IterateTrainingTesting", dataset)
   return(testTable)
