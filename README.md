@@ -52,7 +52,7 @@ gedit, emacs, vi, ...).
 
 ```
 cd ~/RNAseqMVA
-Rscript misc/main_processes.R
+Rscript --vanilla misc/main_processes.R
 ```
 
 ## Running selected analyses
