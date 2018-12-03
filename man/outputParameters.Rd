@@ -2,7 +2,7 @@
 % Please edit documentation in R/output_parameters.R
 \name{outputParameters}
 \alias{outputParameters}
-\title{return output parameters (output directory, file prefix, figure label)  for a given analysis given its parameterrs (dataset, classifier, permutation or not)}
+\title{Compute output parameters for an RNAseqMVA analysis}
 \usage{
 outputParameters(dataset, classifier, permute = FALSE,
   createDir = TRUE)
@@ -25,9 +25,8 @@ a list with the following fields
 }
 }
 \description{
-for saking of saveing all required output parameters (output dirctory, file prefix and figure label) to facilitate and reduce the  process of plotting
-and saving the results in identified workspace.
+Compute output parameters (output directory, file prefix, figure label)  for a given analysis given its input parameterrs (recountIR, dataset, classifier, permutation or not).
 }
 \author{
-Mustafa ABUELQUMSAN and Jacques van Helden
+Mustafa AbuElQumsan and Jacques van Helden
 }
