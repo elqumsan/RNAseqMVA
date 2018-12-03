@@ -11,7 +11,7 @@
 #' summaryTable <- SummarizeTrainTestResults(
 #'   experimentList = train.test.results.knn.k.values[[recountID]])
 #'
-#' @expôrt
+#' @export
 SummarizeTrainTestResults <- function(experimentList,
                                       experimentLabels = names(experimentList),
                                       verbose = 1) {
