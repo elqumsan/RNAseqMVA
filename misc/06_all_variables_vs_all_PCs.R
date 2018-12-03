@@ -15,20 +15,11 @@ allVariables.mem.image <- file.path(
       "_", Sys.Date(), ".Rdata"))
 
 
-# ## TEMP
-reload.mem.image <- TRUE
-if (reload.mem.image) {
-    studyCases.mem.image <- "~/RNAseqMVA_workspace/memory_images/loaded_studyCases_SRP042620-SRP057196-SRP056295-SRP035988-SRP061240-SRP062966-SRP066834_2018-11-01.Rdata"
-    message("Reloading study cases from previously stored memory image")
-    message("\t", studyCases.mem.image)
-    load(studyCases.mem.image)
-}
 
-## For debug: reset the parameters for all the study cases
+## If requrested, reset the parameters for all the study cases
 ## This is used to re-run the analyses on each study case after
 ## having changed some parameters in the yaml-specific configuration file
-reload.parameters <- TRUE
-if (reload.parameters) {
+if (project.parameters$global$reload.parameters) {
   project.parameters <- yaml.load_file(configFile)
   project.parameters <- initParallelComputing(project.parameters)
   if (exists("studyCases")) {

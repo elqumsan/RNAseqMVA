@@ -2,23 +2,43 @@
 ## Load a count Table from recount-experiment, merge counts per sample
 ## and apply some pre-filtering (remove zero-variance and near-zero-variance genes).
 
-
 if (project.parameters$global$reload) {
-    ## Reload previously stored memory image
-    if (!is.null(project.parameters$global$reload.date)) {
-        image.date <- project.parameters$global$reload.date
-    } else {
-        image.date <- Sys.Date()
+  ## Reload previously stored memory image
+  if (!is.null(project.parameters$global$reload.date)) {
+    image.date <- project.parameters$global$reload.date
+  } else {
+    image.date <- Sys.Date()
+  }
+  studyCases.mem.image <- file.path(
+    project.parameters$global$dir$memoryImages,
+    paste(sep = "", "loaded_studyCases_",
+          paste(collapse = "-", selectedRecountIDs),
+          "_", image.date, ".Rdata"))
+
+  message("Reloading study cases from previously stored memory image")
+  message("\t", studyCases.mem.image)
+  load(studyCases.mem.image)
+
+  ## Reload parameters (their value has been over-written by those loade in memory image)
+
+  ## If requrested, reset the parameters for all the study cases
+  ## This is used to re-run the analyses on each study case after
+  ## having changed some parameters in the yaml-specific configuration file
+  if (project.parameters$global$reload.parameters) {
+    project.parameters <- yaml.load_file(configFile)
+    project.parameters <- initParallelComputing(project.parameters)
+    if (exists("studyCases")) {
+      for (recountID in names(studyCases)) {
+        parameters <- initRecountID(recountID, project.parameters)
+      	studyCases[[recountID]]$parameters <- parameters
+	for (dataSetName in names(studyCases[[recountID]]$datasetsForTest)) {
+          studyCases[[recountID]]$datasetsForTest[[dataSetName]]$parameters <- parameters
+        }
+        #  print (studyCases[[recountID]]$parameters$dir$tablesDetail)
+      }
     }
-    studyCases.mem.image <- file.path(
-        project.parameters$global$dir$memoryImages,
-        paste(sep = "", "loaded_studyCases_",
-              paste(collapse = "-", selectedRecountIDs),
-              "_", image.date, ".Rdata"))
-    
-    message("Reloading study cases from previously stored memory image")
-    message("\t", studyCases.mem.image)
-    load(studyCases.mem.image)
+  }
+  
 } else {
   message("Loading study cases")
 
@@ -164,7 +184,7 @@ for (recountID in names(studyCases)) {
           add = TRUE, horiz = TRUE, las = 1, cex.names = 0.7,
           main = recountID, xlab = "Samples per class",
           col = studyCases[[recountID]]$datasetsForTest$filtered$classColors)
-#          col="#00BB00")
+  #          col="#00BB00")
   abline(v = studyCases[[recountID]]$parameters$filtering$minSamplesPerClass, col = "red")
   par(mfrow = c(1,1))
   par(par.ori)
@@ -232,13 +252,13 @@ for (recountID in selectedRecountIDs) {
 for (recountID in selectedRecountIDs) {
 
   parameters <- studyCases[[recountID]]$parameters
-#  plotFilterHistograms(filteredDataset) #,  plot.file = file.path(parameters$dir$NormalizationImpact, "var_per_gene_hist.pdf"))
+  #  plotFilterHistograms(filteredDataset) #,  plot.file = file.path(parameters$dir$NormalizationImpact, "var_per_gene_hist.pdf"))
   filtered <- studyCases[[recountID]]$datasetsForTest$filtered
 
   plotFilterHistograms(
     dataset = filtered,
     rawCounts = studyCases[[recountID]]$rawData$countsPerSample,
-#    plot.height = 8,
+    #    plot.height = 8,
     plot.file = file.path(
       parameters$dir$NormalizationImpact,
       paste(sep = "_", parameters$recountID, "filtering_variance_per_gene_hist.pdf")))
@@ -272,16 +292,16 @@ dev.off()
 #### Save a memory image that can be re-loaded next time ####
 ## to avoid re-computing all the normalisation and so on.
 if (project.parameters$global$save.image) {
-    image.date <- Sys.Date()
-    studyCases.mem.image <- file.path(
-        project.parameters$global$dir$memoryImages,
-        paste(sep = "", "loaded_studyCases_",
-              paste(collapse = "-", selectedRecountIDs),
-              "_", image.date, ".Rdata"))
+  image.date <- Sys.Date()
+  studyCases.mem.image <- file.path(
+    project.parameters$global$dir$memoryImages,
+    paste(sep = "", "loaded_studyCases_",
+          paste(collapse = "-", selectedRecountIDs),
+          "_", image.date, ".Rdata"))
 
-    dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
-    message.with.time("Saving memory image after loading: ", studyCases.mem.image)
-    save.image(file = studyCases.mem.image)
+  dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
+  message.with.time("Saving memory image after loading: ", studyCases.mem.image)
+  save.image(file = studyCases.mem.image)
 }
 
 
