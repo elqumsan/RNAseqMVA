@@ -54,8 +54,6 @@ IterateTrainingTesting.default <- function(dataset, ...){
 }
 
 
-################################################################
-## Define a function to iterate over one classifier with one particular data type.
 #' @title Iterate training/testing procedures with a given classifier and a given data type, with object has class DataTableWithTrainTestSets.
 #' @author Mustafa AbuElQumsan and Jacques van Helden
 #' @description for sake of the accuracy and due to the error rate have computed from sampleing from the origin count data,
