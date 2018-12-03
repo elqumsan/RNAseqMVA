@@ -1,4 +1,3 @@
-################################################################
 ## Run training-testing iterations with increasing number of principal components.
 
 ##### define the file to store memory Image for " the Number of PCs" test #####
@@ -39,21 +38,25 @@ if (project.parameters$global$reload.parameters) {
 
 train.test.results.PCs <- list()
 
+
 #### Iterate over recountIDs ####
-recountID <- selectedRecountIDs[[1]]
-for (recountID in selectedRecountIDs) {
-  message("Impact of PCs\t", recountID)
+classifiers <- project.parameters$global$classifiers
+classifier <- "svm" ## For testing
+for (classifier in classifiers) {
+  ## Instantiate a list to store all results for the current classifier
+  train.test.results.PCs[[classifier]] <- list()
+
+  recountID <- selectedRecountIDs[[1]]
+  for (recountID in selectedRecountIDs) {
+    message("Impact of PCs\t", recountID)
+
+    ## Instantiate a list to store all results for the current recountID
+    train.test.results.PCs[[classifier]][[recountID]] <- list()
 
 
-  #  train.test.results.all.PCs.per.classifier[[recountID]] <- list() ## Instantiate an entry per recountID
-  parameters <- studyCases[[recountID]]$parameters
-  #studyCases$PCsVar <- PCsWithTrainTestSets(studyCases$filtered)
-
-  classifier <- "svm" ## For testing
-  for (classifier in project.parameters$global$classifiers) {
-    ## List to store all results
-    train.test.results.PCs[[recountID]] <- list()
-
+    #  train.test.results.all.PCs.per.classifier[[recountID]] <- list() ## Instantiate an entry per recountID
+    parameters <- studyCases[[recountID]]$parameters
+    #studyCases$PCsVar <- PCsWithTrainTestSets(studyCases$filtered)
 
     #### Iterate over PCs.to.test ####
     data.type <- "TMM_log2_PC"
@@ -115,7 +118,7 @@ for (recountID in selectedRecountIDs) {
 
           message.with.time("\t", "Experiment prefix: ", exp.prefix)
 
-          train.test.results.PCs[[recountID]][[exp.prefix]] <-
+          train.test.results.PCs[[classifier]][[recountID]][[exp.prefix]] <-
             IterateTrainingTesting(
               dataset,
               classifier = classifier,
@@ -132,7 +135,7 @@ for (recountID in selectedRecountIDs) {
         classifier = paste0(classifier, "_first_PCs"),
         permute = FALSE, createDir = TRUE)
       dir.create(path = file.path(outParam$resultDir, "figures"), showWarnings = FALSE, recursive = FALSE)
-      ErrorRateBoxPlot(experimentList = train.test.results.PCs[[recountID]],
+      ErrorRateBoxPlot(experimentList = train.test.results.PCs[[classifier]][[recountID]],
                        classifier = classifier,
                        horizontal = TRUE,
                        main = paste0(
@@ -144,7 +147,7 @@ for (recountID in selectedRecountIDs) {
       )
 
 
-      #  train.test.results.all.PCs.per.classifier[[recountID]][[classifier]] <- train.test.results.PCs[[recountID]]
+      #  train.test.results.all.PCs.per.classifier[[recountID]][[classifier]] <- train.test.results.PCs[[classifier]][[recountID]]
     }  # end of loop over classifiers
 
     ## Restore original data table
@@ -152,7 +155,32 @@ for (recountID in selectedRecountIDs) {
   } # end loop over datasets
 } # end loop over recountIDs
 
-names(train.test.results.PCs)
+#### Summarize results for all recountIDs ####
+for (classifier in classifiers) {
+  allRecountIDsSummary <- list()
+  allRecountIDsSummary$perRecountID <- list()
+  allRecountIDsSummary$summary <- data.frame()
+  # rownames(allRecountIDsSummary$summary) <- names(train.test.results.PCs)
+  recountIDs <- names(train.test.results.PCs)
+  for (i in 1:length(recountIDs)) {
+    recountID <- recountIDs[i]
+    oneRecountIDSummary <- SummarizeTrainTestResults(experimentList = train.test.results.PCs[[classifier]][[recountID]])
+    allRecountIDSummary$perRecountID[[recountID]] <- oneRecountIDSummary
+
+    allRecountIDsSummary$summary <- rbind(
+      allRecountIDsSummary$summary,
+      data.frame(
+        test.min = min(oneRecountIDSummary$testing.MER.summary$mean),
+        test.which.min = which.min(oneRecountIDSummary$testing.MER.summary$mean),
+        test.which.min.name = rownames(oneRecountIDSummary$testing.MER.summary)[which.min(oneRecountIDSummary$testing.MER.summary$mean)],
+        test.max = max(oneRecountIDSummary$testing.MER.summary$mean),
+        test.which.max = which.max(oneRecountIDSummary$testing.MER.summary$mean),
+        test.which.max.name = rownames(oneRecountIDSummary$testing.MER.summary)[which.max(oneRecountIDSummary$testing.MER.summary$mean)]
+      )
+    )
+  }
+  rownames(allRecountIDsSummary$summary) <- recountIDs
+}
 
 ## Save the results in a separate object, that can be reloaded later
 ## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
