@@ -152,3 +152,19 @@ for (recountID in selectedRecountIDs) {
   } # end loop over datasets
 } # end loop over recountIDs
 
+names(train.test.results.PCs)
+
+## Save the results in a separate object, that can be reloaded later
+## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
+save.result.file <- file.path(
+  project.parameters$global$dir$memoryImages,
+  "feature_selection_first_PCs.Rdata")
+dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
+save(train.test.results.PCs, file = save.result.file)
+message.with.time(
+  "Saved results after eval of feature selection with first PCs: ",
+  save.result.file)
+
+
+message.with.time("Finished script 07_PCA_impact_of_PC_number.R")
+
