@@ -105,9 +105,27 @@ for (recountID in selectedRecountIDs) {
                                 "\nall variables; ",
                                 project.parameters$global$iterations, " iterations")
   )
-  train.test.results.knn.k.values[[recountID]][[knn.k]] <- train.test.results.all.variables.knn
+  train.test.results.knn.k.values[[recountID]] <- train.test.results.all.variables.knn
 
 } # end loop over recountIDs
+
+for (recountID in names(studyCases)) {
+  outParam <- outputParameters(
+    dataset,
+    classifier = "knn impact of k",
+    permute = FALSE, createDir = TRUE)
+  ErrorRateBoxPlot(experimentList = train.test.results.all.variables.knn[[recountID]],
+                   classifier = classifier,
+                   horizontal = TRUE,
+                   boxplotFile = file.path(
+                     outParam$resultDir, "figures",
+                     paste(sep = "", outParam$filePrefix, ".pdf")),
+                   main = paste(sep = "",
+                                parameters$recountID,
+                                "; ", classifier, "; ",
+                                "\nall variables; ",
+                                project.parameters$global$iterations, " iterations"))
+}
 
 
 ## Save the results in a separate object, that can be reloaded later
