@@ -24,7 +24,8 @@ if (project.parameters$global$reload) {
   ## If requrested, reset the parameters for all the study cases
   ## This is used to re-run the analyses on each study case after
   ## having changed some parameters in the yaml-specific configuration file
-  if (project.parameters$global$reload.parameters) {
+  if (!is.null(project.parameters$global$reload.parameters)
+      && project.parameters$global$reload.parameters) {
     project.parameters <- yaml.load_file(configFile)
     project.parameters <- initParallelComputing(project.parameters)
     if (exists("studyCases")) {
@@ -38,7 +39,7 @@ if (project.parameters$global$reload) {
       }
     }
   }
-  
+
 } else {
   message("Loading study cases")
 

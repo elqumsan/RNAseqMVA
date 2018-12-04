@@ -72,13 +72,12 @@ for (recountID in selectedRecountIDs) {
         ## Define output parameters
         outParam <- outputParameters(dataset, classifier, permute, createDir = TRUE)
 
-
         #### Run a training/testing experiment ####
         train.test.results.all.variables.knn[[exp.prefix]] <-
           IterateTrainingTesting(
             dataset,
             classifier = classifier,
-            exp.prefix <- outParam$filePrefix,
+            file.prefix = outParam$filePrefix,
             permute = permute)
 
       } # End iterations over dataset

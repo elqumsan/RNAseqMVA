@@ -1,21 +1,18 @@
 ## Run training-testing iterations with increasing number of principal components.
 
 ##### define the file to store memory Image for " the Number of PCs" test #####
-image.dir <- file.path( parameters$dir$memoryImages, parameters$recountID)
+image.dir <- project.parameters$global$dir$memoryImages
 dir.create(image.dir, showWarnings = FALSE, recursive = TRUE)
 
+## Define the path to the memory image for this test (compare classifier whenn they use first PCs as features)
 image.file <- file.path(
   project.parameters$global$dir$memoryImages,
   paste(sep = "", "classif_eval_nb-of-PCs_",
         paste(collapse = "-", selectedRecountIDs),
         "_", Sys.Date(), ".Rdata"))
 
-
-#image.file <- file.path(image.dir, paste(sep = "", "train_test_no._of_PCs_", parameters$recountID , ".Rdata"))
-
-
-## For debug: reset the parameteres for all the study cases
-## This is used to re-run the analyses on each study case after having changed some parameters in the yaml-specific configuration file
+## Reset the parameteres for all the study cases.
+## This is used to re-run the analyses on each study case after having changed some parameters in the yaml-specific configuration file.
 if (project.parameters$global$reload.parameters) {
   project.parameters <- yaml.load_file(configFile)
   project.parameters <- initParallelComputing(project.parameters)
@@ -42,6 +39,7 @@ train.test.results.PCs <- list()
 #### Iterate over recountIDs ####
 classifiers <- project.parameters$global$classifiers
 classifier <- "svm" ## For testing
+classifier <- "knn" ## For testing
 for (classifier in classifiers) {
   ## Instantiate a list to store all results for the current classifier
   train.test.results.PCs[[classifier]] <- list()
@@ -108,7 +106,7 @@ for (classifier in classifiers) {
           rownames(first.pcs) <- rownames(t(dataset$prcomp$x[,1:pc.nb]))
           dataset$dataTable <- first.pcs
 
-          ## define experiment prefix
+          ## Define experiment prefix
           currentOutputParameters <- outputParameters(dataset = dataset, classifier = classifier, permute = permute, createDir = TRUE)
           exp.prefix <-
             paste(sep = "_", classifier, dataset$ID  , dataset$dataType, "nb_of_PCs", pc.nb)
@@ -118,10 +116,15 @@ for (classifier in classifiers) {
 
           message.with.time("\t", "Experiment prefix: ", exp.prefix)
 
+          ## Define output parameters
+          outParam <- outputParameters(dataset, classifier, permute, createDir = TRUE)
+          outParam$filePrefix <- paste0(outParam$filePrefix, "_", pc.nb, "_PCs")
+          #### Run a training/testing experiment ####
           train.test.results.PCs[[classifier]][[recountID]][[exp.prefix]] <-
             IterateTrainingTesting(
               dataset,
               classifier = classifier,
+              file.prefix = outParam$filePrefix,
               permute = permute
             )
         } # end iteration over nb of PCs

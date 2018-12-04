@@ -25,17 +25,17 @@ global: ## Global parameters are those who are the samee across all study cases
 
   perm.prefix: "permLabels"
   jobs: 5 ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
-  iterations: 10 ## Number of iterations for the classiifers
+  iterations: 5 ## Number of iterations for the classiifers
 
-  reload: TRUE  ## If TRUE, reload previously stored memory image to shortcut the download, loading and normalisation of the raw counts
+  reload: FALSE  ## If TRUE, reload previously stored memory image to shortcut the download, loading and normalisation of the raw counts
   reload.date: "2018-11-04" ## Date of the saved memory image to reload
   reload.parameters: TRUE  ## Reload parameters after having loaded memory image, in order to take into account the new parameter values
   compute: TRUE ## If FALSE, do not run the heavy computations, just generate the pictures and save tables
   save.tables: TRUE ## If TRUE, save tab-delimited files with the results
-  save.image: FALSE
+  save.image: TRUE
   draw.plot : TRUE
-  classifiers: ["svm"]
-#  classifiers: ["svm", "knn", "rf" ]
+#  classifiers: ["svm"]
+  classifiers: ["knn", "rf", "svm"]
   # classifiers: ["knn","rf","svm"] # TO ADD LATER: "lda", "qda" + the one suggested by Aitor
 
   ## Mustafa, I suppress data.types because I don't think we need them anymore
@@ -63,7 +63,7 @@ global: ## Global parameters are those who are the samee across all study cases
     alpha: 0.05 ## Threshold on adjusted p-value
 
   knn:
-    k: 10
+    k: 10 ## Default value for k
     k_values: [3, 5, 7, 10, 15]
 
   svm:
