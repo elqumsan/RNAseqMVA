@@ -119,7 +119,7 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function(
                       "\n\tclassifier: ", classifier,
                       "\n\tclassifier kernel:  ", dataset$parameters$svm$kernel,
                       "\n\tdata type: ", dataset$dataType,
-                      "\n\tvariable type: ", dataset$variablesType,
+#                      "\n\tvariable type: ", dataset$variablesType,
                       "\n\tverbose: ", dataset$verbose,
                       "\n\tTrain/test iterations: ",   parameters$iterations)
   }
@@ -168,7 +168,11 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function(
 
 
   ## Save the result table for training/testing evaluation
-  testTable.file <- file.path(parameters$dir$classifier_tables[classifier], paste(sep = "", file.prefix, ".tsv"))
+  outDir <- parameters$dir$classifier_tables[classifier]
+  dir.create(outDir, showWarnings = FALSE, recursive = TRUE)
+  testTable.file <- file.path(
+    parameters$dir$classifier_tables[classifier],
+    paste(sep = "", file.prefix, ".tsv"))
 
   write.table(file = testTable.file,
               x = testTable,
