@@ -34,8 +34,8 @@ global: ## Global parameters are those who are the samee across all study cases
   save.tables: TRUE ## If TRUE, save tab-delimited files with the results
   save.image: FALSE
   draw.plot : TRUE
-  classifiers: ["svm"]
-#  classifiers: ["svm", "knn", "rf" ]
+#  classifiers: ["svm"]
+  classifiers: ["knn", "rf", "svm"]
   # classifiers: ["knn","rf","svm"] # TO ADD LATER: "lda", "qda" + the one suggested by Aitor
 
   ## Mustafa, I suppress data.types because I don't think we need them anymore
@@ -63,7 +63,7 @@ global: ## Global parameters are those who are the samee across all study cases
     alpha: 0.05 ## Threshold on adjusted p-value
 
   knn:
-    k: 10
+    k: 10 ## Default value for k
     k_values: [3, 5, 7, 10, 15]
 
   svm:
