@@ -12,9 +12,6 @@ plotFilterHistograms(dataset, rawCounts, plot.file = NULL,
 
 \item{plot.file=NULL}{save the plot in a specified pdf file}
 }
-\description{
-plot histograms of the variance distributions at different steps of the filtering process
-}
 \author{
 Jacques van Helden
 }

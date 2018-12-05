@@ -4,8 +4,8 @@
 \alias{exportTables.DataTableWithTrainTestSets}
 \title{Export the tables specific to the class DataTableWithTrainTestSets}
 \usage{
-\method{exportTables}{DataTableWithTrainTestSets}(self, export.dir,
-  file.prefix, extension = ".tsv")
+\method{exportTables}{DataTableWithTrainTestSets}(self, export.dir, file.prefix,
+  extension = ".tsv")
 }
 \arguments{
 \item{self}{an object, which must belong to class DataTableWithTrainTestSets}
@@ -15,9 +15,6 @@
 \item{file.prefix}{file prefix to build the different tables}
 
 \item{extension=".tsv"}{extension for the exported files (tab-separated values)}
-}
-\description{
-Export the tables specific to the class DataTableWithTrainTestSets
 }
 \author{
 Mustafa AbuElQumsan and Jacques van Helden.
