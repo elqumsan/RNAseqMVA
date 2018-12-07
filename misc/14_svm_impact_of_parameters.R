@@ -70,6 +70,7 @@ for (recountID in selectedRecountIDs) {
 
         ## Define output parameters
         outParam <- outputParameters(dataset, classifier, permute, createDir = TRUE)
+        exp.prefix <- outParam$filePrefix
 
         #### Run a training/testing experiment ####
         train.test.results.all.variables.svm[[exp.prefix]] <-
