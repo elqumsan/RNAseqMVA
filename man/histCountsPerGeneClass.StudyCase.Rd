@@ -12,6 +12,9 @@
 \value{
 an object of the same class as the input object
 }
+\description{
+Draw an histogram with the raw  counts per gene
+}
 \author{
 Jacques van Helden & Mustafa AbuElQumsan
 }

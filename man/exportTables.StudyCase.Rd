@@ -4,8 +4,8 @@
 \alias{exportTables.StudyCase}
 \title{Export the tables specific to the class StudyCase}
 \usage{
-\method{exportTables}{StudyCase}(self, export.dir = self$parameters$dir$tsv,
-  extension = ".tsv")
+\method{exportTables}{StudyCase}(self,
+  export.dir = self$parameters$dir$tsv, extension = ".tsv")
 }
 \arguments{
 \item{self}{an object, which must belong to class StudyCase}
