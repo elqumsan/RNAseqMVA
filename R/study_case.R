@@ -59,8 +59,8 @@ StudyCase  <- function(recountID, parameters) {
     # hist(unlist(result[[method.name]][["dataTable"]]), breaks=1000)
     dataNames <- append(dataNames, method.name)
 
-    ##### Normalize counts with log2 transformation (second test) #####
-    if (method != "RLE") { ## RLE is already log2-transformed
+    ##### Normalize counts by log2 transformation #####
+#    if (method != "RLE") { ## RLE is already log2-transformed
       message("\t\tComputing log2-transformed normalised counts")
       log2.name <- paste(sep = "", method.name, "_log2")
       result[[log2.name]] <- result[[method.name]]
@@ -68,18 +68,18 @@ StudyCase  <- function(recountID, parameters) {
       result[[log2.name]][["dataTable"]] <- log2(result[[method.name]][["dataTable"]] + epsilon)
       dataNames <- append(dataNames, log2.name)
       # hist(result[[log2.name]][["dataTable"]], breaks=100)
-    }
+    #}
 
     #### Derive an object having as features the principal components of log2norm ####
     message("\t\tComputing principal components")
-    if (method == "RLE") {
+#    if (method == "RLE") {
       ## RLE is already log2-transformed
       pc.name <- paste(sep = "", method.name, "_PC")
       result[[pc.name]] <- result[[method.name]] ## Clone the log2norm object to copy all its parameters
-    } else {
-      pc.name <- paste(sep = "", log2.name, "_PC")
-      result[[pc.name]] <- result[[log2.name]] ## Clone the log2norm object to copy all its parameters
-    }
+#    } else {
+#      pc.name <- paste(sep = "", log2.name, "_PC")
+#      result[[pc.name]] <- result[[log2.name]] ## Clone the log2norm object to copy all its parameters
+#    }
     result[[pc.name]][["dataType"]] <- pc.name
     dataNames <- append(dataNames, pc.name)
 
