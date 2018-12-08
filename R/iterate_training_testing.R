@@ -73,11 +73,18 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function(
   dataset,
   classifier,
   permute = FALSE,
-  file.prefix = paste(sep = "_", dataset$ID, dataset$dataType, classifier),
+  file.prefix = NULL,
   verbose = 1
 ) {
 
 
+
+  if (is.null(file.prefix)) {
+    file.prefix <- paste(sep = "_", dataset$ID, dataset$dataType, classifier)
+    if (permute) {
+      file.prefix <- paste0(file.prefix, "_permLabels")
+    }
+  }
   startTime <- Sys.time()
 
 
