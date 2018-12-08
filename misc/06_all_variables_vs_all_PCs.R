@@ -38,10 +38,12 @@ train.test.results.all.variables.per.classifier <- list()
 
 ## Run the whole computation if required
 ## (this can take several hours depending on the number of datasets and classifier methods)
-if (project.parameters$global$compute) {
 
+## Loop over recountIDs
+## Loop over classifiers
+# classifier <- "svm" ## For quick test
+for (classifier in parameters$classifiers) {
 
-  ## Loop over recountIDs
   # recountID <- "SRP042620"
   for (recountID in selectedRecountIDs) {
 
@@ -53,99 +55,100 @@ if (project.parameters$global$compute) {
     parameters <- studyCases[[recountID]]$parameters
 
 
+
+    ## Instantiate variables
+    train.test.results.all.variables <- list() ## List to store all results
+    short.labels <- vector() ## Initiate the list of short labels for the plots
     studyCase <- studyCases[[recountID]]
-    ## Loop over classifiers
-    # classifier <- "svm" ## For quick test
-    for (classifier in parameters$classifiers) {
-      short.labels <- vector() ## Initiate the list of short labels for the plots
 
-      ## List to store all results
-      train.test.results.all.variables <- list()
+    #### Associate each analysis of real data with a permutation test ####
+    permute <- FALSE ## Default for quick test without iterating over all cases
+    for (permute in project.parameters$global$permute) {
 
-      #### Associate each analysis of real data with a permutation test ####
-      permute <- FALSE ## Default for quick test without iterating over all cases
-      for (permute in project.parameters$global$permute) {
+      #### Data types to analyse ####
+      ## If not specified in config file, take all datasetsForTest
+      if (is.null(parameters$data.types.to.test)) {
+        parameters$data.types.to.test <- names(studyCase$datasetsForTest)
 
-        #### Data types to analyse ####
-        ## If not specified in config file, take all datasetsForTest
-        if (is.null(parameters$data.types.to.test)) {
-          parameters$data.types.to.test <- names(studyCase$datasetsForTest)
+        ## Temporary (2018-11-01): discard edgeR and DESeq2-sorted datasets.
+        ## Actually these are not data types, variable ordering should be treated as a separate variable, not as a separate dataset.
+        parameters$data.types.to.test <- grep(pattern = "_sorted", x = parameters$data.types.to.test, invert = TRUE, value = TRUE)
+      }
 
-          ## Temporary (2018-11-01): discard edgeR and DESeq2-sorted datasets.
-          ## Actually these are not data types, variable ordering should be treated as a separate variable, not as a separate dataset.
-          parameters$data.types.to.test <- grep(pattern = "_sorted", x = parameters$data.types.to.test, invert = TRUE, value = TRUE)
+      ## Loop over data types
+      data.type <- "q0.75_log2_PC" ## For quick test
+      for (data.type in parameters$data.types.to.test) {
+        message.with.time("\tRunning train/test with all variables",
+                          "\n\trecountID: ", recountID,
+                          "\n\tData type: ", data.type,
+                          "\n\tClassifier: ", classifier,
+                          "\n\tpermuted class labels: ", permute)
+        dataset <- studyCase$datasetsForTest[[data.type]]
+        # class(dataset)
+        # summary(dataset)
+
+        short.label <- dataset$dataType
+        if (permute) {
+          short.label <- paste(
+            short.label,
+            project.parameters$global$perm.prefix)
+        }
+        short.labels <- append(short.labels, short.label)
+
+        # Check if the dataset belongs to the class DataTableWithTrainTestSets
+        if (!is(object = dataset, class2 = "DataTableWithTrainTestSets")) {
+          stop("The dataset object does not belong to class DataTableWithTrainTestSets. ")
         }
 
-        ## Loop over data types
-        data.type <- "q0.75_log2_PC" ## For quick test
-        for (data.type in parameters$data.types.to.test) {
-          message.with.time("\tRunning train/test with all variables",
-                            "\n\trecountID: ", recountID,
-                            "\n\tData type: ", data.type,
-                            "\n\tClassifier: ", classifier,
-                            "\n\tpermuted class labels: ", permute)
-          dataset <- studyCase$datasetsForTest[[data.type]]
-          # class(dataset)
-          # summary(dataset)
+        ## Check if the train and test indices  were properly defined
+        if (is.null(dataset$trainTestProperties$trainIndices)
+            || is.null(dataset$trainTestProperties$testIndices)) {
+          stop("Train/test sets were not properly defined (required to run classifiers). ")
+        }
 
-          short.label <- dataset$dataType
-          if (permute) {
-            short.label <- paste(
-              short.label,
-              project.parameters$global$perm.prefix)
-          }
-          short.labels <- append(short.labels, short.label)
+        #### Run classifier with all variables (log2-transformed log counts) ####
+        outParam <- outputParameters(dataset, classifier, permute, createDir = TRUE)
 
-          # Check if the dataset belongs to the class DataTableWithTrainTestSets
-          if (!is(object = dataset, class2 = "DataTableWithTrainTestSets")) {
-            stop("The dataset object does not belong to class DataTableWithTrainTestSets. ")
-          }
+        train.test.results.all.variables[[outParam$filePrefix]] <-
+          IterateTrainingTesting(
+            dataset,
+            classifier = classifier,
+            permute = permute
+          )
 
-          ## Check if the train and test indices  were properly defined
-          if (is.null(dataset$trainTestProperties$trainIndices)
-              || is.null(dataset$trainTestProperties$testIndices)) {
-            stop("Train/test sets were not properly defined (required to run classifiers). ")
-          }
-
-          #### Run classifier with all variables (log2-transformed log counts) ####
-          outParam <- outputParameters(dataset, classifier, permute, createDir = TRUE)
-
-          train.test.results.all.variables[[outParam$filePrefix]] <-
-            IterateTrainingTesting(
-              dataset,
-              classifier = classifier,
-              permute = permute
-            )
-
-        } # End iterations over data types
-      } # End iterations over permutation (TRUE / FALSE)
+      } # End iterations over data types
+    } # End iterations over permutation (TRUE / FALSE)
 
 
-      #### Plotting the Misclassification Error rate using all diverse data type all variables with the selected classifer ####
-      outParam <- outputParameters(dataset, classifier = classifier, permute = FALSE, createDir = TRUE)
-      outParam$filePrefix <- paste(sep = "_", recountID, classifier, "normalisation_impact")
+    #### Plotting the Misclassification Error rate using all diverse data type all variables with the selected classifer ####
+    outParam <- outputParameters(dataset, classifier = classifier, permute = FALSE, createDir = TRUE)
+    outParam$filePrefix <- paste(sep = "_", recountID, classifier, "normalisation_impact")
 
-      ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
-                       classifier = classifier,
-                       experimentLabels = short.labels,
-                       horizontal = TRUE,
-                       fig.height = 8,
-                       expMisclassificationRate = dataset$randExpectedMisclassificationRate,
-                       boxplotFile = file.path(
-                         outParam$resultDir, "figures",
-                         paste(sep = "", outParam$filePrefix, ".pdf")),
-                       main = paste(sep = "",
-                                    parameters$recountID,
-                                    "; ", classifier,
-                                    "\n all features; ",
-                                    project.parameters$global$iterations, " iterations"))
+    ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
+                     classifier = classifier,
+                     experimentLabels = short.labels,
+                     horizontal = TRUE,
+                     fig.height = 8,
+                     expMisclassificationRate = dataset$randExpectedMisclassificationRate,
+                     boxplotFile = NULL,
+                     # boxplotFile = file.path(
+                     #   outParam$resultDir, "figures",
+                     #   paste(sep = "", outParam$filePrefix, ".pdf")),
+                     main = paste(sep = "",
+                                  parameters$recountID,
+                                  "; ", classifier,
+                                  "\n all features; ",
+                                  project.parameters$global$iterations, " iterations"))
 
-      ## We store the training-testing result in a single list for further processing
-      train.test.results.all.variables.per.classifier[[recountID]][[classifier]] <- train.test.results.all.variables
+    ## We store the training-testing result in a single list for further processing
+    train.test.results.all.variables.per.classifier[[recountID]][[classifier]] <- train.test.results.all.variables
 
-    } # end loop over classifiers
   } # end loop over RecountIDs
-} # end if compute
+} # end loop over classifiers
+
+
+
+# stop("HELLO")
 
 ## Save a memory image that can be re-loaded next time to avoid re-computing all the normalisation and so on.
 if (project.parameters$global$save.image) {
