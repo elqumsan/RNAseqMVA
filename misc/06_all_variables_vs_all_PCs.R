@@ -130,10 +130,10 @@ for (classifier in parameters$classifiers) {
                      horizontal = TRUE,
                      fig.height = 8,
                      expMisclassificationRate = dataset$randExpectedMisclassificationRate,
-                     boxplotFile = NULL,
-                     # boxplotFile = file.path(
-                     #   outParam$resultDir, "figures",
-                     #   paste(sep = "", outParam$filePrefix, ".pdf")),
+                     # boxplotFile = NULL,
+                     boxplotFile = file.path(
+                       outParam$resultDir, "figures",
+                       paste(sep = "", outParam$filePrefix, ".pdf")),
                      main = paste(sep = "",
                                   parameters$recountID,
                                   "; ", classifier,
