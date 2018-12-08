@@ -72,14 +72,14 @@ StudyCase  <- function(recountID, parameters) {
 
     #### Derive an object having as features the principal components of log2norm ####
     message("\t\tComputing principal components")
-#    if (method == "RLE") {
-      ## RLE is already log2-transformed
-      pc.name <- paste(sep = "", method.name, "_PC")
-      result[[pc.name]] <- result[[method.name]] ## Clone the log2norm object to copy all its parameters
-#    } else {
-#      pc.name <- paste(sep = "", log2.name, "_PC")
-#      result[[pc.name]] <- result[[log2.name]] ## Clone the log2norm object to copy all its parameters
-#    }
+      #    if (method == "RLE") {
+      #   ## RLE is already log2-transformed
+      #   pc.name <- paste(sep = "", method.name, "_PC")
+      #   result[[pc.name]] <- result[[method.name]] ## Clone the log2norm object to copy all its parameters
+      # } else {
+      pc.name <- paste(sep = "", log2.name, "_PC")
+      result[[pc.name]] <- result[[log2.name]] ## Clone the log2norm object to copy all its parameters
+      #    }
     result[[pc.name]][["dataType"]] <- pc.name
     dataNames <- append(dataNames, pc.name)
 
