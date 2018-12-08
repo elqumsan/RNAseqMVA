@@ -42,6 +42,7 @@ for (recountID in selectedRecountIDs) {
   permute <- FALSE ## Default for quick test without iterating over all cases
   for (permute in project.parameters$global$permute) {
 
+
     #### Loop over values of k ####
     knn.k <- 3
     for (knn.k in project.parameters$global$knn$k_values) {
@@ -71,6 +72,9 @@ for (recountID in selectedRecountIDs) {
 
         ## Define output parameters
         outParam <- outputParameters(dataset, classifier, permute, createDir = TRUE)
+        exp.prefix <- outParam$filePrefix
+        ## exp.prefix <- paste0(recountID, "_", data.type, "_knn_k", knn.k)
+        
 
         #### Run a training/testing experiment ####
         train.test.results.all.variables.knn[[exp.prefix]] <-
