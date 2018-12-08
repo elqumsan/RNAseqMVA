@@ -118,21 +118,19 @@ if (project.parameters$global$compute) {
             )
 
         } # End iterations over data types
-      } # End iterations over permutation
+      } # End iterations over permutation (TRUE / FALSE)
 
 
-
-      #### Plotting the Misclassification Error rate using all diverse data type all variables with KNN classifier? ####
+      #### Plotting the Misclassification Error rate using all diverse data type all variables with the selected classifer ####
       outParam <- outputParameters(dataset, classifier = classifier, permute = FALSE, createDir = TRUE)
       outParam$filePrefix <- paste(sep = "_", recountID, classifier, "normalisation_impact")
 
       ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
                        classifier = classifier,
                        experimentLabels = short.labels,
-                       horizontal = FALSE,
+                       horizontal = TRUE,
                        fig.height = 8,
                        expMisclassificationRate = dataset$randExpectedMisclassificationRate,
-                       # boxplotFile = NULL,
                        boxplotFile = file.path(
                          outParam$resultDir, "figures",
                          paste(sep = "", outParam$filePrefix, ".pdf")),
