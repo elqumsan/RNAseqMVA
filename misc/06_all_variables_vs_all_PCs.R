@@ -124,6 +124,8 @@ if (project.parameters$global$compute) {
 
       #### Plotting the Misclassification Error rate using all diverse data type all variables with KNN classifier? ####
       outParam <- outputParameters(dataset, classifier = classifier, permute = FALSE, createDir = TRUE)
+      outParam$filePrefix <- paste(sep = "_", recountID, classifier, "normalisation_impact")
+
       ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
                        classifier = classifier,
                        experimentLabels = short.labels,
@@ -155,7 +157,6 @@ if (project.parameters$global$save.image) {
 }
 
 ###############################################################################################
-#### What is better to using all PCs versus all variables with KNN classifier? ####
   # ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
   #                  classifier = classifier,
   #                  main = paste(sep="",
