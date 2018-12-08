@@ -34,13 +34,8 @@ global: ## Global parameters are those who are the samee across all study cases
   save.tables: TRUE ## If TRUE, save tab-delimited files with the results
   save.image: TRUE
   draw.plot : TRUE
-#  classifiers: ["svm"]
-<<<<<<< HEAD
-  classifiers: ["svm", "knn","rf","svm"] # TO ADD LATER: "lda", "qda" + the one suggested by Aitor
-=======
-  classifiers: ["svm", "knn", "rf"]
-  # classifiers: ["knn","rf","svm"] # TO ADD LATER: "lda", "qda" + the one suggested by Aitor
->>>>>>> bc80bab029e5aa9cdf9b1edb25ffe9c5dae02f05
+  classifiers: ["svm"]
+#  classifiers: ["svm", "knn", "rf"] # TO ADD LATER: "lda", "qda" + the one suggested by Aitor
 
   ## Mustafa, I suppress data.types because I don't think we need them anymore
   # data.types: ["countsPerRun", "originalCounts", "filtered", "norm", "log2norm", "log2normPCs", "DEG", "V.importance"]
