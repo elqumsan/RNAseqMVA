@@ -169,5 +169,6 @@ ErrorRateBoxPlot <- function(experimentList,
   if (!is.null(boxplotFile)) {
     silence <- dev.off(); rm(silence)
   }
+
 }
 
