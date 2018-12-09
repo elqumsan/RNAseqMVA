@@ -7,7 +7,7 @@
 #' @param dataset  an object of class DataTableWithTrainTestSets
 #' @param iteration current iteration number (the MisclassificationEstimate function is typically called iteratively) and it called number of resampling.
 #' @param classifier is a type of the classifier.
-#' @param permute=FALSE permute the calss labels to measure misclassifciation rate without relevant learning
+#' @param permute=FALSE if TRUE, permute the calss labels to measure misclassifciation rate without relevant training
 #' @return
 #'  \itemize{
 #'      \item dataset = it is data table one row for the individual (sample) and one culomn for the feature (gene).
@@ -66,7 +66,8 @@ MisclassificationEstimate <- function(dataset,
   ## AssignGet sample classes from the object
   classLabels <- dataset$classLabels
   if (permute) {
-    classLabels <- sample(classLabels, replace = FALSE)
+  #  classLabels <- sample(classLabels, replace = FALSE)
+    classLabels <- StratifiedSampling(classLabels)
   }
 
   trainIndex <- dataset$trainTestProperties$trainIndices[[iteration]]
