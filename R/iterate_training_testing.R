@@ -4,7 +4,7 @@
 #' # it is better to compute the the error rate multiple time and then we would find the avarage for the error rate.
 #' @param dataset an object of class DataTableWithTrainTestSets
 #' @param classifier is the type of classifier that is used with repeated process.
-#' @param permute is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier
+#' @param permute if TRUE, permute the calss labels to measure misclassifciation rate without relevant training
 #' @param file.prefix in order to let us to save file from the IterateTrainingTesting
 #'
 #' @return an object which is Misclassification error rate for the specified number for resampling
