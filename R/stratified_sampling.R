@@ -1,6 +1,12 @@
 #' @title stratified sampling
+#' @author Jacques.van-Helden\@univ-amu.fr
+#' @description Perform a stratified sampling from a vector of group labels:
+#' each initial group is replaced by random labels proportional to the initial
+#' group proportions.
+#'
 #' @param labels a vector with labels to be resampled
-#' @param size=length(labels) size of the sample
+#' @param size=length(labels) size of the output (resampled) vector
+#'
 #' @examples
 #'
 #' ## Generate a vector of group labels
@@ -11,19 +17,23 @@
 #' table(labels, nstr)
 #' ## Repeat this several times: the proportions vary between iterations
 #'
-#' ## Stratified sampling
+#' ## Stratified permutation of group labels
 #' str1 <- StratifiedSampling(labels)
 #' ## str1 has same proportions as labels (except for rounding of group sizes)
 #' table(labels, str1)
 #'
-#' ## Second stratified sampling
+#' ## Second stratified permutation
 #' str2 <- StratifiedSampling(labels)
 #' ## str2 has same proportions as labels (except for rounding of group sizes)
 #' table(labels, str2)
 #'
-#'
 #' ## str1 and str2 are different and independent
 #' table(str1, str2)
+#'
+#' ## Subsampling
+#' str3 <- StratifiedSampling(labels, size = length(labels) * 2/3)
+#' ## str3 has same proportions as labels (except for rounding of group sizes)
+#' table(str3)
 #'
 #' @export
 StratifiedSampling <- function(labels,
