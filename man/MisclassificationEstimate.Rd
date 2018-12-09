@@ -14,7 +14,7 @@ MisclassificationEstimate(dataset, iteration, classifier,
 
 \item{classifier}{is a type of the classifier.}
 
-\item{permute=FALSE}{permute the calss labels to measure misclassifciation rate without relevant learning}
+\item{permute=FALSE}{if TRUE, permute the calss labels to measure misclassifciation rate without relevant training}
 }
 \value{
 \itemize{

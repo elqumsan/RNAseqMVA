@@ -24,7 +24,7 @@ object of class DataTableWithTrainTestSets containing the following attributes
   \item trainPropotion:      which is ratio of train volume from whole of dataset
   \item statified:           parameter which refer to stratification criteria would be included in analysis or not.
   \item trainSizePerClass:   which is specify the train volume for each class included in analysis.
-  \item trianIndices:        which are whole indices for training process.
+  \item trainIndices:        which are whole indices for training process.
   \item testIndices:         which are whole indices for the testing process.
 
 }

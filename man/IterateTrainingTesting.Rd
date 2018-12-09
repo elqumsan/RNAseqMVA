@@ -11,7 +11,7 @@ IterateTrainingTesting(dataset, ...)
 
 \item{classifier}{is the type of classifier that is used with repeated process.}
 
-\item{permute}{is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier}
+\item{permute}{if TRUE, permute the calss labels to measure misclassifciation rate without relevant training}
 
 \item{file.prefix}{in order to let us to save file from the IterateTrainingTesting}
 }
