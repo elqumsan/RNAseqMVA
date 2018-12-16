@@ -15,12 +15,14 @@
 SummarizeTrainTestResults <- function(experimentList,
                                       experimentLabels = names(experimentList),
                                       verbose = 1) {
+
   if (!is(object = experimentList, class2 = "list")) {
     stop("SummarizeTrainTestResults() requires a list as experimentList argument")
   }
 
   ## Collect experiment IDs
   experiment.names <- names(experimentList)
+
 
   ## Check that there is at least one experiment
   if (length(experiment.names) < 1) {
