@@ -150,19 +150,21 @@ save.result.file <- file.path(
     "_", paste(collapse = "-", selectedRecountIDs),
     "_", Sys.Date(), "_results.Rdata")
 )
-dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
-save(train.test.results.all.variables.per.classifier, file = save.result.file)
 message.with.time(
   "Saved results after eval of normalisation impact: ",
   save.result.file)
+dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
+save(train.test.results.all.variables.per.classifier, file = save.result.file)
 
 
 
 #### Summarize results for all the study cases and all the classifiers
-classifiers <- project.parameters$global$classifiers
-par(mfrow = c(length(studyCases), length(classifiers)))
-for (classifier in classifiers) {
-  for (recountID in selectedRecountIDs) {
+recountIDs <- names(train.test.results.all.variables.per.classifier)
+recountID <- recountIDs[1]
+classifiers <- names(train.test.results.all.variables.per.classifier[[recountID]])
+# par(mfrow = c(length(recountIDs), length(classifiers)))
+for (recountID in recountIDs) {
+  for (classifier in classifiers) {
     studyCase <- studyCases[[recountID]]
 
     message("Summarizing results. RecountID\t", recountID, "\tclassifier\t", classifier)
@@ -172,15 +174,19 @@ for (classifier in classifiers) {
     TTsummary <- SummarizeTrainTestResults(experimentList = experimentList)
     names(TTsummary)
     expLabels <- TTsummary$experimentLabels
-    expLabels <- sub(pattern = paste0(studyCase, "_"), replacement = "", x = expLabels)
-    expLabels <- sub(pattern = paste0(studyCase, "_"), replacement = "", x = expLabels)
+    expLabels <- sub(pattern = paste0(recountID, "_"), replacement = "", x = expLabels)
+    expLabels <- sub(pattern = paste0(classifier, "_"), replacement = "", x = expLabels)
 
     #### Error box plots ####
     expMER <- studyCase$datasetsForTest$filtered$randExpectedMisclassificationRate
-    ErrorRateBoxPlot(experimentList = experimentList, classifier = "SVM", expMisclassificationRate = expMER)
+    # ErrorRateBoxPlot(
+    #   experimentList = experimentList,
+    #   experimentLabels = expLabels,
+    #   classifier = classifier,
+    #   expMisclassificationRate = expMER)
   }
 }
-par(mfrow = c(1, 1))
+# par(mfrow = c(1, 1))
 
 # stop("HELLO")
 
