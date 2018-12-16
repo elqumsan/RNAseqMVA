@@ -11,7 +11,7 @@ methods for the supervised classification of RNA-seq data.
 ## Downloading
 
 ```
-git clone
+git clone https://github.com/elqumsan/RNAseqMVA.git
 ```
 
 ## Conda environment
@@ -21,13 +21,21 @@ The file [conda-rnaseqmva.yml](conda-rnaseqmva.yml) specifies the parameters of 
 ### Installing the conda rnaseqmva environment
 
 ```
+cd RNAseqMVA
 conda env create -f conda-rnaseqmva.yml
+```
+
+### Loading conda module
+
+On the IFB cluster, conda is loaded via a module
+
+```
+module load conda ## Load the conda module (for the IFB-core-cluster)
 ```
 
 ### Loading the environemnt
 
 ```
-module load conda ## Load the conda module (for the IFB-core-cluster)
 source activate rnaseqmva
 ```
 
@@ -37,7 +45,6 @@ We assume here that the RNAseqMVA package has been installed in the
 home directory. If not, you just need to adapt the path below.
 
 ```
-cd ~/RNAseqMVA
 make build_and_install
 ```
 
