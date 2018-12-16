@@ -26,7 +26,7 @@ global: ## Global parameters are those who are the samee across all study cases
     epsilon: 0.1    ## For log2 transformation
 
   perm.prefix: "permLabels"
-  jobs: 5 ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
+  jobs: 20 ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
   iterations: 10 ## Number of iterations for the classiifers
 
   reload: TRUE  ## If TRUE, reload previously stored memory image to shortcut the download, loading and normalisation of the raw counts
@@ -36,7 +36,7 @@ global: ## Global parameters are those who are the samee across all study cases
   save.tables: TRUE ## If TRUE, save tab-delimited files with the results
   save.image: TRUE
   draw.plot : TRUE
-  classifiers: ["svm"]
+  classifiers: ["knn"]
 #  classifiers: ["svm", "knn", "rf"] # TO ADD LATER: "lda", "qda" + the one suggested by Aitor
 
   ## Mustafa, I suppress data.types because I don't think we need them anymore
