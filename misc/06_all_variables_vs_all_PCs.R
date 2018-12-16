@@ -62,6 +62,7 @@ for (classifier in parameters$classifiers) {
       ## If not specified in config file, take all datasetsForTest
       if (is.null(parameters$data.types.to.test)) {
         parameters$data.types.to.test <- names(studyCase$datasetsForTest)
+        project.parameters$global$data.types.to.test <- names(studyCase$datasetsForTest)
 
         ## Temporary (2018-11-01): discard edgeR and DESeq2-sorted datasets.
         ## Actually these are not data types, variable ordering should be treated as a separate variable, not as a separate dataset.
@@ -69,7 +70,7 @@ for (classifier in parameters$classifiers) {
       }
 
       ## Loop over data types
-      data.type <- "q0.75_log2_PC" ## For quick test
+      data.type <- "TMM_log2" ## For quick test
       for (data.type in parameters$data.types.to.test) {
         message.with.time("\tRunning train/test with all variables",
                           "\n\trecountID: ", recountID,
@@ -121,17 +122,17 @@ for (classifier in parameters$classifiers) {
                      classifier = classifier,
                      experimentLabels = short.labels,
                      horizontal = TRUE,
-                     fig.height = 8,
+                     fig.height = 6,
                      expMisclassificationRate = dataset$randExpectedMisclassificationRate,
                      # boxplotFile = NULL,
                      boxplotFile = file.path(
                        outParam$resultDir, "figures",
                        paste(sep = "", outParam$filePrefix, ".pdf")),
-                     main = paste(sep = "",
-                                  parameters$recountID,
-                                  "; ", classifier,
-                                  "\n all features; ",
-                                  project.parameters$global$iterations, " iterations"))
+                     main = paste0(parameters$short_label,
+                                   "\n(", parameters$recountID, ")",
+                                   "\n", toupper(classifier),
+                                   "; ", project.parameters$global$iterations, " iterations")
+    )
 
     ## We store the training-testing result in a single list for further processing
     train.test.results.all.variables.per.classifier[[recountID]][[classifier]] <- train.test.results.all.variables
@@ -173,17 +174,42 @@ for (recountID in recountIDs) {
     #### Summary table ####
     TTsummary <- SummarizeTrainTestResults(experimentList = experimentList)
     names(TTsummary)
-    expLabels <- TTsummary$experimentLabels
-    expLabels <- sub(pattern = paste0(recountID, "_"), replacement = "", x = expLabels)
-    expLabels <- sub(pattern = paste0(classifier, "_"), replacement = "", x = expLabels)
+    # expLabels <- TTsummary$experimentLabels
+    # expLabels <- sub(pattern = paste0(recountID, "_"), replacement = "", x = expLabels)
+    # expLabels <- sub(pattern = paste0(classifier, "_"), replacement = "", x = expLabels)
+    # expLabels <- sub(pattern = paste0(project.parameters$global$svm$kernel, "_"), replacement = "", x = expLabels)
+
+    expLabels <- short.labels
+    expLabels <- sub(pattern = "RLE", replacement = "DESeq", x = expLabels)
 
     #### Error box plots ####
-    expMER <- studyCase$datasetsForTest$filtered$randExpectedMisclassificationRate
-    # ErrorRateBoxPlot(
-    #   experimentList = experimentList,
-    #   experimentLabels = expLabels,
-    #   classifier = classifier,
-    #   expMisclassificationRate = expMER)
+
+    ## Catch first dataset to get parameters
+    parameters <- studyCase$parameters
+    stuyCaseLabel <- parameters$short_label
+    dataset <- studyCase$datasetsForTest[[1]]
+    expMER <- dataset$randExpectedMisclassificationRate
+    outParam <- outputParameters(dataset, classifier = classifier, permute = FALSE, createDir = TRUE)
+    outParam$filePrefix <- paste(sep = "_", recountID, classifier, "normalisation_impact")
+    train.test.results.all.variables <- train.test.results.all.variables.per.classifier[[recountID]][[classifier]]
+
+
+
+    ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
+                     classifier = classifier,
+                     experimentLabels = expLabels,
+                     horizontal = TRUE,
+                     fig.height = 6,
+                     expMisclassificationRate = dataset$randExpectedMisclassificationRate,
+                     # boxplotFile = NULL,
+                     boxplotFile = file.path(
+                       outParam$resultDir, "figures",
+                       paste(sep = "", outParam$filePrefix, ".pdf")),
+                     main = paste0(parameters$short_label,
+                                   "\n(", parameters$recountID, ")",
+                                   "\n", toupper(classifier),
+                                  "; ", project.parameters$global$iterations, " iterations")
+                     )
   }
 }
 # par(mfrow = c(1, 1))

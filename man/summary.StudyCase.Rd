@@ -4,7 +4,7 @@
 \alias{summary.StudyCase}
 \title{print a summary of an object belonging to class StudyCase}
 \usage{
-\method{summary}{StudyCase}(self)
+summary.StudyCase(self)
 }
 \value{
 print the summary of such object by utilizing generic function
