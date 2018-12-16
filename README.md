@@ -58,14 +58,21 @@ gedit, emacs, vi, ...).
 ## Running all analyses
 
 ```
-cd ~/RNAseqMVA
 Rscript --vanilla misc/main_processes.R
 ```
+
+### On the IFB cluster
+
+On the IFB cluster, commands are sent to cluster nodes via srun. 
+
+```
+srun --mem=32GB Rscript --vanilla misc/main_processes.R
+```
+
 
 ## Running selected analyses
 
 ```
-cd ~/RNAseqMVA
 R --vanilla
 ```
 
