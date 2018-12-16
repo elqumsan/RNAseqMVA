@@ -169,28 +169,13 @@ loadRecountExperiment <- function(recountID,
   # summary(result$originalCounts)
 
 
-  # ################################################################
-  # ## Specify sample classes (classLabels) by extracting information about specified class columns
-  # if (is.null(classColumn) || (length(classColumn) < 1)) {
-  #   stop("classColumn must be defined. ")
-  # } else if (length(classColumn) == 1) {
-  #   result$original$classLabels <-  as.vector(result$original$phenoTable[, classColumn])
-  # } else {
-  #   ## Combine several columns to establish the classLabels
-  #   result$original$classLabels <- apply(result$original$phenoTable[, classColumn], 1, paste, collapse="_")
-  # }
-  # table(classLabels)
-
-  # result$original$classNames <- sort(unique(result$original$classLabels))
-  # result$original$nbClasses <- length(result$original$classNames)
-  # class(result$original) <- append(class(result$original), "DataTableWithClasses")
 
   message.with.time("Finished loading Recount experiment ID ", parameters$recountID)
   return(result)
 }
 
 
-## Mustafa; you make a method of StudyCase from thi rough code
+## Mustafa, can you make a method of StudyCase from this rough code ?
 
 
 ## Histogram of mean counts per gene for a give class (Bone marrow here)
