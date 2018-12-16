@@ -7,16 +7,7 @@
 ## choose the data.type in return we will pass the data.type for each experiment.
 ## Choice of the classifier
 
-## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
-allVariables.mem.image <- file.path(
-  project.parameters$global$dir$memoryImages,
-  paste(sep = "", "classif_eval_all_variables_",
-      paste(collapse = "-", selectedRecountIDs),
-      "_", Sys.Date(), ".Rdata"))
-
-
-
-## If requrested, reset the parameters for all the study cases
+## If requested, reset the parameters for all the study cases
 ## This is used to re-run the analyses on each study case after
 ## having changed some parameters in the yaml-specific configuration file
 if (project.parameters$global$reload.parameters) {
@@ -33,6 +24,8 @@ if (project.parameters$global$reload.parameters) {
     }
   }
 }
+
+
 
 train.test.results.all.variables.per.classifier <- list()
 
@@ -147,10 +140,30 @@ for (classifier in parameters$classifiers) {
 } # end loop over classifiers
 
 
+## Save the results in a separate object, that can be reloaded later
+## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
+save.result.file <- file.path(
+  project.parameters$global$dir$memoryImages,
+  paste0(
+    "normalisation_impact",
+    "_", paste(collapse = "-", project.parameters$global$classifiers),
+    "_", paste(collapse = "-", selectedRecountIDs),
+    "_", Sys.Date(), "_results.Rdata")
+)
+dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
+save(train.test.results.all.variables.per.classifier, file = save.result.file)
+message.with.time(
+  "Saved results after eval of normalisation impact: ",
+  save.result.file)
 
-for (classifier in project.parameters$global$classifiers) {
+
+
+#### Summarize results for all the study cases and all the classifiers
+classifiers <- project.parameters$global$classifiers
+par(mfrow = c(length(studyCases), length(classifiers)))
+for (classifier in classifiers) {
   for (recountID in selectedRecountIDs) {
-    studyCase <- studyCases[[studyCase]]
+    studyCase <- studyCases[[recountID]]
 
     message("Summarizing results. RecountID\t", recountID, "\tclassifier\t", classifier)
     experimentList <- train.test.results.all.variables.per.classifier[[recountID]][[classifier]]
@@ -162,20 +175,30 @@ for (classifier in project.parameters$global$classifiers) {
     expLabels <- sub(pattern = paste0(studyCase, "_"), replacement = "", x = expLabels)
     expLabels <- sub(pattern = paste0(studyCase, "_"), replacement = "", x = expLabels)
 
-    #### Error box plot ####
+    #### Error box plots ####
     expMER <- studyCase$datasetsForTest$filtered$randExpectedMisclassificationRate
     ErrorRateBoxPlot(experimentList = experimentList, classifier = "SVM", expMisclassificationRate = expMER)
-
   }
 }
+par(mfrow = c(1, 1))
 
 # stop("HELLO")
 
 ## Save a memory image that can be re-loaded next time to avoid re-computing all the normalisation and so on.
 if (project.parameters$global$save.image) {
+  ## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
+  mem.image.file <- file.path(
+    project.parameters$global$dir$memoryImages,
+    paste0(
+      "normalisation_impact",
+    "_", paste(collapse = "-", project.parameters$global$classifiers),
+    "_", paste(collapse = "-", selectedRecountIDs),
+    "_", Sys.Date(), "_memory-image.Rdata")
+  )
+
   dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
-  message.with.time("Saving memory image after eval of all variables: ", allVariables.mem.image)
-  save.image(file = allVariables.mem.image)
+  message.with.time("Saving memory image after eval of all variables: ", mem.image.file)
+  save.image(file = mem.image.file)
 }
 
 ###############################################################################################
