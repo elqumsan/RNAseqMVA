@@ -148,6 +148,27 @@ for (classifier in parameters$classifiers) {
 
 
 
+for (classifier in project.parameters$global$classifiers) {
+  for (recountID in selectedRecountIDs) {
+    studyCase <- studyCases[[studyCase]]
+
+    message("Summarizing results. RecountID\t", recountID, "\tclassifier\t", classifier)
+    experimentList <- train.test.results.all.variables.per.classifier[[recountID]][[classifier]]
+
+    #### Summary table ####
+    TTsummary <- SummarizeTrainTestResults(experimentList = experimentList)
+    names(TTsummary)
+    expLabels <- TTsummary$experimentLabels
+    expLabels <- sub(pattern = paste0(studyCase, "_"), replacement = "", x = expLabels)
+    expLabels <- sub(pattern = paste0(studyCase, "_"), replacement = "", x = expLabels)
+
+    #### Error box plot ####
+    expMER <- studyCase$datasetsForTest$filtered$randExpectedMisclassificationRate
+    ErrorRateBoxPlot(experimentList = experimentList, classifier = "SVM", expMisclassificationRate = expMER)
+
+  }
+}
+
 # stop("HELLO")
 
 ## Save a memory image that can be re-loaded next time to avoid re-computing all the normalisation and so on.
@@ -158,13 +179,13 @@ if (project.parameters$global$save.image) {
 }
 
 ###############################################################################################
-  # ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
-  #                  classifier = classifier,
-  #                  main = paste(sep="",
-  #                               classifier, ": all variables vs all PCs,", "\n",
-  #                               parameters$recountID, ", ",
-  #                               parameters$iterations, " iterations, ","\n",
-  #                               data.type = "diverse data type"))
-  #
+# ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
+#                  classifier = classifier,
+#                  main = paste(sep="",
+#                               classifier, ": all variables vs all PCs,", "\n",
+#                               parameters$recountID, ", ",
+#                               parameters$iterations, " iterations, ","\n",
+#                               data.type = "diverse data type"))
+#
 
 message.with.time("Finished script 06_all_vaariables_vs_all_PCs.R")
