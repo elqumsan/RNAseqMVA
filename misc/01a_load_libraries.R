@@ -21,3 +21,4 @@ if (!require(derfinder)) {
   BiocManager::valid()
 }
 
+require("RNAseqMVA")
