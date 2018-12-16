@@ -40,6 +40,9 @@
 #'         \item originalCounts: count table after merge runs proccess in order to get ride of multipl runs per sample.
 #'    }
 #'
+#' @import recount
+#' @import SummarizedExperiment
+#' @import S4Vectors
 #' @export
 loadRecountExperiment <- function(recountID,
                                   parameters,
@@ -53,7 +56,7 @@ loadRecountExperiment <- function(recountID,
                                   forceDownload = FALSE,
                                   ...) {
 
-  LoadRequiredBioconductorPackages(c("recount", "SummarizedExperiment", "S4Vectors"))
+#  LoadRequiredBioconductorPackages(c("recount", "SummarizedExperiment", "S4Vectors"))
 
 
   message.with.time("loadRecountExperiment()\trecountID = ", recountID)
@@ -80,30 +83,24 @@ loadRecountExperiment <- function(recountID,
   result <- list()
 
   #### Create studyPath directory ####
-  ## NOTE: THIS IS STILL PROVIDED AS A GLOBAL VARIABLE, SHOULD BE A PARAMETER !
-  if (!file.exists(studyPath)) {
-    message("\tCreating directory to store Recount dataset ", recountID," in ", studyPath)
-    dir.create(studyPath, recursive = TRUE, showWarnings = FALSE)
+  if (!file.exists(parameters$studyPath)) {
+    message("\tCreating directory to store Recount dataset ", recountID," in ", parameters$studyPath)
+    dir.create(parameters$studyPath, recursive = TRUE, showWarnings = FALSE)
   }
 
   #### Define the file where the downloaded counts will be stored ####
-  rseFile <- file.path(studyPath, "rse_gene.Rdata")
+  rseFile <- file.path(parameters$studyPath, "rse_gene.Rdata")
   parameters$rseFile <- rseFile
 
   #### Add parameters to the result ####
   result$parameters <- parameters
-  # result$param <-
-  #   c("recountID" = recountID,
-  #     "studyPath" = studyPath,
-  #     "mergeRuns" = mergeRuns,
-  #     "rseFile" = rseFile)
 
   #### Download the counts if required ####
-  if ((forceDownload == TRUE) || (!file.exists(rseFile))) {
+  if ((forceDownload) || (!file.exists(rseFile))) {
     if (verbose) {
       message("\tDowloading counts from ReCount for study ", recountID)
     }
-    url <- download_study(recountID, outdir = studyPath)
+    url <- download_study(recountID, outdir = parameters$studyPath)
     result$param["url"] <- url
   }
 
