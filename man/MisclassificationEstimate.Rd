@@ -5,7 +5,7 @@
 \title{RNA-Seq classifier evaluation to assesse the performance of the classifier}
 \usage{
 MisclassificationEstimate(dataset, iteration, classifier,
-  permute = FALSE)
+  permute = FALSE, stratifiedPermutation = FALSE)
 }
 \arguments{
 \item{dataset}{an object of class DataTableWithTrainTestSets}
