@@ -31,11 +31,10 @@ if (project.parameters$global$reload) {
     if (exists("studyCases")) {
       for (recountID in names(studyCases)) {
         parameters <- initRecountID(recountID, project.parameters)
-      	studyCases[[recountID]]$parameters <- parameters
-	for (dataSetName in names(studyCases[[recountID]]$datasetsForTest)) {
+        studyCases[[recountID]]$parameters <- parameters
+        for (dataSetName in names(studyCases[[recountID]]$datasetsForTest)) {
           studyCases[[recountID]]$datasetsForTest[[dataSetName]]$parameters <- parameters
         }
-        #  print (studyCases[[recountID]]$parameters$dir$tablesDetail)
       }
     }
   }
@@ -66,34 +65,32 @@ if (project.parameters$global$reload) {
     #### Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files ###
     exportTables(studyCases[[recountID]])
 
-    ## TO DO LATER: CHECK IF THESE FIGURES ARE WELL GENERATED, AND INCOROPORATE THEM IN THE plot.figure methods
-
-    # plot.file <- file.path(parameters$dir$NormalizationImpact, "log2normCount_hist.pdf")
-    # message("\tlog2(norm counts) histogram\t", plot.file)
-    # pdf(plot.file, width = 7, height = 5)
-    # hist(unlist(studyCases[[recountID]]$log2norm$counts), breaks=100,
-    #      col="grey",
-    #      main=paste("log2(norm counts) distrib;", recountID),
-    #      las=1,
-    #      xlab="log2(norm counts)",
-    #      ylab="Frequency")
-    #
-    # silence <- dev.off()
-
-    #   if (ncol(studyCases[[recountID]]$log2norm$dataTable) != length(studyCases[[recountID]]$log2norm$classLabels)){
-    #     stop(" the Number of samples in log2norm counts should be the same length of classes")
-    #   }
-    #
-    #
-    #
-    # } else {
-    #   message.with.time("Skipping normalisation for count Table with log2 transformation")
-    # }
+    # ## Plot histograms of log2 normalized counts
+    dataSetNames <- names(studyCases[[recountID]]$datasetsForTest)
+    log2countNames <- grep(pattern = "log2$", dataSetNames, value = TRUE)
+    shortLabel <- parameters$short_label
+    for (dataSetName in log2countNames) {
+      plot.file <- file.path(parameters$dir$NormalizationImpact,
+                             paste0(recountID, "_", dataSetName, "_hist", ".pdf"))
+      message("\t", dataSetName, " histogram", "\t", plot.file)
+      pdf(plot.file, width = 7, height = 5)
+      par.ori <- par(no.readonly = TRUE)
+      par(mar = c(5.1, 6.1, 4.1, 1))
+      hist(unlist(studyCases[[recountID]]$datasetsForTest[[datasetName]]$dataTable), breaks = 100,
+           col = "grey",
+           main = paste0(dataSetName, " count distribution",
+                        "\n", shortLabel, "; ", recountID),
+           las = 1,
+           xlab = "log2(norm counts)",
+           ylab = NA)
+      par <- par.ori
+      silence <- dev.off()
+    }
 
 
   } # end loop over recountIDs
   message("Finished loading ", length(studyCases), " study cases")
-}
+} ## end loading condition
 
 
 ## Compute statistics about loaded datasets
@@ -289,7 +286,7 @@ for (recountID in selectedRecountIDs) {
   )
   # system(paste("open", plot.file))
 }
-dev.off()
+silence <- dev.off()
 
 #### Save a memory image that can be re-loaded next time ####
 ## to avoid re-computing all the normalisation and so on.
@@ -310,5 +307,3 @@ if (project.parameters$global$save.image) {
 ## Indicate that this script has finished running
 message.with.time("finished executing 02_load_and_normalise_counts.R")
 
-## Temporary
-# source('misc/06_all_variables_vs_all_PCs.R')
