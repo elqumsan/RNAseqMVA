@@ -32,8 +32,8 @@ if (project.parameters$global$reload) {
       for (recountID in names(studyCases)) {
         parameters <- initRecountID(recountID, project.parameters)
         studyCases[[recountID]]$parameters <- parameters
-        for (dataSetName in names(studyCases[[recountID]]$datasetsForTest)) {
-          studyCases[[recountID]]$datasetsForTest[[dataSetName]]$parameters <- parameters
+        for (datasetName in names(studyCases[[recountID]]$datasetsForTest)) {
+          studyCases[[recountID]]$datasetsForTest[[datasetName]]$parameters <- parameters
         }
       }
     }
@@ -66,19 +66,19 @@ if (project.parameters$global$reload) {
     exportTables(studyCases[[recountID]])
 
     # ## Plot histograms of log2 normalized counts
-    dataSetNames <- names(studyCases[[recountID]]$datasetsForTest)
-    log2countNames <- grep(pattern = "log2$", dataSetNames, value = TRUE)
+    datasetNames <- names(studyCases[[recountID]]$datasetsForTest)
+    log2countNames <- grep(pattern = "log2$", datasetNames, value = TRUE)
     shortLabel <- parameters$short_label
-    for (dataSetName in log2countNames) {
+    for (datasetName in log2countNames) {
       plot.file <- file.path(parameters$dir$NormalizationImpact,
-                             paste0(recountID, "_", dataSetName, "_hist", ".pdf"))
-      message("\t", dataSetName, " histogram", "\t", plot.file)
+                             paste0(recountID, "_", datasetName, "_hist", ".pdf"))
+      message("\t", datasetName, " histogram", "\t", plot.file)
       pdf(plot.file, width = 7, height = 5)
       par.ori <- par(no.readonly = TRUE)
       par(mar = c(5.1, 6.1, 4.1, 1))
       hist(unlist(studyCases[[recountID]]$datasetsForTest[[datasetName]]$dataTable), breaks = 100,
            col = "grey",
-           main = paste0(dataSetName, " count distribution",
+           main = paste0(datasetName, " count distribution",
                         "\n", shortLabel, "; ", recountID),
            las = 1,
            xlab = "log2(norm counts)",
