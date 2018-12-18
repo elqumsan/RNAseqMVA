@@ -1,13 +1,14 @@
 global: ## Global parameters are those who are the samee across all study cases
-#  selected_recount_ids: ['SRP042620'] # breast cancer
-#  selected_recount_ids: ['SRP042161']
-#  selected_recount_ids: ['SRP062966'] # Lupus
-#  selected_recount_ids: ['SRP035988'] # psoriasis
-#  selected_recount_ids: ['SRP035988'] # psoriasis
-#  selected_recount_ids: ['SRP062966']    
-  selected_recount_ids: ['SRP066834']    
+#  selected_recount_ids: ['SRP042620'] # Breast cancer
+#  selected_recount_ids: ['SRP056295'] # Acute myeloid leukemia
+  selected_recount_ids: ['SRP035988'] # Psoriasis
+#  selected_recount_ids: ['SRP061240'] # Plasma RNA in cancer
+#  selected_recount_ids: ['SRP057196'] # Brain cells (sc)
+#  selected_recount_ids: ['SRP062966'] # Lupus (sc)
+#  selected_recount_ids: ['SRP066834'] # Cerebral organoids and fetal neocortex (sc)
+#  selected_recount_ids: ['SRP042161'] # Glioblastoma (sc) # PROBLEM
 
-#  selected_recount_ids: ["SRP042620", "SRP057196", "SRP056295", "SRP035988", "SRP061240", "SRP062966", "SRP066834"]
+#  selected_recount_ids: ["SRP042620", "SRP056295", "SRP035988", "SRP061240", "SRP057196", "SRP062966", "SRP066834"]
 
   dir: ## Directories
     main: "~/RNAseqMVA"
@@ -21,7 +22,7 @@ global: ## Global parameters are those who are the samee across all study cases
     na.rm: TRUE          # Discard features with NA values
     null.variance: TRUE # Discard features with null variance
     nearZeroVarFilter: FALSE # near-zeroa variance filtering. I disactivate this option because it is particularly bad for single-cell RNA-seq, and it is not specially interesting from bulk RNA-seq
-    minSamplesPerClass: 15 ## minmal number of samples per clas (class filtering)
+    minSamplesPerClass: 15 ## minmsal number of samples per clas (class filtering)
 
   standardization:
 #    methods: ["TMM"]
@@ -31,12 +32,12 @@ global: ## Global parameters are those who are the samee across all study cases
     epsilon: 0.1    ## For log2 transformation
 
   perm.prefix: "permLabels"
-  jobs: 20 ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
+  jobs: 5 ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
   iterations: 10 ## Number of iterations for the classiifers
 
+  reload.parameters: FALSE  ## Reload parameters after having loaded memory image, in order to take into account the new parameter values
   reload: FALSE  ## If TRUE, reload previously stored memory image to shortcut the download, loading and normalisation of the raw counts
   reload.date: "2018-12-17" ## Date of the saved memory image to reload
-  reload.parameters: FALSE  ## Reload parameters after having loaded memory image, in order to take into account the new parameter values
   compute: TRUE ## If FALSE, do not run the heavy computations, just generate the pictures and save tables
   save.tables: TRUE ## If TRUE, save tab-delimited files with the results
   save.image: TRUE
