@@ -64,7 +64,7 @@ loadCounts <- function(recountID,
   # sample in order to obtain sample-wise count rather than run-wise counts.
   experiment <- loadRecountExperiment(recountID = recountID, parameters = parameters, ...)
 
-  message("\toriginal dataTable contains ",
+  message("\t", "Original dataTable contains ",
           nrow(experiment$originalCounts$dataTable), " rows (genes) and ",
           ncol(experiment$originalCounts$dataTable), " columns (samples).")
 
