@@ -46,7 +46,8 @@ if (project.parameters$global$reload) {
   studyCases <- list() ## a list containing all the loaded datasets + their pre-processed data
   #recountID <- "SRP057196"
   # recountID <- "SRP056295"
-  recountID <- "SRP042620" ## For quick test and debugging
+  # recountID <- "SRP042620" ## For quick test and debugging
+  recountID <- selectedRecountIDs[1]
   for (recountID in selectedRecountIDs) {
 
 
