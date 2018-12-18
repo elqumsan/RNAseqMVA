@@ -20,7 +20,7 @@ if (project.parameters$global$reload.parameters) {
       for (dataSetName in names(studyCases[[recountID]]$datasetsForTest)) {
         studyCases[[recountID]]$datasetsForTest[[dataSetName]]$parameters <- parameters
       }
-      #  print (studyCases[[recountID]]$parameters$dir$tablesDetail)
+      rm(parameters)
     }
   }
 }
@@ -35,7 +35,8 @@ train.test.results.all.variables.per.classifier <- list()
 ## Loop over recountIDs
 ## Loop over classifiers
 # classifier <- "svm" ## For quick test
-for (classifier in parameters$classifiers) {
+# parameters$classifiers[1] ## For quick test
+for (classifier in project.parameters$global$classifiers) {
 
   # recountID <- "SRP042620"
   for (recountID in selectedRecountIDs) {
