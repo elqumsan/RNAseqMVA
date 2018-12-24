@@ -1,11 +1,10 @@
 
-##### All variables versus all PCs. #####
+##### Impact of normalisation on classifier perfomances ####
+
+## Here we use all variables. we will further test the impact of
+## feature selection in separate scripts.
+
 ##
-## QUESTION: is it better to use the PCAs-transformed data, and, if so, is it better to use a subset of the first components or all the components ?
-## For the time being we test this with only one classifier (KNN, default k)  but we will come back to it with other classifiers later.
-## IMPORTANT NOTE : i would like to pay your intention for here we should take " data.type, so that we will not give the user to
-## choose the data.type in return we will pass the data.type for each experiment.
-## Choice of the classifier
 
 ## If requested, reset the parameters for all the study cases
 ## This is used to re-run the analyses on each study case after
