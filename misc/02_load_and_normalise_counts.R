@@ -288,9 +288,11 @@ for (recountID in selectedRecountIDs) {
 }
 silence <- dev.off()
 
-#### Save a memory image that can be re-loaded next time ####
-## to avoid re-computing all the normalisation and so on.
-if (project.parameters$global$save.image) {
+#### Save a memory image that can be re-loaded in the future ####
+## to avoid re-redoall the normalisation computing
+
+## TO DO: SAVE MAGE OF studyCases RATHER THAN THE WHOLE MEMORY SPACE ##
+if ((project.parameters$global$save.image) && (!project.parameters$global$reload)) { 
   image.date <- Sys.Date()
   studyCases.mem.image <- file.path(
     project.parameters$global$dir$memoryImages,
