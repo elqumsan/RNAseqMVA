@@ -7,8 +7,8 @@ targets:
 	@echo "	build_and_install	Build and install RNAseqMVA package for R"
 	@echo "	convert_pc_plots_all_study_cases	convert PC plots from pdf to ${IMG_FORMAT} for all study cases"
 	@echo "	sync_pc_plots_all_study_cases	synchronize PC plots from workspace to the manuscript folder"
-	@echo "	ws_dir_to_rsatix	synchronize a directory (default: TO_SYNC=${TO_SYNC}) from your workspace to the shared space on rsatix"
-	@echo "	ws_dir_from_rsatix	synchronize a directory from the workspace on rsatix to your workspace"
+	@echo "	ws_dir_to_server	synchronize a directory (default: TO_SYNC=${TO_SYNC}) from your workspace to the shared space on remote server"
+	@echo "	ws_dir_from_server	synchronize a directory from the workspace on remote server to your workspace"
 
 # SRP035988 SRP042620 SRP056295 SRP057196 SRP061240 SRP062966 SRP066834
 IMG_FORMAT=png
@@ -81,18 +81,23 @@ sync_pc_plots_all_study_cases:
 		${MAKE} sync_pc_plots_one_study_case STUDY_CASE=$${i}; \
 	done
 
-RSATIX=rsat-tagc.univ-mrs.fr
+SERVER=rsat-tagc.univ-mrs.fr
 LOGIN=rnaseqmva
-RSATIX_LOGIN=rnaseqmva@${RSATIX}
-RSATIX_WS=/workspace/RNAseqMVA/RNAseqMVA_workspace
+
+SERVER=core.cluster.france-bioinformatique.fr
+LOGIN=jvanhelden
+
+SERVER_LOGIN=${LOGIN}@${SERVER}
+REMOTE_WS=RNAseqMVA_workspace
 LOCAL_WS=~/RNAseqMVA_workspace/
 TO_SYNC=memory_images
 RSYNC_OPT=
 OUT_SOURCE=${LOCAL_WS}/${TO_SYNC}
-OUT_TARGET=${LOGIN}@${RSATIX}:${RSATIX_WS}/
-ws_dir_to_rsatix:
-	@echo "Synchronizing directory from your workspace to shared space on ${RSATIX}"
+OUT_TARGET=${LOGIN}@${RSATIX}:${REMOTE_WS}/
+ws_dir_to_server:
+	@echo "Synchronizing directory from your workspace to shared space on ${SERVER}"
 	@echo "	LOCAL_WS	${LOCAL_WS}"
+	@echo "	REMOTE_WS	${REMOTE_WS}"
 	@echo "	TO_SYNC		${TO_SYNC}"
 	@echo "	RSYNC_OPT	${RSYNC_OPT}"
 	@echo "	OUT_SOURCE	${OUT_SOURCE}"
@@ -100,10 +105,11 @@ ws_dir_to_rsatix:
 	@echo "	EXCLUDE_OPT	${EXCLUDE_OPT}"
 	@rsync -ruptvl ${EXCLUDE_OPT} ${RSYNC_OPT} ${OUT_SOURCE} ${OUT_TARGET}
 
-IN_SOURCE=${LOGIN}@${RSATIX}:${RSATIX_WS}/${TO_SYNC}
+IN_SOURCE=${LOGIN}@${SERVER}:${REMOTE_WS}/${TO_SYNC}
 IN_TARGET=${LOCAL_WS}
-ws_dir_from_rsatix:
-	@echo "Synchronizing directory from ${RSATIX} shared space to your workspace"
+ws_dir_from_server:
+	@echo "Synchronizing directory from ${SERVER} shared space to your workspace"
+	@echo "	REMOTE_WS	${REMOTE_WS}"
 	@echo "	LOCAL_WS	${LOCAL_WS}"
 	@echo "	TO_SYNC		${TO_SYNC}"
 	@echo "	RSYNC_OPT	${RSYNC_OPT}"
@@ -112,3 +118,6 @@ ws_dir_from_rsatix:
 	@echo "	EXCLUDE_OPT	${EXCLUDE_OPT}"
 	@rsync -ruptvl ${EXCLUDE_OPT} ${RSYNC_OPT} ${IN_SOURCE} ${IN_TARGET}
 
+
+results_from_server:
+	${MAKE} ws_dir_from_server TO_SYNC=results
