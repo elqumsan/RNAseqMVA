@@ -7,8 +7,9 @@ targets:
 	@echo "	build_and_install	Build and install RNAseqMVA package for R"
 	@echo "	convert_pc_plots_all_study_cases	convert PC plots from pdf to ${IMG_FORMAT} for all study cases"
 	@echo "	sync_pc_plots_all_study_cases	synchronize PC plots from workspace to the manuscript folder"
-	@echo "	ws_dir_to_server	synchronize a directory (default: TO_SYNC=${TO_SYNC}) from your workspace to the shared space on remote server"
-	@echo "	ws_dir_from_server	synchronize a directory from the workspace on remote server to your workspace"
+	@echo "	ws_dir_to_server	synchronize a directory (default: TO_SYNC=${TO_SYNC}) from local workspace to the shared space of a remote server"
+	@echo "	ws_dir_from_server	synchronize a directory from the workspace of a remote server to local workspace"
+	@echo "	results_from_server	synchronize results from the workspace of a remote server to local workspace"
 
 # SRP035988 SRP042620 SRP056295 SRP057196 SRP061240 SRP062966 SRP066834
 IMG_FORMAT=png
