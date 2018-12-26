@@ -87,13 +87,34 @@ if (project.parameters$global$reload) {
       silence <- dev.off()
     }
 
+    ## Save the study case object
+    if (project.parameters$global$save.image) {
+      studyCaseFile <-  file.path(
+        project.parameters$global$dir$memoryImages,
+        paste0("loaded_studyCase_", recountID, ".Rdata"))
+      message("Saving study case\t", recountID, "\t", studyCaseFile)
+      studyCase <- studyCases[[recountID]]
+      save(studyCase, file = studyCaseFile)
+
+      for (datasetName in names(studyCase$datasetsForTest)) {
+        datasetFile <-  file.path(
+          project.parameters$global$dir$memoryImages,
+          paste0("loaded_dataset_", recountID, "_", datasetName, ".Rdata"))
+        message("Saving dataset\t", recountID, "\t", datasetName, "\t", datasetFile)
+        dataset <- studyCase$datasetsForTest[[datasetName]]
+        save(dataset, file = datasetFile)
+
+      }
+      rm(dataset)
+      rm(studyCase)
+    }
 
   } # end loop over recountIDs
   message("Finished loading ", length(studyCases), " study cases")
 } ## end loading condition
 
 
-## Compute statistics about loaded datasets
+#### Compute statistics about loaded datasets ####
 studyCasesStats <- data.frame()
 message("Computing summary statistics for ", length(studyCases), " study case(s). ")
 for (recountID in selectedRecountIDs) {

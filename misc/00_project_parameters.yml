@@ -1,14 +1,14 @@
 global: ## Global parameters are those who are the samee across all study cases
 #  selected_recount_ids: ['SRP042620'] # Breast cancer
 #  selected_recount_ids: ['SRP056295'] # Acute myeloid leukemia
-  selected_recount_ids: ['SRP035988'] # Psoriasis
+#  selected_recount_ids: ['SRP035988'] # Psoriasis
 #  selected_recount_ids: ['SRP061240'] # Plasma RNA in cancer
 #  selected_recount_ids: ['SRP057196'] # Brain cells (sc)
 #  selected_recount_ids: ['SRP062966'] # Lupus (sc)
 #  selected_recount_ids: ['SRP066834'] # Cerebral organoids and fetal neocortex (sc)
 #  selected_recount_ids: ['SRP042161'] # Glioblastoma (sc) # PROBLEM
 
-#  selected_recount_ids: ["SRP042620", "SRP056295", "SRP035988", "SRP061240", "SRP057196", "SRP062966", "SRP066834"]
+  selected_recount_ids: ["SRP042620", "SRP056295", "SRP035988", "SRP061240", "SRP057196", "SRP062966", "SRP066834"]
 
   dir: ## Directories
     main: "~/RNAseqMVA"
@@ -32,8 +32,8 @@ global: ## Global parameters are those who are the samee across all study cases
     epsilon: 0.1    ## For log2 transformation
 
   perm.prefix: "permLabels"
-  jobs: 5 ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
-  iterations: 10 ## Number of iterations for the classiifers
+  jobs: 50 ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
+  iterations: 50 ## Number of iterations for the classiifers
 
   reload.parameters: FALSE  ## Reload parameters after having loaded memory image, in order to take into account the new parameter values
   reload: FALSE  ## If TRUE, reload previously stored memory image to shortcut the download, loading and normalisation of the raw counts
@@ -42,7 +42,7 @@ global: ## Global parameters are those who are the samee across all study cases
   save.tables: TRUE ## If TRUE, save tab-delimited files with the results
   save.image: TRUE
   draw.plot : TRUE
-  classifiers: ["knn"]
+  classifiers: ["svm"]
 #  classifiers: ["svm", "knn", "rf"] # TO ADD LATER: "lda", "qda" + the one suggested by Aitor
 
   ## Mustafa, I suppress data.types because I don't think we need them anymore
