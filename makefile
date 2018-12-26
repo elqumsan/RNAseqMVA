@@ -112,3 +112,7 @@ ws_dir_from_rsatix:
 	@echo "	EXCLUDE_OPT	${EXCLUDE_OPT}"
 	@rsync -ruptvl ${EXCLUDE_OPT} ${RSYNC_OPT} ${IN_SOURCE} ${IN_TARGET}
 
+EXCLUDE_NODE=-x cpu-node-1
+srun_on_ifb_cluster:
+	srun --mem 32GB --cpus=50 ${EXCLUDE_NODE} Rscript --vanilla misc/main_processes.R
+
