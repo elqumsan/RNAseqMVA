@@ -15,6 +15,9 @@ recountIDs <- grep(pattern = "^SRP", x = names(project.parameters), value = TRUE
 message("\tYAML config file contains ", length(recountIDs)," recount IDs.")
 message("\tSelected ", length(selectedRecountIDs)," recount IDs: ", paste(collapse = "; ", selectedRecountIDs))
 
+## Feature type
+message("\tFeature type: ", project.parameters$global$feature)
+
 #### RecountIDs with problems (TO INVESTIGATE / DEBUG LATER) ####
 recountIDs.with.problems <- c("SRP003611" = "the number of samples drops after run merging",
                               "SRP039694" = '	Building class-specific attributes for DataTableWithClasses	SRP039694

@@ -21,7 +21,7 @@ if (project.parameters$global$reload) {
 
   ## Reload parameters (their value has been over-written by those loade in memory image)
 
-  ## If requrested, reset the parameters for all the study cases
+  ## If requested, reset the parameters for all the study cases
   ## This is used to re-run the analyses on each study case after
   ## having changed some parameters in the yaml-specific configuration file
   if (!is.null(project.parameters$global$reload.parameters)
@@ -50,7 +50,7 @@ if (project.parameters$global$reload) {
   for (recountID in selectedRecountIDs) {
 
 
-    message.with.time("Building StudyCase for recountID\t", recountID)
+    message.with.time("Building StudyCase for recountID\t", recountID, "\n\tfeature type: ", project.parameters$global$feature)
 
     #### Specify generic and recountID-specific parameters ####
     parameters <- initRecountID(recountID, project.parameters)
@@ -313,7 +313,7 @@ silence <- dev.off()
 ## to avoid re-redoall the normalisation computing
 
 ## TO DO: SAVE MAGE OF studyCases RATHER THAN THE WHOLE MEMORY SPACE ##
-if ((project.parameters$global$save.image) && (!project.parameters$global$reload)) { 
+if ((project.parameters$global$save.image) && (!project.parameters$global$reload)) {
   image.date <- Sys.Date()
   studyCases.mem.image <- file.path(
     project.parameters$global$dir$memoryImages,
