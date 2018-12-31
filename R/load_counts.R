@@ -4,7 +4,7 @@
 #' and the vector of class labels, prepares and filters the count table, via
 #' wrapper runs by sample.
 #' @param recountID  number of experiment
-#' @param paramters list of parameters (supposedly loaded from the yaml configuration file)
+#' @param parameters list of parameters (supposedly loaded from the yaml configuration file)
 #' @param ...  additional parameters are passed to loadRecountExperiment()
 #'
 #' @return it is returen the two feature types:
@@ -18,14 +18,11 @@
 #' @examples
 #'
 #' ##############################################
-#' ## Load a RNA-seq dataset and merge counts per sample
-#' x <- loadCounts( recountID = "SRP048759", mergeRuns=T, classColumn = "tissue")
+#' ## Load an RNA-seq dataset and merge counts per sample.
+#' This assumes that the required parameters have been specified
+#' in the YAML configuration file.
+#' x <- loadCounts( recountID = "SRP048759", parameters = parameters)
 #'
-#' ################################################################
-#' ## RNA-seq data combining 2 columns to define sample classes (classLabels vector)
-#' ## Reduce the min number of samples per class for this dataset.
-#' x <- loadCounts( recountID = "SRP057196", mergeRuns=T,
-#'     classColumn = c("tissue", "cell.type"), minSamplesPerClass=5)
 #'
 #' ## RCurl and XML are Required for recount but not declared in dependencies
 #' @import RCurl
@@ -41,7 +38,7 @@ loadCounts <- function(recountID,
   message.with.time("Starting loadCounts() for Recount ID ", recountID)
 
   ## Check required parameters
-  for (p in c("classColumn", "mergeRuns", "sampleIdColumn")) {
+  for (p in c("classColumn", "mergeRuns", "sampleIdColumn", "feature")) {
     if (is.null(parameters[[p]])) {
       stop("Missing required parameter: '", p,
            "'.\n\tPlease check configuration file. ")
@@ -65,7 +62,7 @@ loadCounts <- function(recountID,
   experiment <- loadRecountExperiment(recountID = recountID, parameters = parameters, ...)
 
   message("\t", "Original dataTable contains ",
-          nrow(experiment$originalCounts$dataTable), " rows (genes) and ",
+          nrow(experiment$originalCounts$dataTable), " rows (", parameters$feature,") and ",
           ncol(experiment$originalCounts$dataTable), " columns (samples).")
 
   ################################################
