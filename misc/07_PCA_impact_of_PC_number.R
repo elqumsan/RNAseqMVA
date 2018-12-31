@@ -5,13 +5,15 @@ image.dir <- project.parameters$global$dir$memoryImages
 dir.create(image.dir, showWarnings = FALSE, recursive = TRUE)
 
 ## Define the path to the memory image for this test (compare classifier whenn they use first PCs as features)
+featureType <- project.parameters$global$feature
 image.file <- file.path(
   project.parameters$global$dir$memoryImages,
   paste(sep = "", "classif_eval_nb-of-PCs_",
         paste(collapse = "-", selectedRecountIDs),
+        "_", featureType,
         "_", Sys.Date(), ".Rdata"))
 
-## Reset the parameteres for all the study cases.
+#### Reset the parameters for all the study cases. ####
 ## This is used to re-run the analyses on each study case after having changed some parameters in the yaml-specific configuration file.
 if (project.parameters$global$reload.parameters) {
   project.parameters <- yaml.load_file(configFile)
@@ -59,6 +61,11 @@ for (classifier in classifiers) {
     #### Iterate over PCs.to.test ####
     data.type <- "TMM_log2_PC"
     for (data.type in project.parameters$global$PCs.to.test) {
+      # datasetFile <-  file.path(
+      #   project.parameters$global$dir$memoryImages,
+      #   paste0("loaded_dataset_", recountID, "_", data.type, ".Rdata"))
+      # load(datasetFile, verbose = TRUE)
+      # dataset
 
       #      dataset <- studyCases[[recountID]]$datasetsForTest$log2normPCs$dataTable
       dataset <- studyCases[[recountID]]$datasetsForTest[[data.type]]
@@ -187,10 +194,15 @@ for (classifier in classifiers) {
 
 ## Save the results in a separate object, that can be reloaded later
 ## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
+dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
+featureType <- project.parameters$global$feature
 save.result.file <- file.path(
   project.parameters$global$dir$memoryImages,
-  "feature_selection_first_PCs.Rdata")
-dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
+  paste0(
+    "feature_selection_first_PCs",
+    "_", paste(collapse = "-", selectedRecountIDs),
+    "_", featureType,
+    ".Rdata"))
 save(train.test.results.PCs, file = save.result.file)
 message.with.time(
   "Saved results after eval of feature selection with first PCs: ",
