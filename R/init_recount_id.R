@@ -19,7 +19,9 @@ initRecountID <- function(recountID, project.parameters) {
 
   ## Specify the current recountID in parameters
   parameters$recountID <- recountID
-  parameters$studyPath <- file.path(parameters$dir$workspace, "data", recountID)
+  parameters$studyPath <- file.path(
+    parameters$dir$workspace, "data",
+    paste(sep = "_", recountID, parameters$feature))
 
 
   ## Overwrite default parameters wih project-specific parameters
@@ -83,14 +85,20 @@ initRecountID <- function(recountID, project.parameters) {
 
   ## Sub-directory to save the general figures of this study case
   if (is.null(parameters$dir$figures)) {
-    parameters$dir$figures <- file.path(parameters$dir$results, recountID, "figures")
+    parameters$dir$figures <- file.path(
+      parameters$dir$results,
+      paste(sep = "_", recountID, parameters$feature),
+      "figures")
   }
   dir.create(path = parameters$dir$figures, recursive = TRUE, showWarnings = FALSE)
   message("\t\tfigures\t", parameters$dir$figures)
 
   ## Sub-directory to save the tab-separated value (TSV) files
   if (is.null(parameters$dir$tsv)) {
-    parameters$dir$tsv <- file.path(parameters$dir$results,recountID, "TSV")
+    parameters$dir$tsv <- file.path(
+      parameters$dir$results,
+      paste(sep = "_", recountID, parameters$feature),
+      "TSV")
   }
   dir.create(path = parameters$dir$tsv, recursive = TRUE, showWarnings = FALSE)
   message("\t\tTSV\t", parameters$dir$tsv)
@@ -99,35 +107,32 @@ initRecountID <- function(recountID, project.parameters) {
   #### Define the classifier-specific directories where tables and figures will be stored. ####
   ## One sub-directory per classifer, with separate subdirectories for tables and figures.
   if (is.null(parameters$dir$classifiers)) {
-    parameters$dir$classifiers <- file.path(parameters$dir$results, recountID, parameters$classifiers)
+    parameters$dir$classifiers <- file.path(
+      parameters$dir$results,
+      paste(sep = "_", recountID, parameters$feature),
+      parameters$classifiers)
   }
   names(parameters$dir$classifiers) <- parameters$classifiers
   message("\t\tclassifiers\t", parameters$dir$classifiers)
 
   if (is.null(parameters$dir$classifier_tables)) {
-    parameters$dir$classifier_tables <- file.path(parameters$dir$classifiers, "tables")
+    parameters$dir$classifier_tables <- file.path(
+      parameters$dir$classifiers, "tables")
   }
   names(parameters$dir$classifier_tables) <- parameters$classifiers
   message("\t\tclassifier_tables\t", parameters$dir$classifier_tables)
 
   if (is.null(parameters$dir$classifier_figures)) {
-    parameters$dir$classifier_figures <- file.path(parameters$dir$classifiers, "figures")
+    parameters$dir$classifier_figures <- file.path(
+      parameters$dir$classifiers, "figures")
   }
   names(parameters$dir$classifier_figures) <- parameters$classifiers
   message("\t\tclassifier_figures\t", parameters$dir$classifier_figures)
-
-#  parameters$dir$figuresDetail <- file.path(parameters$dir$figures, "detailFigures")
-#  names(parameters$dir$figuresDetail) <- parameters$classifiers
-
-#  parameters$dir$tablesDetail <- file.path(parameters$dir$tables, "detailTables")
-#  names(parameters$dir$tablesDetail) <- parameters$classifiers
 
   ## Create all the recountID-specific sub-directories
   for (dir in c(parameters$dir$classifiers,
                 parameters$dir$classifier_tables,
                 parameters$dir$classifier_figures
-#                parameters$dir$figuresDetail,
-#                parameters$dir$tablesDetail
                 )) {
     dir.create(dir, showWarnings = F, recursive = T)
   } # end loop over the dir
@@ -136,14 +141,20 @@ initRecountID <- function(recountID, project.parameters) {
 
   ## Directory for impact of Normalization and log2 into counts (and the study of its impact)
   if (is.null(parameters$dir$NormalizationImpact)) {
-    parameters$dir$NormalizationImpact  <- file.path(parameters$dir$results, recountID , paste("impact_of_normalisation", sep = ""))
+    parameters$dir$NormalizationImpact  <- file.path(
+      parameters$dir$results,
+      paste(sep = "_", recountID, parameters$feature),
+      paste("impact_of_normalisation", sep = ""))
   }
   dir.create(parameters$dir$NormalizationImpact, showWarnings = F, recursive = T)
   message("\t\tNormalizationImpact\t", parameters$dir$NormalizationImpact)
 
   ## Directory for the visualization of Principal component for counts (and the study of its impact)
   if (is.null(parameters$dir$PCviz)) {
-    parameters$dir$PCviz <- file.path(parameters$dir$results, recountID , paste( "visualization_of_PCs", sep = ""))
+    parameters$dir$PCviz <- file.path(
+      parameters$dir$results,
+      paste(sep = "_", recountID, parameters$feature),
+      paste( "visualization_of_PCs", sep = ""))
   }
   dir.create(parameters$dir$PCviz, showWarnings = F, recursive = T)
   message("\t\tPCviz\t", parameters$dir$PCviz)
