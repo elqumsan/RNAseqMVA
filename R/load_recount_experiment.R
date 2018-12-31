@@ -46,20 +46,13 @@
 #' @export
 loadRecountExperiment <- function(recountID,
                                   parameters,
-                                  # dir.workspace = parameters$dir$workspace,
-                                  # mergeRuns = parameters$mergeRuns,
-                                  # sampleIdColumn = parameters$sampleIdColumn, ## Alternative: use "sample"
-                                  # classColumn = parameters$classColumn,
-                                  # classColors = parameters$classColors,
-                                  # variableType= parameters$variable.type,
-                                  # verbose = parameters$verbose,
                                   forceDownload = FALSE,
                                   ...) {
 
-  message.with.time("loadRecountExperiment()\trecountID = ", recountID)
+  message.with.time("loadRecountExperiment()\trecountID = ", recountID, "\tfeature type = ", parameters$feature)
 
   ## Check required parameters
-  for (p in c("mergeRuns", "sampleIdColumn", "classColumn", "verbose", "studyPath")) {
+  for (p in c("mergeRuns", "sampleIdColumn", "classColumn", "verbose", "studyPath", "feature")) {
     if (is.null(parameters[[p]])) {
       stop("Missing required parameter: '", p,
            "'.\n\tPlease check configuration file. ")
@@ -86,7 +79,18 @@ loadRecountExperiment <- function(recountID,
   }
 
   #### Define the file where the downloaded counts will be stored ####
-  rseFile <- file.path(parameters$studyPath, "rse_gene.Rdata")
+  if (parameters$feature == "gene") {
+    rse.type <- "gene"
+  } else if (parameters$feature == "exon") {
+    rse.type <- "exon"
+  } else if (parameters$feature == "transcript") {
+    rse.type <- "tx"
+  } else if (parameters$feature == "junction") {
+    rse.type <- "jx"
+  } else {
+    stop("\t", parameters$feature, " is not a valid feature type. Supported: gene, exon, transcript, junction.")
+  }
+  rseFile <- file.path(parameters$studyPath, paste0("rse_", rse.type,".Rdata"))
   parameters$rseFile <- rseFile
 
   #### Add parameters to the result ####
@@ -97,22 +101,24 @@ loadRecountExperiment <- function(recountID,
     if (verbose) {
       message("\tDowloading counts from ReCount for study ", recountID)
     }
-    url <- download_study(recountID, outdir = parameters$studyPath)
+    url <- download_study(recountID, outdir = parameters$studyPath, type = paste0("rse-", rse.type))
     result$param["url"] <- url
   }
 
 
   #### Load in memory data from the recount database ####
   if (verbose) {
-    message("\tLoading counts from local file ", rseFile)
+    message("\tLoading counts per ", parameters$feature," from local file ", rseFile)
   }
   load(rseFile)
 
   #### Scale counts by mapped reads, in order to to get read counts per gene ####
+  rse.variable <- paste0("rse_", rse.type)
   if (verbose) {
-    message("\tScaling counts")
+    message("\tScaling counts by mapped reads")
   }
-  rse <- scale_counts(rse_gene, by = "mapped_reads")
+  rse <- scale_counts(get(rse.variable), by = "mapped_reads")
+  # class(rse)
 
   #### Extract a matrix with the counts per feature for each run ####
   if (verbose) {
@@ -139,23 +145,20 @@ loadRecountExperiment <- function(recountID,
   # names(phenoTable)
 
 
-  countsPerRuns <- DataTableWithClasses(dataTable = dataTable,
+  countsPerRun <- DataTableWithClasses(dataTable = dataTable,
                                          phenoTable = phenoTable,
-                                         # classColumn = classColumn,
-                                         # classColors = classColors,
-                                         # variablesType = parameters$variables.type[1],
                                          dataType = "raw_counts_per_run",
                                          parameters = parameters)
-  # class(countsPerRuns)
-  summary(countsPerRuns)
+  # class(countsPerRun)
+  summary(countsPerRun)
 
   ################################################################
   ## Use either the merged or the original runs as original count table
   if (mergeRuns) {
     ## Merge runs if required
     if (verbose) { message("\tMerging run-wise counts by sample") }
-    result$countsPerRun <- countsPerRuns
-    result$originalCounts <- MergeRuns(runs = countsPerRuns) #,
+    result$countsPerRun <- countsPerRun
+    result$originalCounts <- MergeRuns(runs = countsPerRun) #,
                                   # classColumn  = classColumn ,
                                   # sampleIdColumn = sampleIdColumn,
                                   # verbose = verbose)
