@@ -26,7 +26,7 @@ it is create object that is belonge to DataTableWithClasses class that means it 
     \item classColumn: that is indeed refers to type of the outcome column.
     \item nbGenes: that is whole number of features.
     \item sampleNames: that is names of individuals that are included in the new object.
-    \item geneNames: the names of each genes in the count table that will be involved in new object.
+    \item featureNames: the names of each genes in the count table that will be involved in new object.
     \item classLabels: that is the class labels for all the samples in the relatedness object.
     \item classNames:  that is the names of all classes included in the relatedness object.
     \item nbClasses:   that is the overall number of the classes involved in the relatedness object.

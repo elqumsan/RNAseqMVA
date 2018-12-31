@@ -38,8 +38,8 @@ MergeRuns <- function(runs) {
   }
 
   ## Extract gene names from the run count table
-  geneNames <- rownames(runs$dataTable)
-  nbGenes <- length(runs$geneNames)
+  featureNames <- rownames(runs$dataTable)
+  nbGenes <- length(runs$featureNames)
 
   ## Extract sample names from the specified column of the pheno table
   sampleNames <- as.vector(unique(unlist(runs$phenoTable[, sampleIdColumn])))
@@ -54,7 +54,7 @@ MergeRuns <- function(runs) {
   dataTable <- data.frame(matrix(nrow=nrow(runs$dataTable),
                                      ncol=nbSamples))
   colnames(dataTable) <- sampleNames
-  rownames(dataTable) <- geneNames
+  rownames(dataTable) <- featureNames
   # View(dataTable[1:10, 1:20])
 
   ## Collect the counts for each sample by summing the counts of the corresponding runs.
