@@ -36,24 +36,24 @@ outputParameters <- function(dataset,
     if (is.null(dataset$parameters$svm$kernel)) {
       dataset$parameters$svm$kernel = "linear"
     }
-    classifier_prefix = paste(sep = "", "svm_", dataset$parameters$svm$kernel)
+    classifierPrefix <- paste(sep = "", "svm_", dataset$parameters$svm$kernel)
   } else if (classifier == "knn") {
     ## For KNN, the prefix includes the value of the k parameter
     if (is.null(dataset$parameters$knn$k)) {
       dataset$parameters$knn$k
     }
-    classifier_prefix = paste(sep = "", "knn_k", dataset$parameters$knn$k)
+    classifierPrefix <- paste(sep = "", "knn_k", dataset$parameters$knn$k)
 
   } else {
     ## For all other types of calssifer, the variable
-    ## classifier_prefix is simply the name of the classifier
-    classifier_prefix = classifier
+    ## classifierPrefix is simply the name of the classifier
+    classifierPrefix <- classifier
   }
 
 
   ## Define the path to the result directory
   resultDir <- file.path(dataset$parameters$dir$results,
-                         dataset$ID,
+                         paste(sep = "_", dataset$ID, dataset$parameters$feature),
                          classifier)
   resultDir <- gsub(pattern = " ", replacement = "_", x = resultDir) ## Avoid spaces in file names
 
@@ -67,14 +67,14 @@ outputParameters <- function(dataset,
   dir.create(resultDirTablesTSV, showWarnings = FALSE, recursive = TRUE)
 
   ## Define file prefix
-  filePrefix <- paste(sep = "_", dataset$ID, classifier_prefix,  dataset$dataType)
+  filePrefix <- paste(sep = "_", dataset$ID, dataset$parameters$feature, classifierPrefix,  dataset$dataType)
   if (permute) {
     filePrefix <- paste(sep = "_", filePrefix, dataset$parameters$perm.prefix)
   }
   filePrefix <- gsub(pattern = " ", replacement = "_", x = filePrefix) ## Avoid spaces in file names
 
   ## Define file label for figures
-  figLabel <- paste(sep = " ", classifier_prefix,  dataset$dataType)
+  figLabel <- paste(sep = " ", classifierPrefix,  dataset$dataType)
   if (permute) {
     figLabel <- paste(sep = " ", figLabel, dataset$parameters$perm.prefix)
   }
