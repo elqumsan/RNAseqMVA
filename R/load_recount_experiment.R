@@ -90,7 +90,7 @@ loadRecountExperiment <- function(recountID,
   } else {
     stop("\t", parameters$feature, " is not a valid feature type. Supported: gene, exon, transcript, junction.")
   }
-  rseFile <- file.path(parameters$studyPath, paste0("rse_", rse.type,".Rdata"))
+  rseFile <- file.path(parameters$studyPath, paste0("rse_", rse.type,".RData"))
   parameters$rseFile <- rseFile
 
   #### Add parameters to the result ####
