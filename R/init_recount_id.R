@@ -19,9 +19,11 @@ initRecountID <- function(recountID, project.parameters) {
 
   ## Specify the current recountID in parameters
   parameters$recountID <- recountID
+
+  ## studyPath, i.e. path where the data downloaded from Recount2 is stored
   parameters$studyPath <- file.path(
     parameters$dir$workspace, "data",
-    paste(sep = "_", recountID, parameters$feature))
+    recountID)
 
 
   ## Overwrite default parameters wih project-specific parameters
