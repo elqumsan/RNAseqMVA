@@ -11,14 +11,14 @@ filterDataTable(rawCounts, draw.plot = TRUE)
 \item{countsWithClasses}{an object of the class DataTableWithClasses.
 This object contains the data table + the parameters (including filtering parameters).}
 
-\item{draw.plot=TRUE}{if TRUE, draw an histogram of variance per gene.}
+\item{draw.plot=TRUE}{if TRUE, draw an histogram of variance per feature.}
 
 \item{plot.heigh=NULL}{htigh of the pdf plot. If NULL, computed autopatically depending on the number of panels.}
 }
 \description{
-Apply various filters on the observations (e.g. biological samples)
-and variables (e.g. genes) of
-a count table in order to prepare it for classification.
+Apply various filters on the individuals (e.g. biological samples)
+and features (e.g. genes, transcripts, ...) of a count table in order to prepare
+it for classification.
 }
 \examples{
 ## Load a data set

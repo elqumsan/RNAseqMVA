@@ -9,9 +9,9 @@ loadCounts(recountID, parameters, ...)
 \arguments{
 \item{recountID}{number of experiment}
 
-\item{...}{additional parameters are passed to loadRecountExperiment()}
+\item{parameters}{list of parameters (supposedly loaded from the yaml configuration file)}
 
-\item{paramters}{list of parameters (supposedly loaded from the yaml configuration file)}
+\item{...}{additional parameters are passed to loadRecountExperiment()}
 }
 \value{
 it is returen the two feature types:
@@ -31,14 +31,11 @@ wrapper runs by sample.
 \examples{
 
 ##############################################
-## Load a RNA-seq dataset and merge counts per sample
-x <- loadCounts( recountID = "SRP048759", mergeRuns=T, classColumn = "tissue")
+## Load an RNA-seq dataset and merge counts per sample.
+This assumes that the required parameters have been specified
+in the YAML configuration file.
+x <- loadCounts( recountID = "SRP048759", parameters = parameters)
 
-################################################################
-## RNA-seq data combining 2 columns to define sample classes (classLabels vector)
-## Reduce the min number of samples per class for this dataset.
-x <- loadCounts( recountID = "SRP057196", mergeRuns=T,
-    classColumn = c("tissue", "cell.type"), minSamplesPerClass=5)
 
 ## RCurl and XML are Required for recount but not declared in dependencies
 }
