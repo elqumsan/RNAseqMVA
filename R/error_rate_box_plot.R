@@ -5,7 +5,7 @@
 #'
 #' @param experimentList this is list of experiment where each cell of list error rate of the single experiment with special parameters
 #' @param classifier name of the classifier (e.g. svm, knn, rf), used in the default main title
-#' @param main is the main title of the boxplot
+#' @param main main title for the boxplot
 #' @param expMisclassificationRate user-specified value for the expected misclassification rate
 #' @param medianLine=FALSE if TRUE, draw a line joining the medians
 #' @param expColor is colore each box plot that represent the error rate for each experiment with actual class lables.
@@ -29,8 +29,10 @@ ErrorRateBoxPlot <- function(experimentList,
                              fig.width = 4 + 0.05 * length(experimentList),
                              cex.axis = 0.8,
                              experimentLabels = names(experimentList),
-                             main = paste(sep = "", parameters$recountID, "; ", classifier,
-                                          "\n", parameters$iterations, "iterations"),
+                             main = paste0(
+                               parameters$short_label,
+                               " (", parameters$recountID, ") ", parameters$feature, "s",
+                               "\n", classifier, "; ", parameters$iterations, " iterations"),
                              boxplotFile = NULL,
                              medianLine = FALSE,
                              expColor = "#00BBFF",
