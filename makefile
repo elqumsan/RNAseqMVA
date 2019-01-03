@@ -11,6 +11,7 @@ targets:
 	@echo "	ws_dir_from_server	synchronize a directory from the workspace of a remote server to local workspace"
 	@echo "	results_from_server	synchronize results from the workspace of a remote server to local workspace"
 	@echo "	srun_on_ifb_cluster	run the analyses on the IFB cluster (via srun)"
+	@echo "	run_r_on_ifb_cluster	run analyses in interactive mode on a node of the IFB cluster"
 
 # SRP035988 SRP042620 SRP056295 SRP057196 SRP061240 SRP062966 SRP066834
 IMG_FORMAT=png
@@ -129,4 +130,10 @@ results_from_server:
 EXCLUDE_NODE=-x cpu-node-1
 srun_on_ifb_cluster:
 	srun --mem 32GB --cpus=50 -p long ${EXCLUDE_NODE} Rscript --vanilla misc/main_processes.R
+
+################################################################
+## Run an interactive R session on the IFB cluster
+EXCLUDE_NODE=-x cpu-node-1
+run_r_on_ifb_cluster:
+	srun --mem 32GB --cpus=50 -p long ${EXCLUDE_NODE} R --vanilla
 
