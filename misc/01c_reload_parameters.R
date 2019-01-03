@@ -5,6 +5,7 @@
 ## having changed some parameters in the yaml-specific configuration file
 if (!is.null(project.parameters$global$reload.parameters)
     && project.parameters$global$reload.parameters) {
+  message("Reloading parameters from config file\t", configFile)
   project.parameters <- yaml.load_file(configFile)
   project.parameters <- initParallelComputing(project.parameters)
   if (exists("studyCases")) {
@@ -17,3 +18,6 @@ if (!is.null(project.parameters$global$reload.parameters)
     }
   }
 }
+
+message("Finished running script\t", "misc/01c_reload_parameters.R")
+
