@@ -1,6 +1,6 @@
 #################### Reload previously loaded and normalized counts ####################
 
-## Reload previously stored memory image
+## Define the path of the memory image file
 if (!is.null(project.parameters$global$reload.date)) {
   image.date <- project.parameters$global$reload.date
 } else {
@@ -14,11 +14,11 @@ studyCases.mem.image <- file.path(
         "_", featureType,
         "_", image.date, ".Rdata"))
 
-message("Reloading study cases from previously stored memory image",
+## Reload previously stored memory image
+
+message.with.time("Reloading study cases from previously stored memory image",
         "\n\t", studyCases.mem.image)
 load(studyCases.mem.image)
-
-
 
 ## Indicate that this script has finished running
 message.with.time("Finished running 02b_reload_counts.R")
