@@ -27,7 +27,7 @@ ErrorRateBoxPlot(experimentList, classifier,
 
 \item{permColor}{is the coler for the box plot that represent error rate for each experiment with permuted calss lables.}
 
-\item{expLegend}{is the legend for the real class lable train/test experiment.}
+\item{expLegend}{is the legend for the real class label train/test experiment.}
 
 \item{permLegend}{legend for the IterateTrainingTesting with permuted class lables.}
 
