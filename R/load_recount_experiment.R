@@ -78,6 +78,7 @@ loadRecountExperiment <- function(recountID,
     dir.create(parameters$studyPath, recursive = TRUE, showWarnings = FALSE)
   }
 
+
   #### Define the file where the downloaded counts will be stored ####
   if (parameters$feature == "gene") {
     rse.type <- "gene"
@@ -90,7 +91,15 @@ loadRecountExperiment <- function(recountID,
   } else {
     stop("\t", parameters$feature, " is not a valid feature type. Supported: gene, exon, transcript, junction.")
   }
-  rseFile <- file.path(parameters$studyPath, paste0("rse_", rse.type,".RData"))
+
+  #### Get the URL of the recount file ####
+  ## We do this because on the recount site the uppercases of the extensions
+  ## are inconsistent between data types:
+  ## - Rdata for genes and exons
+  ## - RData for transcripts
+  recountURL <- download_study(recountID, outdir = parameters$studyPath, type = paste0("rse-", rse.type), download = FALSE)
+  rseFile <- file.path(parameters$studyPath, basename(recountURL))
+  parameters$recountURL <- recountURL
   parameters$rseFile <- rseFile
 
   #### Add parameters to the result ####
