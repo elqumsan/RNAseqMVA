@@ -1,9 +1,9 @@
 library("RNAseqMVA")
 
 ###### main steps for the analysis supervised classification methods by RNAseq Data #####
-message.with.time(" Loading libraries")
+message.with.time("Loading libraries")
 source('misc/01a_load_libraries.R')
-message.with.time(" Loading parameters")
+message.with.time("Loading parameters")
 source('misc/01b_load_parameters.R')
 
 if (project.parameters$global$reload) {
@@ -14,9 +14,9 @@ if (project.parameters$global$reload) {
   source('misc/02_load_and_normalise_counts.R')
 }
 
-## impact of the number of PCs onto all the classifiers
-message.with.time( "Impact of the number of PCs onto the classifiers")
-source("~/RNAseqMVA/misc/07_PCA_impact_of_PC_number.R")
+## Feature selection with first PCs
+message.with.time( "Feature selection by first PCs")
+source('misc/07_PCA_impact_of_PC_number.R')
 
 ## Run analyses with all variables and default parameters
 message.with.time( "Impact of normalisation on classifier performances")
@@ -24,9 +24,6 @@ source('misc/06_all_variables_vs_all_PCs.R')
 
 # stop("HELLO\tclassifier\t", classifier)
 
-## Feature selection with first PCs
-message.with.time( "Feature selection by first PCs")
-source('misc/07_PCA_impact_of_PC_number.R')
 
 ## Test the imapct of kernel on SVM performances
 message.with.time( "Impact of kernel on SVM performances")
