@@ -26,7 +26,7 @@ for (recountID in selectedRecountIDs) {
   #### Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files ###
   exportTables(studyCases[[recountID]])
 
-  # ## Plot histograms of log2 normalized counts
+  ## Plot histograms of log2 normalized counts
   datasetNames <- names(studyCases[[recountID]]$datasetsForTest)
   log2countNames <- grep(pattern = "log2$", datasetNames, value = TRUE)
   shortLabel <- parameters$short_label
