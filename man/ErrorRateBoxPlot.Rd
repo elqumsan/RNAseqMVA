@@ -8,11 +8,11 @@ ErrorRateBoxPlot(experimentList, classifier,
   expMisclassificationRate = NULL, horizontal = TRUE,
   fig.height = 10, fig.width = 4 + 0.05 * length(experimentList),
   cex.axis = 0.8, experimentLabels = names(experimentList),
-  main = paste(sep = "", parameters$recountID, "; ", classifier, "\\n",
-  parameters$iterations, "iterations"), boxplotFile = NULL,
-  medianLine = FALSE, expColor = "#00BBFF", permColor = "grey",
-  expLegend = "Train/test", permLegend = "Permuted labels",
-  legend.place = "topright", ....)
+  main = paste0(parameters$short_label, " (", parameters$recountID, ") ",
+  parameters$feature, "s", "\\n", classifier, "; ", parameters$iterations,
+  " iterations"), boxplotFile = NULL, medianLine = FALSE,
+  expColor = "#00BBFF", permColor = "grey", expLegend = "Train/test",
+  permLegend = "Permuted labels", legend.place = "topright", ....)
 }
 \arguments{
 \item{experimentList}{this is list of experiment where each cell of list error rate of the single experiment with special parameters}
@@ -21,13 +21,13 @@ ErrorRateBoxPlot(experimentList, classifier,
 
 \item{expMisclassificationRate}{user-specified value for the expected misclassification rate}
 
-\item{main}{is the main title of the boxplot}
+\item{main}{main title for the boxplot}
 
 \item{expColor}{is colore each box plot that represent the error rate for each experiment with actual class lables.}
 
 \item{permColor}{is the coler for the box plot that represent error rate for each experiment with permuted calss lables.}
 
-\item{expLegend}{is the legend for the real class lable train/test experiment.}
+\item{expLegend}{is the legend for the real class label train/test experiment.}
 
 \item{permLegend}{legend for the IterateTrainingTesting with permuted class lables.}
 

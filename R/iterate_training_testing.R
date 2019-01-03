@@ -116,13 +116,14 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function(
 
 
   ## Check that number of vectors in trainIndices corresponds to number of iterations
-  if (length(trainIndices) != iterations) {
-    stop("Invalid specification of trainIndices: should be a list of vectors, with the same number of vectors as the iterations (", iterations, ").")
+  if (length(trainIndices) < iterations) {
+    stop("Invalid specification of trainIndices: should be a list of vectors, at least as many vectors as the iterations (", iterations, ").")
   }
 
   if (verbose >= 1) {
     message.with.time("\t", "IterateTrainingTesting()",
                       "\n\tID: ", dataset$ID,
+                      "\n\tfeature type: ", dataset$parameters$feature,
                       "\n\tdata type: ", dataset$dataType,
                       #                      "\n\tvariable type: ", dataset$variablesType,
                       "\n\tpermuted labels: ", permute,

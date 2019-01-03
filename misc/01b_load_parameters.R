@@ -1,7 +1,7 @@
 require("RNAseqMVA")
 
 ##### Path of the YAML-formatted configuration file ####
-configFile <- "~/RNAseqMVA/misc/00_project_parameters.yml"
+configFile <- "misc/00_project_parameters.yml"
 
 #### Read parameters from the yaml-formatted config file ####
 ## These parameters will then be used to overwrite the default parameters.
