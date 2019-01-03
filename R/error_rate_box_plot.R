@@ -99,7 +99,9 @@ ErrorRateBoxPlot <- function(experimentList,
       boxplot(testing.error.rates[, permColumns],
               horizontal = TRUE,
               col = testTable.colors[permColumns],
-              las = 1, names = NA, cex.axis = 0.01,
+              las = 1,
+              names = NA,
+              cex.axis = 0.01,
               add = TRUE
       )
 
