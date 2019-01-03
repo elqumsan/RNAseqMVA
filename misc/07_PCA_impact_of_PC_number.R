@@ -134,9 +134,10 @@ for (classifier in classifiers) {
         classifier = classifier,
         permute = FALSE,
         createDir = TRUE)
+      outParam$filePrefix <- paste0(outParam$filePrefix, "_feature-selection_first-PCs")
       dir.create(path = file.path(outParam$resultDir, "figures"), showWarnings = FALSE, recursive = FALSE)
       ErrorRateBoxPlot(experimentList = train.test.results.PCs[[classifier]][[recountID]],
-#                      experimentLabels = append(paste(pc.numbers, "PCs"), paste(pc.numbers, "PCs permLabels"))[1:6],
+                       experimentLabels = append(paste(pc.numbers, "PCs"), paste(pc.numbers, "PCs permLabels")),
                        classifier = classifier,
                        horizontal = TRUE,
                        main = paste0(
