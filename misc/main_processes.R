@@ -9,6 +9,10 @@ source('misc/01b_load_parameters.R')
 message.with.time("Loading and normalising raw count data")
 source('misc/02_load_and_normalise_counts.R')
 
+## impact of the number of PCs onto all the classifiers
+message.with.time( "Impact of the number of PCs onto the classifiers")
+source("~/RNAseqMVA/misc/07_PCA_impact_of_PC_number.R")
+
 ## Run analyses with all variables and default parameters
 message.with.time( "Impact of normalisation on classifier performances")
 source('misc/06_all_variables_vs_all_PCs.R')
@@ -48,11 +52,6 @@ message("ALL ANALYSES PERFORMED")
 ##   message.with.time(" computation of the importance variables by RF methods")
 ##   source("~/RNAseqMVA/misc/05_variables_importance_computation.R")
 ##   message.with.time("Finishig from computation of the importance variables by RF methods")
-
-##   ###### impact of the number of PCs onto all the classifiers ####
-##   message.with.time( "analysis the impact of the number of PCs onto the classifiers")
-##   source("~/RNAseqMVA/misc/07_PCA_impact_of_PC_number.R")
-##   message.with.time( "finishing analysis the impact of the number of PCs onto the classifiers")
 
 ##   ##### impact of the number of orderd genes by the edgeR and DESeq2 ####
 ##   message.with.time("analysis the impact of the number of orderd genes by the edgeR and DESeq2")
