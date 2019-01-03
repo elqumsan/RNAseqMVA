@@ -65,7 +65,7 @@ ErrorRateBoxPlot <- function(experimentList,
 
   ## Define parameters for the boxplot
   save.margins <- par("mar")
-  labelMargin <- (2 + max(nchar(experimentLabels[dataColumns])) * 0.46 * cex.axis)
+  labelMargin <- (1 + max(nchar(experimentLabels[dataColumns])) * 0.40 * cex.axis)
 
   if (length(permTestExperiments > 1)) {
     testTable.colors[permTestExperiments] <- permColor
@@ -90,7 +90,9 @@ ErrorRateBoxPlot <- function(experimentList,
             # xlab = e`xperimentLabels,
             main = main,
             las = 1 , cex.axis = cex.axis,
-            col = testTable.colors[dataColumns]
+            col = testTable.colors[dataColumns],
+            outcol = testTable.colors[dataColumns],
+            whiskcol = testTable.colors[dataColumns]
     )
 
     ## Permuted labels
@@ -99,6 +101,8 @@ ErrorRateBoxPlot <- function(experimentList,
       boxplot(testing.error.rates[, permColumns],
               horizontal = TRUE,
               col = testTable.colors[permColumns],
+              outcol = testTable.colors[permColumns],
+              whiskcol = testTable.colors[permColumns],
               las = 1,
               names = NA,
               cex.axis = 0.01,
@@ -131,7 +135,9 @@ ErrorRateBoxPlot <- function(experimentList,
             # xlab = experimentLabels,
             main = main,
             las = 2 , cex.axis = cex.axis,
-            col = testTable.colors[dataColumns]
+            col = testTable.colors[dataColumns],
+            outcol = testTable.colors[dataColumns],
+            whiskcol = testTable.colors[dataColumns]
     )
 
     ## Boxplots of permuted labels
@@ -139,6 +145,8 @@ ErrorRateBoxPlot <- function(experimentList,
       boxplot(testing.error.rates[, permColumns],
               horizontal = FALSE,
               col = testTable.colors[permColumns],
+              outcol = testTable.colors[permColumns],
+              whiskcol = testTable.colors[permColumns],
               las = 1, names = NA, cex.axis = 0.01,
               add = TRUE
       )
