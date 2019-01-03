@@ -6,8 +6,13 @@ source('misc/01a_load_libraries.R')
 message.with.time(" Loading parameters")
 source('misc/01b_load_parameters.R')
 
-message.with.time("Loading and normalising raw count data")
-source('misc/02_load_and_normalise_counts.R')
+if (project.parameters$global$reload) {
+  message.with.time("Reloading count data")
+  source('misc/02b_reload_counts.R')
+} else {
+  message.with.time("Loading and normalising raw count data")
+  source('misc/02_load_and_normalise_counts.R')
+}
 
 ## Run analyses with all variables and default parameters
 message.with.time( "Impact of normalisation on classifier performances")
