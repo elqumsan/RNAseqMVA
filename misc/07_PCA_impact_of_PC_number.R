@@ -29,18 +29,17 @@ for (classifier in classifiers) {
 
   recountID <- selectedRecountIDs[[1]]
   for (recountID in selectedRecountIDs) {
-    message("Impact of PCs\t", recountID)
+    #  train.test.results.all.PCs.per.classifier[[recountID]] <- list() ## Instantiate an entry per recountID
+    parameters <- studyCases[[recountID]]$parameters
 
     ## Instantiate a list to store all results for the current recountID
     train.test.results.PCs[[classifier]][[recountID]] <- list()
 
-
-    #  train.test.results.all.PCs.per.classifier[[recountID]] <- list() ## Instantiate an entry per recountID
-    parameters <- studyCases[[recountID]]$parameters
-
     #### Iterate over PCs.to.test ####
     data.type <- "TMM_log2_PC"
     for (data.type in project.parameters$global$PCs.to.test) {
+      message.with.time("Impact of PCs\t", recountID, " ", parameters$feature, "\t", data.type)
+
       # datasetFile <-  file.path(
       #   project.parameters$global$dir$memoryImages,
       #   paste0("loaded_dataset_", recountID, "_", data.type, ".Rdata"))
@@ -121,28 +120,32 @@ for (classifier in classifiers) {
               permute = permute
             )
           train.test.results.PCs[[classifier]][[recountID]][[outParam$filePrefix]] <- one.result
+          # names(train.test.results.PCs[[classifier]][[recountID]])
         } # end iteration over nb of PCs
 
       } # end of permutation
 
 
       #### Print the results of the effect of the number of PCs on the efficiancy of each classifier classifier ####
-      # outParam <- outputParameters(
-      #   dataset,
-      #   classifier = paste0(classifier, "_first_PCs"),
-      #   permute = FALSE, createDir = TRUE)
+
+      ## Reset output parameters
+      outParam <- outputParameters(
+        dataset = dataset,
+        classifier = classifier,
+        permute = permute,
+        createDir = TRUE)
       dir.create(path = file.path(outParam$resultDir, "figures"), showWarnings = FALSE, recursive = FALSE)
       ErrorRateBoxPlot(experimentList = train.test.results.PCs[[classifier]][[recountID]],
+                      experimentLabels = paste(pc.numbers, "PCs"),
                        classifier = classifier,
                        horizontal = TRUE,
                        main = paste0(
                          parameters$short_label, " (", parameters$recountID, ") ", parameters$feature, "s",
                          "\n", classifier, "; ", parameters$iterations, " iterations",
-                         "\n", dataset$dataType, "PC selection; "),
+                         "\n", "PC selection; ", dataset$dataType),
                        boxplotFile = file.path(
                          outParam$resultDir, "figures",
-                         paste(sep = "", outParam$filePrefix, ".pdf"))
-      )
+                         paste(sep = "", outParam$filePrefix, ".pdf")))
 
 
       #  train.test.results.all.PCs.per.classifier[[recountID]][[classifier]] <- train.test.results.PCs[[classifier]][[recountID]]
