@@ -63,7 +63,7 @@ for (classifier in classifiers) {
         seq(from = 10, to = nrow(original.dataTable) - 1, by = stepOver10),
         nrow(original.dataTable))
       # length(pc.numbers)
-      pc.numbers <- pc.numbers[1:3] ## for quick test
+#      pc.numbers <- c(2,10,162) ## for quick test
 
       studyCases[[recountID]]$parameters$pc.numbers <- pc.numbers
       dataset$parameters$pc.numbers <- pc.numbers
@@ -132,11 +132,11 @@ for (classifier in classifiers) {
       outParam <- outputParameters(
         dataset = dataset,
         classifier = classifier,
-        permute = permute,
+        permute = FALSE,
         createDir = TRUE)
       dir.create(path = file.path(outParam$resultDir, "figures"), showWarnings = FALSE, recursive = FALSE)
       ErrorRateBoxPlot(experimentList = train.test.results.PCs[[classifier]][[recountID]],
-                      experimentLabels = paste(pc.numbers, "PCs"),
+#                      experimentLabels = append(paste(pc.numbers, "PCs"), paste(pc.numbers, "PCs permLabels"))[1:6],
                        classifier = classifier,
                        horizontal = TRUE,
                        main = paste0(
@@ -162,11 +162,11 @@ for (classifier in classifiers) {
   allRecountIDsSummary$perRecountID <- list()
   allRecountIDsSummary$summary <- data.frame()
   # rownames(allRecountIDsSummary$summary) <- names(train.test.results.PCs)
-  recountIDs <- names(train.test.results.PCs)
+  recountIDs <- names(train.test.results.PCs[[classifier]])
   for (i in 1:length(recountIDs)) {
     recountID <- recountIDs[i]
     oneRecountIDSummary <- SummarizeTrainTestResults(experimentList = train.test.results.PCs[[classifier]][[recountID]])
-    allRecountIDSummary$perRecountID[[recountID]] <- oneRecountIDSummary
+    allRecountIDsSummary$perRecountID[[recountID]] <- oneRecountIDSummary
 
     allRecountIDsSummary$summary <- rbind(
       allRecountIDsSummary$summary,
