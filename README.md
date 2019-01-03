@@ -25,6 +25,16 @@ cd RNAseqMVA
 conda env create -f conda-rnaseqmva.yml
 ```
 
+### Updating the conda rnaseqmva environment
+
+In case of changes to the RNAseqMVA environment, an update can be
+achieved with the following command. 
+
+```
+cd RNAseqMVA
+conda env update -f conda-rnaseqmva.yml
+```
+
 ### Loading conda module
 
 On the IFB cluster, conda is loaded via a module
