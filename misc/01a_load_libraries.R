@@ -12,14 +12,5 @@ source('R/load_required_bioconductor_packages.R')
 LoadRequiredCRANPackages(requiredCRAN)
 LoadRequiredBioconductorPackages(requiredBioconductor)
 
-## Install derfinder
-## JvH 2019-01-013: Mustafa, this should be done by including derfinder in R/required_bioconductor.R
-# if (!require(derfinder)) {
-#   install.packages("BiocManager")
-#   BiocManager::install("derfinder")
-#
-#   ## Check that you have a valid Bioconductor installation
-#   BiocManager::valid()
-# }
-
+## Load the RNAseqMVA package
 require("RNAseqMVA")
