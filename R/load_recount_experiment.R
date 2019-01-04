@@ -114,6 +114,19 @@ loadRecountExperiment <- function(recountID,
     result$param["url"] <- url
   }
 
+  #### Download phenotype TSV file if required ####
+  recountPhenoURL <- download_study(recountID, outdir = parameters$studyPath, type = "phenotype", download = FALSE)
+  phenoFile <- file.path(parameters$studyPath, basename(recountPhenoURL))
+  parameters$recountPhenoURL <- recountPhenoURL
+  parameters$phenoFile <- phenoFile
+  if ((forceDownload) || (!file.exists(phenoFile))) {
+    if (verbose) {
+      message("\tDowloading phenotypes from ReCount for study ", recountID)
+    }
+    recountPhenoURL <- download_study(recountID, outdir = parameters$studyPath, type = "phenotype", download = TRUE)
+    result$param["recountPhenoURL"] <- recountPhenoURL
+  }
+
 
   #### Load in memory data from the recount database ####
   if (verbose) {
@@ -134,7 +147,6 @@ loadRecountExperiment <- function(recountID,
     message("\tExtracing table of counts per run")
   }
 
-
   ## Extract the count table
   dataTable <- assay(rse)
   if (verbose) {
@@ -147,17 +159,25 @@ loadRecountExperiment <- function(recountID,
     message("\tBuilding pheno table")
   }
   phenoTable <- colData(rse) ## phenotype per run
-#  geo.characteristics <- recount::geo_characteristics(phenoTable)
+  # View(phenoTable)
+
+  ## PATCH JvH 2019-01-03: I fix a bug with the phenotable characteristics in the transcript rse, which contains quotes
+  # phenoTable$characteristics <- gsub(x = phenoTable$characteristics, pattern = '"', replacement = '')
+  # geo.characteristics <- recount::geo_characteristics(phenoTable)
   geochar <- geocharFromPheno(runPheno = phenoTable)
   phenoTable <- cbind(phenoTable, geochar)
   # View(phenoTable)
+  # table(phenoTable$characteristics)
   # names(phenoTable)
 
+  # phenoTable2 <- read.delim(file = phenoFile, header = 1, sep = "\t")
+  # View(phenoTable2)
+  # names(phenoTable2)
 
   countsPerRun <- DataTableWithClasses(dataTable = dataTable,
-                                         phenoTable = phenoTable,
-                                         dataType = "raw_counts_per_run",
-                                         parameters = parameters)
+                                       phenoTable = phenoTable,
+                                       dataType = "raw_counts_per_run",
+                                       parameters = parameters)
   # class(countsPerRun)
   summary(countsPerRun)
 
