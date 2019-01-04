@@ -1,7 +1,7 @@
-#' @title Extract the conditions from the "characteristics" column of Recount pheno Table
-#' @author Mustafa ABUELQUMSAN and Jacques van Helden
+#' @title Extract the conditions from the "characteristics" column of Recount pheno Table, and store them in separate columns.
+#' @author Mustafa AbuElQumsan and Jacques van Helden
 #' @description This is a bit tricky: we have to parse a string describing several attributes.
-#' @param  runPheno it is the Run pheno table which may be containt duplicate in the rus for the same sample, and it give us the actual length for a pheno table
+#' @param  runPheno run pheno table produced by colData(), which contains the pheno information for each run (there might be several runs per )
 #' @return phenoTable with data.frame properities in order to be much earier in handle it smoothly.
 #'
 #' @export
