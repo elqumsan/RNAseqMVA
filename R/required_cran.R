@@ -4,6 +4,7 @@
 
 # loading required libraries
 requiredCRAN <- c(
+    'BiocManager', # required to check consistency between dependencies
     'roxygen2',
     'dplyr', # Required for caret (depedency of dependency)
     'RCurl', # Undeclared dependency of recount
