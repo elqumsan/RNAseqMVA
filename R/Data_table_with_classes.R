@@ -40,13 +40,9 @@
 #' @export
 
 DataTableWithClasses <- function(dataTable,
-                                  phenoTable,
-                                  # classColumn = parameters$classColumn,
-                                  # classColors = parameters$classColors,
-                                  # ID = parameters$recountID,
-                                  # variablesType,
-                                  dataType,
-                                  parameters) {
+                                 phenoTable,
+                                 dataType,
+                                 parameters) {
 
   ## Check required parameters
   for (p in c("recountID", "classColumn")) {
@@ -87,10 +83,8 @@ DataTableWithClasses <- function(dataTable,
     object$classColors <- parameters$classColors
   }
 
-
-
   ## Define all the derived attributes from the count table and pheno table
-   object <- buildAttributes(object)
+  object <- buildAttributes(object)
   # object <- UseMethod("buildAttributes", object)
   ## Attach the parameters to the object
 #  object$parameters <- parameters
@@ -165,8 +159,10 @@ buildAttributes.DataTableWithClasses <- function(self) {
 
   ## Check if the pheno table contains a column corresponding to the indication
   if (sum(!self$classColumn %in% names(self$phenoTable)) > 1) {
-    stop("\n\tMissing column(s) in the pheno table ", paste(collapse=", ", setdiff(classColumn, names(phenoTable))),
-         "\n\tColumns found in the pheno table: ", paste(collapse=", ", names(self$phenoTable)))
+    stop("\n\tMissing column(s) in the pheno table ",
+         paste(collapse = ", ", setdiff(classColumn, names(phenoTable))),
+         "\n\tColumns found in the pheno table: ",
+         paste(collapse = ", ", names(self$phenoTable)))
   }
 
   ## Count table-derived paraemters
@@ -181,11 +177,19 @@ buildAttributes.DataTableWithClasses <- function(self) {
   ## specified class columns
   if (is.null(self$classColumn) || (length(self$classColumn) < 1)) {
     stop("classColumn must be defined. ")
-  } else if (length(self$classColumn) == 1) {
+  } else {
+    missingColumns <- setdiff(self$classColumn, names(self$phenoTable))
+    if (length(missingColumns > 0)) {
+      stop("missing column(s) in the pheno table: ", paste(collapse = ", ", missingColumns),
+           "\npheno table columns: ", paste(collapse = "\n\t", names(phenoTable)))
+    }
+  }
+
+  if (length(self$classColumn) == 1) {
     self$classLabels <-  as.vector(self$phenoTable[, self$classColumn])
   } else {
     ## Combine several columns to establish the classLabels
-    self$classLabels <- apply(self$phenoTable[, self$classColumn], 1, paste, collapse="_")
+    self$classLabels <- apply(self$phenoTable[, self$classColumn], 1, paste, collapse = "_")
   }
   # table(classLabels)
   self$classNames <- unique(sort(self$classLabels))
