@@ -23,3 +23,5 @@ LoadRequiredBioconductorPackages <- function(packages, verbose = 0) {
   }
 }
 
+## Check validity of Bioconductor installation
+BiocManager::valid()

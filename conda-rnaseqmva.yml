@@ -26,6 +26,7 @@ dependencies:
 - r::r-randomforest
 - conda-forge::r-pheatmap  # Heatmaps with extended control on dimensions
 - conda-forge::r-scatterplot3d 
+- conda-forge::r-biocmanager
 
 ## Bioconda
 - bioconda::bioconductor-iranges         # Seems to be required for derfinder but not automatically installed

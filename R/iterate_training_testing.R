@@ -116,19 +116,25 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function(
 
 
   ## Check that number of vectors in trainIndices corresponds to number of iterations
-  if (length(trainIndices) != iterations) {
-    stop("Invalid specification of trainIndices: should be a list of vectors, with the same number of vectors as the iterations (", iterations, ").")
+  if (length(trainIndices) < iterations) {
+    stop("Invalid specification of trainIndices: should be a list of vectors, at least as many vectors as the iterations (", iterations, ").")
   }
 
   if (verbose >= 1) {
     message.with.time("\t", "IterateTrainingTesting()",
                       "\n\tID: ", dataset$ID,
-                      "\n\tclassifier: ", classifier,
-                      "\n\tclassifier kernel:  ", dataset$parameters$svm$kernel,
+                      "\n\tfeature type: ", dataset$parameters$feature,
                       "\n\tdata type: ", dataset$dataType,
-#                      "\n\tvariable type: ", dataset$variablesType,
-                      "\n\tverbose: ", dataset$verbose,
-                      "\n\tTrain/test iterations: ",   parameters$iterations)
+                      #                      "\n\tvariable type: ", dataset$variablesType,
+                      "\n\tpermuted labels: ", permute,
+                      "\n\tTrain/test iterations: ",   parameters$iterations,
+                      "\n\tclassifier: ", classifier)
+
+    if (classifier == "knn") {
+      message("\tKNN k:  ", dataset$parameters$knn$k)
+    } else if (classifier == "svm") {
+      message("\tSVM kernel:  ", dataset$parameters$svm$kernel)
+    }
   }
 
 
@@ -181,30 +187,33 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function(
     parameters$dir$classifier_tables[classifier],
     paste(sep = "", file.prefix, ".tsv"))
 
+  message("\t\tSaving testing result table\t", testTable.file)
   write.table(file = testTable.file,
               x = testTable,
               row.names = FALSE, col.names = TRUE, sep = "\t", quote = FALSE)
 
   ## Export a summary about the error rate
   errorSummary.file <- file.path(parameters$dir$classifier_tables[classifier], paste(sep = "", file.prefix, "_summary.tsv"))
+  message("\t\tSaving testing error rates\t", errorSummary.file)
   write.table(summary(data.frame(testTable$testing.error.rate)),
               quote = FALSE, sep = "\t", row.names = TRUE, col.names = NA,
               file = errorSummary.file)
 
   ## Plot a box plot of training versus testing error
-  boxplot.file <- file.path(
-    parameters$dir$classifier_figures[classifier],
-    paste(sep = "", file.prefix, "_R", iterations, "_learning_vs_test_error_boxplot.pdf"))
-
-  pdf(file = boxplot.file, width = 7, height = 5)
-  main <- paste(sep = "", recountID, "\n", classifier, "; ", dataset$dataType, "; all variables")
-  if (permute) {
-    main <- paste(sep = "", main, "; permuted labels")
-  }
-  boxplot(testTable[, c("training.error.rate", "testing.error.rate")],
-          ylim = c(0,1),
-          main = main)
-  silence <- dev.off(); rm(silence)
+  # message("\t\tBox plot")
+  # boxplot.file <- file.path(
+  #   parameters$dir$classifier_figures[classifier],
+  #   paste(sep = "", file.prefix, "_R", iterations, "_learning_vs_test_error_boxplot.pdf"))
+  #
+  # pdf(file = boxplot.file, width = 7, height = 5)
+  # main <- paste(sep = "", recountID, "\n", classifier, "; ", dataset$dataType, "; all variables")
+  # if (permute) {
+  #   main <- paste(sep = "", main, "; permuted labels")
+  # }
+  # boxplot(testTable[, c("training.error.rate", "testing.error.rate")],
+  #         ylim = c(0,1),
+  #         main = main)
+  # silence <- dev.off(); rm(silence)
 
   ## Compute elapsed time
   endTime <- Sys.time();

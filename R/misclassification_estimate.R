@@ -31,7 +31,8 @@
 MisclassificationEstimate <- function(dataset,
                                       iteration,
                                       classifier,
-                                      permute=FALSE) {
+                                      permute = FALSE,
+                                      stratifiedPermutation = FALSE) {
 
 
   # require(doMC)
@@ -66,8 +67,11 @@ MisclassificationEstimate <- function(dataset,
   ## AssignGet sample classes from the object
   classLabels <- dataset$classLabels
   if (permute) {
-  #  classLabels <- sample(classLabels, replace = FALSE)
-    classLabels <- StratifiedSampling(classLabels)
+    if (stratifiedPermutation) {
+      classLabels <- StratifiedSampling(classLabels)
+    } else {
+      classLabels <- sample(classLabels, replace = FALSE)
+    }
   }
 
   trainIndex <- dataset$trainTestProperties$trainIndices[[iteration]]

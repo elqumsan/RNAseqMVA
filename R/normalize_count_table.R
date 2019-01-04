@@ -85,11 +85,11 @@ NormalizeSamples <- function(self,
   if (log2) {
     method.name <- paste(sep = "", method.name, "_log2")
   }
-  message("\t", "Normalizing\t", recountID, "\tmethod: ", method.name)
 
   ## Extract the count matrix
   counts <- self$dataTable
   parameters <- self$parameters
+  message("\t", "Normalizing\t", recountID, "\t", parameters$feature, "\tmethod: ", method.name)
 
   ## if required, discard the zero counts before computing size factors
   if (is.null(parameters$standardization$nozero)) {

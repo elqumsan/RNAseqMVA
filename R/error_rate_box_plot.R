@@ -4,12 +4,13 @@
 #' @description this function takes the experiment List from the error rate that are collected from the experiment.
 #'
 #' @param experimentList this is list of experiment where each cell of list error rate of the single experiment with special parameters
-#' @param classifier such are represent which classifier have been used in the analysis
-#' @param main is the main title of the boxplot
+#' @param classifier name of the classifier (e.g. svm, knn, rf), used in the default main title
+#' @param main main title for the boxplot
 #' @param expMisclassificationRate user-specified value for the expected misclassification rate
+#' @param medianLine=FALSE if TRUE, draw a line joining the medians
 #' @param expColor is colore each box plot that represent the error rate for each experiment with actual class lables.
 #' @param permColor is the coler for the box plot that represent error rate for each experiment with permuted calss lables.
-#' @param expLegend is the legend for the real class lable train/test experiment.
+#' @param expLegend is the legend for the real class label train/test experiment.
 #' @param permLegend legend for the IterateTrainingTesting with permuted class lables.
 #' @param legend.place location for the legend, which is passed to legend()
 #'
@@ -25,12 +26,15 @@ ErrorRateBoxPlot <- function(experimentList,
                              expMisclassificationRate = NULL,
                              horizontal = TRUE,
                              fig.height = 10,
-                             fig.width = 4 + 0.2*length(experimentList),
+                             fig.width = 4 + 0.05 * length(experimentList),
                              cex.axis = 0.8,
                              experimentLabels = names(experimentList),
-                             main = paste(sep = "", parameters$recountID, "; ", classifier,
-                                          "\n", parameters$iterations, "iterations"),
+                             main = paste0(
+                               parameters$short_label,
+                               " (", parameters$recountID, ") ", parameters$feature, "s",
+                               "\n", classifier, "; ", parameters$iterations, " iterations"),
                              boxplotFile = NULL,
+                             medianLine = FALSE,
                              expColor = "#00BBFF",
                              permColor = "grey",
                              expLegend = "Train/test",
@@ -43,40 +47,6 @@ ErrorRateBoxPlot <- function(experimentList,
 
   testing.error.rates <- experimentSummary$testing.error.rates
 
-
-  # ## Get experiment names to access the elements of experiment list
-  # experiment.names <- names(experimentList)
-  #
-  # ## Check that experiment labels are consistent with experiemnt list
-  # if (length(experiment.names) != length(experimentLabels)) {
-  #   stop("length of experimentLabels (", length(experimentLabels),
-  #        ") is inconsistent with length of experimentList (", length(experimentList),").")
-  # }
-  #
-  # ## Make sure the output directory exists for storing the plots
-  # if (is.null(experiment.names) ||
-  #     length(names(experimentList)) < 1) {
-  #   stop("Not a single experiment for all variable composition")
-  # }
-  #
-  # ## Collect all error rates in a data frame with 1 column per experiment and
-  # ## 1 row per iteration
-  # exp <- 1
-  # for (exp in 1:length(experiment.names)) {
-  #   experimentName <- experiment.names[exp]
-  #   exp.result <- experimentList[[experimentName]]
-  #   if (exp == 1) {
-  #     testing.error.rates <- data.frame(exp.result$testing.error.rate)
-  #   } else {
-  #     testing.error.rates <-
-  #       cbind(testing.error.rates, exp.result$testing.error.rate)
-  #   }
-  # } # end iterate the all variables experiment
-  # # dim(testing.error.rates)
-  #
-  # colnames(testing.error.rates) <- experimentLabels
-  # rownames(testing.error.rates) <- 1:nrow(testing.error.rates)
-
   if (!is.null(boxplotFile)) {
     message.with.time("Boxplot file:\t", boxplotFile)
     if (horizontal) {
@@ -86,66 +56,118 @@ ErrorRateBoxPlot <- function(experimentList,
     }
   }
 
-  ## Define parameters for the boxplot
-  save.margins <- par("mar")
-  labelMargin <- (2 + max(nchar(experimentLabels)) * 0.5 * cex.axis)
 
   ## Define colors for experiments with actual data and permutation tests
   testTable.colors <- rep(x = expColor, length.out = ncol(testing.error.rates))
   names(testTable.colors) <- colnames(testing.error.rates)
   permTestExperiments <- grep(names(testTable.colors), pattern = "permLabels")
+  dataColumns <- ncol(testing.error.rates):1
+
+  ## Define parameters for the boxplot
+  save.margins <- par("mar")
+  labelMargin <- (1 + max(nchar(experimentLabels[dataColumns])) * 0.40 * cex.axis)
+
   if (length(permTestExperiments > 1)) {
     testTable.colors[permTestExperiments] <- permColor
+    permColumns <- rev(permTestExperiments)
+    dataColumns <- setdiff(dataColumns, permColumns)
+    ## Estimate the expected misclassification rate by computing the
+    ## mean misclassification over all experiments with permuted labels
+    ## Mean misclassification rate for all the label-permuted tests
+    permLabelMisclassificationRate <- mean(apply(testing.error.rates[permTestExperiments], 1, mean))
   }
 
-  ## Estimate the expected misclassification rate by computing the
-  ## mean misclassification over all experiments with permuted labels
-  ## Mean misclassification rate for all the label-permuted tests
-  permLabelMisclassificationRate <- mean(apply(testing.error.rates[permTestExperiments], 1, mean))
+
 
   if (horizontal) {
     par(mar = c(5, labelMargin, 5, 1))
+
     ## Draw the box plot
-    boxplot(testing.error.rates[, ncol(testing.error.rates):1],
+    boxplot(testing.error.rates[, dataColumns],
             horizontal = TRUE,
-            xlab = "Misclassification rate",
+            xlab = "Misclassification error rate (MER)",
             ylim = c(0,1.3), ## Note: this actuallly corresponds to X limits with horizontal option
-            # xlab = experimentLabels,
+            # xlab = e`xperimentLabels,
             main = main,
             las = 1 , cex.axis = cex.axis,
-            col = rev(testTable.colors)
+            col = testTable.colors[dataColumns],
+            outcol = testTable.colors[dataColumns],
+            whiskcol = testTable.colors[dataColumns]
     )
-    ## Draw horizontal grid
-    abline(v = seq(from = 0, to = 1, by = 0.1), col = "grey", lty = "solid")
 
-    ## Expected misclassification rate
-    abline(v = permLabelMisclassificationRate, col = "blue", lwd = 1, lty = "dashed")
+    ## Permuted labels
+    if (length(permTestExperiments > 1)) {
+      abline(v = permLabelMisclassificationRate, col = "blue", lwd = 1, lty = "dashed")
+      boxplot(testing.error.rates[, permColumns],
+              horizontal = TRUE,
+              col = testTable.colors[permColumns],
+              outcol = testTable.colors[permColumns],
+              whiskcol = testTable.colors[permColumns],
+              las = 1,
+              names = NA,
+              cex.axis = 0.01,
+              add = TRUE
+      )
+
+      ## Draw horizontal grid
+      abline(v = seq(from = 0, to = 1, by = 0.05), col = "grey", lty = "dotted")
+      abline(v = seq(from = 0, to = 1, by = 0.1), col = "grey", lty = "solid")
+
+    }
     if (!is.null(expMisclassificationRate)) {
       abline(v = expMisclassificationRate, col = "red", lwd = 3 , lty = "dotted")
     }
 
+    ## Draw lines between medians
+    if (medianLine) {
+      lines(rev(experimentSummary$testing.MER.summary$median[dataColumns]), dataColumns, col = testTable.colors[dataColumns], lwd = 2)
+      lines(rev(experimentSummary$testing.MER.summary$median[permColumns]), dataColumns, col = testTable.colors[permColumns], lwd = 2)
+    }
 
   } else {
     par(mar = c(labelMargin, 5, 5, 1))
 
     ## Draw the box plot
-    boxplot(testing.error.rates,
+    boxplot(testing.error.rates[, dataColumns],
             horizontal = FALSE,
-            ylab = "Misclassification rate",
+            ylab = "Misclassification error rate (MER)",
             ylim = c(0,1.1), ## Leave place for the legend
             # xlab = experimentLabels,
             main = main,
             las = 2 , cex.axis = cex.axis,
-            col = testTable.colors
+            col = testTable.colors[dataColumns],
+            outcol = testTable.colors[dataColumns],
+            whiskcol = testTable.colors[dataColumns]
     )
 
-    ## Draw horizontal grid
+    ## Boxplots of permuted labels
+    if (length(permTestExperiments > 1)) {
+      boxplot(testing.error.rates[, permColumns],
+              horizontal = FALSE,
+              col = testTable.colors[permColumns],
+              outcol = testTable.colors[permColumns],
+              whiskcol = testTable.colors[permColumns],
+              las = 1, names = NA, cex.axis = 0.01,
+              add = TRUE
+      )
+    }
+
+    ## Draw grid
+    abline(h = seq(from = 0, to = 1, by = 0.05), col = "grey", lty = "dotted")
     abline(h = seq(from = 0, to = 1, by = 0.1), col = "grey", lty = "solid")
-    #abline(h=seq(from = 0, to = 1, by= 0.05 ), col="", lty="solid")
+
+    ## Draw lines between medians
+    if (medianLine) {
+      lines(dataColumns, rev(experimentSummary$testing.MER.summary$median[dataColumns]), col = testTable.colors[dataColumns], lwd = 2)
+      lines(dataColumns, rev(experimentSummary$testing.MER.summary$median[permColumns]), col = testTable.colors[permColumns], lwd = 2)
+    }
+
 
     ## Draw a horizontal line with the misclassification
     ## rate that would be expected at random
-    abline(h = permLabelMisclassificationRate, col = "blue", lwd = 1, lty = "dashed")
+    if (length(permTestExperiments > 1)) {
+      abline(h = permLabelMisclassificationRate, col = "blue", lwd = 1, lty = "dashed")
+    }
     if (!is.null(expMisclassificationRate)) {
       abline(h = expMisclassificationRate, col = "red", lwd = 3 , lty = "dotted")
     }
@@ -159,11 +181,34 @@ ErrorRateBoxPlot <- function(experimentList,
   # abline(h = , col="red", lwd=3 , lty= 3)
 
   ## Plot legend
-  legend(legend.place, lwd = 4,
-         bty = "o", bg = "white",
-         legend = c("Actual data", "Permuted Labels"),
-         col = c(expColor, permColor),
-         cex = 0.8, pch = 0.2)
+  legend.text <- "Actual data"
+  legend.col <- expColor
+  legend.lty <- "solid"
+  legend.lwd <- 4
+  legend.pch <- 1
+  if (length(permTestExperiments > 1)) {
+    legend.text <- append(legend.text, c("Permuted Labels", "permuted MER"))
+    legend.col <- append(legend.col, c(permColor, "blue"))
+    legend.lty <- append(legend.lty, c("solid", "dotted"))
+    legend.lwd <- append(legend.lwd, c(4, 2))
+    legend.pch <- append(legend.pch, c(1, NA))
+  }
+  if (!is.null(expMisclassificationRate)) {
+    legend.text <- append(legend.text, "expected MER")
+    legend.col <- append(legend.col, "red")
+    legend.lty <- append(legend.lty, "dotted")
+    legend.lwd <- append(legend.lwd, 2)
+    legend.pch <- append(legend.pch, NA)
+  }
+
+  legend(legend.place,
+         bty = "o",
+         bg = "white",
+         legend = legend.text,
+         col = legend.col,
+         lty = legend.lty,
+         lwd = legend.lwd,
+         cex = 0.7, pch = legend.pch)
   par(mar = save.margins)
 
   if (!is.null(boxplotFile)) {

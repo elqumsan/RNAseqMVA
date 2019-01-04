@@ -40,26 +40,19 @@
 #'         \item originalCounts: count table after merge runs proccess in order to get ride of multipl runs per sample.
 #'    }
 #'
+#' @import recount
+#' @import SummarizedExperiment
+#' @import S4Vectors
 #' @export
 loadRecountExperiment <- function(recountID,
                                   parameters,
-                                  # dir.workspace = parameters$dir$workspace,
-                                  # mergeRuns = parameters$mergeRuns,
-                                  # sampleIdColumn = parameters$sampleIdColumn, ## Alternative: use "sample"
-                                  # classColumn = parameters$classColumn,
-                                  # classColors = parameters$classColors,
-                                  # variableType= parameters$variable.type,
-                                  # verbose = parameters$verbose,
                                   forceDownload = FALSE,
                                   ...) {
 
-  LoadRequiredBioconductorPackages(c("recount", "SummarizedExperiment", "S4Vectors"))
-
-
-  message.with.time("loadRecountExperiment()\trecountID = ", recountID)
+  message.with.time("loadRecountExperiment()\trecountID = ", recountID, "\tfeature type = ", parameters$feature)
 
   ## Check required parameters
-  for (p in c("mergeRuns", "sampleIdColumn", "classColumn", "verbose", "studyPath")) {
+  for (p in c("mergeRuns", "sampleIdColumn", "classColumn", "verbose", "studyPath", "feature")) {
     if (is.null(parameters[[p]])) {
       stop("Missing required parameter: '", p,
            "'.\n\tPlease check configuration file. ")
@@ -80,45 +73,61 @@ loadRecountExperiment <- function(recountID,
   result <- list()
 
   #### Create studyPath directory ####
-  ## NOTE: THIS IS STILL PROVIDED AS A GLOBAL VARIABLE, SHOULD BE A PARAMETER !
-  if (!file.exists(studyPath)) {
-    message("\tCreating directory to store Recount dataset ", recountID," in ", studyPath)
-    dir.create(studyPath, recursive = TRUE, showWarnings = FALSE)
+  if (!file.exists(parameters$studyPath)) {
+    message("\tCreating directory to store Recount dataset ", recountID," in ", parameters$studyPath)
+    dir.create(parameters$studyPath, recursive = TRUE, showWarnings = FALSE)
   }
 
+
   #### Define the file where the downloaded counts will be stored ####
-  rseFile <- file.path(studyPath, "rse_gene.Rdata")
+  if (parameters$feature == "gene") {
+    rse.type <- "gene"
+  } else if (parameters$feature == "exon") {
+    rse.type <- "exon"
+  } else if (parameters$feature == "transcript") {
+    rse.type <- "tx"
+  } else if (parameters$feature == "junction") {
+    rse.type <- "jx"
+  } else {
+    stop("\t", parameters$feature, " is not a valid feature type. Supported: gene, exon, transcript, junction.")
+  }
+
+  #### Get the URL of the recount file ####
+  ## We do this because on the recount site the uppercases of the extensions
+  ## are inconsistent between data types:
+  ## - Rdata for genes and exons
+  ## - RData for transcripts
+  recountURL <- download_study(recountID, outdir = parameters$studyPath, type = paste0("rse-", rse.type), download = FALSE)
+  rseFile <- file.path(parameters$studyPath, basename(recountURL))
+  parameters$recountURL <- recountURL
   parameters$rseFile <- rseFile
 
   #### Add parameters to the result ####
   result$parameters <- parameters
-  # result$param <-
-  #   c("recountID" = recountID,
-  #     "studyPath" = studyPath,
-  #     "mergeRuns" = mergeRuns,
-  #     "rseFile" = rseFile)
 
   #### Download the counts if required ####
-  if ((forceDownload == TRUE) || (!file.exists(rseFile))) {
+  if ((forceDownload) || (!file.exists(rseFile))) {
     if (verbose) {
       message("\tDowloading counts from ReCount for study ", recountID)
     }
-    url <- download_study(recountID, outdir = studyPath)
+    url <- download_study(recountID, outdir = parameters$studyPath, type = paste0("rse-", rse.type))
     result$param["url"] <- url
   }
 
 
   #### Load in memory data from the recount database ####
   if (verbose) {
-    message("\tLoading counts from local file ", rseFile)
+    message("\tLoading counts per ", parameters$feature," from local file ", rseFile)
   }
   load(rseFile)
 
   #### Scale counts by mapped reads, in order to to get read counts per gene ####
+  rse.variable <- paste0("rse_", rse.type)
   if (verbose) {
-    message("\tScaling counts")
+    message("\tScaling counts by mapped reads")
   }
-  rse <- scale_counts(rse_gene, by = "mapped_reads")
+  rse <- scale_counts(get(rse.variable), by = "mapped_reads")
+  # class(rse)
 
   #### Extract a matrix with the counts per feature for each run ####
   if (verbose) {
@@ -145,23 +154,20 @@ loadRecountExperiment <- function(recountID,
   # names(phenoTable)
 
 
-  countsPerRuns <- DataTableWithClasses(dataTable = dataTable,
+  countsPerRun <- DataTableWithClasses(dataTable = dataTable,
                                          phenoTable = phenoTable,
-                                         # classColumn = classColumn,
-                                         # classColors = classColors,
-                                         # variablesType = parameters$variables.type[1],
                                          dataType = "raw_counts_per_run",
                                          parameters = parameters)
-  # class(countsPerRuns)
-  summary(countsPerRuns)
+  # class(countsPerRun)
+  summary(countsPerRun)
 
   ################################################################
   ## Use either the merged or the original runs as original count table
   if (mergeRuns) {
     ## Merge runs if required
     if (verbose) { message("\tMerging run-wise counts by sample") }
-    result$countsPerRun <- countsPerRuns
-    result$originalCounts <- MergeRuns(runs = countsPerRuns) #,
+    result$countsPerRun <- countsPerRun
+    result$originalCounts <- MergeRuns(runs = countsPerRun) #,
                                   # classColumn  = classColumn ,
                                   # sampleIdColumn = sampleIdColumn,
                                   # verbose = verbose)
@@ -172,28 +178,13 @@ loadRecountExperiment <- function(recountID,
   # summary(result$originalCounts)
 
 
-  # ################################################################
-  # ## Specify sample classes (classLabels) by extracting information about specified class columns
-  # if (is.null(classColumn) || (length(classColumn) < 1)) {
-  #   stop("classColumn must be defined. ")
-  # } else if (length(classColumn) == 1) {
-  #   result$original$classLabels <-  as.vector(result$original$phenoTable[, classColumn])
-  # } else {
-  #   ## Combine several columns to establish the classLabels
-  #   result$original$classLabels <- apply(result$original$phenoTable[, classColumn], 1, paste, collapse="_")
-  # }
-  # table(classLabels)
-
-  # result$original$classNames <- sort(unique(result$original$classLabels))
-  # result$original$nbClasses <- length(result$original$classNames)
-  # class(result$original) <- append(class(result$original), "DataTableWithClasses")
 
   message.with.time("Finished loading Recount experiment ID ", parameters$recountID)
   return(result)
 }
 
 
-## Mustafa; you make a method of StudyCase from thi rough code
+## Mustafa, can you make a method of StudyCase from this rough code ?
 
 
 ## Histogram of mean counts per gene for a give class (Bone marrow here)

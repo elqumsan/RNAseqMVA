@@ -1,7 +1,7 @@
 require("RNAseqMVA")
 
 ##### Path of the YAML-formatted configuration file ####
-configFile <- "~/RNAseqMVA/misc/00_project_parameters.yml"
+configFile <- "misc/00_project_parameters.yml"
 
 #### Read parameters from the yaml-formatted config file ####
 ## These parameters will then be used to overwrite the default parameters.
@@ -14,6 +14,9 @@ selectedRecountIDs <- project.parameters$global[["selected_recount_ids"]]
 recountIDs <- grep(pattern = "^SRP", x = names(project.parameters), value = TRUE)
 message("\tYAML config file contains ", length(recountIDs)," recount IDs.")
 message("\tSelected ", length(selectedRecountIDs)," recount IDs: ", paste(collapse = "; ", selectedRecountIDs))
+
+## Feature type
+message("\tFeature type: ", project.parameters$global$feature)
 
 #### RecountIDs with problems (TO INVESTIGATE / DEBUG LATER) ####
 recountIDs.with.problems <- c("SRP003611" = "the number of samples drops after run merging",

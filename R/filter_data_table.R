@@ -1,12 +1,12 @@
 #' @title Apply various filters on the observations and variables of
 #' a count table in order to prepare it for classification.
 #' @author Mustafa AbuElQumsan and Jacques van Helden
-#' @description Apply various filters on the observations (e.g. biological samples)
-#' and variables (e.g. genes) of
-#' a count table in order to prepare it for classification.
+#' @description Apply various filters on the individuals (e.g. biological samples)
+#' and features (e.g. genes, transcripts, ...) of a count table in order to prepare
+#' it for classification.
 #' @param countsWithClasses an object of the class DataTableWithClasses.
 #' This object contains the data table + the parameters (including filtering parameters).
-#' @param draw.plot=TRUE if TRUE, draw an histogram of variance per gene.
+#' @param draw.plot=TRUE if TRUE, draw an histogram of variance per feature.
 #' @param plot.heigh=NULL htigh of the pdf plot. If NULL, computed autopatically depending on the number of panels.
 #'
 #' @examples
@@ -44,10 +44,12 @@ filterDataTable <- function(rawCounts,
 
   message.with.time("Filtering count table")
 
-  ## Check validity of the input class
+  #### Check validity of the input class ####
   if (!is(rawCounts, "DataTableWithClasses")) {
     stop("filterDataTable() requires an object of class DataTableWithClasses")
   }
+
+  #### Check parameters ####
 
 
   ## Take parameters from the DataTableWithClasses object
@@ -60,7 +62,8 @@ filterDataTable <- function(rawCounts,
   }
   na.rm <- parameters$filtering$na.rm
 
-  if (is.null(parameters$filtering$na.rm)) {
+  ## Check min samples per class
+  if (is.null(parameters$filtering$minSamplesPerClass)) {
     message("\tfilterDataTable()\tundefined filtering parameter: minSamplesPerClass. Setting to default (10).")
     parameters$filtering$minSamplesPerClass <- 10
   }
@@ -75,22 +78,11 @@ filterDataTable <- function(rawCounts,
   ## Set the updated parameters to the object
   rawCounts$parameters <- parameters
 
-  # for (p in c("na.rm", "minSamplesPerClass", "nearZeroVarFilter")) {
-  #   if (is.null(parameters[[p]])) {
-  #     stop("Missing required parameter: '", p,
-  #          "'.\n\tPlease check configuration file. ")
-  #   } else {
-  #     assign(p, parameters[[p]])
-  #   }
-  # }
+  ## Initialise a vector with the features that will be kept through the different filtering stpes.
+  keptGenes <- rawCounts$featureNames
 
 
-
-  ## Initialise a vector with the genes that will be kept through the different filtering stpes.
-  keptGenes <- rawCounts$geneNames
-
-
-  ## Check if there are NA values, and discard all genes having at least one NA value
+  #### Treat NA values ####
   if (sum(is.na(rawCounts$dataTable)) > 0) {
     naGenes <- rownames(rawCounts$dataTable)[apply(is.na(rawCounts$dataTable), 1, sum) > 0]
     ## Report the number of genes with NA values
@@ -102,30 +94,23 @@ filterDataTable <- function(rawCounts,
   }
 
   if (na.rm) {
-    keptGenes <- setdiff(rawCounts$geneNames, naGenes)
+    keptGenes <- setdiff(rawCounts$featureNames, naGenes)
     message("\tNA filter: discarding ", length(naGenes), " genes out of ", rawCounts$nbGenes, "; keeping ", length(keptGenes))
   }
   #filteredDataTable <- rawCounts$dataTable[, keptGenes]
 
 
-  ## Detect genes with zero variance
+  #### Detect genes with zero variance ####
   message("\tDetecting genes with zero variance")
   varPerGene <- apply(rawCounts$dataTable, 1 , var, na.rm = TRUE) # Compute variance per gene (row)
   # table(varPerGene == 0)
-
-  # sum(zeroVarGenes == 0) # count genes with zero variance
   zeroVarGenes <- names(varPerGene)[varPerGene == 0] # identify genes having zero variance
   # length(zeroVarGenes) ## Number of genes to discard
   keptGenes <- setdiff(keptGenes, zeroVarGenes)
-  #length(keptGenes) ## Number of genes to keep
-#  filteredDataTable <- rawCounts$dataTable[keptGenes, ]
+  # length(keptGenes) ## Number of genes to keep
   message("\tZero var filter: discarding ", length(zeroVarGenes)," genes with zero variance; keeping ", length(keptGenes), " genes")
-  # dim(countsWithClasses$dataTable)
-  # dim(filteredDataTable)
 
-
-
-  ## Use caret::nearZeroVar() to discard supposedly bad predictor genes.
+  #### Use caret::nearZeroVar() to discard supposedly bad predictor genes. #####
   ## This includes zero variance genes (already filtered above) but also less trivial cases, see nearZeroVar() doc for details.
   nearZeroVarGenes <- NULL
   if (nearZeroVarFilter) {
@@ -137,13 +122,11 @@ filterDataTable <- function(rawCounts,
     message("\tNear zero var filter: discarding ", length(nearZeroVarGenes)," genes with near-zero variance (poor predictors); kept genes: ", length(keptGenes))
   }
 
-  ## Extract the table of counts with the subset of kept genes at the end of the different gene filters.
+  #### Extract the table of counts with the subset of kept genes at the end of the different gene filters. ####
   filteredDataTable <- rawCounts$dataTable[keptGenes,]
   # dim(filteredDataTable)
 
-
-  ################################################################
-  ## Check if there are NA values in the sample classes
+  #### Check if there are NA values in the sample classes ####
   discardedSamples <- is.na(rawCounts$classLabels)
   if (sum(discardedSamples) > 0) {
     message("\tDiscarding ", sum(discardedSamples), " samples with undefined class in ", classColumn, " column of pheno table")
@@ -151,16 +134,15 @@ filterDataTable <- function(rawCounts,
     filteredDataTable <- filteredDataTable[, nonaSamples]
     # dim(filteredDataTable)
     # dim(filteredPhenoTable)
-    filteredPhenoTable<- rawCounts$phenoTable[nonaSamples, ]
+    filteredPhenoTable <- rawCounts$phenoTable[nonaSamples, ]
     filteredClassLabels <- rawCounts$classLabels[nonaSamples]
     # table(countsWithClasses$classLabels, filteredClassLabels)
   } else {
-    filteredPhenoTable<- rawCounts$phenoTable
+    filteredPhenoTable <- rawCounts$phenoTable
     filteredClassLabels <- rawCounts$classLabels
   }
 
-  ################################################################
-  ## Select classess for which we dispose of at least 10 samples
+  #### Discard classes having less samples than the user-specified threshold ####
   # length(countsWithClasses$classLabels)
   message("\tSelecting classes with at least ", minSamplesPerClass, " samples")
   samplesPerClass <- table(filteredClassLabels)
@@ -169,7 +151,7 @@ filterDataTable <- function(rawCounts,
   keptSamples <- filteredClassLabels %in% keptClasses
   if (length(discardedClasses) > 0) {
     message("\tDiscarding ", length(discardedClasses), " classes containing less than ", minSamplesPerClass, " samples")
-    message("\tDiscarded classes\t", paste(collapse = ",", discardedClasses))
+    message("\t\tDiscarded classes\t", paste(collapse = ",", discardedClasses))
   }
   message("\tKeeping ", sum(keptSamples), " samples from ",
           length(keptClasses), " classes")
@@ -183,7 +165,6 @@ filterDataTable <- function(rawCounts,
   # dim(filteredPhenoTable)
   filteredClassLabels <- filteredClassLabels[keptSamples]
   # length(filteredClassLabels)
-  filteredSampleNb <- nrow(filteredDataTable)
 
 
   ## Return unfiltered count table + phenotable + countsWithClasses$classLabels
@@ -198,11 +179,6 @@ filterDataTable <- function(rawCounts,
   # class(result)
   # summary(result)
 
-  # result$dataTable <- filteredDataTable
-  # result$phenoTable <- filteredPhenoTable
-  # result$classLabels <- filteredClassLabels
-  # result$nbSamples <- ncol(filteredDataTable)
-  # result$nbGenes <- nrow(filteredDataTable)
 
   ## Include the filtering criteria in the returned list
   result$naGenes <- naGenes
@@ -245,155 +221,3 @@ filterDataTable <- function(rawCounts,
 
 }
 
-#' @title plot histograms of the variance distributions at different steps of the filtering process
-#' @author Jacques van Helden
-#' @param dataset an object of class DatasetWithClasses returned by filterDataTable()
-#' @param plot.file=NULL save the plot in a specified pdf file
-#' @export
-plotFilterHistograms <- function(dataset,
-                                 rawCounts,
-                                 plot.file = NULL,
-                                 plot.height=NULL) {
-
-  message("\t", dataset$ID, "\tVariance per gene histograms\t", plot.file)
-
-  ## Check the class of input object
-  if (!is(dataset, "DataTableWithClasses")) {
-    stop("plotFilterHistograms()\tdataset should belong to class DataTableWithClasses. ")
-  }
-
-  ## Get variance per gene
-  if (is.null(dataset$varPerGeneRaw)) {
-    stop("plotFilterHistograms()\tdataset must contain a field varPerGeneRaw as computed by filterDataTable()")
-  }
-  varPerGene <- dataset$varPerGeneRaw
-
-  ## Get list of kept genes
-  if (is.null(dataset$keptGenes)) {
-    stop("plotFilterHistograms()\tdataset must contain a field keptGenes as computed by filterDataTable()")
-  }
-  keptGenes <- dataset$keptGenes
-
-  ## Get list of genes with zero variance
-  if (is.null(dataset$zeroVarGenes)) {
-    stop("plotFilterHistograms()\tdataset must contain a field zeroVarGenes as computed by filterDataTable()")
-  }
-  zeroVarGenes <- dataset$zeroVarGenes
-
-  ## Near-zero filter
-  parameters <- dataset$parameters
-  if (is.null(parameters$filtering$nearZeroVarFilter)) {
-    nearZeroVarFilter <- FALSE
-    nb.panels <- 3
-  } else {
-    nearZeroVarFilter <- parameters$filtering$nearZeroVarFilter
-    nb.panels <- 4
-  }
-
-  ## Open pdf file if required
-  if (!is.null(plot.file)) {
-    if (is.null(plot.height)) {
-      plot.height <- nb.panels * 2.5
-    }
-    pdf(plot.file, width = 7, height = plot.height)
-  }
-
-
-  logVarPerGene <- log2(varPerGene)
-  noInfVar <- !is.infinite(logVarPerGene)
-  xmin <- floor(min(logVarPerGene[noInfVar]))
-  xmax <- ceiling(max(logVarPerGene[noInfVar]))
-  xlim <- c(xmin, xmax)
-  varbreaks <- seq(from = xmin,  to = xmax, by  = 0.1)
-  if (nearZeroVarFilter) {
-    par(mfrow = c(4,1))
-  } else {
-    par(mfrow = c(3,1))
-  }
-  hist(log2(varPerGene[noInfVar]),
-       breaks = varbreaks,
-       col = "gray", border = "gray",
-       main = paste("All non-zero var genes; ", parameters$recountID),
-       xlab = "log2(varPerGene)",
-       ylab = "Number of genes",
-       xlim = xlim)
-  #    legend("topright", parameters$recountID)
-
-
-  if (nearZeroVarFilter) {
-    ## Get list of near-zero variance genes
-    if (is.null(dataset$nearZeroVarGenes)) {
-      stop("plotFilterHistograms()\tdataset must contain a field nearZeroVarGenes as computed by filterDataTable()")
-    }
-    nearZeroVarGenes <- dataset$nearZeroVarGenes
-
-
-    hist(log2(varPerGene[nearZeroVarGenes]),
-         breaks = varbreaks,
-         col = "red", border = "orange",
-         main = "Near zero variance",
-         xlab = "log2(varPerGene)",
-         ylab = "Number of genes",
-         xlim = xlim)
-  }
-  hist(log2(varPerGene[keptGenes]),
-       breaks = varbreaks,
-       col = "darkgreen", border = "#00BB00",
-       main = "Kept genes",
-       xlab = "log2(varPerGene)",
-       ylab = "Number of genes",
-       xlim = xlim)
-
-  ## Count the number of zero values per gene
-  zerosPerGene <- apply(rawCounts$dataTable == 0, 1, sum)
-  zerobreaks <- seq(from = 0, to = max(zerosPerGene + 1))
-  # zerobreaks <- seq(from=0, to=max(zerosPerGene+1), by=1)
-
-  #### Histogram of zero values per gene. ####
-  ##
-  ## Displayed in green (color for kept genes) because we will then
-  ## overlay the histograms of near zero var (orange) and zero var (red),
-  ## so that the remaining part of the histogram will correspond to genes
-  ## kept.
-  hist(zerosPerGene,
-       breaks = zerobreaks,
-       main = "Zeros per gene",
-       xlab = "Number of zero values",
-       ylab = "Number of genes",
-       col = "#00BB00", border = "#00BB00")
-  if (nearZeroVarFilter) {
-    hist(zerosPerGene[union(nearZeroVarGenes, zeroVarGenes)],
-         breaks = zerobreaks,
-         add = TRUE, col = "orange", border = "orange")
-  }
-  hist(zerosPerGene[zeroVarGenes],
-       breaks = zerobreaks,
-       add = TRUE, col = "red", border = "red")
-  if (nearZeroVarFilter) {
-    legend("top",
-           legend = paste(
-             sep = ": ",
-             c("Kept genes", "Near-zero variance", "Zero variance"),
-             c(length(keptGenes), length(nearZeroVarGenes), length(zeroVarGenes))),
-           lwd = 5,
-           cex = 0.8,
-           col = c("#00BB00", "orange", "red")
-    )
-  } else {
-    legend("top",
-           legend = paste(
-             sep = ": ",
-             c("Kept genes",  "Zero variance"),
-             c(length(keptGenes), length(zeroVarGenes))),
-           lwd = 5,
-           cex = 0.8,
-           col = c("#00BB00", "red"))
-
-  }
-  #    hist(zerosPerGene[nearZeroVarGenes])
-
-  par(mfrow = c(1,1))
-  if (!is.null(plot.file)) {
-    silence <- dev.off()
-  }
-}

@@ -1,22 +1,12 @@
 
-##### All variables versus all PCs. #####
+##### Impact of normalisation on classifier perfomances ####
+
+## Here we use all variables. we will further test the impact of
+## feature selection in separate scripts.
+
 ##
-## QUESTION: is it better to use the PCAs-transformed data, and, if so, is it better to use a subset of the first components or all the components ?
-## For the time being we test this with only one classifier (KNN, default k)  but we will come back to it with other classifiers later.
-## IMPORTANT NOTE : i would like to pay your intention for here we should take " data.type, so that we will not give the user to
-## choose the data.type in return we will pass the data.type for each experiment.
-## Choice of the classifier
 
-## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
-allVariables.mem.image <- file.path(
-  project.parameters$global$dir$memoryImages,
-  paste(sep = "", "classif_eval_all_variables_",
-      paste(collapse = "-", selectedRecountIDs),
-      "_", Sys.Date(), ".Rdata"))
-
-
-
-## If requrested, reset the parameters for all the study cases
+## If requested, reset the parameters for all the study cases
 ## This is used to re-run the analyses on each study case after
 ## having changed some parameters in the yaml-specific configuration file
 if (project.parameters$global$reload.parameters) {
@@ -29,10 +19,12 @@ if (project.parameters$global$reload.parameters) {
       for (dataSetName in names(studyCases[[recountID]]$datasetsForTest)) {
         studyCases[[recountID]]$datasetsForTest[[dataSetName]]$parameters <- parameters
       }
-      #  print (studyCases[[recountID]]$parameters$dir$tablesDetail)
+      rm(parameters)
     }
   }
 }
+
+
 
 train.test.results.all.variables.per.classifier <- list()
 
@@ -42,7 +34,8 @@ train.test.results.all.variables.per.classifier <- list()
 ## Loop over recountIDs
 ## Loop over classifiers
 # classifier <- "svm" ## For quick test
-for (classifier in parameters$classifiers) {
+# parameters$classifiers[1] ## For quick test
+for (classifier in project.parameters$global$classifiers) {
 
   # recountID <- "SRP042620"
   for (recountID in selectedRecountIDs) {
@@ -69,6 +62,7 @@ for (classifier in parameters$classifiers) {
       ## If not specified in config file, take all datasetsForTest
       if (is.null(parameters$data.types.to.test)) {
         parameters$data.types.to.test <- names(studyCase$datasetsForTest)
+        project.parameters$global$data.types.to.test <- names(studyCase$datasetsForTest)
 
         ## Temporary (2018-11-01): discard edgeR and DESeq2-sorted datasets.
         ## Actually these are not data types, variable ordering should be treated as a separate variable, not as a separate dataset.
@@ -76,7 +70,7 @@ for (classifier in parameters$classifiers) {
       }
 
       ## Loop over data types
-      data.type <- "q0.75_log2_PC" ## For quick test
+      data.type <- "TMM_log2" ## For quick test
       for (data.type in parameters$data.types.to.test) {
         message.with.time("\tRunning train/test with all variables",
                           "\n\trecountID: ", recountID,
@@ -128,17 +122,17 @@ for (classifier in parameters$classifiers) {
                      classifier = classifier,
                      experimentLabels = short.labels,
                      horizontal = TRUE,
-                     fig.height = 8,
+                     fig.height = 6,
                      expMisclassificationRate = dataset$randExpectedMisclassificationRate,
                      # boxplotFile = NULL,
                      boxplotFile = file.path(
                        outParam$resultDir, "figures",
                        paste(sep = "", outParam$filePrefix, ".pdf")),
-                     main = paste(sep = "",
-                                  parameters$recountID,
-                                  "; ", classifier,
-                                  "\n all features; ",
-                                  project.parameters$global$iterations, " iterations"))
+                     main = paste0(parameters$short_label,
+                                   "\n(", parameters$recountID, ")",
+                                   "\n", toupper(classifier),
+                                   "; ", project.parameters$global$iterations, " iterations")
+    )
 
     ## We store the training-testing result in a single list for further processing
     train.test.results.all.variables.per.classifier[[recountID]][[classifier]] <- train.test.results.all.variables
@@ -147,24 +141,106 @@ for (classifier in parameters$classifiers) {
 } # end loop over classifiers
 
 
+## Save the results in a separate object, that can be reloaded later
+## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
+save.result.file <- file.path(
+  project.parameters$global$dir$memoryImages,
+  paste0(
+    "normalisation_impact",
+    "_", paste(collapse = "-", project.parameters$global$classifiers),
+    "_", paste(collapse = "-", selectedRecountIDs),
+    "_", Sys.Date(), "_results.Rdata")
+)
+message.with.time(
+  "Saved results after eval of normalisation impact: ",
+  save.result.file)
+dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
+save(train.test.results.all.variables.per.classifier, file = save.result.file)
+
+
+
+#### Summarize results for all the study cases and all the classifiers
+recountIDs <- names(train.test.results.all.variables.per.classifier)
+recountID <- recountIDs[1]
+classifiers <- names(train.test.results.all.variables.per.classifier[[recountID]])
+# par(mfrow = c(length(recountIDs), length(classifiers)))
+for (recountID in recountIDs) {
+  for (classifier in classifiers) {
+    studyCase <- studyCases[[recountID]]
+
+    message("Summarizing results. RecountID\t", recountID, "\tclassifier\t", classifier)
+    experimentList <- train.test.results.all.variables.per.classifier[[recountID]][[classifier]]
+
+    #### Summary table ####
+    TTsummary <- SummarizeTrainTestResults(experimentList = experimentList)
+    names(TTsummary)
+    # expLabels <- TTsummary$experimentLabels
+    # expLabels <- sub(pattern = paste0(recountID, "_"), replacement = "", x = expLabels)
+    # expLabels <- sub(pattern = paste0(classifier, "_"), replacement = "", x = expLabels)
+    # expLabels <- sub(pattern = paste0(project.parameters$global$svm$kernel, "_"), replacement = "", x = expLabels)
+
+    expLabels <- short.labels
+    expLabels <- sub(pattern = "RLE", replacement = "DESeq", x = expLabels)
+
+    #### Error box plots ####
+
+    ## Catch first dataset to get parameters
+    parameters <- studyCase$parameters
+    stuyCaseLabel <- parameters$short_label
+    dataset <- studyCase$datasetsForTest[[1]]
+    expMER <- dataset$randExpectedMisclassificationRate
+    outParam <- outputParameters(dataset, classifier = classifier, permute = FALSE, createDir = TRUE)
+    outParam$filePrefix <- paste(sep = "_", recountID, classifier, "normalisation_impact")
+    train.test.results.all.variables <- train.test.results.all.variables.per.classifier[[recountID]][[classifier]]
+
+
+
+    ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
+                     classifier = classifier,
+                     experimentLabels = expLabels,
+                     horizontal = TRUE,
+                     fig.height = 6,
+                     expMisclassificationRate = dataset$randExpectedMisclassificationRate,
+                     # boxplotFile = NULL,
+                     boxplotFile = file.path(
+                       outParam$resultDir, "figures",
+                       paste(sep = "", outParam$filePrefix, ".pdf")),
+                     main = paste0(parameters$short_label,
+                                   "\n(", parameters$recountID, ")",
+                                   "\n", toupper(classifier),
+                                  "; ", project.parameters$global$iterations, " iterations")
+                     )
+  }
+}
+# par(mfrow = c(1, 1))
 
 # stop("HELLO")
 
 ## Save a memory image that can be re-loaded next time to avoid re-computing all the normalisation and so on.
 if (project.parameters$global$save.image) {
+  ## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
+  mem.image.file <- file.path(
+    project.parameters$global$dir$memoryImages,
+    paste0(
+      "normalisation_impact",
+    "_", paste(collapse = "-", project.parameters$global$classifiers),
+    "_", paste(collapse = "-", selectedRecountIDs),
+    "_", Sys.Date(), "_memory-image.Rdata")
+  )
+
   dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
-  message.with.time("Saving memory image after eval of all variables: ", allVariables.mem.image)
-  save.image(file = allVariables.mem.image)
+  message.with.time("Saving memory image after eval of all variables: ", mem.image.file)
+  save.image(file = mem.image.file)
 }
 
 ###############################################################################################
-  # ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
-  #                  classifier = classifier,
-  #                  main = paste(sep="",
-  #                               classifier, ": all variables vs all PCs,", "\n",
-  #                               parameters$recountID, ", ",
-  #                               parameters$iterations, " iterations, ","\n",
-  #                               data.type = "diverse data type"))
-  #
+# ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
+#                  classifier = classifier,
+#                  main = paste(sep="",
+#                               classifier, ": all variables vs all PCs,", "\n",
+#                               parameters$recountID, ", ",
+#                               parameters$iterations, " iterations, ","\n",
+#                               data.type = "diverse data type"))
+#
 
 message.with.time("Finished script 06_all_vaariables_vs_all_PCs.R")

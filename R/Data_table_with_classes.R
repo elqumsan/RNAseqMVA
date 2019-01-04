@@ -22,7 +22,7 @@
 #'     \item classColumn: that is indeed refers to type of the outcome column.
 #'     \item nbGenes: that is whole number of features.
 #'     \item sampleNames: that is names of individuals that are included in the new object.
-#'     \item geneNames: the names of each genes in the count table that will be involved in new object.
+#'     \item featureNames: the names of each genes in the count table that will be involved in new object.
 #'     \item classLabels: that is the class labels for all the samples in the relatedness object.
 #'     \item classNames:  that is the names of all classes included in the relatedness object.
 #'     \item nbClasses:   that is the overall number of the classes involved in the relatedness object.
@@ -173,7 +173,7 @@ buildAttributes.DataTableWithClasses <- function(self) {
   self$nbSamples = ncol(self$dataTable)
   self$nbGenes = nrow(self$dataTable)
   self$sampleNames = colnames(self$dataTable)
-  self$geneNames = rownames(self$dataTable)
+  self$featureNames = rownames(self$dataTable)
 
   ################################################################
   ## Specify sample classes (classLabels) and all the derived attributes
@@ -249,9 +249,9 @@ buildAttributes.DataTableWithClasses <- function(self) {
   }
 
   ## Check gene names
-  if (length(self$geneNames) != nrow(self$dataTable)) {
-    stop("DataTableWithClasses(): inconsistent dimensions of geneNames (",
-         length(self$geneNames), " names) and dataTable (",
+  if (length(self$featureNames) != nrow(self$dataTable)) {
+    stop("DataTableWithClasses(): inconsistent dimensions of featureNames (",
+         length(self$featureNames), " names) and dataTable (",
          nrow(self$dataTable), " columns).")
   }
 

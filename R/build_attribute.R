@@ -8,7 +8,7 @@
 #'  \item nbSamples:  that is the number of samples in relatedness object.
 #'  \item nbGenes:    that is the number of genes in  relatedness object.
 #'  \item sampleNames: that is the names of all samples involved in related object.
-#'  \item geneNames:   that is names of all genes in the relatedness object.
+#'  \item featureNames:   that is names of all genes in the relatedness object.
 #'  \item classLabels: that is the class labels for all the samples in the relatedness object.
 #'  \item classNames:  that is the names of all classes included in the relatedness object.
 #'  \item nbClasses:   that is the overall number of the classes involved in the relatedness object.

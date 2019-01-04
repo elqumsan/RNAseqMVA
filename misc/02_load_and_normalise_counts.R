@@ -2,100 +2,83 @@
 ## Load a count Table from recount-experiment, merge counts per sample
 ## and apply some pre-filtering (remove zero-variance and near-zero-variance genes).
 
-if (project.parameters$global$reload) {
-  ## Reload previously stored memory image
-  if (!is.null(project.parameters$global$reload.date)) {
-    image.date <- project.parameters$global$reload.date
-  } else {
-    image.date <- Sys.Date()
-  }
-  studyCases.mem.image <- file.path(
-    project.parameters$global$dir$memoryImages,
-    paste(sep = "", "loaded_studyCases_",
-          paste(collapse = "-", selectedRecountIDs),
-          "_", image.date, ".Rdata"))
+message("Loading study cases")
 
-  message("Reloading study cases from previously stored memory image")
-  message("\t", studyCases.mem.image)
-  load(studyCases.mem.image)
+studyCases <- list() ## a list containing all the loaded datasets + their pre-processed data
+#recountID <- "SRP057196"
+# recountID <- "SRP056295"
+# recountID <- "SRP042620" ## For quick test and debugging
+recountID <- selectedRecountIDs[1]
+for (recountID in selectedRecountIDs) {
 
-  ## Reload parameters (their value has been over-written by those loade in memory image)
+  message.with.time("Building StudyCase for recountID\t", recountID, "\n\tfeature type: ", project.parameters$global$feature)
 
-  ## If requrested, reset the parameters for all the study cases
-  ## This is used to re-run the analyses on each study case after
-  ## having changed some parameters in the yaml-specific configuration file
-  if (!is.null(project.parameters$global$reload.parameters)
-      && project.parameters$global$reload.parameters) {
-    project.parameters <- yaml.load_file(configFile)
-    project.parameters <- initParallelComputing(project.parameters)
-    if (exists("studyCases")) {
-      for (recountID in names(studyCases)) {
-        parameters <- initRecountID(recountID, project.parameters)
-      	studyCases[[recountID]]$parameters <- parameters
-	for (dataSetName in names(studyCases[[recountID]]$datasetsForTest)) {
-          studyCases[[recountID]]$datasetsForTest[[dataSetName]]$parameters <- parameters
-        }
-        #  print (studyCases[[recountID]]$parameters$dir$tablesDetail)
-      }
-    }
-  }
+  #### Specify generic and recountID-specific parameters ####
+  parameters <- initRecountID(recountID, project.parameters)
 
-} else {
-  message("Loading study cases")
+  # Main directory should be adapted to the user's configuration
+  #  dir.main <- project.parameters$global$dir$main
 
-  studyCases <- list() ## a list containing all the loaded datasets + their pre-processed data
-  #recountID <- "SRP057196"
-  # recountID <- "SRP056295"
-  recountID <- "SRP042620" ## For quick test and debugging
-  for (recountID in selectedRecountIDs) {
+  # View(parameters)
+  studyCases[[recountID]] <- StudyCase(recountID = recountID, parameters = parameters)
 
 
-    message.with.time("Building StudyCase for recountID\t", recountID)
-
-    #### Specify generic and recountID-specific parameters ####
-    parameters <- initRecountID(recountID, project.parameters)
-
-    # Main directory should be adapted to the user's configuration
-    #  dir.main <- project.parameters$global$dir$main
-
-    # View(parameters)
-    studyCases[[recountID]] <- StudyCase(recountID = recountID, parameters = parameters)
-
-
-    #### Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files ###
+  #### Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files ###
+  if (project.parameters$global$export.tables) {
     exportTables(studyCases[[recountID]])
+  }
 
-    ## TO DO LATER: CHECK IF THESE FIGURES ARE WELL GENERATED, AND INCOROPORATE THEM IN THE plot.figure methods
+  ## Plot histograms of log2 normalized counts
+  datasetNames <- names(studyCases[[recountID]]$datasetsForTest)
+  log2countNames <- grep(pattern = "log2$", datasetNames, value = TRUE)
+  shortLabel <- parameters$short_label
+  for (datasetName in log2countNames) {
+    plot.file <- file.path(parameters$dir$NormalizationImpact,
+                           paste0(recountID, "_", datasetName, "_hist", ".pdf"))
+    message("\t", datasetName, " histogram", "\t", plot.file)
+    pdf(plot.file, width = 7, height = 5)
+    par.ori <- par(no.readonly = TRUE)
+    par(mar = c(5.1, 6.1, 4.1, 1))
+    hist(unlist(studyCases[[recountID]]$datasetsForTest[[datasetName]]$dataTable), breaks = 100,
+         col = "grey",
+         main = paste0(datasetName, " count distribution",
+                       "\n", shortLabel, "; ", recountID),
+         las = 1,
+         xlab = "log2(norm counts)",
+         ylab = NA)
+    par <- par.ori
+    silence <- dev.off()
+  }
 
-    # plot.file <- file.path(parameters$dir$NormalizationImpact, "log2normCount_hist.pdf")
-    # message("\tlog2(norm counts) histogram\t", plot.file)
-    # pdf(plot.file, width = 7, height = 5)
-    # hist(unlist(studyCases[[recountID]]$log2norm$counts), breaks=100,
-    #      col="grey",
-    #      main=paste("log2(norm counts) distrib;", recountID),
-    #      las=1,
-    #      xlab="log2(norm counts)",
-    #      ylab="Frequency")
-    #
-    # silence <- dev.off()
+  ## Save the study case object
+  if (project.parameters$global$save.image) {
+    studyCase <- studyCases[[recountID]]
+    featureType <- studyCase$parameters$feature
+    studyCaseFile <-  file.path(
+      project.parameters$global$dir$memoryImages,
+      paste0("loaded_studyCase_", recountID, "_", featureType, ".Rdata"))
+    message("Saving study case\t", recountID, "\t", studyCaseFile)
+    save(studyCase, file = studyCaseFile)
 
-    #   if (ncol(studyCases[[recountID]]$log2norm$dataTable) != length(studyCases[[recountID]]$log2norm$classLabels)){
-    #     stop(" the Number of samples in log2norm counts should be the same length of classes")
-    #   }
-    #
-    #
-    #
-    # } else {
-    #   message.with.time("Skipping normalisation for count Table with log2 transformation")
-    # }
+    for (datasetName in names(studyCase$datasetsForTest)) {
+      dataset <- studyCase$datasetsForTest[[datasetName]]
+      featureType <- dataset$parameters$feature
+      datasetFile <-  file.path(
+        project.parameters$global$dir$memoryImages,
+        paste0("loaded_dataset_", recountID, "_", featureType, "_", datasetName, ".Rdata"))
+      message("Saving dataset\t", recountID, "\t", datasetName, "\t", datasetFile)
+      save(dataset, file = datasetFile)
+
+    }
+    rm(dataset)
+    rm(studyCase)
+  }
+
+} # end loop over recountIDs
+message("Finished loading ", length(studyCases), " study cases")
 
 
-  } # end loop over recountIDs
-  message("Finished loading ", length(studyCases), " study cases")
-}
-
-
-## Compute statistics about loaded datasets
+#### Compute statistics about loaded datasets ####
 studyCasesStats <- data.frame()
 message("Computing summary statistics for ", length(studyCases), " study case(s). ")
 for (recountID in selectedRecountIDs) {
@@ -288,16 +271,20 @@ for (recountID in selectedRecountIDs) {
   )
   # system(paste("open", plot.file))
 }
-dev.off()
+silence <- dev.off()
 
-#### Save a memory image that can be re-loaded next time ####
-## to avoid re-computing all the normalisation and so on.
-if (project.parameters$global$save.image) {
+#### Save a memory image that can be re-loaded in the future ####
+## to avoid re-redoall the normalisation computing
+
+## TO DO: SAVE MAGE OF studyCases RATHER THAN THE WHOLE MEMORY SPACE ##
+if ((project.parameters$global$save.image) && (!project.parameters$global$reload)) {
+  featureType <- project.parameters$global$feature
   image.date <- Sys.Date()
   studyCases.mem.image <- file.path(
     project.parameters$global$dir$memoryImages,
     paste(sep = "", "loaded_studyCases_",
           paste(collapse = "-", selectedRecountIDs),
+          "_", featureType,
           "_", image.date, ".Rdata"))
 
   dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
@@ -309,5 +296,3 @@ if (project.parameters$global$save.image) {
 ## Indicate that this script has finished running
 message.with.time("finished executing 02_load_and_normalise_counts.R")
 
-## Temporary
-# source('misc/06_all_variables_vs_all_PCs.R')
