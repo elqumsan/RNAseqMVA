@@ -2,12 +2,12 @@
 % Please edit documentation in R/geochar_from_pheno.R
 \name{geocharFromPheno}
 \alias{geocharFromPheno}
-\title{Extract the conditions from the "characteristics" column of Recount pheno Table}
+\title{Extract the conditions from the "characteristics" column of Recount pheno Table, and store them in separate columns.}
 \usage{
 geocharFromPheno(runPheno)
 }
 \arguments{
-\item{runPheno}{it is the Run pheno table which may be containt duplicate in the rus for the same sample, and it give us the actual length for a pheno table}
+\item{runPheno}{run pheno table produced by colData(), which contains the pheno information for each run (there might be several runs per )}
 }
 \value{
 phenoTable with data.frame properities in order to be much earier in handle it smoothly.
@@ -16,5 +16,5 @@ phenoTable with data.frame properities in order to be much earier in handle it s
 This is a bit tricky: we have to parse a string describing several attributes.
 }
 \author{
-Mustafa ABUELQUMSAN and Jacques van Helden
+Mustafa AbuElQumsan and Jacques van Helden
 }
