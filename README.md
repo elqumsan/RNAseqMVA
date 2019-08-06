@@ -18,6 +18,11 @@ git clone https://github.com/elqumsan/RNAseqMVA.git
 
 The file [conda-rnaseqmva.yml](conda-rnaseqmva.yml) specifies the parameters of a conda environment enabling to install all required dependencies (R, RCRAN and Bioconductor libraries).
 
+## Installing miniconda
+
+If conda is not yet installed on your system, follow the [conda installation instructions](https://docs.conda.io/projects/conda/en/latest/user-guide/install/). 
+
+
 ### Loading conda module 
 
 This step is specific to the IFB core cluster. If you are working on another infrastructure, you can skip it. 
@@ -37,6 +42,8 @@ cd RNAseqMVA
 conda env create -f conda-rnaseqmva.yml
 ```
 
+__Note__: this command needs to be run only once. The next section explains how to update the environment after it has been created. 
+
 ### Updating the conda rnaseqmva environment
 
 In case of changes to the RNAseqMVA environment, an update can be
@@ -49,9 +56,24 @@ conda env update -f conda-rnaseqmva.yml
 
 ### Loading the environemnt
 
+The next command needs to be adapted depending on your conda version. 
+
+```
+conda --version
+```
+
+If your version is < 5, use the command `source` below.
+
 ```
 source activate rnaseqmva
 ```
+
+If you have conda verison >=5, you can run `conda activate`as below.
+
+```
+conda activate rnaseqmva
+```
+
 
 ## Compiling the RNAseqMVA package
 
