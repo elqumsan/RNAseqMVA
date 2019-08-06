@@ -81,6 +81,7 @@ We assume here that the RNAseqMVA package has been installed in the
 home directory. If not, you just need to adapt the path below.
 
 ```
+cd ~/RNAseqMVA
 make build_and_install
 ```
 
