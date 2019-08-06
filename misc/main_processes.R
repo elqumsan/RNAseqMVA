@@ -14,6 +14,13 @@ if (project.parameters$global$reload) {
   source('misc/02_load_and_normalise_counts.R')
 }
 
+## Reload parameters if required (they may have been changed since the
+## study cases were built)
+if (project.parameters$global$reload.parameters) {
+  message.with.time("Reloading parameters")
+  source('misc/02b_reload_parameters.R')
+}
+
 ## Feature selection with first PCs
 message.with.time( "Feature selection by first PCs")
 source('misc/07_PCA_impact_of_PC_number.R')
