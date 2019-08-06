@@ -3,15 +3,16 @@
 
 targets:
 	@echo "Targets"
-	@echo "	parameters		display the general parameters"
-	@echo "	build_and_install	Build and install RNAseqMVA package for R"
+	@echo "	parameters			display the general parameters"
+	@echo "	build_and_install		Build and install RNAseqMVA package for R"
 	@echo "	convert_pc_plots_all_study_cases	convert PC plots from pdf to ${IMG_FORMAT} for all study cases"
 	@echo "	sync_pc_plots_all_study_cases	synchronize PC plots from workspace to the manuscript folder"
-	@echo "	ws_dir_to_server	synchronize a directory (default: TO_SYNC=${TO_SYNC}) from local workspace to the shared space of a remote server"
-	@echo "	ws_dir_from_server	synchronize a directory from the workspace of a remote server to local workspace"
-	@echo "	results_from_server	synchronize results from the workspace of a remote server to local workspace"
-	@echo "	srun_on_ifb_cluster	run the analyses on the IFB cluster (via srun)"
-	@echo "	run_r_on_ifb_cluster	run analyses in interactive mode on a node of the IFB cluster"
+	@echo "	ws_dir_to_server		synchronize a directory (default: TO_SYNC=${TO_SYNC}) from local workspace to the shared space of a remote server"
+	@echo "	ws_dir_from_server		synchronize a directory from the workspace of a remote server to local workspace"
+	@echo "	results_from_server		synchronize results from the workspace of a remote server to local workspace"
+	@echo "	srun_on_ifb_cluster		run the analyses on the IFB cluster (via srun)"
+	@echo "	run_r_on_ifb_cluster		run analyses in interactive mode on a node of the IFB cluster"
+	@echo "	sinteractive_ifb_cluster	 Run an interactive  session on the IFB cluster"
 
 # SRP035988 SRP042620 SRP056295 SRP057196 SRP061240 SRP062966 SRP066834
 IMG_FORMAT=png
@@ -127,13 +128,20 @@ results_from_server:
 ################################################################
 ## Send the job on the long queue (more than 24h) with 50 CPUs and
 ## 32Gb RAM.
-EXCLUDE_NODE=-x cpu-node-1
+SLURM_EXCLUDE=-x cpu-node-1 -x cpu-node-69
+SLURM_QUEUE=long
+SLURM_MEM=32GB
+SLURM_CPUS=25
 srun_on_ifb_cluster:
-	srun --mem 32GB --cpus=50 -p long ${EXCLUDE_NODE} Rscript --vanilla misc/main_processes.R
+	srun --mem ${SLURM_MEM} --cpus=${SLURM_CPUS} -p ${SLURM_QUEUE} ${SLURM_EXCLUDE} Rscript --vanilla misc/main_processes.R
 
 ################################################################
-## Run an interactive R session on the IFB cluster
-EXCLUDE_NODE=-x cpu-node-1
+## Run an  R session on the IFB cluster
 run_r_on_ifb_cluster:
-	srun --mem 32GB --cpus=50 -p long ${EXCLUDE_NODE} R --vanilla
+	srun --mem ${SLURM_MEM} --cpus=${SLURM_CPUS} -p ${SLURM_QUEUE} ${SLURM_EXCLUDE} R --vanilla
+
+################################################################
+## Run an interactive  session on the IFB cluster
+sinteractive_ifb_cluster:
+	sinteractive --mem ${SLURM_MEM} --cpus=${SLURM_CPUS} -p ${SLURM_QUEUE} ${SLURM_EXCLUDE}
 
