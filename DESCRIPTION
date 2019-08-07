@@ -8,14 +8,14 @@ Maintainer: Mustafa AbuElQumsan <mustafa.abuelqumsan@etu.univ-amu.fr>
 Depends:
     R (>= 3.5.0)
 Imports:
-    S4Vectors
-Suggests:
-    SummarizedExperiment,
-    recount,
-    DESeq2,
     devtools (>= 1.6),
     knitr,
     rmarkdown
+Suggests:
+    S4Vectors,
+    SummarizedExperiment,
+    recount,
+    DESeq2
 Description: utilities to run multivariate analysis methods on RNA-seq data.
 License: What license is it under?
 Encoding: UTF-8
