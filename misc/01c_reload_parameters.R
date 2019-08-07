@@ -5,9 +5,11 @@
 ## having changed some parameters in the yaml-specific configuration file
 if (!is.null(project.parameters$global$reload.parameters)
     && project.parameters$global$reload.parameters) {
+
   message.with.time("Reloading parameters from config file\t", configFile)
   project.parameters <- yaml.load_file(configFile)
   project.parameters <- initParallelComputing(project.parameters)
+
   if (exists("studyCases")) {
     for (recountID in names(studyCases)) {
       parameters <- initRecountID(recountID, project.parameters)
