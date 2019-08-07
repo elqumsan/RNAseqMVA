@@ -21,13 +21,13 @@ if (project.parameters$global$reload.parameters) {
   source('misc/02b_reload_parameters.R')
 }
 
-## Feature selection with first PCs
-message.with.time( "Feature selection by first PCs")
-source('misc/07_PCA_impact_of_PC_number.R')
-
 ## Run analyses with all variables and default parameters
 message.with.time( "Impact of normalisation on classifier performances")
 source('misc/06_all_variables_vs_all_PCs.R')
+
+## Feature selection with first PCs
+message.with.time( "Feature selection by first PCs")
+source('misc/07_PCA_impact_of_PC_number.R')
 
 # stop("HELLO\tclassifier\t", classifier)
 
