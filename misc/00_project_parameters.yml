@@ -1,16 +1,17 @@
 global: ## Global parameters are those who are the samee across all study cases
 
-#  selected_recount_ids: ["SRP042620", "SRP056295", "SRP035988", "SRP061240", "SRP057196", "SRP062966", "SRP066834"]
+#  selected_recount_ids: ['TCGA'] # TGCA dataset (under testing, still tobe debugged for the class labels)
+#  selected_recount_ids: ["SRP042620", "SRP056295", "SRP035988", "SRP057196", "SRP062966", "SRP066834"]
   selected_recount_ids: ['SRP042620'] # Breast cancer
 #  selected_recount_ids: ['SRP056295'] # Acute myeloid leukemia
 #  selected_recount_ids: ['SRP035988'] # Psoriasis
-#  selected_recount_ids: ['SRP061240'] # Plasma RNA in cancer
+###  selected_recount_ids: ['SRP061240'] # Plasma RNA in cancer
 #  selected_recount_ids: ['SRP057196'] # Brain cells (sc)
 #  selected_recount_ids: ['SRP062966'] # Lupus (sc)
 #  selected_recount_ids: ['SRP066834'] # Cerebral organoids and fetal neocortex (sc)
 #  selected_recount_ids: ['SRP042161'] # Glioblastoma (sc) # PROBLEM
 
-  feature: "transcript" ## Type of feature to download from Recount2.s Supported: "gene", "exon", "junction", "transcript"
+  feature: "gene" ## Type of feature to download from Recount2.s Supported: "gene", "exon", "junction", "transcript"
 
   dir: ## Directories
     main: "~/RNAseqMVA"
@@ -34,8 +35,8 @@ global: ## Global parameters are those who are the samee across all study cases
     epsilon: 0.1    ## For log2 transformation
 
   perm.prefix: "permLabels"
-  jobs: 25 ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
-  iterations: 25 ## Number of iterations for the classiifers
+  jobs: "none" ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
+  iterations: 10 ## Number of iterations for the classiifers
 
   reload.parameters: FALSE  ## Reload parameters after having loaded memory image, in order to take into account the new parameter values
   reload: FALSE ## If TRUE, reload previously stored memory image to shortcut the download, loading and normalisation of the raw counts
@@ -93,10 +94,13 @@ global: ## Global parameters are those who are the samee across all study cases
 ## Default values for study case-specific parameters
 ## (can then be over-written by recountID-specific values as shown below)
 default:
-  #  classColumn: "tissue" ## Characteristics to be used as class label
   mergeRuns: TRUE ## Whether or not to merge runs per sample
   sampleIdColumn: "geo_accession"
 
+TCGA:
+  description: "The Cancer Genome Atlas (TCGA).	"
+  short_label: "TCGA"
+  classColumn: ["xml_breast_carcinoma_estrogen_receptor_status", "xml_breast_carcinoma_progesterone_receptor_status", "xml_lab_proc_her2_neu_immunohistochemistry_receptor_status"]
 
 
 
@@ -131,6 +135,7 @@ SRP057196:
 SRP056295: ## 525 runs, human leukemia
   description: "RNA sequencing of human leukemia Overall design: The goals of this project are to obtain a comprehensive study of mutations and gene expression in human acute myeloid leukemia (AML). Methods: AML cells were thawed. DNA and RNA (polyA) was extracted and sequences were obtained with an illumina HiSeq 2000 sequencer. Results are pending.	"
   short_label: "Acute myeloid leukemia"
+#  classColumn: "tissue"
   classColumn: "tissue"
 
 SRP035988:  ## Psoriasis

@@ -39,6 +39,7 @@ for (classifier in classifiers) {
     data.type <- "TMM_log2_PC"
     for (data.type in project.parameters$global$PCs.to.test) {
       message.with.time("Impact of PCs\t", recountID, " ", parameters$feature, "\t", data.type)
+      dataset <- studyCases[[recountID]]$datasetsForTest[[data.type]]
 
       # datasetFile <-  file.path(
       #   project.parameters$global$dir$memoryImages,
@@ -46,8 +47,6 @@ for (classifier in classifiers) {
       # load(datasetFile, verbose = TRUE)
       # dataset
 
-      #      dataset <- studyCases[[recountID]]$datasetsForTest$log2normPCs$dataTable
-      dataset <- studyCases[[recountID]]$datasetsForTest[[data.type]]
 
       #### Save original data table to restore it after the tests ####
       original.dataTable <- dataset$dataTable
@@ -156,6 +155,42 @@ for (classifier in classifiers) {
     dataset$dataTable <- original.dataTable
   } # end loop over datasets
 } # end loop over recountIDs
+
+## REDO THE ERROR BOXPLOTS
+classifier <- classifiers[1]
+for (classifier in classifiers) {
+  recountID <- selectedRecountIDs[[1]]
+  for (recountID in selectedRecountIDs) {
+    #  train.test.results.all.PCs.per.classifier[[recountID]] <- list() ## Instantiate an entry per recountID
+    parameters <- studyCases[[recountID]]$parameters
+
+    #### Iterate over PCs.to.test ####
+    data.type <- "TMM_log2_PC"
+    for (data.type in project.parameters$global$PCs.to.test) {
+      dataset <- studyCases[[recountID]]$datasetsForTest[[data.type]]
+
+      outParam <- outputParameters(
+        dataset = dataset,
+        classifier = classifier,
+        permute = FALSE,
+        createDir = TRUE)
+      outParam$filePrefix <- paste0(outParam$filePrefix, "_feature-selection_first-PCs")
+      dir.create(path = file.path(outParam$resultDir, "figures"), showWarnings = FALSE, recursive = FALSE)
+
+      ErrorRateBoxPlot(experimentList = train.test.results.PCs[[classifier]][[recountID]],
+                       experimentLabels = append(paste(pc.numbers, "PCs"), paste(pc.numbers, "PCs permLabels")),
+                       classifier = classifier,
+                       horizontal = TRUE,
+                       main = paste0(
+                         parameters$short_label, " (", parameters$recountID, ") ", parameters$feature, "s",
+                         "\n", classifier, "; ", parameters$iterations, " iterations",
+                         "\n", "PC selection; ", dataset$dataType),
+                       boxplotFile = file.path(
+                         outParam$resultDir, "figures",
+                         paste(sep = "", outParam$filePrefix, ".pdf")))
+    }
+  }
+}
 
 #### Summarize results for all recountIDs ####
 for (classifier in classifiers) {

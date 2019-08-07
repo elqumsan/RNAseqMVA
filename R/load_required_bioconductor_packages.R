@@ -14,9 +14,17 @@ LoadRequiredBioconductorPackages <- function(packages, verbose = 0) {
   for (pkg in packages) {
     if (!require(pkg, character.only = TRUE)) {
       if (verbose >= 1) { message("\tInstalling required BioConductor library\t", pkg) }
-      source('http://bioconductor.org/biocLite.R')
-      # biocLite("BiocUpgrade") # note: I had to add this
-      biocLite(pkg)
+
+      if (!requireNamespace("BiocManager", quietly = TRUE))
+        install.packages("BiocManager")
+      BiocManager::install
+
+      BiocManager::install(pkgs = pkg, ask = FALSE)
+
+
+      # source('http://bioconductor.org/biocLite.R')
+      # # biocLite("BiocUpgrade") # note: I had to add this
+      # biocLite(pkg)
     }
     if (verbose >= 1) { message("\tLoading required BioConductor library\t", pkg) }
     library(pkg, character.only = TRUE)
@@ -24,4 +32,4 @@ LoadRequiredBioconductorPackages <- function(packages, verbose = 0) {
 }
 
 ## Check validity of Bioconductor installation
-BiocManager::valid()
+# BiocManager::valid()

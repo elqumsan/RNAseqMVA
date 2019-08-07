@@ -6,11 +6,11 @@ methods for the supervised classification of RNA-seq data.
 ## Authors
 
 - Mustafa AbuElQumsan 
-- Jacques van Helden (Jacques.van-Helden@univ-amu.fr](mailto:Jacques.van-Helden@univ-amu.fr))
+- Jacques van Helden ([Jacques.van-Helden@univ-amu.fr](mailto:Jacques.van-Helden@univ-amu.fr))
 
 ## Downloading
 
-```
+```bash
 git clone https://github.com/elqumsan/RNAseqMVA.git
 ```
 
@@ -37,7 +37,7 @@ module load conda ## Load the conda module (for the IFB-core-cluster)
 
 The file [conda-rnaseqmva.yml](conda-rnaseqmva.yml) specifies all the requirements to run RNAseqMVA. The simplest way to use the RNAseqMVA package is to create a conda environment that will contain all the dependencies. This can be done automatically with the following commands. 
 
-```
+```bash
 cd RNAseqMVA
 conda env create -f conda-rnaseqmva.yml
 ```
@@ -49,7 +49,7 @@ __Note__: this command needs to be run only once. The next section explains how 
 In case of changes to the RNAseqMVA environment, an update can be
 achieved with the following command. 
 
-```
+```bash
 cd RNAseqMVA
 conda env update -f conda-rnaseqmva.yml
 ```
@@ -64,7 +64,7 @@ conda --version
 
 If your version is < 5, use the command `source` below.
 
-```
+```bash
 source activate rnaseqmva
 ```
 
@@ -80,7 +80,7 @@ conda activate rnaseqmva
 We assume here that the RNAseqMVA package has been installed in the
 home directory. If not, you just need to adapt the path below.
 
-```
+```bash
 cd ~/RNAseqMVA
 make build_and_install
 ```
@@ -94,24 +94,35 @@ gedit, emacs, vi, ...).
 
 ## Running all analyses
 
-```
+```bash
 Rscript --vanilla misc/main_processes.R
-```
-
-### On the IFB cluster
-
-On the IFB cluster, commands are sent to cluster nodes via srun. 
-
-```
-srun --mem=32GB Rscript --vanilla misc/main_processes.R
 ```
 
 
 ## Running selected analyses
 
-```
+```bash
 R --vanilla
 ```
 
 Then open the file [misc/main_processes.R](misc/main_processes.R) and
 decide whether you need to run each command.
+
+## Specific settings for the IFB cluster 
+
+The cluster of the Institut Français de Bioinformatique (IFB-core-cluster) was used to run comparative assessment of supervised classification methods for RNA-seq.
+
+On this cluster, conda is loaded via a module. 
+
+```bash
+module load conda ## Load the conda module (for the IFB-core-cluster)
+```
+
+after that, the RNAseqMVA environment can be loaded as described above. 
+
+Commands are sent to cluster nodes via srun. 
+
+```bash
+srun --mem=32GB Rscript --vanilla misc/main_processes.R
+```
+

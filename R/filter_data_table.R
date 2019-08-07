@@ -32,9 +32,9 @@
 #' filteredData <- filterDataTable(dataTable, phenoTable, classColumn=c("tissue", "cell.type"), minSamplesPerClass=5)
 #' table(filteredData$classLabels)
 #'
-#' @import caret
 #' @import lattice
 #' @import ggplot2
+#' @import caret
 #' @export
 filterDataTable <- function(rawCounts,
                             draw.plot = TRUE) {

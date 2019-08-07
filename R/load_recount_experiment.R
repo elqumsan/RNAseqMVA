@@ -40,8 +40,6 @@
 #'         \item originalCounts: count table after merge runs proccess in order to get ride of multipl runs per sample.
 #'    }
 #'
-#' @import recount
-#' @import SummarizedExperiment
 #' @import S4Vectors
 #' @export
 loadRecountExperiment <- function(recountID,
@@ -97,7 +95,11 @@ loadRecountExperiment <- function(recountID,
   ## are inconsistent between data types:
   ## - Rdata for genes and exons
   ## - RData for transcripts
-  recountURL <- download_study(recountID, outdir = parameters$studyPath, type = paste0("rse-", rse.type), download = FALSE)
+  recountURL <- download_study(
+    recountID,
+    outdir = parameters$studyPath,
+    type = paste0("rse-", rse.type),
+    download = FALSE)
   rseFile <- file.path(parameters$studyPath, basename(recountURL))
   parameters$recountURL <- recountURL
   parameters$rseFile <- rseFile
@@ -110,7 +112,10 @@ loadRecountExperiment <- function(recountID,
     if (verbose) {
       message("\tDowloading counts from ReCount for study ", recountID)
     }
-    url <- download_study(recountID, outdir = parameters$studyPath, type = paste0("rse-", rse.type))
+    url <- download_study(
+      recountID,
+      outdir = parameters$studyPath,
+      type = paste0("rse-", rse.type))
     result$param["url"] <- url
   }
 
@@ -159,7 +164,10 @@ loadRecountExperiment <- function(recountID,
     message("\tBuilding pheno table")
   }
   phenoTable <- colData(rse) ## phenotype per run
+  # dim(phenoTable)
+  # names(phenoTable)
   # View(phenoTable)
+  # table(phenoTable$characteristics)
 
   ## PATCH JvH 2019-01-03: I fix a bug with the phenotable characteristics in the transcript rse, which contains quotes
   # phenoTable$characteristics <- gsub(x = phenoTable$characteristics, pattern = '"', replacement = '')
@@ -169,6 +177,7 @@ loadRecountExperiment <- function(recountID,
   # View(phenoTable)
   # table(phenoTable$characteristics)
   # names(phenoTable)
+  # dim(phenoTable)
 
   # phenoTable2 <- read.delim(file = phenoFile, header = 1, sep = "\t")
   # View(phenoTable2)

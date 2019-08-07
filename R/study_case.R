@@ -103,7 +103,7 @@ StudyCase  <- function(recountID, parameters) {
     #    dim(counts.for.pc[inf.per.feature == 0, ])
 
     ## Remove features with NA values
-    features.with.NA <-  apply(is.na(counts.for.pc), 1, sum) > 0
+    features.with.NA <- apply(is.na(counts.for.pc), 1, sum) > 0
     if (sum(features.with.NA) > 0) {
       message("Discarding ", sum(features.with.NA), " samples with infinite values (due to null size factor)")
       counts.for.pc <- na.omit(counts.for.pc) # Suppress rows containing NA values

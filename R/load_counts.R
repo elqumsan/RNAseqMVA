@@ -27,7 +27,6 @@
 #' ## RCurl and XML are Required for recount but not declared in dependencies
 #' @import RCurl
 #' @import XML
-#' @import caret
 #' @export
 loadCounts <- function(recountID,
                        parameters,
@@ -86,13 +85,6 @@ loadCounts <- function(recountID,
 
 
   message.with.time("Finished loadCounts() for Recount experiment ID ", parameters$recountID)
-  # experiment$countsPerRun <- NULL
-  # experiment$runPhenoTable <- NULL
-  # experiment$original <- NULL
-  # experiment$filtered <- NULL
-  # experiment$samples.per.class <- NULL
-  # experiment$merged <- NULL
-  # experiment$geo.characteristics <- NULL
 
   return(experiment)
 }
