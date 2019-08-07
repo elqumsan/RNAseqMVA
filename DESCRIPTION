@@ -6,12 +6,12 @@ Date: 2017-10-26
 Author: Mustafa AbuElQumsan and Jacques van Helden
 Maintainer: Mustafa AbuElQumsan <mustafa.abuelqumsan@etu.univ-amu.fr>
 Depends:
-    R (>= 3.3.0),
-    SummarizedExperiment,
-    recount
+    R (>= 3.5.0)
 Imports:
     S4Vectors
 Suggests:
+    SummarizedExperiment,
+    recount,
     DESeq2,
     devtools (>= 1.6),
     knitr,
