@@ -18,7 +18,7 @@ if (project.parameters$global$reload) {
 ## study cases were built)
 if (project.parameters$global$reload.parameters) {
   message.with.time("Reloading parameters")
-  source('misc/02b_reload_parameters.R')
+  source('misc/01c_reload_parameters.R')
 }
 
 ## Run analyses with all variables and default parameters
