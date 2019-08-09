@@ -29,7 +29,7 @@ source('misc/06_all_variables_vs_all_PCs.R')
 message.with.time( "Feature selection by first PCs")
 source('misc/07_PCA_impact_of_PC_number.R')
 
-# stop("HELLO\tclassifier\t", classifier)
+# stop("HELLO\tclassifier\t", parameters$classifiers)
 
 
 ## Test the imapct of kernel on SVM performances
