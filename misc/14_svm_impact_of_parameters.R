@@ -1,24 +1,4 @@
-
-##### Test the impact of kernel on SVM performances
-
-## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
-memory.image.file <- file.path(project.parameters$global$dir$memoryImages, "svm_impact_of_parameters.Rdata")
-
-## For debug: reset the parameteres for all the study cases
-## This is used to re-run the analyses on each study case after having changed some parameters in the yaml-specific configuration file
-project.parameters <- yaml.load_file(configFile)
-project.parameters <- initParallelComputing(project.parameters)
-if (exists("studyCases")) {
-  recountID <- names(studyCases)[1]
-  for (recountID in names(studyCases)) {
-    parameters <- initRecountID(recountID, project.parameters)
-    studyCases[[recountID]]$parameters <- parameters
-    for (dataSetName in names(studyCases[[recountID]]$datasetsForTest)) {
-      studyCases[[recountID]]$datasetsForTest[[dataSetName]]$parameters <- parameters
-    }
-    #  print (studyCases[[recountID]]$parameters$dir$tablesDetail)
-  }
-}
+#### Test the impact of the kernel on SVM performances ####
 
 ## List to store the results for all recountIDs
 train.test.results.all.variables.per.svm <- list()
@@ -26,29 +6,48 @@ train.test.results.all.variables.per.svm <- list()
 #### Loop over recountIDs ####
 recountID <- names(studyCases)[1]
 for (recountID in selectedRecountIDs) {
+  message.with.time("Assessing kernel impact on SVM performances\t", recountID)
 
-  ## List to store all results for the current recountID
+  ## Initialise a list to store all results for the current recountID
   train.test.results.all.variables.svm <- list()
 
   ## Get the recountID-specific parameters from the loaded object
   parameters <- studyCases[[recountID]]$parameters
 
-  message.with.time("Running train/test with all variables to test imapct of svm's parameters for recountID\t", recountID)
-  ## Loop over classifiers
-  classifier <- "svm"
-  svm.kernel <- "linear"
+  #### Check the data types to analyse ####
+  ## If not specified in config file, take all datasetsForTest
+  if (is.null(parameters$data.types.to.test)) {
+    parameters$data.types.to.test <- names(studyCase$datasetsForTest)
 
-  #### Loop over label permutation ####
+    ## Temporary (2018-11-01): discard edgeR and DESeq2-sorted datasets.
+    ## Actually these are not data types, variable ordering should be treated as a separate variable, not as a separate dataset.
+    parameters$data.types.to.test <- grep(pattern = "DESeq2", x = parameters$data.types.to.test, invert = TRUE, value = TRUE)
+    parameters$data.types.to.test <- grep(pattern = "edgeR", x = parameters$data.types.to.test, invert = TRUE, value = TRUE)
+
+    ## Update global parameters (required for the comparative plots)
+    project.parameters$global$data.types.to.test <- parameters$data.types.to.test
+
+  }
+
+
+  ## Set the parameters
+  classifier <- "svm" ## Make sure that the classiifer is SVM for this script
+
+  #### Loop over label permutation options ####
   permute <- FALSE ## Default for quick test without iterating over all cases
-  for (permute in project.parameters$global$permute) {
+  for (permute in parameters$permute) {
 
     #### Loop over kernels ####
-    for (svm.kernel in project.parameters$global$svm$kernel_values) {
+    svm.kernel <- "linear" ## Default kernel value
+    for (svm.kernel in parameters$svm$kernel_values) {
 
 
       #### Loop over data types ####
       data.type <- "TMM_log2" ## For test
-      for (data.type in project.parameters$global$data.types.to.test) {
+
+      for (data.type in parameters$data.types.to.test) {
+
+        ## Verbosity
         message.with.time("\tRunning train/test with all variables",
                           "\n\trecountID: ", recountID,
                           "\n\tClassifier: ", classifier,
