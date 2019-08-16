@@ -78,7 +78,7 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function(
 ) {
 
 
-
+  ## Check if file prefix has been correctly specified
   if (is.null(file.prefix)) {
     file.prefix <- paste(sep = "_", dataset$ID, dataset$dataType, classifier)
     if (permute) {
