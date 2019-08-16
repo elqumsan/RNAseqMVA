@@ -1,25 +1,4 @@
-
-##### Test the impact of k on KNN performances
-
-## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
-memory.image.file <- file.path(project.parameters$global$dir$memoryImages, "knn_impact_of_k.Rdata")
-
-## For debug: reset the parameteres for all the study cases
-## This is used to re-run the analyses on each study case after having changed some parameters in the yaml-specific configuration file
-project.parameters <- yaml.load_file(configFile)
-project.parameters <- initParallelComputing(project.parameters)
-if (exists("studyCases")) {
-  message("\tResetting parameters for the ", length(studyCases), " study cases")
-  recountID <- names(studyCases)[1]
-  for (recountID in names(studyCases)) {
-    parameters <- initRecountID(recountID, project.parameters)
-    studyCases[[recountID]]$parameters <- parameters
-    for (dataSetName in names(studyCases[[recountID]]$datasetsForTest)) {
-      studyCases[[recountID]]$datasetsForTest[[dataSetName]]$parameters <- parameters
-    }
-    #  print (studyCases[[recountID]]$parameters$dir$tablesDetail)
-  }
-}
+#### Test the impact of k on KNN performances ####
 
 ## List to store the results for all recountIDs
 train.test.results.knn.k.values <- list()
@@ -27,15 +6,31 @@ train.test.results.knn.k.values <- list()
 #### Loop over recountIDs ####
 recountID <- names(studyCases)[1]
 for (recountID in selectedRecountIDs) {
+  message.with.time("Running train/test with all variables to test imapct of knn's parameters for recountID\t", recountID)
 
-  ## List to store all results for the current recountID
+  ## Initialize a list to store all results for the current recountID
   train.test.results.all.variables.knn <- list()
 
   ## Get the recountID-specific parameters from the loaded object
   parameters <- studyCases[[recountID]]$parameters
 
-  message.with.time("Running train/test with all variables to test imapct of knn's parameters for recountID\t", recountID)
-  ## Loop over classifiers
+  #### Check the data types to analyse ####
+  ## If not specified in config file, take all datasetsForTest
+  if (is.null(parameters$data.types.to.test)) {
+    parameters$data.types.to.test <- names(studyCase$datasetsForTest)
+
+    ## Temporary (2018-11-01): discard edgeR and DESeq2-sorted datasets.
+    ## Actually these are not data types, variable ordering should be treated as a separate variable, not as a separate dataset.
+    parameters$data.types.to.test <- grep(pattern = "DESeq2", x = parameters$data.types.to.test, invert = TRUE, value = TRUE)
+    parameters$data.types.to.test <- grep(pattern = "edgeR", x = parameters$data.types.to.test, invert = TRUE, value = TRUE)
+
+    ## Update global parameters (required for the comparative plots)
+    project.parameters$global$data.types.to.test <- parameters$data.types.to.test
+
+  }
+
+
+  ## Make sure that the classifier variable is KNN
   classifier <- "knn"
 
   #### Loop over label permutation ####
@@ -74,7 +69,6 @@ for (recountID in selectedRecountIDs) {
         outParam <- outputParameters(dataset, classifier, permute, createDir = TRUE)
         exp.prefix <- outParam$filePrefix
         ## exp.prefix <- paste0(recountID, "_", data.type, "_knn_k", knn.k)
-        
 
         #### Run a training/testing experiment ####
         train.test.results.all.variables.knn[[exp.prefix]] <-
