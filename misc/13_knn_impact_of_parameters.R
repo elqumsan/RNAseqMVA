@@ -127,7 +127,11 @@ for (recountID in names(studyCases)) {
 
 ## Save the results in a separate object, that can be reloaded later
 ## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
-save.result.file <- file.path(project.parameters$global$dir$memoryImages, "knn_impact_of_k_result.Rdata")
+save.result.file <- file.path(project.parameters$global$dir$memoryImages,
+                              paste0("knn_impact_of_k_result_",
+                                     paste(collapse = "-", selectedRecountIDs),
+                                     "_", featureType,
+                                     "_", image.date, ".Rdata"))
 dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
 save(train.test.results.knn.k.values, file = save.result.file)
 message.with.time("Saving results  after eval of impact of k on knn: ", save.result.file)

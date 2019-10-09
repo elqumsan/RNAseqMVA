@@ -101,14 +101,19 @@ for (recountID in selectedRecountIDs) {
                                 "\nall variables; ",
                                 project.parameters$global$iterations, " iterations")
   )
-  train.test.results.all.variables.per.svm[[recountID]][[svm.kernel]] <- train.test.results.all.variables.svm
+  train.test.results.all.variables.per.svm[[recountID]] <- train.test.results.all.variables.svm
 
 } # end loop over recountIDs
 
 
 ## Save the results in a separate object, that can be reloaded later
 ## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
-save.result.file <- file.path(project.parameters$global$dir$memoryImages, "svm_impact_of_parameters_result.Rdata")
+save.result.file <- file.path(project.parameters$global$dir$memoryImages,
+                              paste0("svm_impact_of_parameters_result_",
+                                     paste(collapse = "-", selectedRecountIDs),
+                                     "_", featureType,
+                                     "_", image.date, ".Rdata"))
+
 dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
 save(train.test.results.all.variables.per.svm, file = save.result.file)
 message.with.time("Saving results  after eval of SVM kernels: ", save.result.file)
