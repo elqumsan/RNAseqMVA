@@ -18,7 +18,7 @@ studyCases.mem.image <- file.path(
 
 message.with.time("Reloading study cases from previously stored memory image",
         "\n\t", studyCases.mem.image)
-load(studyCases.mem.image)
+system.time(load(studyCases.mem.image))
 
 ## Indicate that this script has finished running
 message.with.time("Finished running 02b_reload_counts.R")
