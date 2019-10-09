@@ -22,24 +22,41 @@ if (project.parameters$global$reload.parameters) {
   source('misc/01c_reload_parameters.R')
 }
 
+
+## Ensure consistency between iterations and those attached to the study case datasets.
+## If they differ, the training / testing sets must be regenerated.
+for (studyCase in studyCases) {
+  if (studyCase$parameters$iterations < project.parameters$global$iterations) {
+    message(studyCase$ID,  "\tResetting the number of iterations from ",
+            studyCase$parameters$iterations, " to ", project.parameters$global$iterations)
+
+    ## Set the new number of iterations to the studyCase and to each of its datasets
+    studyCase$parameters$iterations <- project.parameters$global$iterations
+    for (dataset in studyCase$datasetsForTest) {
+      dataset$parameters$iterations <- project.parameters$global$iterations
+      ## Regenerate training / testing sets
+      buildAttributes(dataset)
+    }
+  }
+}
+
 ## Run analyses with all variables and default parameters
-message.with.time( "Impact of normalisation on classifier performances")
+message.with.time("Impact of normalisation on classifier performances")
 source('misc/06_all_variables_vs_all_PCs.R')
 
 ## Feature selection with first PCs
-message.with.time( "Feature selection by first PCs")
+message.with.time("Feature selection by first PCs")
 source('misc/07_PCA_impact_of_PC_number.R')
 
-# stop("HELLO\tclassifier\t", parameters$classifiers)
-
+## Test the impact of k on KNN performances
+message.with.time("Impact of k on KNN performances")
+source('misc/13_knn_impact_of_parameters.R')
 
 ## Test the imapct of kernel on SVM performances
-message.with.time( "Impact of kernel on SVM performances")
+message.with.time("Impact of kernel on SVM performances")
 source('misc/14_svm_impact_of_parameters.R')
 
-## Test the impact of k on KNN performances
-message.with.time( "Impact of k on KNN performances")
-source('misc/13_knn_impact_of_parameters.R')
+
 
 message("ALL ANALYSES PERFORMED")
 
