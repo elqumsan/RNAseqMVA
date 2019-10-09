@@ -56,8 +56,6 @@ source('misc/13_knn_impact_of_parameters.R')
 message.with.time("Impact of kernel on SVM performances")
 source('misc/14_svm_impact_of_parameters.R')
 
-
-
 message("ALL ANALYSES PERFORMED")
 
 
