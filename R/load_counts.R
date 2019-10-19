@@ -50,7 +50,7 @@ loadCounts <- function(recountID,
   if (is.null(parameters$dir$workspace)) {
     stop("Missing required parameter: 'parameters$dir$workspace'.\n\tPlease check configuration file. ")
   } else {
-    dir.workspace = parameters$dir$workspace
+    dir.workspace <- parameters$dir$workspace
     dir.create(dir.workspace, recursive = TRUE, showWarnings = FALSE)
   }
 
