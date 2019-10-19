@@ -2,7 +2,7 @@ Package: RNAseqMVA
 Type: Package
 Title: Application of Multivariate Analysis methods to RNA-seq Data
 Version: 0.5.1
-Date: 2017-10-26
+Date: 2019-10-19
 Author: Mustafa AbuElQumsan and Jacques van Helden
 Maintainer: Mustafa AbuElQumsan <mustafa.abuelqumsan@etu.univ-amu.fr>
 Depends:
