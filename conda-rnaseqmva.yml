@@ -8,7 +8,8 @@ channels:
 dependencies:
 
 ## RCRAN packages
-- r::r-base >=3.5,<3.6
+- r::r-base >=3.6.1
+- r::r-markdown    # Required to compile RNAseqMVA package
 - r::r-yaml        # Required to load the config file
 - r::r-roxygen2    # To build the package doc
 - r::r-dplyr       # Required for caret (depedency of dependency)
@@ -29,7 +30,7 @@ dependencies:
 - conda-forge::r-biocmanager
 
 ## Bioconda
-- bioconda::bioconductor-iranges         # Seems to be required for derfinder but not automatically installed
+# - bioconda::bioconductor-iranges         # Seems to help installing derfinder
 - bioconda::bioconductor-derfinder
 - bioconda::bioconductor-recount
 - bioconda::bioconductor-vsn             # For RNA-seq plots from Huber
@@ -38,3 +39,4 @@ dependencies:
 - bioconda::bioconductor-edger
 - bioconda::bioconductor-s4vectors
 - bioconda::bioconductor-summarizedexperiment
+- bioconda::bioconductor-genomeinfodb
