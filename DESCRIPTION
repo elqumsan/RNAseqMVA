@@ -1,24 +1,25 @@
 Package: RNAseqMVA
 Type: Package
 Title: Application of Multivariate Analysis methods to RNA-seq Data
-Version: 0.5.1
+Version: 0.6.1
 Date: 2019-10-19
 Author: Mustafa AbuElQumsan and Jacques van Helden
 Maintainer: Mustafa AbuElQumsan <mustafa.abuelqumsan@etu.univ-amu.fr>
 Depends:
     R (>= 3.5.0)
 Imports:
+    SummarizedExperiment,
+    recount
+Suggests:
     devtools (>= 1.6),
     knitr,
-    rmarkdown
-Suggests:
     S4Vectors,
-    SummarizedExperiment,
-    recount,
+    GenomeInfoDb,
     DESeq2
-Description: utilities to run multivariate analysis methods on RNA-seq data.
-License: What license is it under?
+Description: Utilities to run multivariate analysis (MVA) methods and evaluate the performances of supervised classification methods (SVM, Random Forest, KNN) on RNA-seq data. 
+License: Artistic-2.0
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
+Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
