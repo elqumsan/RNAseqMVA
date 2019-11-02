@@ -18,16 +18,15 @@ MisclassificationEstimate(dataset, iteration, classifier,
 }
 \value{
 \itemize{
-     \item dataset = it is data table one row for the individual (sample) and one culomn for the feature (gene).
-     \item classifier = what is the tested classifier, KNN, RF, SVM and LDA.
-     \item iteration = nomber of resampling.
-     \item testPredictedClasses = these are the test classes which are predicted from classifier.
-     \item trainPredictedClasses = these are the train classes whci are predicated from classifier.
-    }
+\item dataset = it is data table one row for the individual (sample) and one culomn for the feature (gene).
+\item classifier = what is the tested classifier, KNN, RF, SVM and LDA.
+\item iteration = nomber of resampling.
+\item testPredictedClasses = these are the test classes which are predicted from classifier.
+\item trainPredictedClasses = these are the train classes whci are predicated from classifier.
+}
 }
 \description{
-this script to evaluate and assesse the performance of the RNA-Seq classifier by
-# Random sampling (random partitioning) estimation of the misclassification rate.
+this script to evaluate and assesse the performance of the RNA-Seq classifier byRandom sampling (random partitioning) estimation of the misclassification rate.
 }
 \author{
 Mustafa ABUELQUMSAN and Jacques van Helden

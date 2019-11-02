@@ -13,13 +13,12 @@
 }
 \value{
 an object which is Misclassification error rate for the specified number for resampling
-    \itemize{
-        \item testTable: that is the table that is contains misclassification error rate for specified  number of resampling.
-      }
+\itemize{
+\item testTable: that is the table that is contains misclassification error rate for specified  number of resampling.
+}
 }
 \description{
-for sake of the accuracy and due to the error rate have computed from sampleing from the origin count data,
-# it is better to compute the the error rate multiple time and then we would find the avarage for the error rate. with DataTableWithClasses's object.
+for sake of the accuracy and due to the error rate have computed from sampleing from the origin count data,it is better to compute the the error rate multiple time and then we would find the avarage for the error rate. with DataTableWithClasses's object.
 }
 \author{
 Mustafa AbuElQumsan and Jacques van Helden
