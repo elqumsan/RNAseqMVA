@@ -10,12 +10,12 @@
 #SBATCH --array=00-13  # Define the IDs for the job array
 #SBATCH --cpus=50  # Request 50 CPUs per job
 #SBATCH --mem=32GB # Request 32Gb per job
-## # SBATCH -o slurm_logs/test_%a_%A_%j_out.txt  # file to store standard output
-## # SBATCH -e slurm_logs/test-%a_%A_%j_err.txt  # file to store standard error
+#SBATCH -o slurm_logs/test_%a_%A_%j_out.txt  # file to store standard output
+#SBATCH -e slurm_logs/test-%a_%A_%j_err.txt  # file to store standard error
 
 ## Initiate the environment
 module load conda
-conda init bash
+#conda init bash
 conda activate rnaseqmva
 
 mkdir -p slurm_logs
@@ -30,7 +30,6 @@ RECOUNT_ID=${RECOUNT_IDS[recount_index]}
 feature_index=$((SLURM_ARRAY_TASK_ID % 2))
 FEATURE_TYPE=${FEATURE_TYPES[feature_index]}
 
-
 # cd /shared/projects/rnaseqmva/RNAseqMVA
 WORKSPACE=/shared/projects/rnaseqmva/RNAseqMVA_workspace
 LOG_DIR=${WORKSPACE}/logs
@@ -41,11 +40,10 @@ PREFIX=${RECOUNT_ID}_${FEATURE_TYPE}_${START_DATE}
 ## The variable $SLURM_ARRAY_TASK_ID takes a different value for each job
 ## based on the values entered with the argument --array
 # srun Rscript --vanilla misc/main_processes.R $SLURM_ARRAY_TASK_ID
-echo "${SLURM_ARRAY_TASK_ID}  ${SLURM_ARRAY_JOB_ID} ${RECOUNT_ID} ${FEATURE_TYPE} ${LOG_DIR}/${PREFIX}" >> test_results.txt
+echo "${START_DATE} ${SLURM_ARRAY_TASK_ID}  ${SLURM_ARRAY_JOB_ID} ${RECOUNT_ID} ${FEATURE_TYPE} ${LOG_DIR}/${PREFIX}" >> srun_jobs_sent.tsv
 
-
-# ## Send a job for the analysis of one RECOUNT_ID and FEATURE_TYPE
-# srun --mem=32GB \
-#   --output ${LOG_DIR}/${PREFIX}_out.txt \
-#   --error ${LOG_DIR}/${PREFIX}_err.txt \
-#   Rscript --vanilla misc/main_processes.R ${RECOUNT_ID} ${FEATURE_TYPE}
+## Send a job for the analysis of one RECOUNT_ID and FEATURE_TYPE
+srun --mem=32GB --cpus=50 \
+  --output ${LOG_DIR}/${PREFIX}_out.txt \
+  --error ${LOG_DIR}/${PREFIX}_err.txt \
+  Rscript --vanilla misc/main_processes.R ${RECOUNT_ID} ${FEATURE_TYPE}
