@@ -6,12 +6,12 @@ global: ## Global parameters are those who are the samee across all study cases
 #  selected_recount_ids: ['SRP056295'] # Acute myeloid leukemia
 #  selected_recount_ids: ['SRP035988'] # Psoriasis
 #  selected_recount_ids: ['SRP061240'] # Plasma RNA in cancer
-  selected_recount_ids: ['SRP057196'] # Brain cells (sc)
+#  selected_recount_ids: ['SRP057196'] # Brain cells (sc)
 #  selected_recount_ids: ['SRP062966'] # Lupus (sc)
-#  selected_recount_ids: ['SRP066834'] # Cerebral organoids and fetal neocortex (sc)
+  selected_recount_ids: ['SRP066834'] # Cerebral organoids and fetal neocortex (sc)
 #  selected_recount_ids: ['SRP042161'] # Glioblastoma (sc) # PROBLEM
 
-  feature: "gene" ## Type of feature to download from Recount2.s Supported: "gene", "exon", "junction", "transcript"
+  feature: "transcript" ## Type of feature to download from Recount2.s Supported: "gene", "exon", "junction", "transcript"
 
   dir: ## Directories
     main: "~/RNAseqMVA"
@@ -41,14 +41,14 @@ global: ## Global parameters are those who are the samee across all study cases
 
   reload.parameters: FALSE  ## Reload parameters after having loaded memory image, in order to take into account the new parameter values
   reload: FALSE ## If TRUE, reload previously stored memory image to shortcut the download, loading and normalisation of the raw counts
-  reload.date: "2019-08-13" ## Date of the saved memory image to reload
+  reload.date: "2019-11-01" ## Date of the saved memory image to reload
   export.tables: TRUE ## If TRUE, export normalized datasets in tab-separate value (TSV) files
   compute: TRUE ## If FALSE, do not run the heavy computations, just generate the pictures and save tables
   save.tables: TRUE ## If TRUE, save tab-delimited files with the results
   save.image: TRUE
   draw.plot : TRUE
-  classifiers: ["knn", "rf", "svm"]
-#  classifiers: ["svm", "knn", "rf"] # TO ADD LATER: "lda", "qda" + the one suggested by Aitor
+#  classifiers: ["svm"]
+  classifiers: ["svm", "knn", "rf"] # TO ADD LATER: "lda", "qda" + the one suggested by Aitor
 
   ## Mustafa, I suppress data.types because I don't think we need them anymore
   # data.types: ["countsPerRun", "originalCounts", "filtered", "norm", "log2norm", "log2normPCs", "DEG", "V.importance"]

@@ -146,13 +146,13 @@ for (classifier in project.parameters$global$classifiers) {
 save.result.file <- file.path(
   project.parameters$global$dir$memoryImages,
   paste0(
-    "normalisation_impact",
+    paste(collapse = "-", selectedRecountIDs),
+    "_", project.parameters$global$feature,
+    "_normalisation_impact",
     "_", paste(collapse = "-", project.parameters$global$classifiers),
-    "_", paste(collapse = "-", selectedRecountIDs),
-    "_", Sys.Date(), "_results.Rdata")
-)
+    "_", Sys.Date(), "_results.Rdata"))
 message.with.time(
-  "Saved results after eval of normalisation impact: ",
+  "Saving results after eval of normalisation impact: ",
   save.result.file)
 dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
 save(train.test.results.all.variables.per.classifier, file = save.result.file)
@@ -222,10 +222,11 @@ if (project.parameters$global$save.image) {
   mem.image.file <- file.path(
     project.parameters$global$dir$memoryImages,
     paste0(
-      "normalisation_impact",
-    "_", paste(collapse = "-", project.parameters$global$classifiers),
-    "_", paste(collapse = "-", selectedRecountIDs),
-    "_", Sys.Date(), "_memory-image.Rdata")
+      paste(collapse = "-", selectedRecountIDs),
+      "_", project.parameters$global$feature,
+      "_normalisation_impact",
+      "_", paste(collapse = "-", project.parameters$global$classifiers),
+      "_", Sys.Date(), "_memory-image.Rdata")
   )
 
   dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)

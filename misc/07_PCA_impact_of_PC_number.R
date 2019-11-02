@@ -125,7 +125,7 @@ for (classifier in classifiers) {
       } # end of permutation
 
 
-      #### Print the results of the effect of the number of PCs on the efficiancy of each classifier classifier ####
+      #### Generate boxplot with impact of the number of PCs on the performances of each classifier ####
 
       ## Reset output parameters
       outParam <- outputParameters(
@@ -135,6 +135,8 @@ for (classifier in classifiers) {
         createDir = TRUE)
       outParam$filePrefix <- paste0(outParam$filePrefix, "_feature-selection_first-PCs")
       dir.create(path = file.path(outParam$resultDir, "figures"), showWarnings = FALSE, recursive = FALSE)
+
+      ## Generate the error rate boxplot
       ErrorRateBoxPlot(experimentList = train.test.results.PCs[[classifier]][[recountID]],
                        experimentLabels = append(paste(pc.numbers, "PCs"), paste(pc.numbers, "PCs permLabels")),
                        classifier = classifier,
@@ -226,14 +228,27 @@ featureType <- project.parameters$global$feature
 save.result.file <- file.path(
   project.parameters$global$dir$memoryImages,
   paste0(
-    "feature_selection_first_PCs",
-    "_", paste(collapse = "-", selectedRecountIDs),
+    paste(collapse = "-", selectedRecountIDs),
     "_", featureType,
-    ".Rdata"))
-save(train.test.results.PCs, file = save.result.file)
+    "_feature_selection_first_PCs",
+    "_", Sys.Date(), "_results.Rdata"))
 message.with.time(
-  "Saved results after eval of feature selection with first PCs: ",
+  "Saving results after eval of feature selection with first PCs: ",
   save.result.file)
+save(train.test.results.PCs, file = save.result.file)
+
+## Save a memory image that can be re-loaded next time to avoid re-computing all the normalisation and so on.
+if (project.parameters$global$save.image) {
+  memory.image.file <- file.path(
+    project.parameters$global$dir$memoryImages,
+    paste0(
+      paste(collapse = "-", selectedRecountIDs),
+      "_", featureType,
+      "_", "feature_selection_first_PCs",
+      "_", Sys.Date(), "_memory-image.Rdata"))
+  message.with.time("Saving memory image after eval of feature selection with first PCs: ", memory.image.file)
+  save.image(file = memory.image.file)
+}
 
 
 message.with.time("Finished script 07_PCA_impact_of_PC_number.R")

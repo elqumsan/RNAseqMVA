@@ -56,7 +56,12 @@ for (recountID in selectedRecountIDs) {
     featureType <- studyCase$parameters$feature
     studyCaseFile <-  file.path(
       project.parameters$global$dir$memoryImages,
-      paste0("loaded_studyCase_", recountID, "_", featureType, ".Rdata"))
+      paste0(
+        recountID,
+        "_", featureType,
+        "_loaded_studyCase",
+        "_", Sys.Date(), ".Rdata"))
+
     message("Saving study case\t", recountID, "\t", studyCaseFile)
     save(studyCase, file = studyCaseFile)
 
@@ -65,7 +70,7 @@ for (recountID in selectedRecountIDs) {
       featureType <- dataset$parameters$feature
       datasetFile <-  file.path(
         project.parameters$global$dir$memoryImages,
-        paste0("loaded_dataset_", recountID, "_", featureType, "_", datasetName, ".Rdata"))
+        paste0(recountID, "_", featureType, "_loaded-dataset_", datasetName, ".Rdata"))
       message("Saving dataset\t", recountID, "\t", datasetName, "\t", datasetFile)
       save(dataset, file = datasetFile)
 
@@ -279,13 +284,13 @@ silence <- dev.off()
 ## TO DO: SAVE MAGE OF studyCases RATHER THAN THE WHOLE MEMORY SPACE ##
 if ((project.parameters$global$save.image) && (!project.parameters$global$reload)) {
   featureType <- project.parameters$global$feature
-  image.date <- Sys.Date()
   studyCases.mem.image <- file.path(
     project.parameters$global$dir$memoryImages,
-    paste(sep = "", "loaded_studyCases_",
-          paste(collapse = "-", selectedRecountIDs),
-          "_", featureType,
-          "_", image.date, ".Rdata"))
+    paste0(
+      paste(collapse = "-", selectedRecountIDs),
+      "_", featureType,
+      "_loaded_studyCases",
+      "_", Sys.Date(), ".Rdata"))
 
   dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
   message.with.time("Saving memory image after loading: ", studyCases.mem.image)
