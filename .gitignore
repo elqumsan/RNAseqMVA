@@ -23,3 +23,5 @@ README.html
 SRP056295
 RNAseqMVA_workspace
 slurm_logs
+logs
+srun_jobs_sent.tsv
