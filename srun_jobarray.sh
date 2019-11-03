@@ -15,7 +15,7 @@
 
 ## Initiate the environment
 module load conda
-#conda init bash
+conda init bash
 conda activate rnaseqmva
 
 mkdir -p slurm_logs
@@ -30,7 +30,7 @@ RECOUNT_ID=${RECOUNT_IDS[recount_index]}
 feature_index=$((SLURM_ARRAY_TASK_ID % 2))
 FEATURE_TYPE=${FEATURE_TYPES[feature_index]}
 
-# cd /shared/projects/rnaseqmva/RNAseqMVA
+cd /shared/projects/rnaseqmva/RNAseqMVA
 WORKSPACE=/shared/projects/rnaseqmva/RNAseqMVA_workspace
 LOG_DIR=${WORKSPACE}/logs
 mkdir -p ${LOG_DIR}
