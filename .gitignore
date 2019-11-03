@@ -25,3 +25,4 @@ RNAseqMVA_workspace
 slurm_logs
 logs
 srun_jobs_sent.tsv
+slurm*.out

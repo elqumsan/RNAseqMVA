@@ -1,15 +1,32 @@
 #!/bin/bash
 
+## Script: srun_jobarray.sh
+##
+## Authors: Julien Seiler and Jacques van Helden
+##
+## DESCRIPTION
 ## Run the analysis of the different study cases (recount IDs) and feature types
 ## on IFB core cluster via a job array handled by slurm job scheduler.
-##
-## All jobs are sent in one shot, and they are handled in parallel according to
+## All jobs are sent in one shot, and are then handled in parallel according to
 ## the availability of resources on the cluster).
+##
+## USAGE
+## Change directory to RNAseqMVA package
+## cd /shared/projects/rnaseqmva/RNAseqMVA
+##
+## ## Initiate the environment
+## ## This is necessary for the sbatch command !
+## module load conda
+## conda init bash
+## conda activate rnaseqmva
+##
+## ## Send the script to the job scheduler
+## sbatch srun_jobarray.sh
 
-
-#SBATCH --array=00-13  # Define the IDs for the job array
-#SBATCH --cpus=50  # Request 50 CPUs per job
+#SBATCH --array=0-13  # Define the IDs for the job array
 #SBATCH --mem=32GB # Request 32Gb per job
+#SBATCH --cpus=50  # Request 50 CPUs per job
+#SBATCH --partition=long  # the long partition (>1 day) is required for some study cases
 #SBATCH -o slurm_logs/test_%a_%A_%j_out.txt  # file to store standard output
 #SBATCH -e slurm_logs/test-%a_%A_%j_err.txt  # file to store standard error
 
@@ -30,6 +47,7 @@ RECOUNT_ID=${RECOUNT_IDS[recount_index]}
 feature_index=$((SLURM_ARRAY_TASK_ID % 2))
 FEATURE_TYPE=${FEATURE_TYPES[feature_index]}
 
+## Define log directory and files
 cd /shared/projects/rnaseqmva/RNAseqMVA
 WORKSPACE=/shared/projects/rnaseqmva/RNAseqMVA_workspace
 LOG_DIR=${WORKSPACE}/logs
