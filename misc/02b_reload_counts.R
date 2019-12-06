@@ -1,4 +1,4 @@
-#################### Reload previously loaded and normalized counts ####################
+#################### Reload previously saved and normalized counts ####################
 
 ## Define the path of the memory image file
 if (!is.null(project.parameters$global$reload.date)) {
@@ -9,10 +9,11 @@ if (!is.null(project.parameters$global$reload.date)) {
 featureType <- project.parameters$global$feature
 studyCases.mem.image <- file.path(
   project.parameters$global$dir$memoryImages,
-  paste(sep = "", "loaded_studyCases_",
-        paste(collapse = "-", selectedRecountIDs),
-        "_", featureType,
-        "_", image.date, ".Rdata"))
+  paste0(
+    paste(collapse = "-", selectedRecountIDs),
+    "_", featureType,
+    "_loaded_studyCases",
+    "_", image.date, "_memory-image.Rdata"))
 
 ## Reload previously stored memory image
 

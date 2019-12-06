@@ -7,6 +7,9 @@ source('misc/01a_load_libraries.R')
 message.with.time("Loading parameters")
 source('misc/01b_load_parameters.R')
 
+message.with.time("Initializing parallel computing")
+source('misc/01c_init_parallel_computing.R')
+
 if (project.parameters$global$reload) {
   message.with.time("Reloading count data")
   source('misc/02b_reload_counts.R')
@@ -19,7 +22,7 @@ if (project.parameters$global$reload) {
 ## study cases were built)
 if (project.parameters$global$reload.parameters) {
   message.with.time("Reloading parameters")
-  source('misc/01c_reload_parameters.R')
+  source('misc/01d_reload_parameters.R')
 }
 
 
@@ -48,15 +51,16 @@ source('misc/06_all_variables_vs_all_PCs.R')
 message.with.time("Feature selection by first PCs")
 source('misc/07_PCA_impact_of_PC_number.R')
 
-## Test the impact of k on KNN performances
-message.with.time("Impact of k on KNN performances")
-source('misc/13_knn_impact_of_parameters.R')
-
 ## Test the imapct of kernel on SVM performances
 message.with.time("Impact of kernel on SVM performances")
 source('misc/14_svm_impact_of_parameters.R')
 
-message("ALL ANALYSES PERFORMED")
+## Test the impact of k on KNN performances
+message.with.time("Impact of k on KNN performances")
+source('misc/13_knn_impact_of_parameters.R')
+
+message("YEAH! ALL ANALYSES HAVE BEEN PERFORMED")
+
 
 
 ## stop("OLD CODE COMES HEREAFTER")

@@ -17,10 +17,10 @@ If forceDownload is TRUE, the data will be downloaded irrespective of existing f
 }
 \value{
 A list containing: the count table, the pheno table, and some additional parameters (study ID, ...).
-   \itemize{
-        \item countsPerRun:  count table before any pre-proccessing procedure
-        \item originalCounts: count table after merge runs proccess in order to get ride of multipl runs per sample.
-   }
+\itemize{
+\item countsPerRun:  count table before any pre-proccessing procedure
+\item originalCounts: count table after merge runs proccess in order to get ride of multipl runs per sample.
+}
 }
 \description{
 Load one count table from Recount for a given experiment ID, and optionally

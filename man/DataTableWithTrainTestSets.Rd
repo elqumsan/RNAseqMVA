@@ -20,12 +20,12 @@ DataTableWithTrainTestSets(self, stratified = TRUE,
 \value{
 object of class DataTableWithTrainTestSets containing the following attributes
 \itemize{
- \item  iteration: which is number of resampling
-  \item trainPropotion:      which is ratio of train volume from whole of dataset
-  \item statified:           parameter which refer to stratification criteria would be included in analysis or not.
-  \item trainSizePerClass:   which is specify the train volume for each class included in analysis.
-  \item trainIndices:        which are whole indices for training process.
-  \item testIndices:         which are whole indices for the testing process.
+\item  iteration: which is number of resampling
+\item trainPropotion:      which is ratio of train volume from whole of dataset
+\item statified:           parameter which refer to stratification criteria would be included in analysis or not.
+\item trainSizePerClass:   which is specify the train volume for each class included in analysis.
+\item trainIndices:        which are whole indices for training process.
+\item testIndices:         which are whole indices for the testing process.
 
 }
 }

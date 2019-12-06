@@ -108,22 +108,30 @@ for (recountID in selectedRecountIDs) {
 
 ## Save the results in a separate object, that can be reloaded later
 ## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
-save.result.file <- file.path(project.parameters$global$dir$memoryImages,
-                              paste0("svm_impact_of_parameters_result_",
-                                     paste(collapse = "-", selectedRecountIDs),
-                                     "_", featureType,
-                                     "_", image.date, ".Rdata"))
-
+save.result.file <- file.path(
+  project.parameters$global$dir$memoryImages,
+  paste0(
+    paste(collapse = "-", selectedRecountIDs),
+    "_", featureType,
+    "_svm_impact_of_parameters_result",
+    "_", Sys.Date(), "_results.Rdata"))
 dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
-save(train.test.results.all.variables.per.svm, file = save.result.file)
 message.with.time("Saving results  after eval of SVM kernels: ", save.result.file)
+save(train.test.results.all.variables.per.svm, file = save.result.file)
 
 ## Save a memory image that can be re-loaded next time to avoid re-computing all the normalisation and so on.
 if (project.parameters$global$save.image) {
+  memory.image.file <- file.path(
+    project.parameters$global$dir$memoryImages,
+    paste0(
+      paste(collapse = "-", selectedRecountIDs),
+      "_", featureType,
+      "_", "svm_impact_of_parameters_result",
+      "_", Sys.Date(), "_memory-image.Rdata"))
   message.with.time("Saving memory image after eval of SVM kernels: ", memory.image.file)
   save.image(file = memory.image.file)
 }
 
 
 
-message.with.time("Finished script 13_svm_impact_of_parameters.R")
+message.with.time("Finished script 14_svm_impact_of_parameters.R")

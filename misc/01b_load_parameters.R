@@ -9,8 +9,23 @@ message.with.time("Loading parameters from YAM file ", configFile)
 project.parameters <- yaml.load_file(configFile)
 
 
+#### Read arguments passed from the command line ####
+args = commandArgs(trailingOnly=TRUE)
+if (length(args) >= 1) {
+  project.parameters$global[["selected_recount_ids"]] <- args[1]
+  message("Overwriting selected_recount_ids parameter with command-line argument ", args[1])
+}
+if (length(args) >= 2) {
+  message("Overwriting config feature parameter with command-line argument ", args[2])
+  project.parameters$global[["feature"]] <- args[2]
+}
+
+
 #### Specify selected recount IDs ####
 selectedRecountIDs <- project.parameters$global[["selected_recount_ids"]]
+
+
+## Get the list of recountIDs with parameters specified in the YAML file
 recountIDs <- grep(pattern = "^SRP", x = names(project.parameters), value = TRUE)
 message("\tYAML config file contains ", length(recountIDs)," recount IDs.")
 message("\tSelected ", length(selectedRecountIDs)," recount IDs: ", paste(collapse = "; ", selectedRecountIDs))
@@ -53,17 +68,10 @@ for (d in names(project.parameters$global$dir)) {
   }
 }
 
-
-
-#### Initialise cluster processing ####
-if (!is.null(project.parameters$global$jobs)) {
-  ## NOTE: WE SHOULD HAVE A TERMINATING SCRIPT, FOR INSTANCE TO STOP THE CLUSTER
-  ## Stop the cluster
-  #  stopImplicitCluster()
-  project.parameters <- initParallelComputing(project.parameters)
-  cl <- project.parameters$global$cl
-}
-
+## Note Jv (2019-10-29) I moved initParallelComputing() to a separate script
+##01C_init_parallel_computing.R
+## because we sometimes want to reload the parameters without re-creating new
+## slots for parallel computing
 
 #### END OF SCRIPT ####
 
