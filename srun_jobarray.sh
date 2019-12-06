@@ -1,8 +1,8 @@
 #!/bin/bash
 
-## Script: srun_jobarray.sh
+## SCRIPT NAME:srun_jobarray.sh
 ##
-## Authors: Julien Seiler and Jacques van Helden
+## AUTHORS: Julien Seiler and Jacques van Helden
 ##
 ## DESCRIPTION
 ## Run the analysis of the different study cases (recount IDs) and feature types
@@ -35,7 +35,6 @@ module load conda
 conda init bash
 conda activate rnaseqmva
 
-mkdir -p slurm_logs
 
 ## Define the parameters
 RECOUNT_IDS=(SRP035988 SRP042620 SRP056295 SRP057196 SRP061240 SRP062966 SRP066834)
