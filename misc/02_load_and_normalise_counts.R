@@ -9,6 +9,8 @@ studyCases <- list() ## a list containing all the loaded datasets + their pre-pr
 # recountID <- "SRP056295"
 # recountID <- "SRP042620" ## For quick test and debugging
 recountID <- selectedRecountIDs[1]
+message("Loading ", length(selectedRecountIDs), " study case(s)")
+
 for (recountID in selectedRecountIDs) {
 
   message.with.time("Building StudyCase for recountID\t", recountID, "\n\tfeature type: ", project.parameters$global$feature)
