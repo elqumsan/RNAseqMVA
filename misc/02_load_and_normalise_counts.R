@@ -118,16 +118,18 @@ studyCasesStats$pc.zeroVar <- 100*studyCasesStats$genes.zeroVar / studyCasesStat
 studyCasesStats$pc.NZfilter <- 100*studyCasesStats$genes.NZfilter / studyCasesStats$genes.ori
 studyCasesStats$pc.kept <-  100*studyCasesStats$genes.filtered / studyCasesStats$genes.ori
 
-## TEMPORARY: print out stats about loaded datasets
-library(knitr)
-kable(t(as.data.frame(studyCasesStats)))
+## DEBUG: print out stats about loaded datasets
+# library(knitr)
+# kable(t(as.data.frame(studyCasesStats)))
 
 ## Export the studyCase statistics in a TSV file
+studyCaseStatsFile <- file.path(
+  parameters$dir$tsv,
+  paste0(recountID, "_experiment_summaries.tsv"))
 write.table(x = t(studyCasesStats),
-            file = file.path(parameters$dir$tsv,
-                             paste0(recountID, "experiment_summaries.tsv")),
+            file = studyCaseStatsFile,
             quote = FALSE, sep = "\t", row.names = TRUE, col.names = FALSE)
-
+message("\tstudy case statistics saved in file\t", studyCaseStatsFile)
 
 
 ####  Feature filtering barplots:  proportions of features filtered out or kept in each study case ####
@@ -163,10 +165,10 @@ write.table(x = t(studyCasesStats),
 #### Draw a barplot with the number of samples per class ####
 message("Exporting barplots with number of samples per class")
 for (recountID in names(studyCases)) {
-  dir.figures <- file.path(parameters$dir$results, recountID, "figures")
-  dir.create(dir.figures, recursive = TRUE, showWarnings = FALSE)
+#  dir.figures <- file.path(parameters$dir$results, recuntID, "figures")
+#  dir.create(dir.figures, recursive = TRUE, showWarnings = FALSE)
   figure.file <- paste0(recountID, "_", featureType, "_samples_per_classes.pdf")
-  barPlot.file <- file.path(dir.figures, figure.file)
+  barPlot.file <- file.path(parameters$dir$figures, figure.file)
   message("\t", recountID, "\tSamples per classes barplot: ", barPlot.file)
   pdf(file = barPlot.file, width = 5, height = 8)
   par.ori <- par(no.readonly = TRUE)
@@ -181,9 +183,9 @@ for (recountID in names(studyCases)) {
     xlab = "Samples per class", col = "white")
   barplot(sort(studyCases[[recountID]]$datasetsForTest$filtered$samplesPerClass, decreasing = TRUE),
           add = TRUE, horiz = TRUE, las = 1, cex.names = 0.7,
-          main = recountID, xlab = "Samples per class",
+          main = paste0(recountID, " ", featureType, "\n", parameters$short_label),
+          xlab = "Samples per class",
           col = studyCases[[recountID]]$datasetsForTest$filtered$classColors)
-  #          col="#00BB00")
   abline(v = studyCases[[recountID]]$parameters$filtering$minSamplesPerClass, col = "red")
   par(mfrow = c(1,1))
   par(par.ori)
