@@ -93,16 +93,18 @@ for (recountID in selectedRecountIDs) {
       runs = studyCases[[recountID]]$rawData$countsPerRun$nbSamples,
       samples = studyCases[[recountID]]$rawData$countsPerSample$nbSamples,
       samples.filtered = studyCases[[recountID]]$datasetsForTest$filtered$nbSamples,
-
-      genes.ori = studyCases[[recountID]]$rawData$countsPerSample$nbGenes,
-      genes.NA = length(studyCases[[recountID]]$datasetsForTest$filtered$naGenes),
-      genes.zeroVar = length(studyCases[[recountID]]$datasetsForTest$filtered$zeroVarGenes),
-      genes.NZfilter = length(studyCases[[recountID]]$datasetsForTest$filtered$nearZeroVarGenes),
-      genes.filtered = studyCases[[recountID]]$datasetsForTest$filtered$nbGenes,
-
       classes.ori = studyCases[[recountID]]$rawData$countsPerSample$nbClasses,
       classes.filtered = studyCases[[recountID]]$datasetsForTest$filtered$nbClasses
     )
+
+
+  featureType <- parameters$feature
+  newStats[paste0(featureType, ".ori")] <- studyCases[[recountID]]$rawData$countsPerSample$nbGenes
+  newStats[paste0(featureType, ".NA")] <- length(studyCases[[recountID]]$datasetsForTest$filtered$naGenes)
+  newStats[paste0(featureType, ".zeroVar")] <- length(studyCases[[recountID]]$datasetsForTest$filtered$zeroVarGenes)
+  newStats[paste0(featureType, ".NZfilter")] <- length(studyCases[[recountID]]$datasetsForTest$filtered$nearZeroVarGenes)
+  newStats[paste0(featureType, ".filtered")] <- studyCases[[recountID]]$datasetsForTest$filtered$nbGenes
+
 
   if (ncol(studyCasesStats) == 0) {
     studyCasesStats <- newStats
@@ -117,45 +119,53 @@ studyCasesStats$pc.NZfilter <- 100*studyCasesStats$genes.NZfilter / studyCasesSt
 studyCasesStats$pc.kept <-  100*studyCasesStats$genes.filtered / studyCasesStats$genes.ori
 
 ## TEMPORARY: print out stats about loaded datasets
-require(knitr)
-kable(t(studyCasesStats))
+library(knitr)
+kable(t(as.data.frame(studyCasesStats)))
 
-write.table(x = t(studyCasesStats), file = file.path(parameters$dir$results, "experiment_summaries.tsv"),
+## Export the studyCase statistics in a TSV file
+write.table(x = t(studyCasesStats),
+            file = file.path(parameters$dir$tsv,
+                             paste0(recountID, "experiment_summaries.tsv")),
             quote = FALSE, sep = "\t", row.names = TRUE, col.names = FALSE)
 
 
-gene.pc <- studyCasesStats[, c("pc.NA", "pc.zeroVar", "pc.NZfilter", "pc.kept")]
-row.names(gene.pc) <- studyCasesStats$recountID
+
+####  Feature filtering barplots:  proportions of features filtered out or kept in each study case ####
+## NOTE: this plot was generated at the time when we were loading all the study cases together,
+## which we don't do anymore.
+## This is not tractable (memory) so we comment it
+
+# gene.pc <- studyCasesStats[, c("pc.NA", "pc.zeroVar", "pc.NZfilter", "pc.kept")]
+# row.names(gene.pc) <- studyCasesStats$recountID
+
 ## Order experiments by increasing percentof kept genes (so that the highest come on top of the barplot)
-gene.pc <- gene.pc[order(gene.pc$pc.kept, decreasing = FALSE), ]
+# gene.pc <- gene.pc[order(gene.pc$pc.kept, decreasing = FALSE), ]
 ## apply(gene.pc, 1, sum) ## The sums must give 100 for each experiment
+# figure.file <- paste0(featureType, "_filtering_summaries.pdf")
+# barPlot.file <- file.path(parameters$dir$figures, figure.file)
+# message("Filtering summary barplot: ", barPlot.file)
+# pdf(file = barPlot.file, width = 7, height = 2 + 1 * nrow(studyCasesStats))
+# save.margins <- par("mar")
+# par(mar = c(5,7,5,1))
 
-####  Gene filtering barplots:  proportions of genes filtered out or kept in each study case ####
-figure.file <- paste("gene_filtering_summaries.pdf")
-barPlot.file <- file.path(project.parameters$global$dir$figures, figure.file)
-message("Filtering summary barplot: ", barPlot.file)
-pdf(file = barPlot.file, width = 7, height = 2 + 1 * nrow(studyCasesStats))
-save.margins <- par("mar")
-par(mar = c(5,7,5,1))
+# kept.label <- paste0(round(digits = 0, gene.pc$pc.kept), "%")
+# ypos <- barplot(t(gene.pc), las = 1, horiz = TRUE,
+#                 col = c("black", "red", "orange", "#44DD44"),
+#                 legend.text = c("NA values", "Zero var", "NZ filter", "kept"),
+#                 main = "Filtering impact on study cases",
+#                 xlab = "Proportions of genes",
+#                 xlim = c(0, 170))
+# text(x = 100, kept.label, y = ypos, pos = 4)
 
-kept.label <- paste(sep = "", round(digits = 0, gene.pc$pc.kept), "%")
-ypos <- barplot(t(gene.pc), las = 1, horiz = TRUE,
-                col = c("black", "red", "orange", "#44DD44"),
-                legend.text = c("NA values", "Zero var", "NZ filter", "kept"),
-                main = "Filtering impact on study cases",
-                xlab = "Proportions of genes",
-                xlim = c(0, 170))
-text(x = 100, kept.label, y = ypos, pos = 4)
-
-par(mar = save.margins)  ## Restore original graphical parameter
-silence <- dev.off()      ## Close graphical device
+# par(mar = save.margins)  ## Restore original graphical parameter
+# silence <- dev.off()      ## Close graphical device
 
 #### Draw a barplot with the number of samples per class ####
-message("exporting barplots with number of samples per class")
+message("Exporting barplots with number of samples per class")
 for (recountID in names(studyCases)) {
   dir.figures <- file.path(parameters$dir$results, recountID, "figures")
   dir.create(dir.figures, recursive = TRUE, showWarnings = FALSE)
-  figure.file <- paste(sep = "", recountID, "_samples_per_classes.pdf")
+  figure.file <- paste0(recountID, "_", featureType, "_samples_per_classes.pdf")
   barPlot.file <- file.path(dir.figures, figure.file)
   message("\t", recountID, "\tSamples per classes barplot: ", barPlot.file)
   pdf(file = barPlot.file, width = 5, height = 8)
@@ -201,28 +211,28 @@ for (recountID in selectedRecountIDs) {
   for (datasetName in pcNames) {
     dataset <- studyCase$datasetsForTest[[datasetName]]
 
-    PCplot.file <- file.path(plotDir, paste(sep = "", recountID, "_", datasetName, "_variance.pdf"))
+    PCplot.file <- file.path(plotDir, paste0(recountID, "_", datasetName, "_variance.pdf"))
     message("\t\tPC variance plot: ", PCplot.file)
     pdf(file = PCplot.file, width = 7, height = 5)
     plot(dataset$prcomp, col = "#BBDDEE", xlab = "Components", main = paste(recountID, datasetName, "\nvariance barplot"))
     silence <- dev.off()
 
     ## Plot PC1 vs PC2
-    PCplot.file <- file.path(plotDir, paste(sep = "", recountID, "_", datasetName, "_PC1-PC2.pdf"))
+    PCplot.file <- file.path(plotDir, paste0(recountID, "_", datasetName, "_PC1-PC2.pdf"))
     message("\t\tPC 1 vs 2 plot: ", PCplot.file)
     pdf(file = PCplot.file, width = 7, height = 9)
     plot2PCs(dataset, pcs = c(1,2))
     silence <- dev.off()
 
     ## Plot PC2 vs PC3
-    PCplot.file <- file.path(plotDir, paste(sep = "", recountID, "_", datasetName, "_PC3-PC4.pdf"))
+    PCplot.file <- file.path(plotDir, paste0(recountID, "_", datasetName, "_PC3-PC4.pdf"))
     message("\t\tPC 3 vs 4 plot: ", PCplot.file)
     pdf(file = PCplot.file, width = 7, height = 9)
     plot2PCs(dataset, pcs = c(3,4))
     silence <- dev.off()
 
     ## Combine PC1-PC2 and PC3-PC4  plots in a single figure
-    PCplot.file <- file.path(plotDir, paste(sep = "", recountID, "_", datasetName, "_plots.pdf"))
+    PCplot.file <- file.path(plotDir, paste0(recountID, "_", datasetName, "_plots.pdf"))
     message("\t\tPC plots: ", PCplot.file)
     pdf(file = PCplot.file, width = 10, height = 10)
     par(mfrow = c(2,2))
