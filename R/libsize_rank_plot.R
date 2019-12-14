@@ -8,10 +8,16 @@
 #'
 #' @export
 LibsizeRankPlot <- function(count.table,
+                            parameters,
                             plot.file = NULL,
                             plot.width = 7,
                             plot.heigh = 5
                             ) {
+
+  ## Read info ffrom the parameters
+  recountID <- parameters$recountID
+  featureType <- parameters$feature
+
   message("\tPlotting ranked libsizes")
   message("\t\t", plot.file)
   if (!is.null(plot.file)) {
@@ -25,7 +31,10 @@ LibsizeRankPlot <- function(count.table,
        xlab = "Sample rank",
        ylab = "Library size (Mreads)",
        ylim = c(0, ymax),
-       main = paste(sep = "", recountID, " \n", "library sizes"))
+       main = paste0(recountID,
+                     " ", featureType,
+                    " ", parameters$short_label,
+                    " \n", "library sizes"))
   abline(h = ymin, col = "orange", lwd = 2)
   abline(h = ymax, col = "#22BB44", lwd = 2)
   arrows(length = 0.1, angle = 15, lwd = 2, col = "#22BB44", code = 3,
