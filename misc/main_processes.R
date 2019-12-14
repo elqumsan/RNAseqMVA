@@ -10,6 +10,7 @@ source('misc/01b_load_parameters.R')
 message.with.time("Initializing parallel computing")
 source('misc/01c_init_parallel_computing.R')
 
+## Load or reload study cases
 if (project.parameters$global$reload) {
   message.with.time("Reloading count data")
   source('misc/02b_reload_counts.R')
