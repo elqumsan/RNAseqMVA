@@ -1,0 +1,656 @@
+---
+title: "Tutorial: running RNAseqMVA on the IFB core cluster"
+author: 'Jacques van Helden'
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    code_folding: show
+    fig_caption: yes
+    highlight: zenburn
+    self_contained: yes
+    theme: cerulean
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+  pdf_document:
+    fig_caption: yes
+    highlight: zenburn
+    toc: yes
+    toc_depth: 3
+  ioslides_presentation:
+    colortheme: dolphin
+    fig_caption: yes
+    fig_height: 6
+    fig_width: 7
+    fonttheme: structurebold
+    highlight: tango
+    incremental: no
+    keep_md: no
+    smaller: yes
+    theme: cerulean
+    toc: yes
+    widescreen: yes
+  word_document:
+    toc: yes
+    toc_depth: 3
+  slidy_presentation:
+    fig_caption: yes
+    fig_height: 6
+    fig_width: 7
+    highlight: tango
+    incremental: no
+    keep_md: no
+    self_contained: no
+    smaller: yes
+    theme: cerulean
+    toc: yes
+    toc_float: yes
+    widescreen: yes
+  beamer_presentation:
+    colortheme: dolphin
+    fig_caption: yes
+    fig_height: 6
+    fig_width: 7
+    fonttheme: structurebold
+    highlight: tango
+    incremental: no
+    keep_tex: no
+    slide_level: 2
+    theme: Montpellier
+    toc: yes
+---
+
+
+
+
+```{r knitr_setup, include=FALSE, size="huge"}
+message("Loading knitr library")
+if (!require("knitr", quietly = TRUE)) {
+  message("Installing knitr library")
+  install.packages("knitr", dependencies = TRUE)
+}
+require(knitr)
+
+## Default parameters for displaying the slides
+knitr::opts_chunk$set(
+  echo = TRUE, 
+  eval = FALSE, 
+  fig.width = 7, 
+  fig.height = 5, 
+  fig.align = "center", 
+  encoding = "UTF-8",
+  fig.path = "figures/",
+  size = "tiny", 
+  warning = FALSE, 
+  results = TRUE, 
+  message = FALSE, 
+  comment = "")
+
+```
+
+
+
+## Accessing your account on IFB core cluster via ssh
+
+```{bash eval=FALSE}
+ssh [login]@core.cluster.france-bioinformatique.fr
+```
+
+
+## Shared space for a project
+
+Our shared space is in this flder: `/shared/projects/rnaseqmva/`.
+
+All the declared participants to the project (you and me) have read and write access to the whole folder.
+
+BEWARE: if you remove things, they are lost!
+
+We need to submit all the code to github regularly. 
+
+## Management of the git clone for the RNAseqMVA project
+
+### I imported a clone of the RNAseqMVA package there
+
+
+This needs to be done only once, please don't redo it!
+
+
+```{bash eval=FALSE}
+cd /shared/projects/rnaseqmva/
+git clone https://github.com/elqumsan/RNAseqMVA.git
+
+```
+
+### Updating the git
+
+Anytime we start working, we first do a git pull in order to be sure to have the latest version. 
+
+```{bash eval=FALSE}
+cd /shared/projects/rnaseqmva/RNAseqMVA ## go to the shared project folder
+git pull     ## update the local copy of RNAeqMVA
+git status   ## check the status
+
+```
+
+
+
+*********
+## Running the workflow on the RStudio server at IFB-core
+
+### Connecting to the RStudio server
+
+In a Web brower, open a connection to **<https://rstudio.cluster.france-bioinformatique.fr/>**
+
+### Opening a session of the RNAseqMVA project
+
+In the R console, type the following command. 
+
+```{r}
+setwd("/shared/projects/rnaseqmva/RNAseqMVA/")
+```
+
+In the **Files** tab of the bottom-right pane, click on the function **More > Go to Working Directory**.
+
+Double-click on the file `RNAseqMVA.Rproj`.
+
+After having done this, you should in principle see a **Git** tab in the top-right pane (the location of this pane depends on your RStudio configuration). 
+
+### Compiling the RNAseqMVA library
+
+Open the **Build** tab in the **Environment, History, Connection, Build, Git** tab. 
+
+Click **Install and Restart**.
+
+**Note:** the first time you run this, you might be prompted to install libraries. 
+
+- One option -- prudent but somewhat cumbersome -- is to **install manually** the libraries that are absolutely required to compile the package.
+- An alternative -- a bit tricky but convenient -- is to run the script `misc/01a_load_libraries.R` of the package, which automatically installs all the CRAN and BioConductor libraries used in the package. 
+
+```{r}
+setwd("/shared/projects/rnaseqmva/RNAseqMVA/")
+source("misc/01a_load_libraries.R")
+```
+
+### Note: installing dependencies
+
+We had to install manually two packages to handle some dependencies: 
+
+- devtools
+- doMC
+
+### Checking / modifying the parameters
+
+We use a YAML file to configure the workflow. 
+
+In RStudio, open the file `~/RNAseqMVA/misc/00_project_parameters.yml`, check the parameters and 
+
+
+
+****
+## Running the workflow on the cluster nodes
+
+An alternative to RStudio is to run the workflow directly on the cluster nodes, via the `ssh` connection and with an interactive slurm session (`sinteractive`).
+
+
+
+**BEWARE** R should never run on the cluster mother machine. It should always run on a node. This can be achieved in different ways. 
+
+1. Interactive session on a node with `sinteractive`
+2. Submitting an `Rscript` command to slurm via `srun`.
+3. Storing several `Rscript` calls in a bash file, which can then be run via `sbatch`. 
+
+
+- Difficulties: 
+
+    - we have to see with Gildas Le Corguillé and Julien Seiler (managers of the cluster)  how to optimize the parallelisation
+    - requires to run the project within a conda environemnt
+    - less interactive than RStudio
+
+- Advantages: 
+
+    - this enables to run the study cases in parallel, by sending each of them to a different node
+    - good for the reproducibility, becase everything runs automatically from the command line
+
+
+### Opening an interactive session
+
+```{bash eval=FALSE}
+ssh [login]@core-cluster.france-bioinformatique.fr
+
+sinteractive --mem=32GB
+```
+
+### Installing or updating the rnaseqmva conda environment
+
+```{bash eval=FALSE}
+module load conda
+cd /shared/projects/rnaseqmva/RNAseqMVA
+
+## The first time only
+conda env install -f conda-rnaseqmva.yml
+
+## Updates
+conda env update -f conda-rnaseqmva.yml
+```
+
+
+### Loading the conda environment
+
+```{bash eval=FALSE}
+module load conda
+conda activate rnaseqmva
+```
+
+
+### Compiling the RNAseqMVA package
+
+```{bash eval=FALSE}
+cd /shared/projects/rnaseqmva
+R CMD INSTALL --no-multiarch --with-keep.source RNAseqMVA
+
+```
+
+### Opening R
+
+
+```{bash eval=FALSE}
+cd /shared/projects/rnaseqmva/RNAseqMVA
+R
+```
+
+### Running the analysis in R under sinteractive
+
+First, edit the file `misc/00_project_parameters.yml` with a text editor, in order to select the study case + all the parameters. 
+
+Then open an R session (as above) and run the following command. 
+
+```{r}
+source("misc/main_processes.R")
+```
+
+### Running the analysis via `srun Rscript`
+
+#### Sending a single job to slurm
+
+I created a script named `srun_analyses.sh`, with the following content. 
+
+```{bash eval=FALSE}
+#!/bin/bash
+
+## Script: srun_analysis.sh
+
+
+## Note: the loading of conda module and environment must apparently be done
+## in the sbatch that calls this script, and not within the script itself
+# module load conda
+# conda init bash
+# conda activate rnaseqmva
+## Define log directory and files
+cd /shared/projects/rnaseqmva/RNAseqMVA
+WORKSPACE=/shared/projects/rnaseqmva/RNAseqMVA_workspace
+LOG_DIR=${WORKSPACE}/logs
+mkdir -p ${LOG_DIR}
+START_DATE=`date +%Y-%m-%d_%H%M%S`
+
+
+## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+## Run agiven analysis
+##
+## Note: to run all job, it is recommended to use job arrays 
+## (see script srun_jobarray.sh)
+
+## Parameters
+RECOUNT_ID=SRP042620
+FEATURE=transcript
+PREFIX=${RECOUNT_ID}_${FEATURE}_${START_DATE}
+
+echo "RECOUNT_ID: ${RECOUNT_ID}"
+echo "FEATURE: ${FEATURE}"
+echo "PREFIX: ${PREFIX}"
+
+## Submit the job to slurm job scheduler via srun
+srun --mem=32GB  --cpus=50  --partition=long \
+  --output ${LOG_DIR}/${PREFIX}_out.txt \
+  --error ${LOG_DIR}/${PREFIX}_err.txt \
+  Rscript --vanilla misc/main_processes.R ${RECOUNT_ID} ${FEATURE}
+  
+```
+
+This script can be used to send a job to slurm. However, running it directly is not ideal because srun stays active during the execution of the process, so that in case we quit the session the job is dead. To circumvent this, we run the script via `sbatch`. 
+
+```{bash eval=FALSE}
+## Change directory to RNAseqMVA package
+cd /shared/projects/rnaseqmva/RNAseqMVA
+
+## Initiate the environment
+## This is necessary for the sbatch command !
+module load conda
+conda init bash
+conda activate rnaseqmva
+
+
+## Send the script to the job scheduler
+sbatch --mem=32GB --cpus=50  --partition=long srun_analysis.sh
+
+```
+
+
+#### Seding all jobs to slurm via a jobarray
+
+Julien Seiler wrote a script (adapted by JvH) to send all the jobs to slurm via a jobarray, with the appropriate tuning of parameters (memory, nodes).
+
+```{bash eval=FALSE}
+#!/bin/bash
+
+## Script: srun_jobarray.sh
+
+## Run the analysis of the different study cases (recount IDs) and feature types
+## on IFB core cluster via a job array handled by slurm job scheduler.
+##
+## All jobs are sent in one shot, and they are handled in parallel according to
+## the availability of resources on the cluster).
+
+
+#SBATCH --array=0-13  # Define the IDs for the job array
+#SBATCH --cpus=50  # Request 50 CPUs per job
+#SBATCH --partition=long  # the long partition (>1 day) is required for some study cases
+#SBATCH --mem=32GB # Request 32Gb per job
+#SBATCH -o slurm_logs/test_%a_%A_%j_out.txt  # file to store standard output
+#SBATCH -e slurm_logs/test-%a_%A_%j_err.txt  # file to store standard error
+
+## Initiate the environment
+module load conda
+conda init bash
+conda activate rnaseqmva
+
+mkdir -p slurm_logs
+
+## Define the parameters
+RECOUNT_IDS=(SRP035988 SRP042620 SRP056295 SRP057196 SRP061240 SRP062966 SRP066834)
+FEATURE_TYPES=(gene transcript)
+
+## Associate RECOUNT_ID and FEATURE_TYPE to the index of the current job
+recount_index=$((SLURM_ARRAY_TASK_ID / 2))
+RECOUNT_ID=${RECOUNT_IDS[recount_index]}
+feature_index=$((SLURM_ARRAY_TASK_ID % 2))
+FEATURE_TYPE=${FEATURE_TYPES[feature_index]}
+
+cd /shared/projects/rnaseqmva/RNAseqMVA
+WORKSPACE=/shared/projects/rnaseqmva/RNAseqMVA_workspace
+LOG_DIR=${WORKSPACE}/logs
+mkdir -p ${LOG_DIR}
+START_DATE=`date +%Y-%m-%d_%H%M%S`
+PREFIX=${RECOUNT_ID}_${FEATURE_TYPE}_${START_DATE}
+
+## The variable $SLURM_ARRAY_TASK_ID takes a different value for each job
+## based on the values entered with the argument --array
+# srun Rscript --vanilla misc/main_processes.R $SLURM_ARRAY_TASK_ID
+echo "${START_DATE} ${SLURM_ARRAY_TASK_ID}  ${SLURM_ARRAY_JOB_ID} ${RECOUNT_ID} ${FEATURE_TYPE} ${LOG_DIR}/${PREFIX}" >> srun_jobs_sent.tsv
+
+## Send a job for the analysis of one RECOUNT_ID and FEATURE_TYPE
+srun --mem=32GB --cpus=50 \
+  --output ${LOG_DIR}/${PREFIX}_out.txt \
+  --error ${LOG_DIR}/${PREFIX}_err.txt \
+  Rscript --vanilla misc/main_processes.R ${RECOUNT_ID} ${FEATURE_TYPE}
+
+```
+
+This can then be sent to slurm job scheduler with the `sbatch`command, but we first need to define the appropriate environment. 
+
+```{bash eval=FALSE}
+## Change directory to RNAseqMVA package
+cd /shared/projects/rnaseqmva/RNAseqMVA
+
+## Initiate the environment
+## This is necessary for the sbatch command !
+module load conda
+conda init bash
+conda activate rnaseqmva
+
+
+## Send the script to the job scheduler
+sbatch srun_jobarray.sh
+
+```
+
+
+### Monitoring the execution of the job
+
+
+#### Slurm monitoring commands
+
+```{bash eval=FALSE}
+## Check the jobs in queue for yourself
+squeue -u $UID
+
+## Stat about your jobs
+MY_JOBS=`squeue -u $UID | grep -v JOBID | awk '{print $1}'`
+sstat $MY_JOBS
+
+```
+
+
+#### Useful slurm commands
+
+| Command | Description|
+|------------|--------------------------------|
+| `sinfo` |  view information about Slurm nodes and partitions |
+| `srun`| |
+| `sbatch`| |
+| `sinteractive` | |
+| `squeue` | view information about jobs located in the Slurm scheduling queue |
+| `sstat` | Display various status information of a running job/step |
+| `sacct` | Display accounting data for all jobs and job steps in the Slurm job accounting log or Slurm database |
+| `scancel`| cancel the execution of a given job |
+
+### Following the execution logs
+
+```{bash eval=FALSE}
+cd /shared/projects/rnaseqmva/RNAseqMVA
+
+LOG_DIR=/shared/projects/rnaseqmva/logs
+ls -ltr ${LOG_DIR}
+```
+
+
+
+****
+## Sharing the project's working directory
+
+
+By default, RNAseqMVA creates a working directory in your home folder (`~/RNAseqMVA_workspace`). However we want to put the working directory in our shared space. 
+
+We could change the parameter in the YAML configuration file, but this would impose the same directory for all the other places where the package is running (which would not be convenient for our laptops and for the distribution to other users). 
+
+To circumvent this, we will create a directory in the shared space, and create a soft link from our home directory to this shared space. 
+
+```{bash eval=FALSE}
+
+## If not already done, open an ssh connection to the IFB cluster
+ssh [login]@core.cluster.france-bioinformatique.fr
+
+## Create a soft link from your home directory to the shared space
+ln -fs /shared/projects/rnaseqmva ~/rnaseqmva_shared_space
+
+## Create a soft link from your home directory to our RNAseqMVA package
+ln -fs /shared/projects/rnaseqmva/RNAseqMVA ~/RNAseqMVA
+
+## Create a working directory in the shared space
+mkdir -p /shared/projects/rnaseqmva/RNAseqMVA_workspace
+
+## Create a soft link from this shared working dir to your home directory
+ln -fs /shared/projects/rnaseqmva/RNAseqMVA_workspace ~/RNAseqMVA_workspace
+
+
+```
+
+
+From now on we can go to the working directory with this 
+
+```{bash eval=FALSE}
+cd ~/RNAseqMVA_workspace
+```
+
+This is equivalent to 
+
+```{bash eval=FALSE}
+cd /shared/projects/rnaseqmva/RNAseqMVA_workspace
+```
+
+You can list the files present in this directory
+
+```{bash eval=FALSE}
+ls -l 
+```
+
+You can also see the organisation of all the files with the very convenient Unix command `tree`. 
+
+```{bash eval=FALSE}
+tree 
+```
+
+
+## Running the workflow
+
+In the **File** tab, open the file `misc/main_processes.R` and run it step by step. 
+
+
+## Checking the server load with htop
+
+The Unix command `htop`provides a very convenient way to check the server load. 
+
+- Besides the  R **Console** tab, click on the **Terminal** tab.
+- Click on the rectangle to maximise this pane. 
+- At the terminal prompt, type the command `htop`
+
+
+## Mounting the shared space on your computer
+
+In order to access the results, one possibility is to mount the shared disk space on your computer via the `sshfs` protocol. 
+
+On Mac OS X we use Fuse to run this protocol. For other OS we still need to investigate. 
+
+
+
+```{bash mounting_remote_workspace, eval=FALSE}
+## Create a mount point on your local device
+export MOUNT_POINT=~/mnt/RNAseqMVA
+mkdir -p ${MOUNT_POINT}
+
+## We then mount the remote disk (the shared space on IFB core cluster) 
+## on our local mount point
+export SHARED_DIR=/shared/projects/rnaseqmva/
+
+export IFB_LOGIN=jvanhelden ## this is for Jacques
+export IFB_LOGIN=mabuelqumsan ## this is for Mustafa
+
+sshfs -o allow_other,defer_permissions \
+   ${IFB_LOGIN}@core.cluster.france-bioinformatique.fr:${SHARED_DIR} \
+   ${MOUNT_POINT}
+```
+
+**Be patient**: the mounting may take a few seconds (but not minutes). After that, you can run the following command to check the content of the remote folder that has been mounted on your local computer. 
+
+```{bash checking_mounted_disk, eval=FALSE}
+## Check if the remote content is available on your mount point
+ls -ltr ${MOUNT_POINT}/
+```
+
+
+You can also check the free space remaing on the remote disk.
+
+```{bash disk_free_mounted_folder, eval=FALSE}
+## Check the free space on the remote hard drive that contains 
+## the shared folder (on the IFB core cluster)
+df -h ${MOUNT_POINT}
+```
+
+For th sake of comparison, compare it with the disk free result on your own computer. 
+
+```{bash disk_free_local_home, eval=FALSE}
+## Check the free space on the local hard drive that contains your home folder
+df -h ${HOME}
+```
+
+
+
+
+### Handling the files on the locally mounted remote shared space
+
+Once the shared space has been mounted on your local mount point, you can use different commands to list the files, handle them, or make a local copy.
+
+We can for instance use the `find`command to list all the pdf files found in the result folder (we named this folder `RNAseqMVA_workspace`).
+
+```{bash eval=FALSE}
+## Find all files with extension .pdf in the remote folder
+find ${MOUNT_POINT}/RNAseqMVA_workspace/results -type f -name '*.pdf'
+```
+
+
+We can also refine the search, by selecting one study case (e.g. SRP042620) and feature type (e.g. gene) and searching the pdf files in the corresponding sub-folder of the workspace.  
+
+```{bash eval=FALSE}
+## Find the figure files for a given study case 
+##   (e.g. SRP042620, with genes as features)
+export STUDY_CASE=SRP042620
+export FEATURE_TYPE=gene
+find ${MOUNT_POINT}/RNAseqMVA_workspace/results/${STUDY_CASE}_${FEATURE_TYPE} -type f -name '*.pdf'
+```
+
+For convenience, we can also create a local copy of this sub-folder, but only synchronise the pdf files. The interest is to make these files easy to access, without too much cost in disk space. 
+
+```{bash sync_pdf_one_study_case, eval=FALSE}
+## Synchronize all the figure files of the selected study case in a local folder, with the same organisation of sub-folders as in the source directory
+export LOCAL_FOLDER=~/RNAseqMVA_selected_figures
+mkdir -p ${LOCAL_FOLDER}
+find ${MOUNT_POINT}/RNAseqMVA_workspace/results/${STUDY_CASE}_${FEATURE_TYPE} \
+  -type f -name '*.pdf' -exec rsync -ruptvl -R {} $LOCAL_FOLDER \;
+echo "Local folder: ${LOCAL_FOLDER}"
+
+## Check the disk use of the local copy (which only contains the pdf files)
+du -sh ${LOCAL_FOLDER}
+```
+
+
+In principle you should now be able to open a given pdf on your local copy. 
+On Mac OS X, we can use the very convenient command `open`, whcih takes as argument one or several file paths, and opens them with the appropriate software. 
+
+```{bash eval=FALSE}
+
+find $LOCAL_FOLDER -name '*.pdf' | grep ${STUDY_CASE}_${FEATURE_TYPE} | xargs open
+
+```
+
+
+
+We can now generalize the command and make a local mirror of all the pdf files from all the study cases. 
+
+
+```{bash eval=FALSE}
+
+## Synchronise all the figure files from ALL the study cases on your local folder
+find ${MOUNT_POINT}/RNAseqMVA_workspace/results \
+  -type f -name '*.pdf' -exec rsync -ruptvl -R {} $LOCAL_FOLDER \;
+echo "Local folder: ${LOCAL_FOLDER}"
+
+## Check the disk use of the local copy (which only contains the pdf files)
+du -sh ${LOCAL_FOLDER}
+
+```
+
+
+### Unmounting the IFB drive 
+
+Very important: after your session, I recomend to **unmount the remote disk** with the following command. 
+
+```{bash eval=FALSE}
+## Unmount the remote folder that was previously mounted by sshfs
+umount -f ${MOUNT_POINT}
+
+```
+
+
+
+
+
+
