@@ -26,12 +26,11 @@ initRecountID <- function(recountID, project.parameters) {
     message("Beware: YAML configuration file did not specify the feature type -> set to gene")
   }
   message("\tFeature type\t", parameters$feature)
-  featureType <- parameters$feature
 
   ## studyPath, i.e. path where the data downloaded from Recount2 is stored
-  parameters$studyPath <- file.path(
-    parameters$dir$workspace, "data",
-    paste0(recountID, "_", featureType))
+  ## Note: we store the different feature types (gene, transcript)
+  ## in the same folder, to mirror  Recount2 server
+  parameters$studyPath <- file.path(parameters$dir$workspace, "data", recountID)
 
 
   ## Overwrite default parameters wih project-specific parameters
