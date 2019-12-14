@@ -335,7 +335,7 @@ sbatch --mem=32GB --cpus=50  --partition=long srun_analysis.sh
 ```
 
 
-#### Seding all jobs to slurm via a jobarray
+#### Sending all jobs to slurm via a jobarray
 
 Julien Seiler wrote a script (adapted by JvH) to send all the jobs to slurm via a jobarray, with the appropriate tuning of parameters (memory, nodes).
 
