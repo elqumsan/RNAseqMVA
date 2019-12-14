@@ -17,6 +17,7 @@ initRecountID <- function(recountID, project.parameters) {
   ## (was previously parsed from the YAML file)
   parameters <- c(project.parameters$default, project.parameters$global)
 
+
   ## Specify the current recountID in parameters
   parameters$recountID <- recountID
 
@@ -31,6 +32,7 @@ initRecountID <- function(recountID, project.parameters) {
   ## Note: we store the different feature types (gene, transcript)
   ## in the same folder, to mirror  Recount2 server
   parameters$studyPath <- file.path(parameters$dir$workspace, "data", recountID)
+
 
 
   ## Overwrite default parameters wih project-specific parameters
@@ -71,6 +73,7 @@ initRecountID <- function(recountID, project.parameters) {
     stop("Output directories (main, workspace) must be specified in the config file. ")
   }
 
+
   ## Check required directories
   if (is.null(parameters$dir$main)) {
     stop("Main directory must be specified in the config file. ")
@@ -81,11 +84,17 @@ initRecountID <- function(recountID, project.parameters) {
     stop("Workspace directory must be specified in the config file. ")
   }
 
-  ## Result directory
+  ## Reset the result dir for this particular study
+
   if (is.null(parameters$dir$results)) {
     parameters$dir$results <- file.path(
       parameters$dir$workspace,
       "results",
+      paste0(recountID, "_",
+             parameters$feature))
+  } else {
+    parameters$dir$results <- file.path(
+      parameters$dir$results,
       paste0(recountID, "_", parameters$feature))
   }
   dir.create(parameters$dir$results, showWarnings = FALSE, recursive = TRUE)
