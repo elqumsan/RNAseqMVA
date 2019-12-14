@@ -299,7 +299,9 @@ for (recountID in selectedRecountIDs) {
     filtered <- studyCases[[recountID]]$datasetsForTest$filtered
 
     ## Add the plot as panel to compare between study cases
-    LibsizeRankPlot(count.table = filtered$dataTable, plot.file = plot.file)
+    LibsizeRankPlot(count.table = filtered$dataTable,
+                    parameters = parameters,
+                    plot.file = plot.file)
 
     # ## Draw a separate plot in the study case-specific directory
     # LibsizeRankPlot(count.table = filtered$dataTable,
@@ -309,8 +311,9 @@ for (recountID in selectedRecountIDs) {
     # )
     # system(paste("open", plot.file))
   }
-  silence <- dev.off()
+  # silence <- dev.off()
 }
+
 #### Save a memory image that can be re-loaded in the future ####
 ## This avoids to redo all the normalisation computing each time we want to run the subsequent analyses
 featureType <- parameters$feature
