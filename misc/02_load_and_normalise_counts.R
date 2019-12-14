@@ -17,6 +17,7 @@ for (recountID in selectedRecountIDs) {
 
   #### Specify generic and recountID-specific parameters ####
   parameters <- initRecountID(recountID, project.parameters)
+  # View(parameters$dir)
 
   # Main directory should be adapted to the user's configuration
   #  dir.main <- project.parameters$global$dir$main
