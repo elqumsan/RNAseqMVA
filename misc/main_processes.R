@@ -19,6 +19,7 @@ if (project.parameters$global$reload) {
   source('misc/02_load_and_normalise_counts.R')
 }
 
+
 ## Reload parameters if required (they may have been changed since the
 ## study cases were built)
 if (project.parameters$global$reload.parameters) {
