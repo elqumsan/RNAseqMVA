@@ -77,8 +77,8 @@ loadCounts <- function(recountID,
 
 
   #### Build a list with the results of the loadCounts() function
-  experiment$originalCounts$geo.characteristics <- geo_characteristics(experiment$originalCounts$phenoTable)
-  experiment$filtered$geo.characteristics <- geo_characteristics(experiment$filtered$phenoTable)
+  experiment$originalCounts$geo.characteristics <- geocharFromPheno(experiment$originalCounts$phenoTable)
+  experiment$filtered$geo.characteristics <- geocharFromPheno(experiment$filtered$phenoTable)
 
 
 

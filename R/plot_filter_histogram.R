@@ -37,6 +37,7 @@ plotFilterHistograms <- function(dataset,
 
   ## Near-zero filter
   parameters <- dataset$parameters
+  featureType <- parameters$feature
   if (is.null(parameters$filtering$nearZeroVarFilter)) {
     nearZeroVarFilter <- FALSE
     nb.panels <- 3
@@ -68,13 +69,13 @@ plotFilterHistograms <- function(dataset,
   hist(log2(varPerGene[noInfVar]),
        breaks = varbreaks,
        col = "gray", border = "gray",
-       main = paste("All non-zero var genes; ", parameters$recountID),
+       main = paste("All non-zero var genes;", parameters$recountID, featureType, parameters$short_label),
        xlab = "log2(varPerGene)",
        ylab = "Number of genes",
        xlim = xlim)
   #    legend("topright", parameters$recountID)
 
-
+  ## Plot variance histogram for genes filtered out by the near-zero variance filter
   if (nearZeroVarFilter) {
     ## Get list of near-zero variance genes
     if (is.null(dataset$nearZeroVarGenes)) {
@@ -86,15 +87,17 @@ plotFilterHistograms <- function(dataset,
     hist(log2(varPerGene[nearZeroVarGenes]),
          breaks = varbreaks,
          col = "red", border = "orange",
-         main = "Near zero variance",
+         main = paste("Near zero variance; ", parameters$recountID, featureType, parameters$short_label),
          xlab = "log2(varPerGene)",
          ylab = "Number of genes",
          xlim = xlim)
   }
+
+  ## Plot variance histogram for genes kept after filtering
   hist(log2(varPerGene[keptGenes]),
        breaks = varbreaks,
        col = "darkgreen", border = "#00BB00",
-       main = "Kept genes",
+       main = paste("Kept genes; ", parameters$recountID, featureType, parameters$short_label),
        xlab = "log2(varPerGene)",
        ylab = "Number of genes",
        xlim = xlim)
@@ -113,7 +116,7 @@ plotFilterHistograms <- function(dataset,
   ## kept.
   hist(zerosPerGene,
        breaks = zerobreaks,
-       main = "Zeros per gene",
+       main = paste("Zeros per gene; ", parameters$recountID, featureType, parameters$short_label),
        xlab = "Number of zero values",
        ylab = "Number of genes",
        col = "#00BB00", border = "#00BB00")

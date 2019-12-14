@@ -9,7 +9,7 @@
 #' @export
 #'
 plot2PCs <- function(self,
-                     main = paste(sep = "", self$ID, "; PCs of ", self$dataType),
+                     main = paste0(self$ID, " ", self$parameters$feature, " ", self$parameters$short_label, "\nPCs of ", self$dataType),
                      col = self$sampleColors,
                      pcs = c(1,2),
                      ...) {

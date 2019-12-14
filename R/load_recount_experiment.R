@@ -149,7 +149,7 @@ loadRecountExperiment <- function(recountID,
 
   #### Extract a matrix with the counts per feature for each run ####
   if (verbose) {
-    message("\tExtracing table of counts per run")
+    message("\tExtracting table of counts per run")
   }
 
   ## Extract the count table
@@ -167,6 +167,7 @@ loadRecountExperiment <- function(recountID,
   # dim(phenoTable)
   # names(phenoTable)
   # View(phenoTable)
+  # class(phenoTable$characteristics)
   # table(phenoTable$characteristics)
 
   ## PATCH JvH 2019-01-03: I fix a bug with the phenotable characteristics in the transcript rse, which contains quotes
