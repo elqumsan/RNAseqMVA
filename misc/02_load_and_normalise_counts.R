@@ -115,10 +115,10 @@ for (recountID in selectedRecountIDs) {
   }
 }
 rownames(studyCasesStats) <- studyCasesStats$recountID
-studyCasesStats$pc.NA <- 100*studyCasesStats$genes.NA / studyCasesStats$genes.ori
-studyCasesStats$pc.zeroVar <- 100*studyCasesStats$genes.zeroVar / studyCasesStats$genes.ori
-studyCasesStats$pc.NZfilter <- 100*studyCasesStats$genes.NZfilter / studyCasesStats$genes.ori
-studyCasesStats$pc.kept <-  100*studyCasesStats$genes.filtered / studyCasesStats$genes.ori
+studyCasesStats$pc.NA <- 100*studyCasesStats[paste0(featureType, ".NA")] / studyCasesStats[paste0(featureType, ".ori")]
+studyCasesStats$pc.zeroVar <- 100*studyCasesStats[paste0(featureType, ".zeroVar")] / studyCasesStats[paste0(featureType, ".ori")]
+studyCasesStats$pc.NZfilter <- 100*studyCasesStats[paste0(featureType, ".NZfilter")] / studyCasesStats[paste0(featureType, ".ori")]
+studyCasesStats$pc.kept <-  100*studyCasesStats[paste0(featureType, ".filtered")] / studyCasesStats[paste0(featureType, ".ori")]
 
 ## DEBUG: print out stats about loaded datasets
 # library(knitr)
@@ -127,7 +127,7 @@ studyCasesStats$pc.kept <-  100*studyCasesStats$genes.filtered / studyCasesStats
 ## Export the studyCase statistics in a TSV file
 studyCaseStatsFile <- file.path(
   parameters$dir$tsv,
-  paste0(recountID, "_experiment_summaries.tsv"))
+  paste0(recountID, "_", parameters$feature, "_experiment_summaries.tsv"))
 write.table(x = t(studyCasesStats),
             file = studyCaseStatsFile,
             quote = FALSE, sep = "\t", row.names = TRUE, col.names = FALSE)
@@ -179,12 +179,14 @@ for (recountID in names(studyCases)) {
   classNameLen <- max(nchar(classNames))
   par(mar = c(4, 1 + classNameLen*0.3, 5, 1))
   # par("mar")
-  heights <- barplot(
-    sort(studyCases[[recountID]]$rawData$countsPerSample$samplesPerClass, decreasing = TRUE),
-    horiz = TRUE, las = 1, cex.names = 0.7, main = recountID,
-    xlab = "Samples per class", col = "white")
+  # heights <- barplot(
+  #   sort(studyCases[[recountID]]$rawData$countsPerSample$samplesPerClass, decreasing = TRUE),
+  #   horiz = TRUE, las = 1, cex.names = 0.7, main = recountID,
+  #   xlab = "Samples per class", col = "white")
   barplot(sort(studyCases[[recountID]]$datasetsForTest$filtered$samplesPerClass, decreasing = TRUE),
-          add = TRUE, horiz = TRUE, las = 1, cex.names = 0.7,
+#          add = TRUE,
+          horiz = TRUE, las = 1, cex.names = 0.7,
+#          main = "BOUM",
           main = paste0(recountID, " ", featureType, "\n", parameters$short_label),
           xlab = "Samples per class",
           col = studyCases[[recountID]]$datasetsForTest$filtered$classColors)
@@ -198,9 +200,12 @@ for (recountID in names(studyCases)) {
 #### Principal component plots ####
 message("\n\tExporting principal component plots")
 for (recountID in selectedRecountIDs) {
-  message("\tPC plots for study case ", recountID)
   studyCase <- studyCases[[recountID]]
   parameters <- studyCase$parameters
+  featureType <- parameters$feature
+  message("\tPC plots for study case ", recountID,
+          "\t", featureType,
+          "\t", studyCase$parameters$short_label )
 
   plotDir <- parameters$dir$PCviz
   dir.create(plotDir, recursive = TRUE, showWarnings = FALSE)
@@ -215,33 +220,37 @@ for (recountID in selectedRecountIDs) {
   for (datasetName in pcNames) {
     dataset <- studyCase$datasetsForTest[[datasetName]]
 
-    PCplot.file <- file.path(plotDir, paste0(recountID, "_", datasetName, "_variance.pdf"))
+    PCplot.file <- file.path(plotDir, paste0(recountID, "_", featureType, "_", datasetName, "_variance.pdf"))
     message("\t\tPC variance plot: ", PCplot.file)
     pdf(file = PCplot.file, width = 7, height = 5)
-    plot(dataset$prcomp, col = "#BBDDEE", xlab = "Components", main = paste(recountID, datasetName, "\nvariance barplot"))
+    plot(dataset$prcomp,
+         col = "#BBDDEE",
+         xlab = "Components",
+         main = paste(recountID, featureType, datasetName, "\nvariance barplot"))
     silence <- dev.off()
 
     ## Plot PC1 vs PC2
-    PCplot.file <- file.path(plotDir, paste0(recountID, "_", datasetName, "_PC1-PC2.pdf"))
+    PCplot.file <- file.path(plotDir, paste0(recountID, "_", featureType, "_", datasetName, "_PC1-PC2.pdf"))
     message("\t\tPC 1 vs 2 plot: ", PCplot.file)
     pdf(file = PCplot.file, width = 7, height = 9)
     plot2PCs(dataset, pcs = c(1,2))
     silence <- dev.off()
 
     ## Plot PC2 vs PC3
-    PCplot.file <- file.path(plotDir, paste0(recountID, "_", datasetName, "_PC3-PC4.pdf"))
+    PCplot.file <- file.path(plotDir, paste0(recountID, "_", featureType, "_", datasetName, "_PC3-PC4.pdf"))
     message("\t\tPC 3 vs 4 plot: ", PCplot.file)
     pdf(file = PCplot.file, width = 7, height = 9)
     plot2PCs(dataset, pcs = c(3,4))
     silence <- dev.off()
 
     ## Combine PC1-PC2 and PC3-PC4  plots in a single figure
-    PCplot.file <- file.path(plotDir, paste0(recountID, "_", datasetName, "_plots.pdf"))
+    PCplot.file <- file.path(plotDir, paste0(recountID, "_", featureType, "_", datasetName, "_plots.pdf"))
     message("\t\tPC plots: ", PCplot.file)
     pdf(file = PCplot.file, width = 10, height = 10)
     par(mfrow = c(2,2))
     plot(dataset$prcomp, col = "#BBDDEE",
-         xlab = "Components", main = paste(recountID, datasetName, "\nvariance barplot"))
+         xlab = "Components",
+         main = paste(recountID, featureType, "\n", datasetName, "variance"))
     plot2PCs(dataset, pcs = c(1,2))
     plot2PCs(dataset, pcs = c(3,4))
     plot2PCs(dataset, pcs = c(5,6))
@@ -255,6 +264,7 @@ for (recountID in selectedRecountIDs) {
 for (recountID in selectedRecountIDs) {
 
   parameters <- studyCases[[recountID]]$parameters
+  featureType <- parameters$feature
   #  plotFilterHistograms(filteredDataset) #,  plot.file = file.path(parameters$dir$NormalizationImpact, "var_per_gene_hist.pdf"))
   filtered <- studyCases[[recountID]]$datasetsForTest$filtered
 
@@ -268,34 +278,35 @@ for (recountID in selectedRecountIDs) {
 }
 
 #### Plot library sizes ####
-plot.file <- file.path(
-  project.parameters$global$dir$figures,  "filtered_ranked_libsizes.pdf")
-message("Plotting ranked library sizes\t", plot.file)
-pdf(file = plot.file, width = 7, height = 10)
-par(mfrow = c(4, 2))
 for (recountID in selectedRecountIDs) {
-
   parameters <- studyCases[[recountID]]$parameters
-  #  plotFilterHistograms(filteredDataset) #,  plot.file = file.path(parameters$dir$NormalizationImpact, "var_per_gene_hist.pdf"))
-  filtered <- studyCases[[recountID]]$datasetsForTest$filtered
+  featureType <- parameters$feature
+  plot.file <- file.path(
+    project.parameters$global$dir$figures,
+    paste0(recountID, "_", featureType, "_filtered_ranked_libsizes.pdf"))
+  message("Plotting ranked library sizes\t", plot.file)
+  for (recountID in selectedRecountIDs) {
 
-  ## Add the plot as panel to compare between study cases
-  LibsizeRankPlot(count.table = filtered$dataTable, plot.file = NULL)
+    parameters <- studyCases[[recountID]]$parameters
+    #  plotFilterHistograms(filteredDataset) #,  plot.file = file.path(parameters$dir$NormalizationImpact, "var_per_gene_hist.pdf"))
+    filtered <- studyCases[[recountID]]$datasetsForTest$filtered
 
-  ## Draw a separate plot in the study case-specific directory
-  LibsizeRankPlot(count.table = filtered$dataTable,
-                  plot.file = file.path(
-                    parameters$dir$NormalizationImpact,
-                    paste(sep = "_", parameters$recountID, "filtered_ranked_libsizes.pdf"))
-  )
-  # system(paste("open", plot.file))
+    ## Add the plot as panel to compare between study cases
+    LibsizeRankPlot(count.table = filtered$dataTable, plot.file = plot.file)
+
+    # ## Draw a separate plot in the study case-specific directory
+    # LibsizeRankPlot(count.table = filtered$dataTable,
+    #                 plot.file = file.path(
+    #                   parameters$dir$NormalizationImpact,
+    #                   paste0(parameters$recountID, "_", featureType, "_filtered_ranked_libsizes.pdf"))
+    # )
+    # system(paste("open", plot.file))
+  }
+  silence <- dev.off()
 }
-silence <- dev.off()
-
 #### Save a memory image that can be re-loaded in the future ####
-## to avoid re-redoall the normalisation computing
-
-## TO DO: SAVE MAGE OF studyCases RATHER THAN THE WHOLE MEMORY SPACE ##
+## This avoids to redo all the normalisation computing each time we want to run the subsequent analyses
+featureType <- parameters$feature
 if ((project.parameters$global$save.image) && (!project.parameters$global$reload)) {
   featureType <- project.parameters$global$feature
   studyCases.mem.image <- file.path(
