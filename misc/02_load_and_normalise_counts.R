@@ -232,15 +232,22 @@ for (recountID in selectedRecountIDs) {
     ## Plot PC1 vs PC2
     PCplot.file <- file.path(plotDir, paste0(recountID, "_", featureType, "_", datasetName, "_PC1-PC2.pdf"))
     message("\t\tPC 1 vs 2 plot: ", PCplot.file)
-    pdf(file = PCplot.file, width = 7, height = 9)
+    pdf(file = PCplot.file, width = 7, height = 7)
     plot2PCs(dataset, pcs = c(1,2))
     silence <- dev.off()
 
-    ## Plot PC2 vs PC3
+    ## Plot PC3 vs PC4
     PCplot.file <- file.path(plotDir, paste0(recountID, "_", featureType, "_", datasetName, "_PC3-PC4.pdf"))
     message("\t\tPC 3 vs 4 plot: ", PCplot.file)
-    pdf(file = PCplot.file, width = 7, height = 9)
+    pdf(file = PCplot.file, width = 7, height = 7)
     plot2PCs(dataset, pcs = c(3,4))
+    silence <- dev.off()
+
+    ## Plot PC5 vs PC6
+    PCplot.file <- file.path(plotDir, paste0(recountID, "_", featureType, "_", datasetName, "_PC5-PC6.pdf"))
+    message("\t\tPC 5 vs 6 plot: ", PCplot.file)
+    pdf(file = PCplot.file, width = 7, height = 7)
+    plot2PCs(dataset, pcs = c(5,6))
     silence <- dev.off()
 
     ## Combine PC1-PC2 and PC3-PC4  plots in a single figure
