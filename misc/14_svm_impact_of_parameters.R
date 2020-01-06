@@ -93,16 +93,29 @@ for (recountID in selectedRecountIDs) {
                           replacement = "",
                           x = experimentLabels)
 
+  # ## TEMPORARY FIX FOR THE ORDER OF THE EXPERIMENTS
+  # kernel <- sub(pattern = "_.*", replacement = "", x = experimentLabels, perl = TRUE)
+  # dataType <- sub(pattern = "[^_]+_", replacement = "", x = experimentLabels, perl = TRUE)
+  # #  nonPermuted <- grep(pattern = "permLabels", x = experimentLabels, invert = TRUE)
+  # #  experimentOrder <- order(dataType[nonPermuted])
+  # experimentOrder <- order(dataType)
+
+  ## Replace underscore by space in the labels
+  experimentLabels <- sub(pattern = "_", replacement = " ", x = experimentLabels)
+
   ErrorRateBoxPlot(experimentList = train.test.results.all.variables.svm,
                    classifier = classifier,
                    horizontal = TRUE,
                    experimentLabels = experimentLabels,
                    boxplotFile = file.path(
                      outParam$resultDir, "figures",
-                     paste(sep = "", outParam$filePrefix, ".pdf")),
+                     paste0(parameters$recountID,
+                            "_", parameters$feature,
+                            "_svm_kernel_comparison",
+                            ".pdf")),
                    main = paste(sep = "",
-                                parameters$short_label, " (", parameters$recountID, ")",
-                                "; ", classifier, "; ",
+                                parameters$short_label, " (", parameters$recountID, ") ",
+                                parameters$feature,
                                 "\nImpact of SVM kernel; ",
                                 project.parameters$global$iterations, " iterations")
   )
