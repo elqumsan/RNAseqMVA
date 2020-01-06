@@ -29,11 +29,12 @@ START_DATE=`date +%Y-%m-%d_%H%M%S`
 ## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ## Run agiven analysis
 ##
-## Note: to run all job, it is recommended to use job arrays
+## Note: to run all jobz, it is recommended to use job arrays
 ## (see script srun_jobarray.sh)
 
+
 ## Parameters
-RECOUNT_ID=SRP035988
+RECOUNT_ID=SRP066834
 FEATURE=transcript
 PREFIX=${RECOUNT_ID}_${FEATURE}_${START_DATE}
 
