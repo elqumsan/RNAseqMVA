@@ -158,6 +158,7 @@ loadRecountExperiment <- function(recountID,
     message("\tLoaded counts per run: ", nrow(dataTable), " features x ", ncol(dataTable), " runs.")
   }
 
+
   #### Extract pheno table ####
   ## The pheno table contains information about the columns of the RangedSeummaryExperiment.
   if (verbose) {
@@ -184,6 +185,9 @@ loadRecountExperiment <- function(recountID,
   # View(phenoTable2)
   # names(phenoTable2)
 
+
+  #### Instantiate a DataTableWithClasses object with the counts and pheno data ###
+  ## This object will be further used to test classifiers.
   countsPerRun <- DataTableWithClasses(dataTable = dataTable,
                                        phenoTable = phenoTable,
                                        dataType = "raw_counts_per_run",
