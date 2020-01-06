@@ -25,7 +25,7 @@ global: ## Global parameters are those who are the samee across all study cases
     ## Filtering options
     na.rm: TRUE          # Discard features with NA values
     null.variance: TRUE # Discard features with null variance
-    nearZeroVarFilter: FALSE # near-zeroa variance filtering. I disactivate this option because it is particularly bad for single-cell RNA-seq, and it is not specially interesting from bulk RNA-seq
+    nearZeroVarFilter: FALSE # near-zero variance filtering. I disactivate this option because it is particularly bad for single-cell RNA-seq, and it is not specially interesting from bulk RNA-seq
     minSamplesPerClass: 15 ## minmsal number of samples per clas (class filtering)
 
   standardization:
