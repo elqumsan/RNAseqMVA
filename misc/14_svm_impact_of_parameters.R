@@ -37,15 +37,13 @@ for (recountID in selectedRecountIDs) {
   permute <- FALSE ## Default for quick test without iterating over all cases
   for (permute in parameters$permute) {
 
-    #### Loop over kernels ####
-    svm.kernel <- "linear" ## Default kernel value
-    for (svm.kernel in parameters$svm$kernel_values) {
+    #### Loop over data types ####
+    data.type <- "TMM_log2" ## For test
+    for (data.type in parameters$data.types.to.test) {
 
-
-      #### Loop over data types ####
-      data.type <- "TMM_log2" ## For test
-
-      for (data.type in parameters$data.types.to.test) {
+      #### Loop over kernels ####
+      svm.kernel <- "linear" ## Default kernel value
+      for (svm.kernel in parameters$svm$kernel_values) {
 
         ## Verbosity
         message.with.time("\tRunning train/test with all variables",
@@ -89,16 +87,23 @@ for (recountID in selectedRecountIDs) {
   #### Plotting the Misclassification Error rate using all diverse data type all variables with KNN classifier? ####
   outParam <- outputParameters(dataset, classifier = "svm kernel comparison", permute = FALSE, createDir = TRUE)
   dir.create(path = file.path(outParam$resultDir, "figures"), showWarnings = FALSE, recursive = FALSE)
+
+  experimentLabels <- names(train.test.results.all.variables.svm)
+  experimentLabels <- sub(pattern = paste0(parameters$recountID, "_", parameters$feature, "_svm_"),
+                          replacement = "",
+                          x = experimentLabels)
+
   ErrorRateBoxPlot(experimentList = train.test.results.all.variables.svm,
                    classifier = classifier,
                    horizontal = TRUE,
+                   experimentLabels = experimentLabels,
                    boxplotFile = file.path(
                      outParam$resultDir, "figures",
                      paste(sep = "", outParam$filePrefix, ".pdf")),
                    main = paste(sep = "",
-                                parameters$recountID,
+                                parameters$short_label, " (", parameters$recountID, ")",
                                 "; ", classifier, "; ",
-                                "\nall variables; ",
+                                "\nImpact of SVM kernel; ",
                                 project.parameters$global$iterations, " iterations")
   )
   train.test.results.all.variables.per.svm[[recountID]] <- train.test.results.all.variables.svm
