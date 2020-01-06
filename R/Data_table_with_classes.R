@@ -153,14 +153,14 @@ buildAttributes.DataTableWithClasses <- function(self) {
   ## Check rows of pheno table
   if (nrow(self$phenoTable) != ncol(self$dataTable)) {
     stop("DataTableWithClasses(): inconsistent dimensions of phenoTable (",
-         nrow(phenoTable), " rows) and dataTable (",
-         ncol(dataTable), " columns).")
+         nrow(self$phenoTable), " rows) and dataTable (",
+         ncol(self$dataTable), " columns).")
   }
 
   ## Check if the pheno table contains a column corresponding to the indication
   if (sum(!self$classColumn %in% names(self$phenoTable)) > 1) {
     stop("\n\tMissing column(s) in the pheno table ",
-         paste(collapse = ", ", setdiff(classColumn, names(phenoTable))),
+         paste(collapse = ", ", setdiff(classColumn, names(self$phenoTable))),
          "\n\tColumns found in the pheno table: ",
          paste(collapse = ", ", names(self$phenoTable)))
   }
@@ -181,7 +181,7 @@ buildAttributes.DataTableWithClasses <- function(self) {
     missingColumns <- setdiff(self$classColumn, names(self$phenoTable))
     if (length(missingColumns > 0)) {
       stop("missing column(s) in the pheno table: ", paste(collapse = ", ", missingColumns),
-           "\npheno table columns: ", paste(collapse = "\n\t", names(phenoTable)))
+           "\npheno table columns: ", paste(collapse = "\n\t", names(self$phenoTable)))
     }
   }
 
