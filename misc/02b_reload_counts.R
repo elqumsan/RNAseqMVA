@@ -10,7 +10,6 @@ studyCases.mem.image <- file.path(
     "_loaded_studyCases.Rdata"))
 
 ## Reload previously stored memory image
-
 message.with.time("Reloading study cases from previously stored memory image",
         "\n\t", studyCases.mem.image)
 system.time(load(studyCases.mem.image))
