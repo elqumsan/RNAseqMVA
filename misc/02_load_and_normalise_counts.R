@@ -325,8 +325,7 @@ if ((project.parameters$global$save.image) && (!project.parameters$global$reload
     paste0(
       paste(collapse = "-", selectedRecountIDs),
       "_", featureType,
-      "_loaded_studyCases",
-      "_", Sys.Date(), ".Rdata"))
+      "_loaded_studyCases.Rdata"))
 
   dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
   message.with.time("Saving memory image after loading: ", studyCases.mem.image)
