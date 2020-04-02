@@ -11,7 +11,7 @@ image.file <- file.path(
   paste(sep = "", "classif_eval_nb-of-PCs_",
         paste(collapse = "-", selectedRecountIDs),
         "_", featureType,
-        "_", Sys.Date(), ".Rdata"))
+	".Rdata"))
 
 
 
@@ -231,7 +231,7 @@ save.result.file <- file.path(
     paste(collapse = "-", selectedRecountIDs),
     "_", featureType,
     "_feature_selection_first_PCs",
-    "_", Sys.Date(), "_results.Rdata"))
+    "_results.Rdata"))
 message.with.time(
   "Saving results after eval of feature selection with first PCs: ",
   save.result.file)
@@ -245,7 +245,7 @@ if (project.parameters$global$save.image) {
       paste(collapse = "-", selectedRecountIDs),
       "_", featureType,
       "_", "feature_selection_first_PCs",
-      "_", Sys.Date(), "_memory-image.Rdata"))
+      "_memory-image.Rdata"))
   message.with.time("Saving memory image after eval of feature selection with first PCs: ", memory.image.file)
   save.image(file = memory.image.file)
 }

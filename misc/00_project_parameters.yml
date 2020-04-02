@@ -36,8 +36,8 @@ global: ## Global parameters are those who are the samee across all study cases
     epsilon: 0.1    ## For log2 transformation
 
   perm.prefix: "permLabels"
-  jobs: 50 ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
-  iterations: 50 ## Number of iterations for the classifiers
+  jobs: 5 ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
+  iterations: 10 ## Number of iterations for the classifiers
 
   reload.parameters: FALSE  ## Reload parameters after having loaded memory image, in order to take into account the new parameter values
   reload: TRUE ## If TRUE, reload previously stored memory image to shortcut the download, loading and normalisation of the raw counts

@@ -58,7 +58,7 @@ for (datasetName in log2countNames) {
   silence <- dev.off()
 }
 
-## Save the study case object
+#### Save the study case object ####
 if (project.parameters$global$save.image) {
   studyCase <- studyCases[[recountID]]
   featureType <- studyCase$parameters$feature
@@ -68,7 +68,7 @@ if (project.parameters$global$save.image) {
       recountID,
       "_", featureType,
       "_loaded_studyCase",
-      "_", Sys.Date(), ".Rdata"))
+      ".Rdata"))
 
   message("Saving study case\t", recountID, "\t", studyCaseFile)
   save(studyCase, file = studyCaseFile)

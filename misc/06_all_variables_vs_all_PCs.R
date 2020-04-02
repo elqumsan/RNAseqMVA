@@ -150,7 +150,7 @@ save.result.file <- file.path(
     "_", project.parameters$global$feature,
     "_normalisation_impact",
     "_", paste(collapse = "-", project.parameters$global$classifiers),
-    "_", Sys.Date(), "_results.Rdata"))
+    "_results.Rdata"))
 message.with.time(
   "Saving results after eval of normalisation impact: ",
   save.result.file)
@@ -226,7 +226,7 @@ if (project.parameters$global$save.image) {
       "_", project.parameters$global$feature,
       "_normalisation_impact",
       "_", paste(collapse = "-", project.parameters$global$classifiers),
-      "_", Sys.Date(), "_memory-image.Rdata")
+      "_memory-image.Rdata")
   )
 
   dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
