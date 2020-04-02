@@ -4,85 +4,90 @@
 
 message("Loading study cases")
 
+
+#### Check the recountID ####
 studyCases <- list() ## a list containing all the loaded datasets + their pre-processed data
 #recountID <- "SRP057196"
 # recountID <- "SRP056295"
 # recountID <- "SRP042620" ## For quick test and debugging
 recountID <- selectedRecountIDs[1]
-message("Loading ", length(selectedRecountIDs), " study case(s)")
 
-for (recountID in selectedRecountIDs) {
+if (length(selectedRecountIDs) > 1) {
+  stop("Multiple study case analysis is not supported, please specify a single study case")
+}
 
-  message.with.time("Building StudyCase for recountID\t", recountID, "\n\tfeature type: ", project.parameters$global$feature)
+message.with.time("Building StudyCase for recountID\t", recountID, "\n\tfeature type: ", project.parameters$global$feature)
 
-  #### Specify generic and recountID-specific parameters ####
-  parameters <- initRecountID(recountID, project.parameters)
-  # View(parameters$dir)
+#### Specify generic and recountID-specific parameters ####
+parameters <- initRecountID(recountID, project.parameters)
+# View(parameters$dir)
 
-  # Main directory should be adapted to the user's configuration
-  #  dir.main <- project.parameters$global$dir$main
+# Main directory should be adapted to the user's configuration
+#  dir.main <- project.parameters$global$dir$main
 
-  # View(parameters)
-  studyCases[[recountID]] <- StudyCase(recountID = recountID, parameters = parameters)
+# View(parameters)
+
+#### Load study cases ####
+studyCases[[recountID]] <- StudyCase(recountID = recountID, parameters = parameters)
 
 
-  #### Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files ###
-  if (project.parameters$global$export.tables) {
-    exportTables(studyCases[[recountID]])
-  }
+#### Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files ###
+if (project.parameters$global$export.tables) {
+  exportTables(studyCases[[recountID]])
+}
 
-  ## Plot histograms of log2 normalized counts
-  datasetNames <- names(studyCases[[recountID]]$datasetsForTest)
-  log2countNames <- grep(pattern = "log2$", datasetNames, value = TRUE)
-  shortLabel <- parameters$short_label
-  for (datasetName in log2countNames) {
-    plot.file <- file.path(parameters$dir$NormalizationImpact,
-                           paste0(recountID, "_", datasetName, "_hist", ".pdf"))
-    message("\t", datasetName, " histogram", "\t", plot.file)
-    pdf(plot.file, width = 7, height = 5)
-    par.ori <- par(no.readonly = TRUE)
-    par(mar = c(5.1, 6.1, 4.1, 1))
-    hist(unlist(studyCases[[recountID]]$datasetsForTest[[datasetName]]$dataTable), breaks = 100,
-         col = "grey",
-         main = paste0(datasetName, " count distribution",
-                       "\n", shortLabel, "; ", recountID),
-         las = 1,
-         xlab = "log2(norm counts)",
-         ylab = NA)
-    par <- par.ori
-    silence <- dev.off()
-  }
+#### Plot histograms of log2 normalized counts ####
+datasetNames <- names(studyCases[[recountID]]$datasetsForTest)
+log2countNames <- grep(pattern = "log2$", datasetNames, value = TRUE)
+shortLabel <- parameters$short_label
+for (datasetName in log2countNames) {
+  plot.file <- file.path(parameters$dir$NormalizationImpact,
+                         paste0(recountID, "_", datasetName, "_hist", ".pdf"))
+  message("\t", datasetName, " histogram", "\t", plot.file)
+  pdf(plot.file, width = 7, height = 5)
+  par.ori <- par(no.readonly = TRUE)
+  par(mar = c(5.1, 6.1, 4.1, 1))
+  hist(unlist(studyCases[[recountID]]$datasetsForTest[[datasetName]]$dataTable), breaks = 100,
+       col = "grey",
+       main = paste0(datasetName, " count distribution",
+                     "\n", shortLabel, "; ", recountID),
+       las = 1,
+       xlab = "log2(norm counts)",
+       ylab = NA)
+  par <- par.ori
+  silence <- dev.off()
+}
 
-  ## Save the study case object
-  if (project.parameters$global$save.image) {
-    studyCase <- studyCases[[recountID]]
-    featureType <- studyCase$parameters$feature
-    studyCaseFile <-  file.path(
+## Save the study case object
+if (project.parameters$global$save.image) {
+  studyCase <- studyCases[[recountID]]
+  featureType <- studyCase$parameters$feature
+  studyCaseFile <-  file.path(
+    project.parameters$global$dir$memoryImages,
+    paste0(
+      recountID,
+      "_", featureType,
+      "_loaded_studyCase",
+      "_", Sys.Date(), ".Rdata"))
+
+  message("Saving study case\t", recountID, "\t", studyCaseFile)
+  save(studyCase, file = studyCaseFile)
+
+  for (datasetName in names(studyCase$datasetsForTest)) {
+    dataset <- studyCase$datasetsForTest[[datasetName]]
+    featureType <- dataset$parameters$feature
+    datasetFile <-  file.path(
       project.parameters$global$dir$memoryImages,
-      paste0(
-        recountID,
-        "_", featureType,
-        "_loaded_studyCase",
-        "_", Sys.Date(), ".Rdata"))
+      paste0(recountID, "_", featureType, "_loaded-dataset_", datasetName, ".Rdata"))
+    message("Saving dataset\t", recountID, "\t", datasetName, "\t", datasetFile)
+    save(dataset, file = datasetFile)
 
-    message("Saving study case\t", recountID, "\t", studyCaseFile)
-    save(studyCase, file = studyCaseFile)
-
-    for (datasetName in names(studyCase$datasetsForTest)) {
-      dataset <- studyCase$datasetsForTest[[datasetName]]
-      featureType <- dataset$parameters$feature
-      datasetFile <-  file.path(
-        project.parameters$global$dir$memoryImages,
-        paste0(recountID, "_", featureType, "_loaded-dataset_", datasetName, ".Rdata"))
-      message("Saving dataset\t", recountID, "\t", datasetName, "\t", datasetFile)
-      save(dataset, file = datasetFile)
-
-    }
-    rm(dataset)
-    rm(studyCase)
   }
+  rm(dataset)
+  rm(studyCase)
+}
 
-} # end loop over recountIDs
+
 message("Finished loading ", length(studyCases), " study cases")
 
 
