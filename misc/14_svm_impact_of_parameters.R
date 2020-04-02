@@ -3,125 +3,119 @@
 ## List to store the results for all recountIDs
 train.test.results.all.variables.per.svm <- list()
 
-#### Loop over recountIDs ####
+if (length(studyCases) > 1) {
+  ## The previous loop over recountIDs is not valid anymore
+  stop("Multiple study cases cannot yet be analysed in the same run. \nPlease specify a single value for selected_recount_ids")
+}
 recountID <- names(studyCases)[1]
-for (recountID in selectedRecountIDs) {
-  message.with.time("Assessing kernel impact on SVM performances\t", recountID)
 
-  ## Initialise a list to store all results for the current recountID
-  train.test.results.all.variables.svm <- list()
+message.with.time("Assessing kernel impact on SVM performances\t", recountID)
 
-  ## Get the recountID-specific parameters from the loaded object
-  parameters <- studyCases[[recountID]]$parameters
+## Initialise a list to store all results for the current recountID
+train.test.results.all.variables.svm <- list()
 
-  #### Check the data types to analyse ####
-  ## If not specified in config file, take all datasetsForTest
-  if (is.null(parameters$data.types.to.test)) {
-    parameters$data.types.to.test <- names(studyCase$datasetsForTest)
+## Get the recountID-specific parameters from the loaded object
+parameters <- studyCases[[recountID]]$parameters
 
-    ## Temporary (2018-11-01): discard edgeR and DESeq2-sorted datasets.
-    ## Actually these are not data types, variable ordering should be treated as a separate variable, not as a separate dataset.
-    parameters$data.types.to.test <- grep(pattern = "DESeq2", x = parameters$data.types.to.test, invert = TRUE, value = TRUE)
-    parameters$data.types.to.test <- grep(pattern = "edgeR", x = parameters$data.types.to.test, invert = TRUE, value = TRUE)
+#### Check the data types to analyse ####
+## If not specified in config file, take all datasetsForTest
+if (is.null(parameters$data.types.to.test)) {
+  parameters$data.types.to.test <- names(studyCase$datasetsForTest)
 
-    ## Update global parameters (required for the comparative plots)
-    project.parameters$global$data.types.to.test <- parameters$data.types.to.test
+  ## Temporary (2018-11-01): discard edgeR and DESeq2-sorted datasets.
+  ## Actually these are not data types, variable ordering should be treated as a separate variable, not as a separate dataset.
+  parameters$data.types.to.test <- grep(pattern = "DESeq2", x = parameters$data.types.to.test, invert = TRUE, value = TRUE)
+  parameters$data.types.to.test <- grep(pattern = "edgeR", x = parameters$data.types.to.test, invert = TRUE, value = TRUE)
 
-  }
+  ## Update global parameters (required for the comparative plots)
+  project.parameters$global$data.types.to.test <- parameters$data.types.to.test
+
+}
 
 
-  ## Set the parameters
-  classifier <- "svm" ## Make sure that the classiifer is SVM for this script
+## Set the parameters
+classifier <- "svm" ## Make sure that the classiifer is SVM for this script
 
-  #### Loop over label permutation options ####
-  permute <- FALSE ## Default for quick test without iterating over all cases
-  for (permute in parameters$permute) {
+#### Loop over label permutation options ####
+permute <- FALSE ## Default for quick test without iterating over all cases
+for (permute in parameters$permute) {
 
-    #### Loop over data types ####
-    data.type <- "TMM_log2" ## For test
-    for (data.type in parameters$data.types.to.test) {
+  #### Loop over data types ####
+  data.type <- "TMM_log2" ## For test
+  for (data.type in parameters$data.types.to.test) {
 
-      #### Loop over kernels ####
-      svm.kernel <- "linear" ## Default kernel value
-      for (svm.kernel in parameters$svm$kernel_values) {
+    #### Loop over kernels ####
+    svm.kernel <- "linear" ## Default kernel value
+    for (svm.kernel in parameters$svm$kernel_values) {
 
-        ## Verbosity
-        message.with.time("\tRunning train/test with all variables",
-                          "\n\trecountID: ", recountID,
-                          "\n\tClassifier: ", classifier,
-                          "\n\tpermuted class labels: ", permute,
-                          "\n\tData type: ", data.type)
-        dataset <- studyCases[[recountID]]$datasetsForTest[[data.type]]
-        dataset$parameters$svm$kernel <- svm.kernel
-        # class(dataset)
-        # summary(dataset)
+      ## Verbosity
+      message.with.time("\tRunning train/test with all variables",
+                        "\n\trecountID: ", recountID,
+                        "\n\tClassifier: ", classifier,
+                        "\n\tpermuted class labels: ", permute,
+                        "\n\tData type: ", data.type)
+      dataset <- studyCases[[recountID]]$datasetsForTest[[data.type]]
+      dataset$parameters$svm$kernel <- svm.kernel
+      # class(dataset)
+      # summary(dataset)
 
-        # Check if the dataset belongs to the class DataTableWithTrainTestSets
-        if (!is(object = dataset, class2 = "DataTableWithTrainTestSets")) {
+      # Check if the dataset belongs to the class DataTableWithTrainTestSets
+      if (!is(object = dataset, class2 = "DataTableWithTrainTestSets")) {
 
-          ## Check if the train and test indices  were properly defined
-          if (is.null(dataset$trainTestProperties$trainIndices) || is.null(dataset$trainTestProperties$testIndices)) {
-            stop("you don't have train/test sets to play with classifier ")
-          }
+        ## Check if the train and test indices  were properly defined
+        if (is.null(dataset$trainTestProperties$trainIndices) || is.null(dataset$trainTestProperties$testIndices)) {
+          stop("you don't have train/test sets to play with classifier ")
         }
+      }
 
-        ## Define output parameters
-        outParam <- outputParameters(dataset, classifier, permute, createDir = TRUE)
-        exp.prefix <- outParam$filePrefix
-        ## exp.prefix <- paste0(recountID, "_", data.type, "_svm_kernel_", svm.kernel)
+      ## Define output parameters
+      outParam <- outputParameters(dataset, classifier, permute, createDir = TRUE)
+      exp.prefix <- outParam$filePrefix
+      ## exp.prefix <- paste0(recountID, "_", data.type, "_svm_kernel_", svm.kernel)
 
-        #### Run a training/testing experiment ####
-        train.test.results.all.variables.svm[[exp.prefix]] <-
-          IterateTrainingTesting(
-            dataset,
-            classifier = classifier,
-            file.prefix = outParam$filePrefix,
-            permute = permute)
+      #### Run a training/testing experiment ####
+      train.test.results.all.variables.svm[[exp.prefix]] <-
+        IterateTrainingTesting(
+          dataset,
+          classifier = classifier,
+          file.prefix = outParam$filePrefix,
+          permute = permute)
 
-      } # End iterations over dataset
+    } # End iterations over dataset
 
-    } # End iterations over permutation
+  } # End iterations over permutation
 
-  } # end iteration over svm_kernels
+} # end iteration over svm_kernels
 
-  #### Plotting the Misclassification Error rate using all diverse data type all variables with KNN classifier? ####
-  outParam <- outputParameters(dataset, classifier = "svm kernel comparison", permute = FALSE, createDir = TRUE)
-  dir.create(path = file.path(outParam$resultDir, "figures"), showWarnings = FALSE, recursive = FALSE)
+#### Plotting the Misclassification Error rate using all diverse data type all variables with KNN classifier? ####
+outParam <- outputParameters(dataset, classifier = "svm kernel comparison", permute = FALSE, createDir = TRUE)
+dir.create(path = file.path(outParam$resultDir, "figures"), showWarnings = FALSE, recursive = FALSE)
 
-  experimentLabels <- names(train.test.results.all.variables.svm)
-  experimentLabels <- sub(pattern = paste0(parameters$recountID, "_", parameters$feature, "_svm_"),
-                          replacement = "",
-                          x = experimentLabels)
+## Suppress recount ID and feature type from the labels, since they are always the same for one experiment
+experimentLabels <- names(train.test.results.all.variables.svm)
+experimentLabels <- sub(pattern = paste0(parameters$recountID, "_", parameters$feature, "_svm_"),
+                        replacement = "",
+                        x = experimentLabels)
+## Replace underscore by space in the labels
+experimentLabels <- sub(pattern = "_", replacement = " ", x = experimentLabels)
 
-  # ## TEMPORARY FIX FOR THE ORDER OF THE EXPERIMENTS
-  # kernel <- sub(pattern = "_.*", replacement = "", x = experimentLabels, perl = TRUE)
-  # dataType <- sub(pattern = "[^_]+_", replacement = "", x = experimentLabels, perl = TRUE)
-  # #  nonPermuted <- grep(pattern = "permLabels", x = experimentLabels, invert = TRUE)
-  # #  experimentOrder <- order(dataType[nonPermuted])
-  # experimentOrder <- order(dataType)
-
-  ## Replace underscore by space in the labels
-  experimentLabels <- sub(pattern = "_", replacement = " ", x = experimentLabels)
-
-  ErrorRateBoxPlot(experimentList = train.test.results.all.variables.svm,
-                   classifier = classifier,
-                   horizontal = TRUE,
-                   experimentLabels = experimentLabels,
-                   boxplotFile = file.path(
-                     outParam$resultDir, "figures",
-                     paste0(parameters$recountID,
-                            "_", parameters$feature,
-                            "_svm_kernel_comparison",
-                            ".pdf")),
-                   main = paste(sep = "",
-                                parameters$short_label, " (", parameters$recountID, ") ",
-                                parameters$feature,
-                                "\nImpact of SVM kernel; ",
-                                project.parameters$global$iterations, " iterations")
-  )
-  train.test.results.all.variables.per.svm[[recountID]] <- train.test.results.all.variables.svm
-
-} # end loop over recountIDs
+ErrorRateBoxPlot(experimentList = train.test.results.all.variables.svm,
+                 classifier = classifier,
+                 horizontal = TRUE,
+                 experimentLabels = experimentLabels,
+                 boxplotFile = file.path(
+                   outParam$resultDir, "figures",
+                   paste0(parameters$recountID,
+                          "_", parameters$feature,
+                          "_svm_kernel_comparison",
+                          ".pdf")),
+                 main = paste0(
+                   parameters$short_label, " (", parameters$recountID, ") ",
+                   parameters$feature,
+                   "\nImpact of SVM kernel; ",
+                   project.parameters$global$iterations, " iterations")
+)
+train.test.results.all.variables.per.svm[[recountID]] <- train.test.results.all.variables.svm
 
 
 ## Save the results in a separate object, that can be reloaded later
@@ -131,8 +125,8 @@ save.result.file <- file.path(
   paste0(
     paste(collapse = "-", selectedRecountIDs),
     "_", featureType,
-    "_svm_impact_of_parameters_result",
-    "_", Sys.Date(), "_results.Rdata"))
+    "_svm_impact_of_kernel",
+    "_results.Rdata"))
 dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
 message.with.time("Saving results  after eval of SVM kernels: ", save.result.file)
 save(train.test.results.all.variables.per.svm, file = save.result.file)
@@ -144,8 +138,8 @@ if (project.parameters$global$save.image) {
     paste0(
       paste(collapse = "-", selectedRecountIDs),
       "_", featureType,
-      "_", "svm_impact_of_parameters_result",
-      "_", Sys.Date(), "_memory-image.Rdata"))
+      "_", "svm_impact_of_kernel",
+      "_memory-image.Rdata"))
   message.with.time("Saving memory image after eval of SVM kernels: ", memory.image.file)
   save.image(file = memory.image.file)
 }
