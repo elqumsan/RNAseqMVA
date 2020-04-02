@@ -16,7 +16,8 @@
 outputParameters <- function(dataset,
                              classifier,
                              permute = FALSE,
-                             createDir = TRUE) {
+                             createDir = TRUE,
+                             knn.k = NULL) {
 
   # ## Check the class of hte dataset
   # if (!is(object = dataset, class2 = "DataTableWithTrainTestSets")) {
@@ -24,9 +25,9 @@ outputParameters <- function(dataset,
   # }
 
   ##  Verbosity
-  message("\tDefining file Prefix for dataset ", dataset$ID,
-          "; data type: ", dataset$dataType,
-          "; classifier: ", classifier)
+  # message("\tDefining file Prefix for dataset ", dataset$ID,
+  #         "; data type: ", dataset$dataType,
+  #         "; classifier: ", classifier)
 
   ## Define the piece of prefix and output dir that indicates the classifier
 
@@ -37,12 +38,13 @@ outputParameters <- function(dataset,
       dataset$parameters$svm$kernel = "linear"
     }
     classifierPrefix <- paste(sep = "", "svm_", dataset$parameters$svm$kernel)
+
   } else if (classifier == "knn") {
     ## For KNN, the prefix includes the value of the k parameter
-    if (is.null(dataset$parameters$knn$k)) {
-      dataset$parameters$knn$k
+    if (is.null(knn.k)) {
+      knn.k <- dataset$parameters$knn$k
     }
-    classifierPrefix <- paste(sep = "", "knn_k", dataset$parameters$knn$k)
+    classifierPrefix <- paste(sep = "", "knn_k", knn.k)
 
   } else {
     ## For all other types of calssifer, the variable
@@ -57,7 +59,9 @@ outputParameters <- function(dataset,
                          classifier)
   resultDir <- gsub(pattern = " ", replacement = "_", x = resultDir) ## Avoid spaces in file names
 
-  dir.create(resultDir, showWarnings = FALSE, recursive = TRUE)
+  if (createDir) {
+    dir.create(resultDir, showWarnings = FALSE, recursive = TRUE)
+  }
 
   ## Define the path to the tables TSV result directory
   resultDirTablesTSV <- file.path(dataset$parameters$dir$results,
@@ -67,7 +71,10 @@ outputParameters <- function(dataset,
   dir.create(resultDirTablesTSV, showWarnings = FALSE, recursive = TRUE)
 
   ## Define file prefix
-  filePrefix <- paste(sep = "_", dataset$ID, dataset$parameters$feature, classifierPrefix,  dataset$dataType)
+  filePrefix <- paste(sep = "_", dataset$ID,
+                      dataset$parameters$feature,
+                      classifierPrefix,
+                      dataset$dataType)
   if (permute) {
     filePrefix <- paste(sep = "_", filePrefix, dataset$parameters$perm.prefix)
   }
@@ -80,10 +87,10 @@ outputParameters <- function(dataset,
   }
   figLabel <- gsub(pattern = "_", replacement = " ", x = figLabel) ## For figure labels spaces are more readable than underscores
 
-  message("\t\tfilePrefix\t", filePrefix)
-  message("\t\tresultDir\t", resultDir)
-  message("\t\tresultDirTablesTSV\t", resultDirTablesTSV)
-  message("\t\tfigLabel\t", figLabel)
+  # message("\t\tfilePrefix\t", filePrefix)
+  # message("\t\tresultDir\t", resultDir)
+  # message("\t\tresultDirTablesTSV\t", resultDirTablesTSV)
+  # message("\t\tfigLabel\t", figLabel)
 
 
   return(list("resultDir" = resultDir,
