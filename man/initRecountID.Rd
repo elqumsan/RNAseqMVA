@@ -4,7 +4,7 @@
 \alias{initRecountID}
 \title{Intialise parameters and directories for a give recount ID.}
 \usage{
-initRecountID(recountID, project.parameters)
+initRecountID(recountID, project.parameterseters)
 }
 \arguments{
 \item{recountID}{must be a valid ID row Recount2 database (SRP...)}

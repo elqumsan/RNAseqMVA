@@ -325,7 +325,7 @@ cd /shared/projects/rnaseqmva/RNAseqMVA
 ## Initiate the environment
 ## This is necessary for the sbatch command !
 module load conda
-conda init bash
+# conda init bash
 conda activate rnaseqmva
 
 
@@ -404,7 +404,7 @@ cd /shared/projects/rnaseqmva/RNAseqMVA
 ## Initiate the environment
 ## This is necessary for the sbatch command !
 module load conda
-conda init bash
+# conda init bash
 conda activate rnaseqmva
 
 
