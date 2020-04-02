@@ -7,6 +7,11 @@ source('misc/01a_load_libraries.R')
 message.with.time("Loading parameters")
 source('misc/01b_load_parameters.R')
 
+# ## Quick patch to regenerate the figures for KNN impact of k
+# source('misc/patch.R')
+# stop("JOB DONE")
+
+
 message.with.time("Initializing parallel computing")
 source('misc/01c_init_parallel_computing.R')
 
@@ -30,32 +35,32 @@ if (project.parameters$global$reload.parameters) {
 
 ## Ensure consistency between iterations and those attached to the study case datasets.
 ## If they differ, the training / testing sets must be regenerated.
-for (studyCase in studyCases) {
-  if (studyCase$parameters$iterations < project.parameters$global$iterations) {
-    message(studyCase$ID,  "\tResetting the number of iterations from ",
-            studyCase$parameters$iterations, " to ", project.parameters$global$iterations)
+if (studyCase$parameters$iterations < project.parameters$global$iterations) {
+  message(studyCase$ID,  "\tResetting the number of iterations from ",
+          studyCase$parameters$iterations, " to ", project.parameters$global$iterations)
 
-    ## Set the new number of iterations to the studyCase and to each of its datasets
-    studyCase$parameters$iterations <- project.parameters$global$iterations
-    for (dataset in studyCase$datasetsForTest) {
-      dataset$parameters$iterations <- project.parameters$global$iterations
-      ## Regenerate training / testing sets
-      buildAttributes(dataset)
-    }
+  ## Set the new number of iterations to the studyCase and to each of its datasets
+  studyCase$parameters$iterations <- project.parameters$global$iterations
+  for (dataset in studyCase$datasetsForTest) {
+    dataset$parameters$iterations <- project.parameters$global$iterations
+    ## Regenerate training / testing sets
+    buildAttributes(dataset)
   }
 }
 
-## Feature selection with first PCs
-message.with.time("Feature selection by first PCs")
-source('misc/07_PCA_impact_of_PC_number.R')
+## Test the impact of k on KNN performances
+message.with.time("Impact of k on KNN performances")
+source('misc/13_knn_impact_of_k.R')
+
+stop("JOB DONE")
 
 ## Test the imapct of kernel on SVM performances
 message.with.time("Impact of kernel on SVM performances")
 source('misc/14_svm_impact_of_parameters.R')
 
-## Test the impact of k on KNN performances
-message.with.time("Impact of k on KNN performances")
-source('misc/13_knn_impact_of_parameters.R')
+## Feature selection with first PCs
+message.with.time("Feature selection by first PCs")
+source('misc/07_PCA_impact_of_PC_number.R')
 
 ## Run analyses with all variables and default parameters
 message.with.time("Impact of normalisation on classifier performances")
