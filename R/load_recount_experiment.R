@@ -139,6 +139,7 @@ loadRecountExperiment <- function(recountID,
   }
   load(rseFile)
 
+
   #### Scale counts by mapped reads, in order to to get read counts per gene ####
   rse.variable <- paste0("rse_", rse.type)
   if (verbose) {
@@ -146,17 +147,6 @@ loadRecountExperiment <- function(recountID,
   }
   rse <- scale_counts(get(rse.variable), by = "mapped_reads")
   # class(rse)
-
-  #### Extract a matrix with the counts per feature for each run ####
-  if (verbose) {
-    message("\tExtracting table of counts per run")
-  }
-
-  ## Extract the count table
-  dataTable <- assay(rse)
-  if (verbose) {
-    message("\tLoaded counts per run: ", nrow(dataTable), " features x ", ncol(dataTable), " runs.")
-  }
 
 
   #### Extract pheno table ####
@@ -203,6 +193,19 @@ loadRecountExperiment <- function(recountID,
   # phenoTable2 <- read.delim(file = phenoFile, header = 1, sep = "\t")
   # View(phenoTable2)
   # names(phenoTable2)
+
+
+  #### Extract a matrix with the counts per feature for each run ####
+  if (verbose) {
+    message("\tExtracting table of counts per run")
+  }
+
+  ## Extract the count table
+  dataTable <- assay(rse)
+  if (verbose) {
+    message("\tLoaded counts per run: ", nrow(dataTable), " features x ", ncol(dataTable), " runs.")
+  }
+
 
 
   #### Instantiate a DataTableWithClasses object with the counts and pheno data ###
