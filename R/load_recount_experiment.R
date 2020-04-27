@@ -170,11 +170,30 @@ loadRecountExperiment <- function(recountID,
   # View(phenoTable)
   # class(phenoTable$characteristics)
   # table(phenoTable$characteristics)
+  # is.character(phenoTable$characteristics)
+
+  #### Fix a problem with the structure of the characteristics field in some recount records ####
+  ## See here for details
+  ##     https://support.bioconductor.org/p/116480/#124335
+  ## and here (repost)
+  ##     https://support.bioconductor.org/p/127123/
+  if (is.character(phenoTable$characteristics)) {
+    ## Solves https://support.bioconductor.org/p/116480/
+    phenoTable$characteristics <- IRanges::CharacterList(
+      lapply(lapply(phenoTable$characteristics, str2lang), eval)
+    )
+  }
+  # class(phenoTable$characteristics)
+  # View(phenoTable$characteristics)
 
   ## PATCH JvH 2019-01-03: I fix a bug with the phenotable characteristics in the transcript rse, which contains quotes
   # phenoTable$characteristics <- gsub(x = phenoTable$characteristics, pattern = '"', replacement = '')
   # geo.characteristics <- recount::geo_characteristics(phenoTable)
   geochar <- geocharFromPheno(runPheno = phenoTable)
+  # class(geochar)
+  # dim(geochar)
+  # head(geochar)
+  # geochar[1:10, "tissue"]
   phenoTable <- cbind(phenoTable, geochar)
   # View(phenoTable)
   # table(phenoTable$characteristics)
