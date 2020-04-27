@@ -69,10 +69,6 @@ for (d in names(project.parameters$global$dir)) {
   }
 }
 
-## Note Jv (2019-10-29) I moved initParallelComputing() to a separate script
-##01C_init_parallel_computing.R
-## because we sometimes want to reload the parameters without re-creating new
-## slots for parallel computing
 
 #### END OF SCRIPT ####
 
