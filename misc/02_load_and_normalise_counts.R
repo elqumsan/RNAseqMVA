@@ -16,11 +16,14 @@ if (length(selectedRecountIDs) > 1) {
   stop("Multiple study case analysis is not supported, please specify a single study case")
 }
 
-message.with.time("Building StudyCase for recountID\t", recountID, "\n\tfeature type: ", project.parameters$global$feature)
-
 #### Specify generic and recountID-specific parameters ####
 parameters <- initRecountID(recountID, project.parameters)
 # View(parameters$dir)
+
+message.with.time("Building StudyCase for recountID\t", recountID,
+                  "\t", parameters$short_label,
+                  "\n\tfeature type: ", project.parameters$global$feature)
+
 
 # Main directory should be adapted to the user's configuration
 #  dir.main <- project.parameters$global$dir$main
@@ -29,12 +32,15 @@ parameters <- initRecountID(recountID, project.parameters)
 
 #### Load study cases ####
 studyCases[[recountID]] <- StudyCase(recountID = recountID, parameters = parameters)
+message("Finished loading ", length(studyCases), " study cases")
 
 
 #### Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files ###
 if (project.parameters$global$export.tables) {
   exportTables(studyCases[[recountID]])
 }
+message("Finished exporting ", length(studyCases), " data tables")
+
 
 #### Plot histograms of log2 normalized counts ####
 datasetNames <- names(studyCases[[recountID]]$datasetsForTest)
@@ -87,8 +93,8 @@ if (project.parameters$global$save.image) {
   rm(studyCase)
 }
 
+message("Finished exporting memory image of studyCase object ", length(studyCases))
 
-message("Finished loading ", length(studyCases), " study cases")
 
 
 #### Compute statistics about loaded datasets ####
