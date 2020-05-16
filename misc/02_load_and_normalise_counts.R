@@ -323,14 +323,15 @@ for (recountID in selectedRecountIDs) {
 #### Save a memory image that can be re-loaded in the future ####
 ## This avoids to redo all the normalisation computing each time we want to run the subsequent analyses
 featureType <- parameters$feature
-if ((project.parameters$global$save.image) && (!project.parameters$global$reload)) {
+if ((project.parameters$global$save.image) &&
+    (!project.parameters$global$reload)) {
   featureType <- project.parameters$global$feature
   studyCases.mem.image <- file.path(
     project.parameters$global$dir$memoryImages,
     paste0(
       paste(collapse = "-", selectedRecountIDs),
       "_", featureType,
-      "_loaded_studyCases.Rdata"))
+      "_loaded_studyCase.Rdata"))
 
   dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
   message.with.time("Saving memory image after loading: ", studyCases.mem.image)
