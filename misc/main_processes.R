@@ -48,15 +48,18 @@ if (studyCase$parameters$iterations < project.parameters$global$iterations) {
   }
 }
 
+
+
+## Test the imapct of kernel on SVM performances
+message.with.time("Impact of kernel on SVM performances")
+source('misc/14_svm_impact_of_parameters.R')
+
+
 ## Test the impact of k on KNN performances
 message.with.time("Impact of k on KNN performances")
 source('misc/13_knn_impact_of_k.R')
 
 stop("JOB DONE")
-
-## Test the imapct of kernel on SVM performances
-message.with.time("Impact of kernel on SVM performances")
-source('misc/14_svm_impact_of_parameters.R')
 
 ## Feature selection with first PCs
 message.with.time("Feature selection by first PCs")
