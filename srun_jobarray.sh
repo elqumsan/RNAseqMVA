@@ -26,7 +26,7 @@
 #SBATCH --array=0-13  # Define the IDs for the job array
 #SBATCH --mem=32GB # Request 32Gb per job
 #SBATCH --cpus=50  # Request 50 CPUs per job
-#SBATCH --partition=long  # the long partition (>1 day) is required for some study cases
+#SBATCH --partition=fast  # note: the long partition (>1 day) is required for some study cases but for basic jobs the fast is sufficient
 #SBATCH -o slurm_logs/test_%a_%A_%j_out.txt  # file to store standard output
 #SBATCH -e slurm_logs/test-%a_%A_%j_err.txt  # file to store standard error
 
