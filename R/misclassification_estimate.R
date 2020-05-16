@@ -225,18 +225,18 @@ MisclassificationEstimate <- function(dataset,
 
     ## Train the classifier with the training suset
     trainedClassifier <- svm(x = transposedDataTable[trainIndex,],
-                       y = as.factor(classLabels[trainIndex]),
-                       type = parameters$svm$type,
-                       scale = parameters$svm$scale,
-                      # kernel = parameters$svm$kernel,
-                       kernel = dataset$parameters$svm$kernel
-                       # gamma = 1 ,
-                       # cost = 10
+                             y = as.factor(classLabels[trainIndex]),
+                             type = parameters$svm$type,
+                             scale = parameters$svm$scale,
+                             # kernel = parameters$svm$kernel,
+                             kernel = dataset$parameters$svm$kernel
+                             # gamma = 1 ,
+                             # cost = 10
     )
 
     ## predicting the classes of testing subset
     testPredictedClasses <- predict(trainedClassifier, transposedDataTable[testIndex,])
-    length(testPredictedClasses)
+    # length(testPredictedClasses)
 
     # test.contingency <- table(classLabels[testIndex], svm.test.prediction)
     # testing.errors <- classLabels[testIndex] != svm.test.prediction
