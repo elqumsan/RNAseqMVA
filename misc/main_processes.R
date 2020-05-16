@@ -12,10 +12,7 @@ source('misc/01b_load_parameters.R')
 # stop("JOB DONE")
 
 
-message.with.time("Initializing parallel computing")
-source('misc/01c_init_parallel_computing.R')
-
-## Load or reload study cases
+#### Load or reload study cases ####
 if (project.parameters$global$reload) {
   message.with.time("Reloading count data")
   source('misc/02b_reload_counts.R')
@@ -23,6 +20,10 @@ if (project.parameters$global$reload) {
   message.with.time("Loading and normalising raw count data")
   source('misc/02_load_and_normalise_counts.R')
 }
+
+#### Start parallel computing ####
+message.with.time("Initializing parallel computing")
+source('misc/01c_init_parallel_computing.R')
 
 
 ## Reload parameters if required (they may have been changed since the
@@ -59,7 +60,10 @@ source('misc/14_svm_impact_of_parameters.R')
 message.with.time("Impact of k on KNN performances")
 source('misc/13_knn_impact_of_k.R')
 
+<<<<<<< HEAD
 stop("JOB DONE")
+=======
+>>>>>>> 9d6f1f8ff5ca62980c192a8988d06777d8569652
 
 ## Feature selection with first PCs
 message.with.time("Feature selection by first PCs")
