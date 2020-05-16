@@ -158,6 +158,13 @@ loadRecountExperiment <- function(recountID,
     message("\tLoaded counts per run: ", nrow(dataTable), " features x ", ncol(dataTable), " runs.")
   }
 
+#
+#   ## Check consistency between pheno tables in  genes and transcripts
+#   stopifnot(identical(
+#     geo_characteristics(colData(rse_gene)),
+#     geo_characteristics(colData(rse_tx))
+#   ))
+#
 
   #### Extract pheno table ####
   ## The pheno table contains information about the columns of the RangedSeummaryExperiment.
@@ -166,15 +173,24 @@ loadRecountExperiment <- function(recountID,
   }
   phenoTable <- colData(rse) ## phenotype per run
   # dim(phenoTable)
+  # class(phenoTable)
   # names(phenoTable)
   # View(phenoTable)
   # class(phenoTable$characteristics)
   # table(phenoTable$characteristics)
+  #
+  #
 
   ## PATCH JvH 2019-01-03: I fix a bug with the phenotable characteristics in the transcript rse, which contains quotes
   # phenoTable$characteristics <- gsub(x = phenoTable$characteristics, pattern = '"', replacement = '')
   # geo.characteristics <- recount::geo_characteristics(phenoTable)
   geochar <- geocharFromPheno(runPheno = phenoTable)
+  # class(geochar)
+  # dim(geochar)
+  # head(geochar)
+  # recountID
+  # parameters$short_label
+
   phenoTable <- cbind(phenoTable, geochar)
   # View(phenoTable)
   # table(phenoTable$characteristics)
