@@ -26,3 +26,5 @@ slurm_logs
 logs
 srun_jobs_sent.tsv
 slurm*.out
+.RData
+*.Rdata
