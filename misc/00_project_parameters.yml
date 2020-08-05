@@ -41,9 +41,9 @@ global: ## Global parameters are those who are the samee across all study cases
 
   reload.parameters: FALSE  ## Reload parameters after having loaded memory image, in order to take into account the new parameter values
   reload: FALSE ## If TRUE, reload previously stored memory image to shortcut the download, loading and normalisation of the raw counts
-  export.tables: TRUE ## If TRUE, export normalized datasets in tab-separate value (TSV) files
+  export.tables: FALSE ## If TRUE, export normalized datasets in tab-separate value (TSV) files
+#  save.tables: FALSE ## If TRUE, save tab-delimited files with the results (JvH 2020-08-05: redundant with export.tables, and not used anymore)
   compute: TRUE ## If FALSE, do not run the heavy computations, just generate the pictures and save tables
-  save.tables: TRUE ## If TRUE, save tab-delimited files with the results
   save.image: TRUE
   draw.plot : TRUE
 #  classifiers: ["svm"]
