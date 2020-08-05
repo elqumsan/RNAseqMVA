@@ -39,5 +39,13 @@ datasetParameters <- data.frame(
     nbGenes = studyCase$datasetsForTest$filtered$nbGenes
   )
 )
+
+discarded_feature = c(
+  nbGenes = studyCase$rawData$countsPerSample$nbGenes,
+  kept_after_NZVF = length(studyCase$datasetsForTest$filtered$keptGenes),
+  discarded_by_NZVF = studyCase$rawData$countsPerSample$nbGenes - length(studyCase$datasetsForTest$filtered$keptGenes)
+  )
+
 datasetParameters$discarded <- datasetParameters$beforeFiltering - datasetParameters$afterFiltering
 print(datasetParameters)
+print(discarded_feature )
