@@ -21,7 +21,7 @@
 
 #'      \item reload: FALSE
 #'      \item compute: TRUE ## If FALSE, do not run the heavy computations, just generate the pictures and save tables
-#'      \item save.tables: TRUE ## If TRUE, save tab-delimited files with the results
+#'      \item export.tables: TRUE ## If TRUE, save tab-delimited files with the data and results
 #'      \item save.image: FALSE
 #' draw.plot : TRUE
 #'      \item classifiers: "svm"
