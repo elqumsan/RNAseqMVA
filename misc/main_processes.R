@@ -1,16 +1,14 @@
 library("RNAseqMVA")
 
-###### main steps for the analysis supervised classification methods by RNAseq Data #####
+##### Main steps for the supervised classification of RNA-seq data #####
+
+## Load R libraries
 message.with.time("Loading libraries")
 source('misc/01a_load_libraries.R')
 
+## Load user-specified parameters for the analysis
 message.with.time("Loading parameters")
 source('misc/01b_load_parameters.R')
-
-# ## Quick patch to regenerate the figures for KNN impact of k
-# source('misc/patch.R')
-# stop("JOB DONE")
-
 
 #### Load or reload study cases ####
 if (project.parameters$global$reload) {
