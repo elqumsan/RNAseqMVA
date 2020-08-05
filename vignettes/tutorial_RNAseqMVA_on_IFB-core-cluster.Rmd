@@ -309,7 +309,7 @@ echo "FEATURE: ${FEATURE}"
 echo "PREFIX: ${PREFIX}"
 
 ## Submit the job to slurm job scheduler via srun
-srun --mem=32GB  --cpus=50  --partition=long \
+srun --mem=32GB  --cpus=50  --partition=fast \
   --output ${LOG_DIR}/${PREFIX}_out.txt \
   --error ${LOG_DIR}/${PREFIX}_err.txt \
   Rscript --vanilla misc/main_processes.R ${RECOUNT_ID} ${FEATURE}
@@ -331,6 +331,9 @@ conda activate rnaseqmva
 
 ## Send the script to the job scheduler
 sbatch --mem=32GB --cpus=50  --partition=long srun_analysis.sh
+
+## Check your slurm jobs
+squeue -u ${UID}
 
 ```
 
