@@ -19,13 +19,8 @@ if (project.parameters$global$reload) {
   source('misc/02_load_and_normalise_counts.R')
 }
 
-#### Start parallel computing ####
-message.with.time("Initializing parallel computing")
-source('misc/01c_init_parallel_computing.R')
-
-
 ## Reload parameters if required (they may have been changed since the
-## study cases were built)
+## study case was built)
 if (project.parameters$global$reload.parameters) {
   message.with.time("Reloading parameters")
   source('misc/01d_reload_parameters.R')
@@ -47,63 +42,29 @@ if (studyCase$parameters$iterations < project.parameters$global$iterations) {
   }
 }
 
+#### Start parallel computing ####
+message.with.time("Initializing parallel computing")
+source('misc/01c_init_parallel_computing.R')
 
+#### Feature selection with first PCs ####
+message.with.time("Feature selection by first PCs")
+source('misc/07_PCA_impact_of_PC_number.R')
 
-## Test the imapct of kernel on SVM performances
+#### Test the imapct of kernel on SVM performances ####
 message.with.time("Impact of kernel on SVM performances")
 source('misc/14_svm_impact_of_parameters.R')
 
 
-## Test the impact of k on KNN performances
-message.with.time("Impact of k on KNN performances")
-source('misc/13_knn_impact_of_k.R')
-
-<<<<<<< HEAD
-stop("JOB DONE")
-=======
->>>>>>> 9d6f1f8ff5ca62980c192a8988d06777d8569652
-
-## Feature selection with first PCs
-message.with.time("Feature selection by first PCs")
-source('misc/07_PCA_impact_of_PC_number.R')
-
-## Run analyses with all variables and default parameters
+#### Run analyses with all variables and default parameters ####
 message.with.time("Impact of normalisation on classifier performances")
 source('misc/06_all_variables_vs_all_PCs.R')
 
+
+#### Test the impact of k on KNN performances ####
+message.with.time("Impact of k on KNN performances")
+source('misc/13_knn_impact_of_k.R')
+
+
 message("YEAH! ALL ANALYSES HAVE BEEN PERFORMED")
 
-
-
-## stop("OLD CODE COMES HEREAFTER")
-
-## if (parameters$compute) {
-
-##   #### Computation of prcomp for the whole raw count #####
-##   message.with.time("Computation of prcomp for the raw count data")
-##   source("~/RNAseqMVA/misc/03_prcomp_computation.R")
-##   message.with.time("Finishing the Computation of prcomp for the raw count data")
-
-##   ##### Computation of DEG (differential expression analysis) for the raw count table #####
-##   message.with.time("DEG computation for the raw count table")
-##   source("~/RNAseqMVA/misc/04_DEG_computation.R")
-##   message.with.time("Finishing from the DEG computation for the raw count table")
-
-##   #### Computation of importance Variables by using random forest ######
-##   message.with.time(" computation of the importance variables by RF methods")
-##   source("~/RNAseqMVA/misc/05_variables_importance_computation.R")
-##   message.with.time("Finishig from computation of the importance variables by RF methods")
-
-##   ##### impact of the number of orderd genes by the edgeR and DESeq2 ####
-##   message.with.time("analysis the impact of the number of orderd genes by the edgeR and DESeq2")
-##   source("~/RNAseqMVA/misc/08_DEG_impact_of_top_gene_number.R")
-##   message.with.time("Finishig analysis the impact of the number of orderd genes by the edgeR and DESeq2")
-
-##   #### impact of the number of importance variables coputed by random forest ####
-##   message.with.time(" Analysis the impact of the number of importance variables coputed by random forest")
-##   source("~/RNAseqMVA/misc/09_Importance_Variables_impact_of_top_genes.R")
-##   message.with.time(" Finishing analysis the impact of the number of importance variables coputed by random forest")
-
-
-
-## }
+message("JOB DONE")
