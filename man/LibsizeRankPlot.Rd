@@ -4,8 +4,13 @@
 \alias{LibsizeRankPlot}
 \title{Rank plot of RNA-seq library sizes}
 \usage{
-LibsizeRankPlot(count.table, parameters, plot.file = NULL,
-  plot.width = 7, plot.heigh = 5)
+LibsizeRankPlot(
+  count.table,
+  parameters,
+  plot.file = NULL,
+  plot.width = 7,
+  plot.heigh = 5
+)
 }
 \arguments{
 \item{count.table}{a table of counts per feature, with one row per feature (e.g. gene, transcript) and one column per library (e.g. run, sample).}

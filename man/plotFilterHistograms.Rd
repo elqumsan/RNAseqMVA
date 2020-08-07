@@ -4,8 +4,7 @@
 \alias{plotFilterHistograms}
 \title{plot histograms of the variance distributions at different steps of the filtering process}
 \usage{
-plotFilterHistograms(dataset, rawCounts, plot.file = NULL,
-  plot.height = NULL)
+plotFilterHistograms(dataset, rawCounts, plot.file = NULL, plot.height = NULL)
 }
 \arguments{
 \item{dataset}{an object of class DatasetWithClasses returned by filterDataTable()}

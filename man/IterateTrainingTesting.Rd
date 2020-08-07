@@ -4,16 +4,10 @@
 \alias{IterateTrainingTesting}
 \title{Iterate training/testing procedures with a given classifier and a given data type}
 \usage{
-IterateTrainingTesting(dataset, ...)
+IterateTrainingTesting(dataset)
 }
 \arguments{
 \item{dataset}{an object of class DataTableWithTrainTestSets}
-
-\item{classifier}{is the type of classifier that is used with repeated process.}
-
-\item{permute}{if TRUE, permute the calss labels to measure misclassifciation rate without relevant training}
-
-\item{file.prefix}{in order to let us to save file from the IterateTrainingTesting}
 }
 \value{
 an object which is Misclassification error rate for the specified number for resampling
@@ -23,7 +17,8 @@ an object which is Misclassification error rate for the specified number for res
 }
 }
 \description{
-for sake of the accuracy and due to the error rate have computed from sampleing from the origin count data,it is better to compute the the error rate multiple time and then we would find the avarage for the error rate.
+for sake of the accuracy and due to the error rate have computed from sampling from the origin count data,
+it is better to compute the the error rate multiple time and then we would find the avarage for the error rate.
 }
 \author{
 Mustafa AbuElQumsan and Jacques van Helden

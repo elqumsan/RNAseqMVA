@@ -4,15 +4,27 @@
 \alias{ErrorRateBoxPlot}
 \title{Function for boxplot the error rate}
 \usage{
-ErrorRateBoxPlot(experimentList, classifier,
-  expMisclassificationRate = NULL, horizontal = TRUE,
-  fig.height = 10, fig.width = 4 + 0.05 * length(experimentList),
-  cex.axis = 0.8, experimentLabels = names(experimentList),
+ErrorRateBoxPlot(
+  experimentList,
+  classifier,
+  expMisclassificationRate = NULL,
+  horizontal = TRUE,
+  fig.height = 10,
+  fig.width = 4 + 0.05 * length(experimentList),
+  cex.axis = 0.8,
+  experimentLabels = names(experimentList),
   main = paste0(parameters$short_label, " (", parameters$recountID, ") ",
-  parameters$feature, "s", "\\n", classifier, "; ", parameters$iterations,
-  " iterations"), boxplotFile = NULL, medianLine = FALSE,
-  expColor = "#00BBFF", permColor = "grey", expLegend = "Train/test",
-  permLegend = "Permuted labels", legend.place = "topright", ....)
+    parameters$feature, "s", "\\n", classifier, "; ", parameters$iterations,
+    " iterations"),
+  boxplotFile = NULL,
+  medianLine = FALSE,
+  expColor = "#00BBFF",
+  permColor = "grey",
+  expLegend = "Train/test",
+  permLegend = "Permuted labels",
+  legend.place = "topright",
+  ....
+)
 }
 \arguments{
 \item{experimentList}{this is list of experiment where each cell of list error rate of the single experiment with special parameters}

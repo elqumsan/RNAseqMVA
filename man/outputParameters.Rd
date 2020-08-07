@@ -4,8 +4,13 @@
 \alias{outputParameters}
 \title{Compute output parameters for an RNAseqMVA analysis}
 \usage{
-outputParameters(dataset, classifier, permute = FALSE,
-  createDir = TRUE)
+outputParameters(
+  dataset,
+  classifier,
+  permute = FALSE,
+  createDir = TRUE,
+  knn.k = NULL
+)
 }
 \arguments{
 \item{dataset}{an object of class DataTableWithTrainTestSets}

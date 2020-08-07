@@ -4,12 +4,10 @@
 \alias{IterateTrainingTesting.DataTableWithClasses}
 \title{Iterate training/testing procedures with a given classifier and a given data type for the object that belonge for DataTableWithClasses class}
 \usage{
-\method{IterateTrainingTesting}{DataTableWithClasses}(dataset, ...)
+\method{IterateTrainingTesting}{DataTableWithClasses}(dataset)
 }
 \arguments{
 \item{dataset}{an object of class DataTableWithTrainTestSets}
-
-\item{...}{is any else parameter may be passed with such method.}
 }
 \value{
 an object which is Misclassification error rate for the specified number for resampling
@@ -18,7 +16,8 @@ an object which is Misclassification error rate for the specified number for res
 }
 }
 \description{
-for sake of the accuracy and due to the error rate have computed from sampleing from the origin count data,it is better to compute the the error rate multiple time and then we would find the avarage for the error rate. with DataTableWithClasses's object.
+for sake of the accuracy and due to the error rate have computed from sampleing from the origin count data,
+it is better to compute the the error rate multiple time and then we would find the avarage for the error rate. with DataTableWithClasses's object.
 }
 \author{
 Mustafa AbuElQumsan and Jacques van Helden

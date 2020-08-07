@@ -4,9 +4,12 @@
 \alias{DataTableWithTrainTestSets}
 \title{Random sampling of n training sets in a DataTableWithClasses.}
 \usage{
-DataTableWithTrainTestSets(self, stratified = TRUE,
+DataTableWithTrainTestSets(
+  self,
+  stratified = TRUE,
   iterations = parameters$iterations,
-  trainingProportion = parameters$trainingProportion)
+  trainingProportion = parameters$trainingProportion
+)
 }
 \arguments{
 \item{self}{an object of the class DataTableWithClasses}

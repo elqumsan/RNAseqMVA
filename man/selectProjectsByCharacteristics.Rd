@@ -4,8 +4,12 @@
 \alias{selectProjectsByCharacteristics}
 \title{Select Recount projects based on the presence of user-specified fields in their characteristics.}
 \usage{
-selectProjectsByCharacteristics(recount.metadata, query.charact,
-  run.kable = FALSE, run.barplot = FALSE)
+selectProjectsByCharacteristics(
+  recount.metadata,
+  query.charact,
+  run.kable = FALSE,
+  run.barplot = FALSE
+)
 }
 \arguments{
 \item{recount.metadata}{a data.frame containing the metadata, as returned by recount::all_metadata() function.}

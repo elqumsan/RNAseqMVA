@@ -4,8 +4,13 @@
 \alias{plotFigures.DataTableWithClasses}
 \title{plot diagnostic figures for an object of the class DataTableWithClasses.}
 \usage{
-\method{plotFigures}{DataTableWithClasses}(self, plot.dir, file.prefix,
-  dataType = self[["dataType"]], extension = ".pdf")
+\method{plotFigures}{DataTableWithClasses}(
+  self,
+  plot.dir,
+  file.prefix,
+  dataType = self[["dataType"]],
+  extension = ".pdf"
+)
 }
 \arguments{
 \item{self}{is an object that is belonge to DataTableWithClasses.}

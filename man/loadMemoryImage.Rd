@@ -4,8 +4,11 @@
 \alias{loadMemoryImage}
 \title{Load a previous analysis previously stored as memoy image}
 \usage{
-loadMemoryImage(memory.dir = parameters$dir$memoryImages,
-  recountID = parameters$recountID, prefix = "RNAseqMVA_image_")
+loadMemoryImage(
+  memory.dir = parameters$dir$memoryImages,
+  recountID = parameters$recountID,
+  prefix = "RNAseqMVA_image_"
+)
 }
 \arguments{
 \item{memory.dir}{= parameters$dir$memoryImages it is the path the saving the image file.}

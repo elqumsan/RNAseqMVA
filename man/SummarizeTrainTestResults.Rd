@@ -4,8 +4,11 @@
 \alias{SummarizeTrainTestResults}
 \title{Summarize results of several training-testing experiments.}
 \usage{
-SummarizeTrainTestResults(experimentList,
-  experimentLabels = names(experimentList), verbose = 1)
+SummarizeTrainTestResults(
+  experimentList,
+  experimentLabels = names(experimentList),
+  verbose = 1
+)
 }
 \arguments{
 \item{experimentList}{a list of results returned by IterateTrainingTesting()}
@@ -24,5 +27,5 @@ summaryTable <- SummarizeTrainTestResults(
 
 }
 \author{
-Jacques.van-Helden@univ-amu.fr
+Jacques.van-Helden\@univ-amu.fr
 }

@@ -4,8 +4,11 @@
 \alias{saveMemoryImage}
 \title{Save a memory image in order to be able to reload all results without having to recompute everything}
 \usage{
-saveMemoryImage(memory.dir = parameters$dir$memoryImages,
-  recountID = parameters$recountID, prefix = "RNAseqMVA_image_")
+saveMemoryImage(
+  memory.dir = parameters$dir$memoryImages,
+  recountID = parameters$recountID,
+  prefix = "RNAseqMVA_image_"
+)
 }
 \arguments{
 \item{memory.dir}{= parameters$dir$memoryImages it is the path the saving the image file.}

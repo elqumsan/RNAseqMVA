@@ -46,5 +46,5 @@ table(str3)
 
 }
 \author{
-Jacques.van-Helden@univ-amu.fr
+Jacques.van-Helden\@univ-amu.fr
 }

@@ -4,8 +4,12 @@
 \alias{DEGordering}
 \title{Variable ordering according to the p-values returned by differential expression analysis.}
 \usage{
-DEGordering(countDataset, method = "DESeq2", permuteLabels = FALSE,
-  alpha = 0.05)
+DEGordering(
+  countDataset,
+  method = "DESeq2",
+  permuteLabels = FALSE,
+  alpha = 0.05
+)
 }
 \arguments{
 \item{countDataset}{an object of class DataTableWithClasses containing counts of reads per features. Importantly, edgeR and DESeq2 require non-normalized counts as input.}
