@@ -4,15 +4,14 @@
 \alias{IterateTrainingTesting.default}
 \title{printing report message to informaing so, Iterate training/testing procedures with a given classifier and a given data type for the object that belonge for DataTableWithClasses class has finished.}
 \usage{
-\method{IterateTrainingTesting}{default}(dataset, ...)
+\method{IterateTrainingTesting}{default}(dataset)
 }
 \arguments{
 \item{dataset}{an object of class DataTableWithTrainTestSets}
-
-\item{...}{additional parameters are passed to IterateTrainingTesting.default()}
 }
 \description{
-printing report message to informaing so,for sake of the accuracy and due to the error rate have computed from sampleing from the origin count data,it is better to compute the the error rate multiple time and then we would find the avarage for the error rate. with DataTableWithClasses's object.
+printing report message to informaing so,for sake of the accuracy and due to the error rate have computed from sampleing from the origin count data,
+it is better to compute the the error rate multiple time and then we would find the avarage for the error rate. with DataTableWithClasses's object.
 }
 \author{
 Mustafa AbuElQumsan and Jacques van Helden

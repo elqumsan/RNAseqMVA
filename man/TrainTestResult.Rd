@@ -4,8 +4,13 @@
 \alias{TrainTestResult}
 \title{Class to handle the results of Training-Testing evaluation for a given classifier}
 \usage{
-TrainTestResult(dataset, classifier, iteration, trainPredictedClasses,
-  testPredictedClasses)
+TrainTestResult(
+  dataset,
+  classifier,
+  iteration,
+  trainPredictedClasses,
+  testPredictedClasses
+)
 }
 \arguments{
 \item{dataset}{the dataset on which the classifier ran}

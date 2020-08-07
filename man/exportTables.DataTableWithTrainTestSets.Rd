@@ -4,8 +4,7 @@
 \alias{exportTables.DataTableWithTrainTestSets}
 \title{Export the tables specific to the class DataTableWithTrainTestSets}
 \usage{
-\method{exportTables}{DataTableWithTrainTestSets}(self, export.dir,
-  file.prefix, extension = ".tsv")
+\method{exportTables}{DataTableWithTrainTestSets}(self, export.dir, file.prefix, extension = ".tsv")
 }
 \arguments{
 \item{self}{an object, which must belong to class DataTableWithTrainTestSets}

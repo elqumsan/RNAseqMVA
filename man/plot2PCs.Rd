@@ -4,9 +4,14 @@
 \alias{plot2PCs}
 \title{Plot two components of prcomp transform}
 \usage{
-plot2PCs(self, main = paste0(self$ID, " ", self$parameters$feature, " ",
-  self$parameters$short_label, "\\nPCs of ", self$dataType),
-  col = self$sampleColors, pcs = c(1, 2), ...)
+plot2PCs(
+  self,
+  main = paste0(self$ID, " ", self$parameters$feature, " ",
+    self$parameters$short_label, "\\nPCs of ", self$dataType),
+  col = self$sampleColors,
+  pcs = c(1, 2),
+  ...
+)
 }
 \arguments{
 \item{self}{an object of class DataTableWithClasses containing a field prcomp (produced by prcompt function)}

@@ -4,10 +4,16 @@
 \alias{LibsizeBarplot}
 \title{Draw a barplot with the number of million reads per sample}
 \usage{
-LibsizeBarplot(counts, sample.labels = colnames(counts),
-  sample.colors = NULL, main = "Library sizes",
-  xlab = "libsum (Million reads per sample)", cex.names = 1,
-  lmargin = cex.names * max(nchar(sample.labels))/2.5 + 5, ...)
+LibsizeBarplot(
+  counts,
+  sample.labels = colnames(counts),
+  sample.colors = NULL,
+  main = "Library sizes",
+  xlab = "libsum (Million reads per sample)",
+  cex.names = 1,
+  lmargin = cex.names * max(nchar(sample.labels))/2.5 + 5,
+  ...
+)
 }
 \arguments{
 \item{counts}{a count table with 1 row per feature and 1 column per sample}

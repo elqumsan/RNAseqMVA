@@ -4,8 +4,13 @@
 \alias{MisclassificationEstimate}
 \title{RNA-Seq classifier evaluation to assesse the performance of the classifier}
 \usage{
-MisclassificationEstimate(dataset, iteration, classifier,
-  permute = FALSE, stratifiedPermutation = FALSE)
+MisclassificationEstimate(
+  dataset,
+  iteration,
+  classifier,
+  permute = FALSE,
+  stratifiedPermutation = FALSE
+)
 }
 \arguments{
 \item{dataset}{an object of class DataTableWithTrainTestSets}
@@ -26,7 +31,8 @@ MisclassificationEstimate(dataset, iteration, classifier,
 }
 }
 \description{
-this script to evaluate and assesse the performance of the RNA-Seq classifier byRandom sampling (random partitioning) estimation of the misclassification rate.
+this script to evaluate and assesse the performance of the RNA-Seq classifier by
+Random sampling (random partitioning) estimation of the misclassification rate.
 }
 \author{
 Mustafa ABUELQUMSAN and Jacques van Helden

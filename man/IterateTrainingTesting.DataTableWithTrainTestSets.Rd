@@ -4,8 +4,13 @@
 \alias{IterateTrainingTesting.DataTableWithTrainTestSets}
 \title{Iterate training/testing procedures with a given classifier and a given data type, with object has class DataTableWithTrainTestSets.}
 \usage{
-\method{IterateTrainingTesting}{DataTableWithTrainTestSets}(dataset,
-  classifier, permute = FALSE, file.prefix = NULL, verbose = 1)
+\method{IterateTrainingTesting}{DataTableWithTrainTestSets}(
+  dataset,
+  classifier,
+  permute = FALSE,
+  file.prefix = NULL,
+  verbose = 1
+)
 }
 \arguments{
 \item{dataset}{an object of class DataTableWithTrainTestSets}
@@ -25,7 +30,8 @@ an object which is Misclassification error rate for the specified number for res
 }
 }
 \description{
-for sake of the accuracy and due to the error rate have computed from sampleing from the origin count data,it is better to compute the the error rate multiple time and then we would find the avarage for the error rate. with DataTableWithTrainTestSets's object
+for sake of the accuracy and due to the error rate have computed from sampleing from the origin count data,
+it is better to compute the the error rate multiple time and then we would find the avarage for the error rate. with DataTableWithTrainTestSets's object
 }
 \author{
 Mustafa AbuElQumsan and Jacques van Helden
