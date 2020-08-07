@@ -1,7 +1,7 @@
 #' @title Tune the parameters of the different classifiers for a given study case
 #' @author Jacques van Helden
 #' @param studyCase a studyCase object
-#' @param dataType="TMM_log2" data type to use for the tuning. Must be one of the data types included in the 'datasetsForTest' attribute of the studyCase object
+#' @param dataType="TMM_log2_PC" data type to use for the tuning. Must be one of the data types included in the 'datasetsForTest' attribute of the studyCase object
 #' @param tuneSVM=TRUE if TRUE, tune parameters for SVM
 #' @param svmCost=1 cost parameter values for SVM
 #' @param svmDegree=1:4 degree values for SVM polynomial kernel
@@ -18,7 +18,7 @@
 #' @return a list of parameters cloned from the studyCase, added with the optimal parameters identified here
 #' @export
 TuneClassifiers <- function(studyCase,
-                            dataType="TMM_log2",
+                            dataType="TMM_log2_PC",
                             tuneSVM=TRUE,
                             #                            svmCost=4^(-2:2),
                             svmCost=1,
