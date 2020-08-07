@@ -7,7 +7,7 @@ studyCases.mem.image <- file.path(
   paste0(
     paste(collapse = "-", selectedRecountIDs),
     "_", featureType,
-    "_loaded_studyCases.Rdata"))
+    "_loaded_studyCase.Rdata"))
 
 ## Reload previously stored memory image
 message.with.time("Reloading study cases from previously stored memory image",
