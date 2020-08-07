@@ -272,7 +272,7 @@ source("misc/main_processes.R")
 
 #### Sending a single job to slurm
 
-I created a script named `srun_analyses.sh`, with the following content. 
+I created a script named `srun_analysis.sh`, with the following content. 
 
 ```{bash eval=FALSE}
 #!/bin/bash
@@ -303,13 +303,18 @@ START_DATE=`date +%Y-%m-%d_%H%M%S`
 RECOUNT_ID=SRP042620
 FEATURE=transcript
 PREFIX=${RECOUNT_ID}_${FEATURE}_${START_DATE}
+CPUS=50
+MEM=32GB
 
+## Report parameters
 echo "RECOUNT_ID: ${RECOUNT_ID}"
 echo "FEATURE: ${FEATURE}"
 echo "PREFIX: ${PREFIX}"
+echo "CPUS: ${CPUS}"
+echo "MEM: ${MEM}"
 
 ## Submit the job to slurm job scheduler via srun
-srun --mem=32GB  --cpus=50  --partition=fast \
+srun --mem=${MEM}  --cpus=${CPUS}  --partition=fast \
   --output ${LOG_DIR}/${PREFIX}_out.txt \
   --error ${LOG_DIR}/${PREFIX}_err.txt \
   Rscript --vanilla misc/main_processes.R ${RECOUNT_ID} ${FEATURE}
