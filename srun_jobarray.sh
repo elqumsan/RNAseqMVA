@@ -22,19 +22,19 @@
 ##
 ## ## Send the script to the job scheduler
 ## sbatch srun_jobarray.sh
+## squeue -u ${UID}
 
 #SBATCH --array=0-13  # Define the IDs for the job array
-#SBATCH --mem=32GB # Request 32Gb per job
-#SBATCH --cpus=50  # Request 50 CPUs per job
+#SBATCH --mem=48GB # Request Gb per job
+#SBATCH --cpus=2  # Request CPUs per job
 #SBATCH --partition=fast  # note: the long partition (>1 day) is required for some study cases but for basic jobs the fast is sufficient
-#SBATCH -o slurm_logs/test_%a_%A_%j_out.txt  # file to store standard output
-#SBATCH -e slurm_logs/test-%a_%A_%j_err.txt  # file to store standard error
+#SBATCH -o slurm_logs/rnaseqmva_%a_%A_%j_out.txt  # file to store standard output
+#SBATCH -e slurm_logs/rnaseqmva_%a_%A_%j_err.txt  # file to store standard error
 
 ## Initiate the environment
-module load conda
-conda init bash
-conda activate rnaseqmva
-
+# module load conda
+# conda init bash
+# conda activate rnaseqmva
 
 ## Define the parameters
 RECOUNT_IDS=(SRP035988 SRP042620 SRP056295 SRP057196 SRP061240 SRP062966 SRP066834)
@@ -54,13 +54,26 @@ mkdir -p ${LOG_DIR}
 START_DATE=`date +%Y-%m-%d_%H%M%S`
 PREFIX=${RECOUNT_ID}_${FEATURE_TYPE}_${START_DATE}
 
+## slurm parameters
+CPUS=2
+MEM=48GB
+PARTITION=fast
+
 ## The variable $SLURM_ARRAY_TASK_ID takes a different value for each job
 ## based on the values entered with the argument --array
 # srun Rscript --vanilla misc/main_processes.R $SLURM_ARRAY_TASK_ID
 echo "${START_DATE} ${SLURM_ARRAY_TASK_ID}  ${SLURM_ARRAY_JOB_ID} ${RECOUNT_ID} ${FEATURE_TYPE} ${LOG_DIR}/${PREFIX}" >> srun_jobs_sent.tsv
 
 ## Send a job for the analysis of one RECOUNT_ID and FEATURE_TYPE
-srun --mem=32GB --cpus=50 \
+srun --mem=${MEM} --cpus=${CPUS} --partition=${PARTITION} \
   --output ${LOG_DIR}/${PREFIX}_out.txt \
   --error ${LOG_DIR}/${PREFIX}_err.txt \
   Rscript --vanilla misc/main_processes.R ${RECOUNT_ID} ${FEATURE_TYPE}
+echo "PREFIX  ${PREFIX}"
+echo "  output  ${LOG_DIR}/${PREFIX}_out.txt"
+echo "  error   ${LOG_DIR}/${PREFIX}_err.txt"
+
+
+## Command to send the script to the job scheduler
+## sbatch --mem=${MEM} --cpus=${CPUS} --partition=${PARTITION} srun_jobarray.sh
+## squeue -u ${UID}

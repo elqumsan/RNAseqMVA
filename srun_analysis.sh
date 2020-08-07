@@ -33,26 +33,48 @@ START_DATE=`date +%Y-%m-%d_%H%M%S`
 ## (see script srun_jobarray.sh)
 
 
-## Parameters
+#### Parameters ####
+
+## Recount identifier: uncomment one of the following
 # RECOUNT_ID=SRP035988
 # RECOUNT_ID=SRP042620
-# RECOUNT_ID=SRP056295
+RECOUNT_ID=SRP056295
 # RECOUNT_ID=SRP057196
 # RECOUNT_ID=SRP061240
 # RECOUNT_ID=SRP062966
 # RECOUNT_ID=SRP066834
 
+## Feature type: uncomment one of the following
 FEATURE=transcript
 # FEATURE=gene
+
+## Prefix for the log and err files
 PREFIX=${RECOUNT_ID}_${FEATURE}_${START_DATE}
 
+## slurm parameters
+CPUS=25
+MEM=48GB
+PARTITION=long
+
+## Report parameters
 echo "RECOUNT_ID: ${RECOUNT_ID}"
 echo "FEATURE: ${FEATURE}"
 echo "PREFIX: ${PREFIX}"
+echo "CPUS: ${CPUS}"
+echo "MEM: ${MEM}"
+echo "PARTITION: ${PARTITION}"
 
 ## Submit the job to slurm job scheduler via srun
-srun --mem=32GB --cpus=50 --partition=long \
+srun --mem=${MEM} --cpus=${CPUS} --partition=${PARTITION} \
   --output ${LOG_DIR}/${PREFIX}_out.txt \
   --error ${LOG_DIR}/${PREFIX}_err.txt \
   Rscript --vanilla misc/main_processes.R ${RECOUNT_ID} ${FEATURE}
+echo "PREFIX  ${PREFIX}"
+echo "  output  ${LOG_DIR}/${PREFIX}_out.txt"
+echo "  error   ${LOG_DIR}/${PREFIX}_err.txt"
+
+
+## Command to send the script to the job scheduler
+## sbatch --mem=${MEM} --cpus=${CPUS}  --partition=${PARTITION} srun_analysis.sh
+## squeue -u ${UID}
 
