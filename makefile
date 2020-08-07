@@ -66,7 +66,14 @@ convert_pc_plots_all_study_cases:
 	done
 
 
-EXCLUDE_OPT=--exclude *~ --exclude .DS_Store --exclude .\#*
+EXCLUDE_OPT= \
+	--exclude '*~' \
+	--exclude .DS_Store \
+	--exclude '.\#*' \
+	--exclude '*.Rdata' \
+	--exclude '*.RData' \
+	--exclude '*.tsv' \
+	--exclude '._*'
 sync_one_pcplot:
 	@mkdir -p ${FIGURE_ELEMENTS}
 	rsync ${EXCLUDE_OPT}${SOURCE_PC} ${FIGURE_ELEMENTS}/
@@ -85,19 +92,26 @@ sync_pc_plots_all_study_cases:
 		${MAKE} sync_pc_plots_one_study_case STUDY_CASE=$${i}; \
 	done
 
-SERVER=rsat-tagc.univ-mrs.fr
-LOGIN=rnaseqmva
+## Parameters on the TAGC server (obsolete)
+# SERVER=rsat-tagc.univ-mrs.fr
+# LOGIN=rnaseqmva
 
+## Parameters on IFB core clusters
 SERVER=core.cluster.france-bioinformatique.fr
 LOGIN=jvanhelden
-
 SERVER_LOGIN=${LOGIN}@${SERVER}
-REMOTE_WS=RNAseqMVA_workspace
+REMOTE_WS=/shared/projects/rnaseqmva/RNAseqMVA_workspace
+
+
+
+## Local parameters
 LOCAL_WS=~/RNAseqMVA_workspace/
 TO_SYNC=memory_images
 RSYNC_OPT=
 OUT_SOURCE=${LOCAL_WS}/${TO_SYNC}
 OUT_TARGET=${LOGIN}@${RSATIX}:${REMOTE_WS}/
+
+## Synchronize a directory from local machine to remote server
 ws_dir_to_server:
 	@echo "Synchronizing directory from your workspace to shared space on ${SERVER}"
 	@echo "	LOCAL_WS	${LOCAL_WS}"
@@ -109,6 +123,7 @@ ws_dir_to_server:
 	@echo "	EXCLUDE_OPT	${EXCLUDE_OPT}"
 	@rsync -ruptvl ${EXCLUDE_OPT} ${RSYNC_OPT} ${OUT_SOURCE} ${OUT_TARGET}
 
+## Synchronize a directory from remote server to local PC
 IN_SOURCE=${LOGIN}@${SERVER}:${REMOTE_WS}/${TO_SYNC}
 IN_TARGET=${LOCAL_WS}
 ws_dir_from_server:
