@@ -51,7 +51,7 @@ TuneClassifiers <- function(studyCase,
 
   #### Tuning of the SVM parameters ####
   if (tuneSVM) {
-    message("\tTuneClassifiers()\tTuning SVM")
+    message.with.time("\tTuneClassifiers()\tTuning SVM")
     result$tuneResults$svm <- list()
 
     #### Parameters for the linear kernel ####
@@ -110,7 +110,7 @@ TuneClassifiers <- function(studyCase,
 
   #### Tune Random Forest parameters ####
   if (tuneRandomForest) {
-    message("\tTuneClassifiers()\tTuning RF")
+    message.with.time("\tTuneClassifiers()\tTuning RF")
     result$tuneResults$rf <- list()
 
     ## Tune random forest with e1071::tune.randomForest() function
@@ -195,7 +195,7 @@ TuneClassifiers <- function(studyCase,
 
   #### Tune KNN parameters ####
   if (tuneKNN) {
-    message("\tTuneClassifiers()\tTuning KNN")
+    message.with.time("\tTuneClassifiers()\tTuning KNN")
     result$tuneResults$knn <- list()
 
     tunedKNN <- tune.knn(x = t(dataSet$dataTable),
