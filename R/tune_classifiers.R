@@ -18,14 +18,14 @@
 #' @return a list of parameters cloned from the studyCase, added with the optimal parameters identified here
 #' @export
 TuneClassifiers <- function(studyCase,
-                            dataType="TMM_log2_PC",
+                            dataType="TMM_log2",
                             tuneSVM=TRUE,
-#                            svmCost=4^(-2:2),
+                            #                            svmCost=4^(-2:2),
                             svmCost=1,
                             svmDegree=1:4,
                             svmGamma=4^(-2:4),
                             svmCoef0=4^(-2:4),
-                            tuneRF=TRUE,
+                            tuneRandomForest=TRUE,
                             rfNtree=c(100,200,300,500),
                             rfMtry=c(50,100,200,300,500),
                             tuneKNN=TRUE,
@@ -122,7 +122,56 @@ TuneClassifiers <- function(studyCase,
                         ntree = rfNtree)
     result$tuneResults$rf$tunedRandomForest <- tunedRandomForest
     if (plotResults) {
-      plot(tunedRandomForest, main = "RF tuning")
+      par(mfrow = c(2,2))
+#      plot(tunedRandomForest, main = "RF tuning")
+      # RSAGA::grid.to.xyz(data = tunedRandomForest$performances,
+      #                    varname = "error",
+      #                    colnames = c("mtry", "ntree", "error"))
+      errorMatrix <- tidyr::spread(data = tunedRandomForest$performances[, c("mtry", "ntree", "error")],
+                                   key = "ntree",
+                                   value = "error")
+      persp(x = errorMatrix$mtry,
+            y = as.numeric(colnames(errorMatrix[, -1])),
+            z = as.matrix(errorMatrix[, -1]),
+            theta = 235,
+            main = paste(sep = "",
+                         studyCase$ID,
+                         " " , studyCase$parameters$feature,
+                         " - ", studyCase$parameters$short_label,
+                         "\n", "RF tuning"),
+            xlab = "mtry", ylab = "ntree", zlab = "error")
+
+      ## Get best parameters
+      bestNtree <- tunedRandomForest$best.parameters$ntree
+      bestMtry <- tunedRandomForest$best.parameters$mtry
+      bestNodeSize <- tunedRandomForest$best.parameters$nodesize
+
+      ## Plot impact of ntree for the best values of the other parameters
+      ntreeImpact <- subset(x = tunedRandomForest$performances,
+                            mtry == bestMtry & nodesize == bestNodeSize)
+      plot(ntreeImpact$ntree, ntreeImpact$error, type = "b",
+           xlab = "ntree", ylab = "MER",
+           panel.first = grid(), col = "red", las = 1,
+           main = paste(sep = "",
+                        studyCase$ID,
+                        " " , studyCase$parameters$feature,
+                        " - ", studyCase$parameters$short_label,
+                        "\n", "RF ntree tuning"),
+      )
+
+      ## Plot impact of mtry for the best values of the other parameters
+      mtryImpact <- subset(x = tunedRandomForest$performances,
+                           ntree == bestNtree & nodesize == bestNodeSize)
+      plot(mtryImpact$mtry, mtryImpact$error, type = "b",
+           xlab = "mtry", ylab = "MER",
+           panel.first = grid(), col = "red", las = 1,
+           main = paste(sep = "",
+                        studyCase$ID,
+                        " " , studyCase$parameters$feature,
+                        " - ", studyCase$parameters$short_label,
+                        "\n", "RF mtry tuning"),
+      )
+      par(mfrow = c(1,1))
     }
 
 
