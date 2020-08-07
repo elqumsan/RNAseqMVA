@@ -2,7 +2,7 @@
 #' @title  RNA-Seq classifier evaluation to assesse the performance of the classifier
 #' @author Mustafa ABUELQUMSAN and Jacques van Helden
 #' @description  this script to evaluate and assesse the performance of the RNA-Seq classifier by
-#' # Random sampling (random partitioning) estimation of the misclassification rate.
+#' Random sampling (random partitioning) estimation of the misclassification rate.
 #'
 #' @param dataset  an object of class DataTableWithTrainTestSets
 #' @param iteration current iteration number (the MisclassificationEstimate function is typically called iteratively) and it called number of resampling.
