@@ -1,5 +1,6 @@
 #' @title Tune the parameters of the different classifiers for a given study case
 #' @author Jacques van Helden
+#' @description Tune the parameters of the different classifiers for a given study case
 #' @param studyCase a studyCase object
 #' @param dataType="TMM_log2" data type to use for the tuning. Must be one of the data types included in the 'datasetsForTest' attribute of the studyCase object
 #' @param tuneSVM=TRUE if TRUE, tune parameters for SVM
@@ -228,3 +229,5 @@ TuneClassifiers <- function(studyCase,
 
 }
 
+
+# message("tune_classifiers.R")
