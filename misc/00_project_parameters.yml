@@ -23,10 +23,10 @@ global: ## Global parameters are those who are the samee across all study cases
 
   filtering:
     ## Filtering options
-    na.rm: TRUE          # Discard features with NA values
-    null.variance: TRUE # Discard features with null variance
-    nearZeroVarFilter: FALSE # near-zero variance filtering. I disactivate this option because it is particularly bad for single-cell RNA-seq, and it is not specially interesting from bulk RNA-seq
-    minSamplesPerClass: 15 ## minmsal number of samples per clas (class filtering)
+    na.rm: TRUE              # Discard features with NA values
+    null.variance: TRUE      # Discard features with null variance
+    nearZeroVarFilter: FALSE # Near-zero variance filtering. After testing, we disactivate this option because it is particularly bad for single-cell RNA-seq, and it is not specially interesting for bulk RNA-seq.
+    minSamplesPerClass: 15   # Minimal number of samples per class (class filtering)
 
   standardization:
 #    methods: ["TMM"]
@@ -36,11 +36,11 @@ global: ## Global parameters are those who are the samee across all study cases
     epsilon: 0.1    ## For log2 transformation
 
   perm.prefix: "permLabels"
-  jobs: 5 ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
-  iterations: 10 ## Number of iterations for the classifiers
+  jobs: 25 ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
+  iterations: 50 ## Number of iterations for the classifiers
 
   reload.parameters: FALSE  ## Reload parameters after having loaded memory image, in order to take into account the new parameter values
-  reload: FALSE ## If TRUE, reload previously stored memory image to shortcut the download, loading and normalisation of the raw counts
+  reload: TRUE ## If TRUE, reload previously stored memory image to shortcut the download, loading and normalisation of the raw counts
   export.tables: FALSE ## If TRUE, export normalized datasets in tab-separate value (TSV) files
 #  save.tables: FALSE ## If TRUE, save tab-delimited files with the results (JvH 2020-08-05: redundant with export.tables, and not used anymore)
   compute: TRUE ## If FALSE, do not run the heavy computations, just generate the pictures and save tables
