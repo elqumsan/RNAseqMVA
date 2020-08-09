@@ -5,12 +5,14 @@
 ## AUTHORS: Julien Seiler and Jacques van Helden
 ##
 ## DESCRIPTION
+##
 ## Run the analysis of the different study cases (recount IDs) and feature types
 ## on IFB core cluster via a job array handled by slurm job scheduler.
 ## All jobs are sent in one shot, and are then handled in parallel according to
 ## the availability of resources on the cluster).
 ##
 ## USAGE
+##
 ## Change directory to RNAseqMVA package
 ## cd /shared/projects/rnaseqmva/RNAseqMVA
 ##
@@ -55,7 +57,7 @@ START_DATE=`date +%Y-%m-%d_%H%M%S`
 PREFIX=${RECOUNT_ID}_${FEATURE_TYPE}_${START_DATE}
 
 ## slurm parameters
-CPUS=2
+CPUS=25
 MEM=48GB
 PARTITION=fast
 
