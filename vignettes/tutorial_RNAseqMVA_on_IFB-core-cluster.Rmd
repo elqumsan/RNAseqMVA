@@ -164,6 +164,7 @@ Click **Install and Restart**.
 **Note:** the first time you run this, you might be prompted to install libraries. 
 
 - One option -- prudent but somewhat cumbersome -- is to **install manually** the libraries that are absolutely required to compile the package.
+
 - An alternative -- a bit tricky but convenient -- is to run the script `misc/01a_load_libraries.R` of the package, which automatically installs all the CRAN and BioConductor libraries used in the package. 
 
 ```{r}
@@ -212,23 +213,35 @@ An alternative to RStudio is to run the workflow directly on the cluster nodes, 
     - good for the reproducibility, becase everything runs automatically from the command line
 
 
-### Opening an interactive session
+### Open a connection to the cluster
 
 ```{bash eval=FALSE}
 ssh [login]@core-cluster.france-bioinformatique.fr
 
-sinteractive --mem=32GB
+## activate conda
+module load conda
+
+## Go to the shared folder
+cd /shared/projects/rnaseqmva/RNAseqMVA
+
 ```
+
+
+
 
 ### Installing or updating the rnaseqmva conda environment
 
-```{bash eval=FALSE}
-module load conda
-cd /shared/projects/rnaseqmva/RNAseqMVA
+If this is the first time you use RNAseqMVA, you will need to install the conda environment, which will automatically install all the software required to run your analyses. This is done with a single command, but it can take time since it will install a specific version of R + all the required librairies and dependencies.
 
+```{bash eval=FALSE}
 ## The first time only
 conda env install -f conda-rnaseqmva.yml
+```
 
+
+If the conda environment has been changed since your last session, you can update it in order to make sure you dispose of all thee new requirements.
+
+```{bash eval=FALSE}
 ## Updates
 conda env update -f conda-rnaseqmva.yml
 ```
@@ -236,9 +249,20 @@ conda env update -f conda-rnaseqmva.yml
 
 ### Loading the conda environment
 
+At each session, you need to activate tbe `rnaseqmva` conda environment.
+
 ```{bash eval=FALSE}
 module load conda
 conda activate rnaseqmva
+```
+
+### Updating the RNAseqMVA package
+
+It may be useful to update the RNAseqMVA pakage from the github repository.
+
+```{bash eval=FALSE}
+cd /shared/projects/rnaseqmva/RNAseqMVA
+git pull
 ```
 
 
@@ -250,19 +274,35 @@ R CMD INSTALL --no-multiarch --with-keep.source RNAseqMVA
 
 ```
 
-### Opening R
 
 
-```{bash eval=FALSE}
-cd /shared/projects/rnaseqmva/RNAseqMVA
-R
-```
 
 ### Running the analysis in R under sinteractive
 
+Note: `sinteractive` blocks resources on a node as long as the user does not close it. This mode should thus be used only for particular cases which require live interactions with R (e.g. testing a script with a given study case before sending it to the job scheduler for all the study cases, or debugging).
+
+If you want to send the execution of a script to the job scheduler, skip this section and look for the `srun` and `sbatch`sections below.
+
+
+
+```{bash eval=FALSE}
+sinteractive --mem=48GB
+cd /shared/projects/rnaseqmva/RNAseqMVA
+```
+
+The `sinteractive` session automatically opens a `screen` environment, which enables you to create several tabs (e.g. one for the editor, a second one for the unix shell and a third one for the R session) and swap between them for your work. This requires to be familiar with `screen`.
+
 First, edit the file `misc/00_project_parameters.yml` with a text editor, in order to select the study case + all the parameters. 
 
-Then open an R session (as above) and run the following command. 
+
+In one of the `screen` tabs, open an R session 
+
+```{bash eval=FALSE}
+R
+```
+
+
+and run the following command. 
 
 ```{r}
 source("misc/main_processes.R")
