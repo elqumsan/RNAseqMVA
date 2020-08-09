@@ -12,11 +12,55 @@
 ##
 ## We however keep this code for the sake of comparison.
 
-## Run the analysis
+## Select a data type for the tuning
+dataType <- "TMM_log2_PC"
+
+
+## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
+dir.create(project.parameters$global$dir$memoryImages, showWarnings = FALSE, recursive = TRUE)
+featureType <- project.parameters$global$feature
+save.result.file <- file.path(
+  project.parameters$global$dir$memoryImages,
+  paste0(
+    studyCase$ID,
+    "_", featureType,
+    "_", "tune-classifiers",
+    "_", dataType,
+    "_results.Rdata"))
+load(save.result.file)
+
+#### Run the analysis ####
 tuningResult <- TuneClassifiers(
   studyCase = studyCase,
-  dataType = "TMM_log2_PC",
-  tuneSVM = FALSE,
-  tuneRandomForest = FALSE,
+  dataType = dataType,
+  tuneSVM = TRUE,
+  tuneRandomForest = TRUE,
   tuneKNN = TRUE,
   plotResults = TRUE)
+
+
+#### Export plots ####
+
+## Define directory and file prefix for the plots
+resultDir <- file.path(studyCase$parameters$dir$results, "tuning")
+dir.create(resultDir, showWarnings = FALSE, recursive = TRUE)
+filePrefix <- file.path(resultDir,
+                        paste0(
+                          studyCase$ID,
+                          "_", studyCase$parameters$feature,
+                          "_", dataType,
+                          "_tuning"))
+
+plotRFtuning(tuningResult, ylim = c(0,1), pdfFile = paste0(filePrefix, "_RF.pdf"))
+plotKNNtuning(tuningResult, ylim = c(0,1), pdfFile = paste0(filePrefix, "_KNN.pdf"))
+
+
+#### Save the results in a separate object, that can be reloaded later ####
+message.with.time(
+  "Saving results after parameter tuning: ",
+  save.result.file)
+save(tuningResult, file = save.result.file)
+
+## Ending message
+message.with.time("Finished script misc/05_tune_parameters.R")
+
