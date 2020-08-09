@@ -13,7 +13,7 @@
 ## We however keep this code for the sake of comparison.
 
 ## Select a data type for the tuning
-dataType <- "TMM_log2_PC"
+dataType <- "TMM_log2"
 
 
 ## Define the path to the memory image for this test (compare classifier whenn they use all variables as features)
@@ -27,7 +27,7 @@ save.result.file <- file.path(
     "_", "tune-classifiers",
     "_", dataType,
     "_results.Rdata"))
-load(save.result.file)
+# load(save.result.file)
 
 #### Run the analysis ####
 tuningResult <- TuneClassifiers(
