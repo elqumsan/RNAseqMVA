@@ -1,10 +1,11 @@
 #' @title Create a StudyCase object, load RecountID dataset, and generate datasets.
 #' @author Jacques van Helden and Mustafa AbuElQumsan
 #' @description Create a StudyCase object, load RecountID dataset, and run preprocessing to generate the DataTableWitthClasses objects.
-#' @param recountID A valide ID for an object of the ReCount2 database
+#' @param recountID a valid experiment ID for a record of the ReCount2 database
 #' @param parameters recountID-specific parameters specified in a YAML-formatted configuration file
 #'
-#' @return an object of class StudyCase, that is contain raw data before per-processing step, datasets for testing that are per-processed dataset and their respective parameters.
+#' @return an object of class StudyCase, which contains raw data (before preprocessing steps),
+#' as well as several datasets normalised with different methods.
 #'
 #' @export
 
@@ -415,7 +416,7 @@ histCountsPerGeneClass.StudyCase <- function(self) {
   counts <- as.vector(unlist(self$datasetsForTest$filtered$dataTable))
   hist(log2(counts + epsilon), breaks=100,
        main = paste(recountID,
-                    " – Histogram of log2(counts)"),
+                    " - Histogram of log2(counts)"),
        xlab = "log2(counts)",
        ylab = "Number of genes",
        col="#CCBBFF")
