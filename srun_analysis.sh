@@ -12,7 +12,7 @@
 ## conda activate rnaseqmva
 ##
 ## ## Send the script to the job scheduler
-## sbatch --mem=32GB --cpus=50  --partition=long srun_analysis.sh
+## sbatch --mem=48GB --cpus=25  --partition=long srun_analysis.sh
 
 
 ## Note: the loading of conda module and environment must apparently be done
@@ -45,8 +45,8 @@ RECOUNT_ID=SRP056295
 # RECOUNT_ID=SRP066834
 
 ## Feature type: uncomment one of the following
-FEATURE=transcript
-# FEATURE=gene
+# FEATURE=transcript
+FEATURE=gene
 
 ## Prefix for the log and err files
 PREFIX=${RECOUNT_ID}_${FEATURE}_${START_DATE}
