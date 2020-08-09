@@ -16,7 +16,7 @@ TuneClassifiers(
   rfNtree = c(100, 200, 300, 500),
   rfMtry = c(50, 100, 200, 300, 500),
   tuneKNN = TRUE,
-  knnK = c(1, 2, 3, 4, 5, 7, 10),
+  knnK = c(1, 2, 3, 4, 5, 7, 10, 15),
   knnL = 0,
   plotResults = FALSE
 )
@@ -42,7 +42,7 @@ TuneClassifiers(
 
 \item{tuneKNN=TRUE}{if TRUE, tune parameters for KNN}
 
-\item{knnK=c(1, 2, 3, 4, 5, 7, 10)}{number of neighbours for KNN}
+\item{knnK=c(1, 2, 3, 4, 5, 7, 10, 15)}{number of neighbours for KNN}
 
 \item{knnL=0}{minimum vote for definite decision for KNN}
 
