@@ -13,4 +13,10 @@
 ## We however keep this code for the sake of comparison.
 
 ## Run the analysis
-
+tuningResult <- TuneClassifiers(
+  studyCase = studyCase,
+  dataType = "TMM_log2_PC",
+  tuneSVM = FALSE,
+  tuneRandomForest = FALSE,
+  tuneKNN = TRUE,
+  plotResults = TRUE)
