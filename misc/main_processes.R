@@ -19,6 +19,7 @@ if (project.parameters$global$reload) {
   source('misc/02_load_and_normalise_counts.R')
 }
 
+
 ## Reload parameters if required (they may have been changed since the
 ## study case was built)
 if (project.parameters$global$reload.parameters) {
@@ -42,6 +43,13 @@ if (studyCase$parameters$iterations < project.parameters$global$iterations) {
   }
 }
 
+
+#### Tune parameters ####
+message.with.time("Tuning parameters")
+source('misc/05_tune_parameters.R')
+
+stop("User-requested stop at this level")
+
 #### Start parallel computing ####
 message.with.time("Initializing parallel computing")
 source('misc/01c_init_parallel_computing.R')
@@ -62,6 +70,7 @@ source('misc/13_knn_impact_of_k.R')
 message.with.time("Feature selection by first PCs")
 source('misc/07_PCA_impact_of_PC_number.R')
 
+
 message("YEAH! ALL ANALYSES HAVE BEEN PERFORMED")
 
-message("JOB DONE")
+
