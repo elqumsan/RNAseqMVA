@@ -19,8 +19,8 @@
 #'
 #' ##############################################
 #' ## Load an RNA-seq dataset and merge counts per sample.
-#' This assumes that the required parameters have been specified
-#' in the YAML configuration file.
+#' # This assumes that the required parameters have been specified
+#' # in the YAML configuration file.
 #' x <- loadCounts( recountID = "SRP048759", parameters = parameters)
 #'
 #'
