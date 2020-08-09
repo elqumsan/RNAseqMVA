@@ -1,6 +1,5 @@
 #' @title Tune the parameters of the different classifiers for a given study case
 #' @author Jacques van Helden
-#' @description Tune the parameters of the different classifiers for a given study case
 #' @param studyCase a studyCase object
 #' @param dataType="TMM_log2_PC" data type to use for the tuning. Must be one of the data types included in the 'datasetsForTest' attribute of the studyCase object
 #' @param tuneSVM=TRUE if TRUE, tune parameters for SVM
@@ -11,7 +10,7 @@
 #' @param rfNtree=c(100,200,300,500) values to test for RF numbers of trees
 #' @param rfMtry=c(50,100,200,300,500) values to test for RF mtry parameter
 #' @param tuneKNN=TRUE if TRUE, tune parameters for KNN
-#' @param knnK=c(1,2,3,4,5,7,10) number of neighbours for KNN
+#' @param knnK=c(1,2,3,4,5,7,10,15) number of neighbours for KNN
 #' @param knnL=0 minimum vote for definite decision for KNN
 #' @param plotResults=FALSE if TRUE, run plot()  on the tuned objects
 #' @import e1071
@@ -21,7 +20,6 @@
 TuneClassifiers <- function(studyCase,
                             dataType="TMM_log2_PC",
                             tuneSVM=TRUE,
-                            #                            svmCost=4^(-2:2),
                             svmCost=1,
                             svmDegree=1:4,
                             svmGamma=4^(-2:4),
@@ -30,7 +28,7 @@ TuneClassifiers <- function(studyCase,
                             rfNtree=c(100,200,300,500),
                             rfMtry=c(50,100,200,300,500),
                             tuneKNN=TRUE,
-                            knnK=c(1,2,3,4,5,7,10),
+                            knnK=c(1,2,3,4,5,7,10,15),
                             knnL=0,
                             plotResults=FALSE) {
 
@@ -78,7 +76,7 @@ TuneClassifiers <- function(studyCase,
                                  kernel = "polynomial")
     result$tuneResults$svm$polynomialTuning <- polynomialTuning
     if (plotResults) {
-      plot(polynomialTuning, main = "SVM tuning - polynomial kernel")
+      #      plot(polynomialTuning, main = "SVM tuning - polynomial kernel")
     }
 
 
@@ -91,7 +89,7 @@ TuneClassifiers <- function(studyCase,
                              kernel = "radial")
     result$tuneResults$svm$radialTuning <- radialTuning
     if (plotResults) {
-      plot(radialTuning, main = "SVM tuning - radial kernel")
+      #      plot(radialTuning, main = "SVM tuning - radial kernel")
     }
 
     #### Parameters for the sigmoid kernel ####
@@ -104,7 +102,7 @@ TuneClassifiers <- function(studyCase,
                               kernel = "sigmoid")
     result$tuneResults$svm$sigmoidTuning <- sigmoidTuning
     if (plotResults) {
-      plot(sigmoidTuning, main = "SVM tuning - sigmoid kernel")
+      #      plot(sigmoidTuning, main = "SVM tuning - sigmoid kernel")
     }
 
   }
@@ -122,57 +120,9 @@ TuneClassifiers <- function(studyCase,
                         mtry = rfMtry,
                         ntree = rfNtree)
     result$tuneResults$rf$tunedRandomForest <- tunedRandomForest
+
     if (plotResults) {
-      par(mfrow = c(2,2))
-#      plot(tunedRandomForest, main = "RF tuning")
-      # RSAGA::grid.to.xyz(data = tunedRandomForest$performances,
-      #                    varname = "error",
-      #                    colnames = c("mtry", "ntree", "error"))
-      errorMatrix <- tidyr::spread(data = tunedRandomForest$performances[, c("mtry", "ntree", "error")],
-                                   key = "ntree",
-                                   value = "error")
-      persp(x = errorMatrix$mtry,
-            y = as.numeric(colnames(errorMatrix[, -1])),
-            z = as.matrix(errorMatrix[, -1]),
-            theta = 235,
-            main = paste(sep = "",
-                         studyCase$ID,
-                         " " , studyCase$parameters$feature,
-                         " - ", studyCase$parameters$short_label,
-                         "\n", "RF tuning"),
-            xlab = "mtry", ylab = "ntree", zlab = "error")
-
-      ## Get best parameters
-      bestNtree <- tunedRandomForest$best.parameters$ntree
-      bestMtry <- tunedRandomForest$best.parameters$mtry
-      bestNodeSize <- tunedRandomForest$best.parameters$nodesize
-
-      ## Plot impact of ntree for the best values of the other parameters
-      ntreeImpact <- subset(x = tunedRandomForest$performances,
-                            mtry == bestMtry & nodesize == bestNodeSize)
-      plot(ntreeImpact$ntree, ntreeImpact$error, type = "b",
-           xlab = "ntree", ylab = "MER",
-           panel.first = grid(), col = "red", las = 1,
-           main = paste(sep = "",
-                        studyCase$ID,
-                        " " , studyCase$parameters$feature,
-                        " - ", studyCase$parameters$short_label,
-                        "\n", "RF ntree tuning"),
-      )
-
-      ## Plot impact of mtry for the best values of the other parameters
-      mtryImpact <- subset(x = tunedRandomForest$performances,
-                           ntree == bestNtree & nodesize == bestNodeSize)
-      plot(mtryImpact$mtry, mtryImpact$error, type = "b",
-           xlab = "mtry", ylab = "MER",
-           panel.first = grid(), col = "red", las = 1,
-           main = paste(sep = "",
-                        studyCase$ID,
-                        " " , studyCase$parameters$feature,
-                        " - ", studyCase$parameters$short_label,
-                        "\n", "RF mtry tuning"),
-      )
-      par(mfrow = c(1,1))
+      plotRFtuning(tunedRandomForest)
     }
 
 
@@ -206,28 +156,97 @@ TuneClassifiers <- function(studyCase,
 
     result$tuneResults$knn$tunedKNN <- tunedKNN
     if (plotResults) {
-#      plot(tunedKNN, main = "KNN tuning")
-      plot(tunedKNN$performances$k,
-           tunedKNN$performances$error,
-           type = "b",
-           main = paste(sep = "",
-                        studyCase$ID,
-                        " " , studyCase$parameters$feature,
-                        " - ", studyCase$parameters$short_label,
-                        "\n", "KNN tuning"),
-           xlab = "k",
-           ylab = "MER",
-           las = 1,
-           panel.first = grid(),
-           col = "red"
-           )
+      #      plot(tunedKNN, main = "KNN tuning")
+      plotKNNtuning(tunedKNN)
     }
 
   }
 
+  message.with.time("\tTuneClassifiers()\tJob done")
+
   return(result)
+}
+
+#' @title draw plots to highlight the results of ranfomForest tuning
+#' @author Jacques van Helden
+#' @description draw a series of plots highlighting the impact of the parameters (mtry, ntrees) on the performances (miclassification error rate) of randomForest
+#' @param tunedRandomForest result of e1071::tune.randomForest() where vectors of values were provided for mtry and ntrees
+#' @return no return field
+#' @export
+plotRFtuning <- function(tunedRandomForest) {
+  par(mfrow = c(2,2))
+  #      plot(tunedRandomForest, main = "RF tuning")
+  # RSAGA::grid.to.xyz(data = tunedRandomForest$performances,
+  #                    varname = "error",
+  #                    colnames = c("mtry", "ntree", "error"))
+  errorMatrix <- tidyr::spread(data = tunedRandomForest$performances[, c("mtry", "ntree", "error")],
+                               key = "ntree",
+                               value = "error")
+  persp(x = errorMatrix$mtry,
+        y = as.numeric(colnames(errorMatrix[, -1])),
+        z = as.matrix(errorMatrix[, -1]),
+        theta = 235,
+        main = paste(sep = "",
+                     studyCase$ID,
+                     " " , studyCase$parameters$feature,
+                     " - ", studyCase$parameters$short_label,
+                     "\n", "RF tuning"),
+        xlab = "mtry", ylab = "ntree", zlab = "error")
+
+  ## Get best parameters
+  bestNtree <- tunedRandomForest$best.parameters$ntree
+  bestMtry <- tunedRandomForest$best.parameters$mtry
+  bestNodeSize <- tunedRandomForest$best.parameters$nodesize
+
+  ## Plot impact of ntree for the best values of the other parameters
+  ntreeImpact <- subset(x = tunedRandomForest$performances,
+                        mtry == bestMtry & nodesize == bestNodeSize)
+  plot(ntreeImpact$ntree, ntreeImpact$error, type = "b",
+       xlab = "ntree", ylab = "MER",
+       panel.first = grid(), col = "red", las = 1,
+       main = paste(sep = "",
+                    studyCase$ID,
+                    " " , studyCase$parameters$feature,
+                    " - ", studyCase$parameters$short_label,
+                    "\n", "RF ntree tuning"),
+  )
+
+  ## Plot impact of mtry for the best values of the other parameters
+  mtryImpact <- subset(x = tunedRandomForest$performances,
+                       ntree == bestNtree & nodesize == bestNodeSize)
+  plot(mtryImpact$mtry, mtryImpact$error, type = "b",
+       xlab = "mtry", ylab = "MER",
+       panel.first = grid(), col = "red", las = 1,
+       main = paste(sep = "",
+                    studyCase$ID,
+                    " " , studyCase$parameters$feature,
+                    " - ", studyCase$parameters$short_label,
+                    "\n", "RF mtry tuning"),
+  )
+  par(mfrow = c(1,1))
 
 }
 
+#' @title draw plots to highlight the results of KNN tuning
+#' @author Jacques van Helden
+#' @description draw a series of plots highlighting the impact of the number of neighbours (k) on the performances (miclassification error rate) of KNN
+#' @param tunedKNN result of e1071::tune.knn() where a vector of several values was provided for k
+#' @return no return field
+#' @export
+plotKNNtuning <- function(tunedKNN) {
+  plot(tunedKNN$performances$k,
+       tunedKNN$performances$error,
+       type = "b",
+       main = paste(sep = "",
+                    studyCase$ID,
+                    " " , studyCase$parameters$feature,
+                    " - ", studyCase$parameters$short_label,
+                    "\n", "KNN tuning"),
+       xlab = "k",
+       ylab = "MER",
+       las = 1,
+       panel.first = grid(),
+       col = "red"
+  )
 
-# message("tune_classifiers.R")
+}
