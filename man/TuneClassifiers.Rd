@@ -6,7 +6,7 @@
 \usage{
 TuneClassifiers(
   studyCase,
-  dataType = "TMM_log2",
+  dataType = "TMM_log2_PC",
   tuneSVM = TRUE,
   svmCost = 1,
   svmDegree = 1:4,
@@ -24,7 +24,7 @@ TuneClassifiers(
 \arguments{
 \item{studyCase}{a studyCase object}
 
-\item{dataType="TMM_log2"}{data type to use for the tuning. Must be one of the data types included in the 'datasetsForTest' attribute of the studyCase object}
+\item{dataType="TMM_log2_PC"}{data type to use for the tuning. Must be one of the data types included in the 'datasetsForTest' attribute of the studyCase object}
 
 \item{tuneSVM=TRUE}{if TRUE, tune parameters for SVM}
 
