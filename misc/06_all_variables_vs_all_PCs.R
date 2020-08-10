@@ -35,6 +35,7 @@ train.test.results.all.variables.per.classifier <- list()
 ## Loop over classifiers
 # classifier <- "svm" ## For quick test
 # parameters$classifiers[1] ## For quick test
+classifier <- "svm"
 for (classifier in project.parameters$global$classifiers) {
 
   # recountID <- "SRP042620"
@@ -51,7 +52,7 @@ for (classifier in project.parameters$global$classifiers) {
 
     ## Instantiate variables
     train.test.results.all.variables <- list() ## List to store all results
-    short.labels <- vector() ## Initiate the list of short labels for the plots
+    dataTypeLabels <- vector() ## Initiate the list of short labels for the plots
     studyCase <- studyCases[[recountID]]
 
     #### Associate each analysis of real data with a permutation test ####
@@ -70,7 +71,7 @@ for (classifier in project.parameters$global$classifiers) {
       }
 
       ## Loop over data types
-      data.type <- "TMM_log2" ## For quick test
+      data.type <- "TMM_log2_PC" ## For quick test
       for (data.type in parameters$data.types.to.test) {
         message.with.time("\tRunning train/test with all variables",
                           "\n\trecountID: ", recountID,
@@ -80,14 +81,15 @@ for (classifier in project.parameters$global$classifiers) {
         dataset <- studyCase$datasetsForTest[[data.type]]
         # class(dataset)
         # summary(dataset)
+        # dim(dataset$dataTable)
 
-        short.label <- dataset$dataType
+        dataTypeLabel <- dataset$dataType
         if (permute) {
-          short.label <- paste(
-            short.label,
+          dataTypeLabel <- paste(
+            dataTypeLabel,
             project.parameters$global$perm.prefix)
         }
-        short.labels <- append(short.labels, short.label)
+        dataTypeLabels <- append(dataTypeLabels, dataTypeLabel)
 
         # Check if the dataset belongs to the class DataTableWithTrainTestSets
         if (!is(object = dataset, class2 = "DataTableWithTrainTestSets")) {
@@ -104,7 +106,7 @@ for (classifier in project.parameters$global$classifiers) {
         outParam <- outputParameters(dataset, classifier, permute, createDir = TRUE)
 
         train.test.results.all.variables[[outParam$filePrefix]] <-
-          IterateTrainingTesting(
+          IterateTrainingTesting.DataTableWithTrainTestSets(
             dataset,
             classifier = classifier,
             permute = permute
@@ -120,7 +122,7 @@ for (classifier in project.parameters$global$classifiers) {
 
     ErrorRateBoxPlot(experimentList = train.test.results.all.variables,
                      classifier = classifier,
-                     experimentLabels = short.labels,
+                     experimentLabels = dataTypeLabels,
                      horizontal = TRUE,
                      fig.height = 6,
                      expMisclassificationRate = dataset$randExpectedMisclassificationRate,
@@ -179,7 +181,7 @@ for (recountID in recountIDs) {
     # expLabels <- sub(pattern = paste0(classifier, "_"), replacement = "", x = expLabels)
     # expLabels <- sub(pattern = paste0(project.parameters$global$svm$kernel, "_"), replacement = "", x = expLabels)
 
-    expLabels <- short.labels
+    expLabels <- dataTypeLabels
     expLabels <- sub(pattern = "RLE", replacement = "DESeq", x = expLabels)
 
     #### Error box plots ####
