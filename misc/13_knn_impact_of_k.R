@@ -236,22 +236,4 @@ if (project.parameters$global$save.image) {
 }
 memory.image.file
 
-# #### Generate the error rate box plots to compare the results with different k values ####
-# outParam <- outputParameters(
-#   dataset,
-#   classifier = "knn impact of k",
-#   permute = FALSE, createDir = TRUE)
-# ErrorRateBoxPlot(experimentList = train.test.results.all.variables.knn,
-#                  classifier = classifier,
-#                  horizontal = TRUE,
-#                  boxplotFile = file.path(
-#                    outParam$resultDir, "figures",
-#                    paste(sep = "", outParam$filePrefix, ".pdf")),
-#                  main = paste(sep = "",
-#                               parameters$recountID,
-#                               "; ", classifier, "; ",
-#                               "\nall variables; ",
-#                               project.parameters$global$iterations, " iterations"))
-
-
 message.with.time("Finished script 13_knn_impact_of_k.R")
