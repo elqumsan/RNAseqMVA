@@ -3,11 +3,11 @@ global: ## Global parameters are those who are the samee across all study cases
 #  selected_recount_ids: ['TCGA'] # TGCA dataset (under testing, still tobe debugged for the class labels)
 #  selected_recount_ids: ["SRP042620", "SRP056295", "SRP035988", "SRP057196", "SRP062966", "SRP066834"]
 #  selected_recount_ids: ['SRP042620'] # Breast cancer
-  selected_recount_ids: ['SRP056295'] # Acute myeloid leukemia
+#  selected_recount_ids: ['SRP056295'] # Acute myeloid leukemia
 #  selected_recount_ids: ['SRP035988'] # Psoriasis
 #  selected_recount_ids: ['SRP061240'] # Plasma RNA in cancer
 #  selected_recount_ids: ['SRP057196'] # Brain cells (sc)
-#  selected_recount_ids: ['SRP062966'] # Lupus (sc)
+  selected_recount_ids: ['SRP062966'] # Lupus (sc)
 #  selected_recount_ids: ['SRP066834'] # Cerebral organoids and fetal neocortex (sc)
 #  selected_recount_ids: ['SRP042161'] # Glioblastoma (sc) # PROBLEM
 
