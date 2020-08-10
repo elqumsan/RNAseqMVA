@@ -2,7 +2,7 @@
 % Please edit documentation in R/iterate_training_testing.R
 \name{IterateTrainingTesting}
 \alias{IterateTrainingTesting}
-\title{Iterate training/testing procedures with a given classifier and a given data type}
+\title{Iterate training/testing procedures with a given classifier and a given data type, with object of class DataTableWithTrainTestSets.}
 \usage{
 IterateTrainingTesting(
   dataset,
@@ -15,24 +15,120 @@ IterateTrainingTesting(
 \arguments{
 \item{dataset}{an object of class DataTableWithTrainTestSets}
 
-\item{classifier}{is the type of classifier that is used with repeated process.}
+\item{classifier}{one of the supported classifiers: "svm", "knn" or "rf"}
 
-\item{permute}{is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier}
+\item{permute}{should be TRUE if the class labels have been permuted for a negative control}
 
-\item{file.prefix}{prefix for files. If NULL, files will not be saved.}
+\item{file.prefix}{prefix for files. If NULL, will be obtained from the function outputParameters()}
 
 \item{verbose=1}{level of verbosity}
 }
 \value{
 an object which is Misclassification error rate for the specified number for resampling
 \itemize{
-\item testTable: that is the table that is contains misclassification error rate for specified  number of resampling.
-
+\item testTable: that is the table that is contains misclassification error rate for specified  number of resampling. for an object belonge to DataTableWithTrainTestSets.
 }
 }
 \description{
-for sake of the accuracy and due to the error rate have computed from sampling from the origin count data,
-it is better to compute the the error rate multiple time and then we would find the avarage for the error rate.
+for the sake of the accuracy and due to the error rate have
+we define our own iterative procedure to estimate the misclassification error
+rate (MER) iteratively with independent selections of testing and training
+sets (obtained by random subsampling). This enables to obtain a more robust
+estimate of the error rate (mean or median of the iterations) as well as the
+disperson (IQR, standard deviation) resulting from sampling fluctuations and
+from the stochastic elements of some algorithms (e.g. random forests).
+}
+\details{
+#' @title Iterate training/testing procedures with a given classifier and a given data type for an object belonging to the class DataTableWithClasses
+#' @author Mustafa AbuElQumsan and Jacques van Helden
+#' @description for the sake of the accuracy and due to the error rate have
+#' we define our own iterative procedure to estimate the misclassification error
+#' rate (MER) iteratively with independent selections of testing and training
+#' sets (obtained by random subsampling). This enables to obtain a more robust
+#' estimate of the error rate (mean or median of the iterations) as well as the
+#' disperson (IQR, standard deviation) resulting from sampling fluctuations and
+#' from the stochastic elements of some algorithms (e.g. random forests).
+#' @param dataset an object of class DataTableWithTrainTestSets
+#' @param classifier one of the supported classifiers: "svm", "knn" or "rf"
+#' @param permute should be TRUE if the class labels have been permuted for a negative control
+#' @param file.prefix prefix for files. If NULL, will be obtained from the function outputParameters()
+#' @param verbose=1 level of verbosity
+#' @return an object which is Misclassification error rate for the specified number for resampling
+#' \itemize{
+#'      \item testTable: that is the table that is contains misclassification error rate for specified  number of resampling.
+#'
+#' }
+#' @import foreach
+#' @import doParallel
+#' @export
+#'
+IterateTrainingTesting <- function(dataset,
+classifier,
+permute = FALSE,
+file.prefix = NULL,
+verbose = 1) {
+message("\tRunning IterateTrainingTesting() with object of class\t", paste( collapse  = ",",class(dataset) ) )
+testTable <- UseMethod("IterateTrainingTesting", dataset, classifier, permute, file.prefix, verbose)
+return(testTable)
+}
+
+#' @title Iterate training/testing procedures with a given classifier and a given data type for an object belonging to the class DataTableWithClasses
+#' @author Mustafa AbuElQumsan and Jacques van Helden
+#' @description for the sake of the accuracy and due to the error rate have
+#' we define our own iterative procedure to estimate the misclassification error
+#' rate (MER) iteratively with independent selections of testing and training
+#' sets (obtained by random subsampling). This enables to obtain a more robust
+#' estimate of the error rate (mean or median of the iterations) as well as the
+#' disperson (IQR, standard deviation) resulting from sampling fluctuations and
+#' from the stochastic elements of some algorithms (e.g. random forests).
+#' @param dataset an object of class DataTableWithTrainTestSets
+#' @param classifier one of the supported classifiers: "svm", "knn" or "rf"
+#' @param permute should be TRUE if the class labels have been permuted for a negative control
+#' @param file.prefix prefix for files. If NULL, will be obtained from the function outputParameters()
+#' @param verbose=1 level of verbosity
+#' @return an object which is Misclassification error rate for the specified number for resampling
+#'     \itemize{
+#'         \item testTable: that is the table that is contains misclassification error rate for specified  number of resampling.
+#'       }
+#'
+#' @export
+IterateTrainingTesting.DataTableWithClasses <- function(dataset,
+classifier,
+permute = FALSE,
+file.prefix = NULL,
+verbose = 1) {
+message("\tRunning IterateTrainingTesting() with object of class\t", "DataTableWithClasses")
+testTable <- NextMethod("IterateTrainingTesting", dataset, classifier, permute, file.prefix, verbose)
+return(testTable)
+}
+
+#' @title printing report message to inform that the training/testing procedure
+#' was completed for an object of class  DataTableWithTrainTestSets
+#' @author Mustafa AbuElQumsan and Jacques van Helden
+#' @description for the sake of the accuracy and due to the error rate have
+#' we define our own iterative procedure to estimate the misclassification error
+#' rate (MER) iteratively with independent selections of testing and training
+#' sets (obtained by random subsampling). This enables to obtain a more robust
+#' estimate of the error rate (mean or median of the iterations) as well as the
+#' disperson (IQR, standard deviation) resulting from sampling fluctuations and
+#' from the stochastic elements of some algorithms (e.g. random forests).
+#' @param dataset an object of class DataTableWithTrainTestSets
+#' @param classifier one of the supported classifiers: "svm", "knn" or "rf"
+#' @param permute should be TRUE if the class labels have been permuted for a negative control
+#' @param file.prefix prefix for files. If NULL, will be obtained from the function outputParameters()
+#' @param verbose=1 level of verbosity
+#'
+#' @export
+IterateTrainingTesting.default <- function(dataset,
+classifier,
+permute = FALSE,
+file.prefix = NULL,
+verbose = 1){
+message.with.time("\tFinished IterateTrainingTesting() with object of class\t", paste(collapse = ",", class(dataset)),
+"\n\tclassifier: ", classifier,
+"\n\tpermute: ", permute,
+"\n\tfile.prefix: ", file.prefix)
+}
 }
 \author{
 Mustafa AbuElQumsan and Jacques van Helden
