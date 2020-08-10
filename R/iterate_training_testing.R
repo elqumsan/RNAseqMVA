@@ -3,6 +3,11 @@
 #' @description for sake of the accuracy and due to the error rate have computed from sampling from the origin count data,
 #' it is better to compute the the error rate multiple time and then we would find the avarage for the error rate.
 #' @param dataset an object of class DataTableWithTrainTestSets
+#' @param classifier is the type of classifier that is used with repeated process.
+#' @param permute is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier
+#' @param file.prefix prefix for files. If NULL, files will not be saved.
+#' @param verbose=1 level of verbosity
+#' @param ... additional parameters are passed to class-specific implementation via UseMethod()
 #' @return an object which is Misclassification error rate for the specified number for resampling
 #' \itemize{
 #'      \item testTable: that is the table that is contains misclassification error rate for specified  number of resampling.
@@ -12,9 +17,14 @@
 #' @import doParallel
 #' @export
 #'
-IterateTrainingTesting <- function(dataset) {
+IterateTrainingTesting <- function(dataset,
+                                   classifier,
+                                   permute = FALSE,
+                                   file.prefix = NULL,
+                                   verbose = 1,
+                                   ...) {
   message("\tRunning IterateTrainingTesting() with object of class\t", paste( collapse  = ",",class(dataset) ) )
-  testTable <- UseMethod("IterateTrainingTesting", dataset)
+  testTable <- UseMethod("IterateTrainingTesting", dataset, ...)
   return(testTable)
 }
 
@@ -23,15 +33,25 @@ IterateTrainingTesting <- function(dataset) {
 #' @description for sake of the accuracy and due to the error rate have computed from sampleing from the origin count data,
 #' it is better to compute the the error rate multiple time and then we would find the avarage for the error rate. with DataTableWithClasses's object.
 #' @param dataset an object of class DataTableWithTrainTestSets
+#' @param classifier is the type of classifier that is used with repeated process.
+#' @param permute is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier
+#' @param file.prefix prefix for files. If NULL, files will not be saved.
+#' @param verbose=1 level of verbosity
+#' @param ... additional parameters are passed to class-specific implementation via NextMethod()
 #' @return an object which is Misclassification error rate for the specified number for resampling
 #'     \itemize{
 #'         \item testTable: that is the table that is contains misclassification error rate for specified  number of resampling.
 #'       }
 #'
 #' @export
-IterateTrainingTesting.DataTableWithClasses <- function(dataset) {
+IterateTrainingTesting.DataTableWithClasses <- function(dataset,
+                                                        classifier,
+                                                        permute = FALSE,
+                                                        file.prefix = NULL,
+                                                        verbose = 1,
+                                                        ...) {
   message("\tRunning IterateTrainingTesting() with object of class\t", "DataTableWithClasses")
-  testTable <- NextMethod("IterateTrainingTesting", dataset)
+  testTable <- NextMethod("IterateTrainingTesting", dataset, ...)
   return(testTable)
 }
 
@@ -40,10 +60,19 @@ IterateTrainingTesting.DataTableWithClasses <- function(dataset) {
 #' @description printing report message to informaing so,for sake of the accuracy and due to the error rate have computed from sampleing from the origin count data,
 #' it is better to compute the the error rate multiple time and then we would find the avarage for the error rate. with DataTableWithClasses's object.
 #' @param dataset an object of class DataTableWithTrainTestSets
-#'
+#' @param classifier is the type of classifier that is used with repeated process.
+#' @param permute is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier
+#' @param file.prefix prefix for files. If NULL, files will not be saved.
+#' @param verbose=1 level of verbosity
+#' @param ... additional parameters passed from calling method are ignored
 #'
 #' @export
-IterateTrainingTesting.default <- function(dataset){
+IterateTrainingTesting.default <- function(dataset,
+                                           classifier,
+                                           permute = FALSE,
+                                           file.prefix = NULL,
+                                           verbose = 1,
+                                           ...){
   message("\tFinished IterateTrainingTesting() with object of class\t", paste(collapse = ",", class(dataset)))
 }
 
@@ -57,6 +86,7 @@ IterateTrainingTesting.default <- function(dataset){
 #' @param permute is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier
 #' @param file.prefix prefix for files. If NULL, files will not be saved.
 #' @param verbose=1 level of verbosity
+#' @param ... additional parameters are passed to class-specific implementation via NextMethod()
 #'
 #' @return an object which is Misclassification error rate for the specified number for resampling
 #'     \itemize{
@@ -68,7 +98,8 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function(
   classifier,
   permute = FALSE,
   file.prefix = NULL,
-  verbose = 1
+  verbose = 1,
+  ...
 ) {
 
 
@@ -193,21 +224,6 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function(
               quote = FALSE, sep = "\t", row.names = TRUE, col.names = NA,
               file = errorSummary.file)
 
-  ## Plot a box plot of training versus testing error
-  # message("\t\tBox plot")
-  # boxplot.file <- file.path(
-  #   parameters$dir$classifier_figures[classifier],
-  #   paste(sep = "", file.prefix, "_R", iterations, "_learning_vs_test_error_boxplot.pdf"))
-  #
-  # pdf(file = boxplot.file, width = 7, height = 5)
-  # main <- paste(sep = "", recountID, "\n", classifier, "; ", dataset$dataType, "; all variables")
-  # if (permute) {
-  #   main <- paste(sep = "", main, "; permuted labels")
-  # }
-  # boxplot(testTable[, c("training.error.rate", "testing.error.rate")],
-  #         ylim = c(0,1),
-  #         main = main)
-  # silence <- dev.off(); rm(silence)
 
   ## Compute elapsed time
   endTime <- Sys.time();
@@ -215,6 +231,6 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function(
   elapsedTimeFile <- file.path(parameters$dir$classifier_tables[classifier], paste(sep = "", file.prefix, "_elapsed_time.txt"))
   write(file = elapsedTimeFile, x = paste(sep = "\t", startTime, endTime, signif(digits = 3, elapsedTime)))
   message("\t\tElapsed Time file: ", elapsedTimeFile)
-  NextMethod("IterateTrainingTesting", dataset)
+  NextMethod("IterateTrainingTesting", dataset, ...)
   return(testTable)
 }
