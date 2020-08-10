@@ -7,12 +7,13 @@
 StudyCase(recountID, parameters)
 }
 \arguments{
-\item{recountID}{A valide ID for an object of the ReCount2 database}
+\item{recountID}{a valid experiment ID for a record of the ReCount2 database}
 
 \item{parameters}{recountID-specific parameters specified in a YAML-formatted configuration file}
 }
 \value{
-an object of class StudyCase, that is contain raw data before per-processing step, datasets for testing that are per-processed dataset and their respective parameters.
+an object of class StudyCase, which contains raw data (before preprocessing steps),
+as well as several datasets normalised with different methods.
 }
 \description{
 Create a StudyCase object, load RecountID dataset, and run preprocessing to generate the DataTableWitthClasses objects.
