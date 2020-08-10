@@ -7,7 +7,6 @@
 #' @param permute is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier
 #' @param file.prefix prefix for files. If NULL, files will not be saved.
 #' @param verbose=1 level of verbosity
-#' @param ... additional parameters are passed to class-specific implementation via UseMethod()
 #' @return an object which is Misclassification error rate for the specified number for resampling
 #' \itemize{
 #'      \item testTable: that is the table that is contains misclassification error rate for specified  number of resampling.
@@ -21,10 +20,9 @@ IterateTrainingTesting <- function(dataset,
                                    classifier,
                                    permute = FALSE,
                                    file.prefix = NULL,
-                                   verbose = 1,
-                                   ...) {
+                                   verbose = 1) {
   message("\tRunning IterateTrainingTesting() with object of class\t", paste( collapse  = ",",class(dataset) ) )
-  testTable <- UseMethod("IterateTrainingTesting", dataset, ...)
+  testTable <- UseMethod("IterateTrainingTesting", dataset, classifier, permute, file.prefix, verbose)
   return(testTable)
 }
 
@@ -37,7 +35,6 @@ IterateTrainingTesting <- function(dataset,
 #' @param permute is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier
 #' @param file.prefix prefix for files. If NULL, files will not be saved.
 #' @param verbose=1 level of verbosity
-#' @param ... additional parameters are passed to class-specific implementation via NextMethod()
 #' @return an object which is Misclassification error rate for the specified number for resampling
 #'     \itemize{
 #'         \item testTable: that is the table that is contains misclassification error rate for specified  number of resampling.
@@ -48,10 +45,9 @@ IterateTrainingTesting.DataTableWithClasses <- function(dataset,
                                                         classifier,
                                                         permute = FALSE,
                                                         file.prefix = NULL,
-                                                        verbose = 1,
-                                                        ...) {
+                                                        verbose = 1) {
   message("\tRunning IterateTrainingTesting() with object of class\t", "DataTableWithClasses")
-  testTable <- NextMethod("IterateTrainingTesting", dataset, ...)
+  testTable <- NextMethod("IterateTrainingTesting", dataset, classifier, permute, file.prefix, verbose)
   return(testTable)
 }
 
@@ -64,15 +60,13 @@ IterateTrainingTesting.DataTableWithClasses <- function(dataset,
 #' @param permute is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier
 #' @param file.prefix prefix for files. If NULL, files will not be saved.
 #' @param verbose=1 level of verbosity
-#' @param ... additional parameters passed from calling method are ignored
 #'
 #' @export
 IterateTrainingTesting.default <- function(dataset,
                                            classifier,
                                            permute = FALSE,
                                            file.prefix = NULL,
-                                           verbose = 1,
-                                           ...){
+                                           verbose = 1){
   message("\tFinished IterateTrainingTesting() with object of class\t", paste(collapse = ",", class(dataset)))
 }
 
@@ -86,7 +80,6 @@ IterateTrainingTesting.default <- function(dataset,
 #' @param permute is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier
 #' @param file.prefix prefix for files. If NULL, files will not be saved.
 #' @param verbose=1 level of verbosity
-#' @param ... additional parameters are passed to class-specific implementation via NextMethod()
 #'
 #' @return an object which is Misclassification error rate for the specified number for resampling
 #'     \itemize{
@@ -98,17 +91,19 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function(
   classifier,
   permute = FALSE,
   file.prefix = NULL,
-  verbose = 1,
-  ...
-) {
+  verbose = 1) {
 
 
   ## Check if file prefix has been correctly specified
   if (is.null(file.prefix)) {
-    file.prefix <- paste(sep = "_", dataset$ID, dataset$dataType, classifier)
-    if (permute) {
-      file.prefix <- paste0(file.prefix, "_permLabels")
-    }
+    ## Define directory based on the method
+    #    file.prefix <- paste(sep = "_", dataset$ID, dataset$parameters$fe, dataset$dataType, classifier)
+    # if (permute) {
+    #   file.prefix <- paste0(file.prefix, "_permLabels")
+    # }
+    outParam <- outputParameters(dataset,classifier, permute)
+    file.prefix <- outParam$filePrefix
+
   }
   startTime <- Sys.time()
 
@@ -150,7 +145,6 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function(
                       "\n\tID: ", dataset$ID,
                       "\n\tfeature type: ", dataset$parameters$feature,
                       "\n\tdata type: ", dataset$dataType,
-                      #                      "\n\tvariable type: ", dataset$variablesType,
                       "\n\tpermuted labels: ", permute,
                       "\n\tTrain/test iterations: ",   parameters$iterations,
                       "\n\tclassifier: ", classifier)
@@ -163,11 +157,12 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function(
   }
 
 
-  ## Define directory based on the method
-  # outParam <- outputParameters( dataset,classifier, permute)
 
   ## Iterate train/test cycles
   testTable <- data.frame() ## Instantiate the test table
+  if (is.null(project.parameters$global$parallel)) {
+    project.parameters$global$parallel <- FALSE
+  }
   if (project.parameters$global$parallel) {
     if (verbose >= 1) {
       message("\t", format(Sys.time(), "%Y-%m-%d_%H%M%S"), "\t",
@@ -231,6 +226,6 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function(
   elapsedTimeFile <- file.path(parameters$dir$classifier_tables[classifier], paste(sep = "", file.prefix, "_elapsed_time.txt"))
   write(file = elapsedTimeFile, x = paste(sep = "\t", startTime, endTime, signif(digits = 3, elapsedTime)))
   message("\t\tElapsed Time file: ", elapsedTimeFile)
-  NextMethod("IterateTrainingTesting", dataset, ...)
+  NextMethod("IterateTrainingTesting", dataset, classifier, permute, file.prefix, verbose)
   return(testTable)
 }
