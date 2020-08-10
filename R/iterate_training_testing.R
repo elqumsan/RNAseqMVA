@@ -67,7 +67,10 @@ IterateTrainingTesting.default <- function(dataset,
                                            permute = FALSE,
                                            file.prefix = NULL,
                                            verbose = 1){
-  message("\tFinished IterateTrainingTesting() with object of class\t", paste(collapse = ",", class(dataset)))
+  message.with.time("\tFinished IterateTrainingTesting() with object of class\t", paste(collapse = ",", class(dataset)),
+                    "\n\tclassifier: ", classifier,
+                    "\n\tpermute: ", permute,
+                    "\n\tfile.prefix: ", file.prefix)
 }
 
 
@@ -91,7 +94,8 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function(
   classifier,
   permute = FALSE,
   file.prefix = NULL,
-  verbose = 1) {
+  verbose = 1
+  ) {
 
 
   ## Check if file prefix has been correctly specified
@@ -226,6 +230,7 @@ IterateTrainingTesting.DataTableWithTrainTestSets <- function(
   elapsedTimeFile <- file.path(parameters$dir$classifier_tables[classifier], paste(sep = "", file.prefix, "_elapsed_time.txt"))
   write(file = elapsedTimeFile, x = paste(sep = "\t", startTime, endTime, signif(digits = 3, elapsedTime)))
   message("\t\tElapsed Time file: ", elapsedTimeFile)
-  NextMethod("IterateTrainingTesting", dataset, classifier, permute, file.prefix, verbose)
+  NextMethod("IterateTrainingTesting", dataset, classifier, permute)
+#  NextMethod("IterateTrainingTesting", dataset, classifier, permute, file.prefix, verbose)
   return(testTable)
 }
