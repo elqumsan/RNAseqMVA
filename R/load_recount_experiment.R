@@ -9,10 +9,16 @@
 #' If forceDownload is TRUE, the data will be downloaded irrespective of existing files.
 #'
 #' @examples
+#' ## Load required packages
+#' require("RNAseqMVA")
+#' require(yaml)
+#'
+#' ## Load parameters
+#' project.parameters <- yaml.load_file("misc/00_project_parameters.yml")
 #'
 #' ## Load counts for a Leukemia dataset
 #' recountID <- "SRP048759"
-#' recountData <- loadRecountExperiment(recountID)
+#' recountData <- loadRecountExperiment(recountID, parameters = project.parameters$global)
 #'
 #' ## Check the dimension of the table with counts per run
 #' dim(recountData$result$runs$dataTable)
