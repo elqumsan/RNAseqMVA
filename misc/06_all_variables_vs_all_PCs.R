@@ -106,7 +106,7 @@ for (classifier in project.parameters$global$classifiers) {
         outParam <- outputParameters(dataset, classifier, permute, createDir = TRUE)
 
         train.test.results.all.variables[[outParam$filePrefix]] <-
-          IterateTrainingTesting.DataTableWithTrainTestSets(
+          IterateTrainingTesting(
             dataset,
             classifier = classifier,
             permute = permute
@@ -246,4 +246,4 @@ if (project.parameters$global$save.image) {
 #                               data.type = "diverse data type"))
 #
 
-message.with.time("Finished script 06_all_vaariables_vs_all_PCs.R")
+message.with.time("Finished script 06_all_variables_vs_all_PCs.R")
