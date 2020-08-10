@@ -19,15 +19,15 @@ outputParameters <- function(dataset,
                              createDir = TRUE,
                              knn.k = NULL) {
 
-  # ## Check the class of hte dataset
-  # if (!is(object = dataset, class2 = "DataTableWithTrainTestSets")) {
-  #   stop("filePrefix requires an object of class DataTableWithTrainTestSets")
-  # }
+  ## Check the class of hte dataset
+  if (!is(object = dataset, class2 = "DataTableWithTrainTestSets")) {
+    stop("filePrefix requires an object of class DataTableWithTrainTestSets")
+  }
 
-  ##  Verbosity
-  # message("\tDefining file Prefix for dataset ", dataset$ID,
-  #         "; data type: ", dataset$dataType,
-  #         "; classifier: ", classifier)
+  #  Verbosity
+  message("\tDefining file Prefix for dataset ", dataset$ID,
+          "; data type: ", dataset$dataType,
+          "; classifier: ", classifier)
 
   ## Define the piece of prefix and output dir that indicates the classifier
 
@@ -55,7 +55,7 @@ outputParameters <- function(dataset,
 
   ## Define the path to the result directory
   resultDir <- file.path(dataset$parameters$dir$results,
-                         paste(sep = "_", dataset$ID, dataset$parameters$feature),
+#                         paste(sep = "_", dataset$ID, dataset$parameters$feature),
                          classifier)
   resultDir <- gsub(pattern = " ", replacement = "_", x = resultDir) ## Avoid spaces in file names
 
@@ -65,7 +65,7 @@ outputParameters <- function(dataset,
 
   ## Define the path to the tables TSV result directory
   resultDirTablesTSV <- file.path(dataset$parameters$dir$results,
-                         dataset$ID,
+                         # dataset$ID,
                          classifier, "tables")
   resultDirTablesTSV <- gsub(pattern = " ", replacement = "_", x = resultDirTablesTSV) ## Avoid spaces in file names
   dir.create(resultDirTablesTSV, showWarnings = FALSE, recursive = TRUE)
