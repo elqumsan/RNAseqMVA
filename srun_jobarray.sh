@@ -28,8 +28,8 @@
 
 #SBATCH --array=0-13  # Define the IDs for the job array
 #SBATCH --mem=48GB # Request Gb per job
-#SBATCH --cpus=2  # Request CPUs per job
-#SBATCH --partition=fast  # note: the long partition (>1 day) is required for some study cases but for basic jobs the fast is sufficient
+#SBATCH --cpus=25  # Request CPUs per job
+#SBATCH --partition=long  # note: the long partition (>1 day) is required for some study cases but for basic jobs the fast is sufficient
 #SBATCH -o slurm_logs/rnaseqmva_%a_%A_%j_out.txt  # file to store standard output
 #SBATCH -e slurm_logs/rnaseqmva_%a_%A_%j_err.txt  # file to store standard error
 
@@ -59,7 +59,7 @@ PREFIX=${RECOUNT_ID}_${FEATURE_TYPE}_${START_DATE}
 ## slurm parameters
 CPUS=25
 MEM=48GB
-PARTITION=fast
+PARTITION=long
 
 ## The variable $SLURM_ARRAY_TASK_ID takes a different value for each job
 ## based on the values entered with the argument --array
