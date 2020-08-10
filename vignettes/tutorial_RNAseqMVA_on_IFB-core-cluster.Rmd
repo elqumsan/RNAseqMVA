@@ -269,12 +269,17 @@ git pull
 ### Compiling the RNAseqMVA package
 
 ```{bash eval=FALSE}
+## If not done before, load the required conda environment
+module load conda
+conda activate rnaseqmva
+
+## Go to the package-enclosing directory
 cd /shared/projects/rnaseqmva
 
 ## (Re)build the package
 R CMD build RNAseqMVA
 
-## Check the doc
+## Check the package and doc (note: this takes some time)
 R CMD check RNAseqMVA
 
 ## Install the rebuilt package
