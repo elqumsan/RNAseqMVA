@@ -301,3 +301,63 @@ plotKNNtuning <- function(tuningResult, pdfFile = NULL, ...) {
     silence <- dev.off()
   }
 }
+
+#' @title draw plots to highlight the results of SVM tuning
+#' @author Jacques van Helden
+#' @description draw a series of plots highlighting the impact of the parameters on the performances (miclassification error rate) of SVM
+#' @param tuningResult result of TuneClassifiers() run with option tuneSVM=TRUE, and where vectors of values were provided for the different parameters
+#' @param pdfFile=NULL if not null, the plot is exported in pdf format the specified file. Else it is printed out on the current device.
+#' @param ... additional parameters are passed to plot()
+#' @return no return field
+#' @export
+plotSVMtuning <- function(tuningResult, pdfFile = NULL, ...) {
+
+  ## Open pdf file if specified
+  if (!is.null(pdfFile)) {
+    message("\tplotKNNtuning() exporting to pdf file\t", pdfFile)
+    pdf(pdfFile, width = 7, height = 5)
+  }
+
+  par(mfrow = c(2,2))
+
+  ## Get the randomForest tuning result
+  tunedSVM <- tuningResult$tuneResults$svm
+  if (is.null(tunedSVM)) {
+    stop("plotSVMtuning() error: tuningResult does not contain any svm tuning results")
+  }
+
+
+  ## Best kernel
+  kernelPerformances <- c(
+    linear = tunedSVM$linearTuning$best.performance,
+    radial = tunedSVM$radialTuning$best.performance,
+    polynomial = tunedSVM$polynomialTuning$best.performance,
+    sigmoid = tunedSVM$sigmoidTuning$best.performance
+  )
+  barplot(kernelPerformances,
+          col = "#FFDDDD",
+          xlab = "kernel",
+          ylab = "MER",
+          las = 1,
+#          ylim = c(0,1),
+          main = paste(sep = "",
+                       tuningResult$parameters$recountID,
+                       " " , tuningResult$parameters$feature,
+                       " - " , tuningResult$dataType,
+                       "\n", tuningResult$parameters$short_label,
+                       "\n", "SVM tuning - best kernel"),
+         ...
+  )
+
+
+
+
+  par(mfrow = c(1,1))
+
+  ## Close pdf file if specified
+  if (!is.null(pdfFile)) {
+    silence <- dev.off()
+  }
+
+}
+
