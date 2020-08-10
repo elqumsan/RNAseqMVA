@@ -4,10 +4,24 @@
 \alias{IterateTrainingTesting}
 \title{Iterate training/testing procedures with a given classifier and a given data type}
 \usage{
-IterateTrainingTesting(dataset)
+IterateTrainingTesting(
+  dataset,
+  classifier,
+  permute = FALSE,
+  file.prefix = NULL,
+  verbose = 1
+)
 }
 \arguments{
 \item{dataset}{an object of class DataTableWithTrainTestSets}
+
+\item{classifier}{is the type of classifier that is used with repeated process.}
+
+\item{permute}{is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier}
+
+\item{file.prefix}{prefix for files. If NULL, files will not be saved.}
+
+\item{verbose=1}{level of verbosity}
 }
 \value{
 an object which is Misclassification error rate for the specified number for resampling

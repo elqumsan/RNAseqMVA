@@ -4,10 +4,24 @@
 \alias{IterateTrainingTesting.default}
 \title{printing report message to informaing so, Iterate training/testing procedures with a given classifier and a given data type for the object that belonge for DataTableWithClasses class has finished.}
 \usage{
-\method{IterateTrainingTesting}{default}(dataset)
+\method{IterateTrainingTesting}{default}(
+  dataset,
+  classifier,
+  permute = FALSE,
+  file.prefix = NULL,
+  verbose = 1
+)
 }
 \arguments{
 \item{dataset}{an object of class DataTableWithTrainTestSets}
+
+\item{classifier}{is the type of classifier that is used with repeated process.}
+
+\item{permute}{is show if the class lable are permuted this for sake of the knowing the strength and weaknesses of the classifier}
+
+\item{file.prefix}{prefix for files. If NULL, files will not be saved.}
+
+\item{verbose=1}{level of verbosity}
 }
 \description{
 printing report message to informaing so,for sake of the accuracy and due to the error rate have computed from sampleing from the origin count data,

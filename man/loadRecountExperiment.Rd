@@ -27,10 +27,16 @@ Load one count table from Recount for a given experiment ID, and optionally
 merge the counts in order to avoid redundancy between multipl runs per sample.
 }
 \examples{
+## Load required packages
+require("RNAseqMVA")
+require(yaml)
+
+## Load parameters
+project.parameters <- yaml.load_file("misc/00_project_parameters.yml")
 
 ## Load counts for a Leukemia dataset
 recountID <- "SRP048759"
-recountData <- loadRecountExperiment(recountID)
+recountData <- loadRecountExperiment(recountID, parameters = project.parameters$global)
 
 ## Check the dimension of the table with counts per run
 dim(recountData$result$runs$dataTable)
