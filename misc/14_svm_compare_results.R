@@ -6,17 +6,33 @@ testingMERmean <- list()
 testingMERsd <- list()
 
 #### Parameter values ####
+
+## Graphical parameters
+par.ori <- par(no.readonly = TRUE)
+
+## Feature types
 featureTypes <- c("gene", "transcript")
+
+## Study case IDs
 recountIDs <- c(
-  "SRP042620",
-  "SRP062966",
-  "SRP042620",
-  "SRP035988",
-  "SRP056295",
-  "SRP057196",
-  "SRP066834"
+  "SRP042620",  # Breast cancer
+  "SRP062966",  # Lupus (sc)
+  "SRP035988",  # Psoriasis
+  "SRP056295",  # Acute myeloid leukemia
+  "SRP057196",  # Brain cells (sc)
+  "SRP066834"   # Cerebral organoids and fetal neocortex (sc)
 )
 
+studyCaseLabels <- c(
+  "SRP042620" = "Breast cancer",
+  "SRP062966" = "Lupus (sc)",
+  "SRP035988" = "Psoriasis",
+  "SRP056295" = "Acute myeloid leukemia",
+  "SRP057196" = "Brain cells (sc)",
+  "SRP066834" = "Cerebral organoids and fetal neocortex (sc)"
+)
+
+recountIDs <- names(studyCaseLabels)
 
 ## Kernels
 kernels <- c(
@@ -128,9 +144,24 @@ for (featureType in featureTypes) {
   }
 }
 
-testingMERmean[[featureType]][[recountID]]
+# testingMERmean[[featureType]][[recountID]]
+#  testingMERsd[[featureType]][[recountID]]
 
 
-testingMERsd[[featureType]][[recountID]]
-
+### Barplots ####
+par(mfrow  = c(3, 2))
+par(mar = c(6, 5, 4, 1))
+for (recountID in recountIDs) {
+  barplot(t(as.matrix(testingMERmean[[featureType]][[recountID]][, 1:length(kernels)])),
+          beside = TRUE,
+          main = paste0(studyCaseLabels[recountID], " (", recountID, ")"),
+          las = 2,
+          xlim = c(0, length(normMethods) * length(kernels) * 1.8),
+          ylim = c(0,1),
+          legend.text = kernels,
+          cex.names = 0.8,
+          ylab = "MER", args.legend = list(cex = 0.8))
+#  abline(h = seq(from = 0.1, to = 0.9, by = 0.1), col = "#BBBBBB")
+}
+par(par.ori)
 
