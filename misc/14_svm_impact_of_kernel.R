@@ -129,7 +129,7 @@ train.test.results.all.variables.per.svm[[recountID]] <- train.test.results.all.
 save.result.file <- file.path(
   project.parameters$global$dir$memoryImages,
   paste0(
-    paste(collapse = "-", selectedRecountIDs),
+    recountID,
     "_", featureType,
     "_svm_impact_of_kernel",
     "_results.Rdata"))
