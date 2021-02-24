@@ -128,6 +128,7 @@ IN_SOURCE=${LOGIN}@${SERVER}:${REMOTE_WS}/${TO_SYNC}
 IN_TARGET=${LOCAL_WS}
 ws_dir_from_server:
 	@echo "Synchronizing directory from ${SERVER} shared space to your workspace"
+	@echo "	LOGIN 		${LOGIN}"
 	@echo "	REMOTE_WS	${REMOTE_WS}"
 	@echo "	LOCAL_WS	${LOCAL_WS}"
 	@echo "	TO_SYNC		${TO_SYNC}"
@@ -136,6 +137,7 @@ ws_dir_from_server:
 	@echo "	IN_TARGET	${IN_TARGET}"
 	@echo "	EXCLUDE_OPT	${EXCLUDE_OPT}"
 	@rsync -ruptvl ${EXCLUDE_OPT} ${RSYNC_OPT} ${IN_SOURCE} ${IN_TARGET}
+	@echo "Results were synchronised to the local workspace	${LOCAL_WS}"
 
 results_from_server:
 	${MAKE} ws_dir_from_server TO_SYNC=results
