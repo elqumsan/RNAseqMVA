@@ -5,25 +5,31 @@ on:
   pull_request:
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Conda with Mambaforge
+      - name: Set up Conda (Miniconda)
         uses: conda-incubator/setup-miniconda@v2
         with:
-          miniforge-variant: Mambaforge
-          channels: conda-forge,bioconda,defaults
-          use-mamba: true
-          environment-file: conda-rnaseqmva_2025.yml
-          activate-environment: rnaseqmva-2025
+          miniconda-version: "latest"
+          auto-update-conda: true
           auto-activate-base: false
 
-      - name: Test R and packages
+      - name: Create environment from YAML
         shell: bash -l {0}
         run: |
+          conda env create -f conda-rnaseqmva_2025.yml
+          conda activate rnaseqmva-2025
+          conda info
+          conda list
+
+      - name: Run R tests
+        shell: bash -l {0}
+        run: |
+          conda activate rnaseqmva-2025
           Rscript -e "cat('R version:', R.version.string, '\n')"
           Rscript -e "library(DESeq2); library(recount); library(caret); library(devtools); cat('R packages loaded OK\n')"
