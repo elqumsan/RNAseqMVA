@@ -1,0 +1,37 @@
+name: Check RNAseqMVA Package
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniconda-version: latest
+          auto-update-conda: true
+          auto-activate-base: false
+
+      - name: Create Conda environment
+        shell: bash -l {0}
+        run: |
+          conda env create -f conda-rnaseqmva_2025.yml
+          conda activate rnaseqmva-2025
+
+      - name: Install and check package
+        shell: bash -l {0}
+        run: |
+          conda activate rnaseqmva-2025
+          Rscript -e "devtools::install_local('.', upgrade = 'never')"
+          R CMD check --no-manual --as-cran .
