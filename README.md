@@ -11,17 +11,17 @@ Benchmarking SVM, Random Forest, and KNN for RNA-seq Data: Revisiting Classifier
 
 ## Description
 
-This repository contains the R code (RNAseqMVA package + analysis scripts) required to reproduce the evaluation descrived in the manuscript
+This repository contains the R code (RNAseqMVA package + analysis scripts) required to reproduce the evaluation descrived in the following manuscript:
 
-Mustafa AbuElQumsan, Baddih Gathas and Jacques van Helden (2025). Benchmarking SVM, Random Forest, and KNN for RNA-seq Data: Revisiting Classifier Performance and the Impact of Preprocessing and Hyperparameter Tuning. _Submitted_. 
+- Mustafa AbuElQumsan, Baddih Gathas and Jacques van Helden (2025). Benchmarking SVM, Random Forest, and KNN for RNA-seq Data: Revisiting Classifier Performance and the Impact of Preprocessing and Hyperparameter Tuning. _Submitted_. 
 
 ## Dataset Information
 
-The benchmarking was performed based on 6 datasets downloaded from the Recount database ([rna.recount.bio/](https://rna.recount.bio/)). 
+The benchmarking was performed based on 6 datasets downloaded from the Recount database ([rna.recount.bio/](https://rna.recount.bio)). 
 
 ## Code Information
 
-The code is written in R (version >= 3.6.1). 
+The code is written in R and should run on R version >= 3.6.1. 
 
 ## Requirements
 
