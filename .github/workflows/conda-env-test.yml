@@ -12,10 +12,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Conda with Miniforge
+      - name: Set up Conda with Mambaforge
         uses: conda-incubator/setup-miniconda@v2
         with:
-          miniforge-variant: Miniforge
+          miniforge-variant: Mambaforge
           channels: conda-forge,bioconda,defaults
           use-mamba: true
           environment-file: conda-rnaseqmva_2025.yml
