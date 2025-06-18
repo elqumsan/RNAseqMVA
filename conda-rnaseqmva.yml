@@ -1,42 +1,38 @@
 name: rnaseqmva
-
 channels:
-- r
-- conda-forge
-- bioconda
+  - conda-forge
+  - bioconda
+  - defaults
 
 dependencies:
+  - r-base=4.4.0
+  - r-essentials
+  - r-markdown
+  - r-yaml
+  - r-roxygen2
+  - r-dplyr
+  - r-rcurl
+  - r-xml
+  - r-rcpp
+  - r-devtools
+  - r-caret
+  - r-class
+  - r-broom
+  - r-e1071
+  - r-foreach
+  - r-doparallel
+  - r-randomforest
+  - r-pheatmap
+  - r-scatterplot3d
+  - r-biocmanager
 
-## RCRAN packages
-- r::r-base >=3.6.1
-- r::r-markdown    # Required to compile RNAseqMVA package
-- r::r-yaml        # Required to load the config file
-- r::r-roxygen2    # To build the package doc
-- r::r-dplyr       # Required for caret (depedency of dependency)
-- r::r-rcurl       # Undeclared dependency of recount
-- r::r-xml         # Undeclared dependency of recount
-- r::r-rcpp        # Wrongly declared dependency for xml2, itself required for roxygen2
-- r::r-devtools   
-- r::r-caret 
-- r::r-class 
-- r::r-broom 
-- r::r-e1071 
-- r::r-foreach 
-- r::r-doparallel 
-- r::r-domc
-- r::r-randomforest
-- conda-forge::r-pheatmap  # Heatmaps with extended control on dimensions
-- conda-forge::r-scatterplot3d 
-- conda-forge::r-biocmanager
-
-## Bioconda
-# - bioconda::bioconductor-iranges         # Seems to help installing derfinder
-- bioconda::bioconductor-derfinder
-- bioconda::bioconductor-recount
-- bioconda::bioconductor-vsn             # For RNA-seq plots from Huber
-- bioconda::bioconductor-deseq2
-- bioconda::bioconductor-limma
-- bioconda::bioconductor-edger
-- bioconda::bioconductor-s4vectors
-- bioconda::bioconductor-summarizedexperiment
-- bioconda::bioconductor-genomeinfodb
+  # Bioconductor (current)
+  - bioconductor-deseq2
+  - bioconductor-limma
+  - bioconductor-edger
+  - bioconductor-vsn
+  - bioconductor-derfinder
+  - bioconductor-recount
+  - bioconductor-s4vectors
+  - bioconductor-genomeinfodb
+  - bioconductor-summarizedexperiment
