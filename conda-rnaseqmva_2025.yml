@@ -1,4 +1,4 @@
-name: rnaseqmva
+name: rnaseqmva-2025
 channels:
   - conda-forge
   - bioconda
@@ -6,7 +6,7 @@ channels:
 
 dependencies:
   - r-base=4.4.0
-  - r-essentials
+#  - r-essentials
   - r-markdown
   - r-yaml
   - r-roxygen2
