@@ -68,13 +68,13 @@ conda --version
 If your conda version is < 5, use the command `source` below.
 
 ```bash
-source activate rnaseqmva
+source activate rnaseqmva-2025
 ```
 
 If you have conda verison >=5, you can run `conda activate`as below.
 
 ```
-conda activate rnaseqmva
+conda activate rnaseqmva-2025
 ```
 
 
