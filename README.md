@@ -1,7 +1,11 @@
 # RNAseqMVA
 
-R package developed to perform an evaluation of multivariate analysis
+This code contains 
+- the R package RNAseqMVA, implemented to perform an evaluation of multivariate analysis
 methods for the supervised classification of RNA-seq data.
+- the R scripts required to reproduce the evaluation descrived in the manuscript
+
+Mustafa AbuElQumsan, Baddih Gathas and Jacques van Helden (2025). 
 
 ## Authors
 
