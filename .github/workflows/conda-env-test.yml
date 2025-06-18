@@ -1,0 +1,30 @@
+name: Test Conda RNAseqMVA Env
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Mamba
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          mamba-version: "*"
+          miniforge-variant: Mambaforge
+          channels: conda-forge,bioconda,defaults
+          use-mamba: true
+          environment-file: conda-rnaseqmva_2025.yml
+          activate-environment: rnaseqmva-2025
+          auto-activate-base: false
+
+      - name: Test R is available and packages load
+        shell: bash -l {0}
+        run: |
+          Rscript -e "cat('R version:', R.version.string, '\n')"
+          Rscript -e "library(DESeq2); library(recount); library(caret); library(devtools); cat('R packages loaded OK\n')"
