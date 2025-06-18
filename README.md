@@ -25,7 +25,7 @@ The code is written in R and should run on R version >= 3.6.1.
 
 ## Requirements
 
-The file [conda-rnaseqmva.yml](conda-rnaseqmva.yml) specifies the parameters of a conda environment enabling to install all required dependencies (R, RCRAN and Bioconductor libraries).
+The file [conda-rnaseqmva_2025.yml](conda-rnaseqmva_2025.yml) specifies the parameters of a conda environment enabling to install all required dependencies (R, RCRAN and Bioconductor libraries).
 If conda is not yet installed on your system, follow the [conda installation instructions](https://docs.conda.io/projects/conda/en/latest/user-guide/install/). 
 
 ## Usage Instructions
@@ -38,11 +38,11 @@ git clone https://github.com/elqumsan/RNAseqMVA.git
 
 ### Installing the conda rnaseqmva environment
 
-The file [conda-rnaseqmva.yml](conda-rnaseqmva.yml) specifies all the requirements to run RNAseqMVA. The simplest way to use the RNAseqMVA package is to create a conda environment that will contain all the dependencies. This can be done automatically with the following commands. 
+The file [conda-rnaseqmva_2025.yml](conda-rnaseqmva_2025.yml) specifies all the requirements to run RNAseqMVA. The simplest way to use the RNAseqMVA package is to create a conda environment that will contain all the dependencies. This can be done automatically with the following commands. 
 
 ```bash
 cd RNAseqMVA
-conda env create -f conda-rnaseqmva.yml
+conda env create -f conda-rnaseqmva_2025.yml
 ```
 
 __Note__: this command needs to be run only once. The next section explains how to update the environment after it has been created. 
@@ -54,7 +54,7 @@ achieved with the following command.
 
 ```bash
 cd RNAseqMVA
-conda env update -f conda-rnaseqmva.yml
+conda env update -f conda-rnaseqmva_2025.yml
 ```
 
 ### Activating the conda rnaseqmva environemnt
@@ -68,13 +68,13 @@ conda --version
 If your conda version is < 5, use the command `source` below.
 
 ```bash
-source activate rnaseqmva
+source activate rnaseqmva-2025
 ```
 
 If you have conda verison >=5, you can run `conda activate`as below.
 
 ```
-conda activate rnaseqmva
+conda activate rnaseqmva-2025
 ```
 
 
