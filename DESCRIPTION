@@ -6,8 +6,9 @@ Date: 2020-08-07
 Author: Mustafa AbuElQumsan and Jacques van Helden
 Maintainer: Mustafa AbuElQumsan <mustafa.abuelqumsan@etu.univ-amu.fr>
 Depends:
-    R (>= 3.5.0)
+    R (>= 4.4.3)
 Imports:
+    BiocManager,
     SummarizedExperiment,
     recount, 
     caret, 
@@ -23,9 +24,10 @@ Imports:
     RCurl, 
     S4Vectors,
     XML
+VignetteBuilder: knitr
 Suggests:
     devtools (>= 1.6),
-    knitr,
+    knitr, rmarkdown,
     S4Vectors,
     GenomeInfoDb,
     DESeq2
@@ -35,4 +37,5 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
-VignetteBuilder: knitr
+
+
