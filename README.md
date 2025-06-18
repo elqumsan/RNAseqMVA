@@ -1,40 +1,39 @@
 # RNAseqMVA
 
-This code contains 
-- the R package RNAseqMVA, implemented to perform an evaluation of multivariate analysis
-methods for the supervised classification of RNA-seq data.
-- the R scripts required to reproduce the evaluation descrived in the manuscript
+## Developers
 
-Mustafa AbuElQumsan, Baddih Gathas and Jacques van Helden (2025). 
+- Mustafa AbuElQumsan (ORCID [https://orcid.org/0000-0002-1018-1410](0000-0002-1018-1410)) 
+- Jacques van Helden (ORCID [https://orcid.org/0000-0002-8799-8584](0000-0002-8799-8584))
 
-## Authors
+## Name of the project
 
-- Mustafa AbuElQumsan 
-- Jacques van Helden ([Jacques.van-Helden@univ-amu.fr](mailto:Jacques.van-Helden@univ-amu.fr))
+Benchmarking SVM, Random Forest, and KNN for RNA-seq Data: Revisiting Classifier Performance and the Impact of Preprocessing and Hyperparameter Tuning.
 
-## Downloading
+## Description
+
+This repository contains the R code (RNAseqMVA package + analysis scripts) required to reproduce the evaluation descrived in the manuscript
+
+Mustafa AbuElQumsan, Baddih Gathas and Jacques van Helden (2025). Benchmarking SVM, Random Forest, and KNN for RNA-seq Data: Revisiting Classifier Performance and the Impact of Preprocessing and Hyperparameter Tuning. _Submitted_. 
+
+## Dataset Information
+
+The benchmarking was performed based on 6 datasets downloaded from the Recount database ([rna.recount.bio/](https://rna.recount.bio/)). 
+
+## Code Information
+
+The code is written in R (version >= 3.6.1). 
+
+## Requirements
+
+The file [conda-rnaseqmva.yml](conda-rnaseqmva.yml) specifies the parameters of a conda environment enabling to install all required dependencies (R, RCRAN and Bioconductor libraries).
+If conda is not yet installed on your system, follow the [conda installation instructions](https://docs.conda.io/projects/conda/en/latest/user-guide/install/). 
+
+## Usage Instructions
+
+### Cloning this github repository
 
 ```bash
 git clone https://github.com/elqumsan/RNAseqMVA.git
-```
-
-## Conda environment
-
-The file [conda-rnaseqmva.yml](conda-rnaseqmva.yml) specifies the parameters of a conda environment enabling to install all required dependencies (R, RCRAN and Bioconductor libraries).
-
-## Installing miniconda
-
-If conda is not yet installed on your system, follow the [conda installation instructions](https://docs.conda.io/projects/conda/en/latest/user-guide/install/). 
-
-
-### Loading conda module 
-
-This step is specific to the IFB core cluster. If you are working on another infrastructure, you can skip it. 
-
-On the [IFB core cluster](https://www.france-bioinformatique.fr/cluster), conda is loaded via a module, so this command must be run before starting conda
-
-```
-module load conda ## Load the conda module (for the IFB-core-cluster)
 ```
 
 ### Installing the conda rnaseqmva environment
@@ -58,7 +57,7 @@ cd RNAseqMVA
 conda env update -f conda-rnaseqmva.yml
 ```
 
-### Loading the environemnt
+### Activating the conda rnaseqmva environemnt
 
 The next command needs to be adapted depending on your conda version. 
 
@@ -66,7 +65,7 @@ The next command needs to be adapted depending on your conda version.
 conda --version
 ```
 
-If your version is < 5, use the command `source` below.
+If your conda version is < 5, use the command `source` below.
 
 ```bash
 source activate rnaseqmva
@@ -79,7 +78,7 @@ conda activate rnaseqmva
 ```
 
 
-## Compiling the RNAseqMVA package
+### Compiling the RNAseqMVA package
 
 We assume here that the RNAseqMVA package has been installed in the
 home directory. If not, you just need to adapt the path below.
@@ -89,34 +88,35 @@ cd ~/RNAseqMVA
 make build_and_install
 ```
 
-## Configuring the analysis
+### Configuring the analysis
 
-All the parameters of an analysis can be specified in a YAML file
-[misc/00_project_parameters.yml](misc/00_project_parameters.yml). Parameters
-can be changed easily by editing this file with any text editor (nano,
-gedit, emacs, vi, ...).
+All the parameters of an analysis can be specified in a YAML file [misc/00_project_parameters.yml](misc/00_project_parameters.yml). 
+
+Parameters can be changed easily by editing this file with any text editor (nano, gedit, emacs, vi, ...).
 
 ## Running all analyses
 
 ```bash
 Rscript --vanilla misc/main_processes.R
 ```
+This command will run the `script misc/main_process.R`, which will call other scripts in the right order to lead the successive steps of the analysis. 
 
 
-## Running selected analyses
+### Running selected analyses
 
 ```bash
 R --vanilla
 ```
 
-Then open the file [misc/main_processes.R](misc/main_processes.R) and
-decide whether you need to run each command.
+Then open the file [misc/main_processes.R](misc/main_processes.R) and identify the scripts you need to run separately.
 
-## Specific settings for the IFB cluster 
+### Specific settings for the IFB cluster 
 
-The cluster of the Institut Français de Bioinformatique (IFB-core-cluster) was used to run comparative assessment of supervised classification methods for RNA-seq.
+This section is specific to the core cluster of the Institut Français de Bioinformatique (IFB-core-cluster), which was used to run comparative assessment of supervised classification methods for RNA-seq.
 
-On this cluster, conda is loaded via a module. 
+If you are working on another infrastructure, you can skip it. 
+
+On the [IFB core cluster](https://www.france-bioinformatique.fr/cluster), conda is loaded via a module, which must be loaded with the following command: 
 
 ```bash
 module load conda ## Load the conda module (for the IFB-core-cluster)
@@ -129,4 +129,18 @@ Commands are sent to cluster nodes via srun.
 ```bash
 srun --mem=32GB Rscript --vanilla misc/main_processes.R
 ```
+
+
+## Methodology (if applicable) – Steps taken for data processing or modeling.
+
+## Citations (if applicable) – If this dataset was used in research, provide references.
+
+## License & Contribution Guidelines (if applicable).
+
+## Materials & Methods
+
+Include 3rd party dataset DOI/URL in the main text: Any dataset you have used that has been curated and uploaded by an external source.
+Evaluation method: The evaluation method used to evaluate the proposed technique. Evaluation methods (e.g., ablation study, cross-validation, cross-dataset testing) refer to the APPROACH or PROCEDURE used to validate the model’s effectiveness.
+Conclusions
+
 
