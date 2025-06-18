@@ -12,18 +12,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Mamba
+      - name: Set up Conda with Miniforge
         uses: conda-incubator/setup-miniconda@v2
         with:
-          mamba-version: "*"
-          miniforge-variant: Mambaforge
+          miniforge-variant: Miniforge
           channels: conda-forge,bioconda,defaults
           use-mamba: true
           environment-file: conda-rnaseqmva_2025.yml
           activate-environment: rnaseqmva-2025
           auto-activate-base: false
 
-      - name: Test R is available and packages load
+      - name: Test R and packages
         shell: bash -l {0}
         run: |
           Rscript -e "cat('R version:', R.version.string, '\n')"
