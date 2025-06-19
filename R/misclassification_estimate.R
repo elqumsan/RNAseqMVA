@@ -1,8 +1,8 @@
 ################################################################
-#' @title  RNA-Seq classifier evaluation to assesse the performance of the classifier
+#' @title  RNA-Seq classifier evaluation to assess the performance of the classifier
 #' @author Mustafa ABUELQUMSAN and Jacques van Helden
-#' @description  this script to evaluate and assesse the performance of the RNA-Seq classifier by
-#' Random sampling (random partitioning) estimation of the misclassification rate.
+#' @description  this script evaluates and assesses the performance of the RNA-Seq classifier by
+#' random resampling (random partitioning) estimation of the misclassification error rate.
 #'
 #' @param dataset  an object of class DataTableWithTrainTestSets
 #' @param iteration current iteration number (the MisclassificationEstimate function is typically called iteratively) and it called number of resampling.
@@ -17,9 +17,9 @@
 #'      \item trainPredictedClasses = these are the train classes whci are predicated from classifier.
 #'     }
 #'
-#' @example
-#' oneTest <- MisclassificationEstimate(dataTable, classLabels, trainingProportion = 2/3, classifier = "rf")
-#'
+## @example
+## oneTest <- MisclassificationEstimate(dataTable, classLabels, trainingProportion = 2/3, classifier = "rf")
+##
 #' @import doMC
 #' @import class
 #' @import e1071
@@ -106,10 +106,6 @@ MisclassificationEstimate <- function(dataset,
                                  k = k)
 
 
-    ## TO DO: the following code thousl be written only once, after the list of if ... else if ... else if over classifiers.
-    ## For each classifier, return two vectors
-    ## testPredictedClasses and trainPredictedClasses
-    ## All the rest is the same -> no code dreplication.
 
 
   } else if (classifier == "rf") {
@@ -168,13 +164,6 @@ MisclassificationEstimate <- function(dataset,
 
 
   } else if (classifier == "lda") {
-
-    ## we need to tune our predictive model by using multiple workers "cores", such step to run our code through parallel
-    ##  rather than sequentially technologies
-
-#    registerDoMC(cores = 5)
-
-    # require("MASS")
 
     ## Computing Testing errors for Linear Discriminant Analysis
 
