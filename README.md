@@ -59,19 +59,13 @@ conda env update -f conda-rnaseqmva_2025.yml
 
 ### Activating the conda rnaseqmva environemnt
 
-The next command needs to be adapted depending on your conda version. 
+Check that conda version is >= 5
 
 ```
 conda --version
 ```
 
-If your conda version is < 5, use the command `source` below.
-
-```bash
-source activate rnaseqmva-2025
-```
-
-If you have conda verison >=5, you can run `conda activate`as below.
+Activate the conda environment. 
 
 ```
 conda activate rnaseqmva-2025
