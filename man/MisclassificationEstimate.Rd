@@ -2,7 +2,7 @@
 % Please edit documentation in R/misclassification_estimate.R
 \name{MisclassificationEstimate}
 \alias{MisclassificationEstimate}
-\title{RNA-Seq classifier evaluation to assesse the performance of the classifier}
+\title{RNA-Seq classifier evaluation to assess the performance of the classifier}
 \usage{
 MisclassificationEstimate(
   dataset,
@@ -31,8 +31,8 @@ MisclassificationEstimate(
 }
 }
 \description{
-this script to evaluate and assesse the performance of the RNA-Seq classifier by
-Random sampling (random partitioning) estimation of the misclassification rate.
+this script evaluates and assesses the performance of the RNA-Seq classifier by
+random resampling (random partitioning) estimation of the misclassification error rate.
 }
 \author{
 Mustafa ABUELQUMSAN and Jacques van Helden
