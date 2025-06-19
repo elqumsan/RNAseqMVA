@@ -2,7 +2,9 @@ name: Check RNAseqMVA Package
 
 on:
   push:
+    branches: [master]
   pull_request:
+    branches: [master]
 
 jobs:
   check:
