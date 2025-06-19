@@ -1,10 +1,10 @@
 Package: RNAseqMVA
 Type: Package
-Title: Application of Multivariate Analysis methods to RNA-seq Data
-Version: 0.9.1
-Date: 2020-08-07
+Title: Benchmarking of multivatiate analysis methods to apply supervised classification to RNA-seq data
+Version: 1.0.0
+Date: 2025-06-18
 Author: Mustafa AbuElQumsan and Jacques van Helden
-Maintainer: Mustafa AbuElQumsan <mustafa.abuelqumsan@etu.univ-amu.fr>
+Maintainer: Jacques van Helden <jacques.van-helden@univ-amu.fr>
 Depends:
     R (>= 4.4.3)
 Imports:
@@ -35,7 +35,7 @@ Description: Utilities to run multivariate analysis (MVA) methods and evaluate t
 License: Artistic-2.0
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
 
 
