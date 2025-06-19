@@ -437,6 +437,15 @@ XYplot <- function(self) {
   UseMethod("XYplot", self)
   # return(self)
 }
+
+#' @title Draw an XY plot to compare the mean counts per gene for two user-specified class
+#' @description Drawing an XY plot to compare the mean counts per gene for two user-specified class of the raw counts per gene.
+#' @author Mustafa AbuElQumsan and Jacques van Helden
+#' @param self object belong to StudyCase class.
+#' @param class1 the name of the first class to plot
+#' @param class2 the name of the second class to plot
+#' @return an object of the same class as the input object
+#' @export
 XYplot.StudyCase <- function(self,
                              class1,
                              class2) {
