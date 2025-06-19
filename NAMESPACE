@@ -3,6 +3,7 @@
 S3method(RunDESeq2,StudyCase)
 S3method(RunViRf,StudyCase)
 S3method(RunedgeR,StudyCase)
+S3method(XYplot,StudyCase)
 S3method(buildAttributes,DataTableWithClasses)
 S3method(buildAttributes,DataTableWithTrainTestSets)
 S3method(buildAttributes,default)
