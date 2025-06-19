@@ -21,6 +21,7 @@ dependencies:
   - r-e1071
   - r-foreach
   - r-doparallel
+  - r-doMC
   - r-randomforest
   - r-pheatmap
   - r-scatterplot3d
