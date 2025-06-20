@@ -1,17 +1,14 @@
-# RNAseqMVA
+# RNAseqMVA: Benchmarking SVM, Random Forest, and KNN for RNA-seq Data: Revisiting Classifier Performance and the Impact of Preprocessing and Hyperparameter Tuning.
 
 ## Developers
 
 - Mustafa AbuElQumsan (ORCID [https://orcid.org/0000-0002-1018-1410](0000-0002-1018-1410)) 
 - Jacques van Helden (ORCID [https://orcid.org/0000-0002-8799-8584](0000-0002-8799-8584))
 
-## Name of the project
-
-Benchmarking SVM, Random Forest, and KNN for RNA-seq Data: Revisiting Classifier Performance and the Impact of Preprocessing and Hyperparameter Tuning.
 
 ## Description
 
-This repository contains the R code (RNAseqMVA package + analysis scripts) required to reproduce the evaluation descrived in the following manuscript:
+This repository contains the R code (RNAseqMVA package + analysis scripts) required to reproduce the evaluation described in the following manuscript:
 
 - Mustafa AbuElQumsan, Baddih Gathas and Jacques van Helden (2025). Benchmarking SVM, Random Forest, and KNN for RNA-seq Data: Revisiting Classifier Performance and the Impact of Preprocessing and Hyperparameter Tuning. _Submitted_. 
 
@@ -85,8 +82,10 @@ make build_and_install
 ### Configuring the analysis
 
 All the parameters of an analysis can be specified in a YAML file [misc/00_project_parameters.yml](misc/00_project_parameters.yml). 
-
 Parameters can be changed easily by editing this file with any text editor (nano, gedit, emacs, vi, ...).
+
+
+
 
 ## Running all analyses
 
