@@ -20,8 +20,8 @@ if (project.parameters$global$reload) {
 }
 
 
-## Reload parameters if required (they may have been changed since the
-## study case was built)
+#### Reload parameters if required  ####
+## Since we support study-case-specific parameters, the default parameters may have changed when the study case was loaded
 if (project.parameters$global$reload.parameters) {
   message.with.time("Reloading parameters")
   source('misc/01d_reload_parameters.R')
