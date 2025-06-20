@@ -1,5 +1,5 @@
-
-
+#### Initialise parallel computing ####
+#### This script is used to initialise parallel computing for the RNAseqMVA project
 
 #### Initialise cluster processing ####
 if (!is.null(project.parameters$global$jobs)) {
