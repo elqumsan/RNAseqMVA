@@ -28,3 +28,4 @@ srun_jobs_sent.tsv
 slurm*.out
 .RData
 *.Rdata
+check_log.txt
