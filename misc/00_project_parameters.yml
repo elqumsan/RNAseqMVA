@@ -1,17 +1,17 @@
 global: ## Global parameters are those who are the samee across all study cases
 
-#  selected_recount_ids: ['TCGA'] # TGCA dataset (under testing, still tobe debugged for the class labels)
-#  selected_recount_ids: ["SRP042620", "SRP056295", "SRP035988", "SRP057196", "SRP062966", "SRP066834"]
-  selected_recount_ids: ['SRP042620'] # Breast cancer
+  #### Usage : uncomment the recount IDs you want to use for the analysis ####
+
+#  selected_recount_ids: ['SRP042620'] # Breast cancer
 #  selected_recount_ids: ['SRP056295'] # Acute myeloid leukemia
 #  selected_recount_ids: ['SRP035988'] # Psoriasis
-#  selected_recount_ids: ['SRP061240'] # Plasma RNA in cancer
-#  selected_recount_ids: ['SRP057196'] # Brain cells (sc)
-#  selected_recount_ids: ['SRP062966'] # Lupus (sc)
+#  selected_recount_ids: ['SRP057196'] # Adult and fetal brain cells (sc)
 #  selected_recount_ids: ['SRP066834'] # Cerebral organoids and fetal neocortex (sc)
-#  selected_recount_ids: ['SRP042161'] # Glioblastoma (sc) # PROBLEM
+  selected_recount_ids: ['SRP062966'] # Lupus (sc)
 
-  feature: "gene" ## Type of feature to download from Recount2.s Supported: "gene", "exon", "junction", "transcript"
+  #### Type of feature to download from Recount2. Supported: "gene", ranscript" ####
+  feature: "gene"
+  # feature: "transcript"
 
   dir: ## Directories
     main: "~/RNAseqMVA"
@@ -36,42 +36,41 @@ global: ## Global parameters are those who are the samee across all study cases
     epsilon: 0.1    ## For log2 transformation
 
   perm.prefix: "permLabels"
-  jobs: 25 ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
+  jobs: 10       ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
   iterations: 50 ## Number of iterations for the classifiers
 
+
+  #### Parameters to control the behaviour of the package ####
   reload.parameters: FALSE  ## Reload parameters after having loaded memory image, in order to take into account the new parameter values
-  reload: TRUE ## If TRUE, reload previously stored memory image to shortcut the download, loading and normalisation of the raw counts
-  export.tables: FALSE ## If TRUE, export normalized datasets in tab-separate value (TSV) files
+  reload: FALSE             ## If TRUE, reload previously stored memory image to shortcut the download, loading and normalisation of the raw counts
+  export.tables: FALSE      ## If TRUE, export normalized datasets in tab-separate value (TSV) files
 #  save.tables: FALSE ## If TRUE, save tab-delimited files with the results (JvH 2020-08-05: redundant with export.tables, and not used anymore)
-  compute: TRUE ## If FALSE, do not run the heavy computations, just generate the pictures and save tables
+  compute: TRUE             ## If FALSE, do not run the heavy computations, just generate the pictures and save tables
   save.image: TRUE
   draw.plot : TRUE
 #  classifiers: ["svm"]
   classifiers: ["svm", "knn", "rf"] # TO ADD LATER: "lda", "qda" + the one suggested by Aitor
-
-  ## Mustafa, I suppress data.types because I don't think we need them anymore
-  # data.types: ["countsPerRun", "originalCounts", "filtered", "norm", "log2norm", "log2normPCs", "DEG", "V.importance"]
-  #data.types.to.test: ["log2normPCs"]
-  # data.types.to.test: ["filtered", "norm", "log2norm", "log2normPCs"]
-  data.types.to.test: # "TMM_log2" ## leave blank to test all the pre-processing options
+  data.types.to.test: # Example: ["TMM_log2", "TMM_log2_PC"] ## leave blank to test all the pre-processing options
   PCs.to.test: "TMM_log2_PC"
 
-  # data.types.to.test: ["log2norm"]
-  variables.type: ["all"]
-  #variables.type: ["all", "top_ordered"]
-  ordering.methods: [] # ["edgeR"] ## Supported: "RF", "edgeR", "DESeq2"
-  # ordering.methods: ["edgeR", "RF", "DESeq2"] ## Supported: "RF", "edgeR", "DESeq2"
-  # ordering.methods: ["DESeq2", "edgeR", "RF"]
-  ## Note: for the number of variables I choose a regular spacing around the total number of samples in order to detect overfitting effects
+  variables.type: ["all"]  ## Example: variables.type: ["all", "top_ordered"]
+  ordering.methods: ["edgeR", "RF", "DESeq2"] ## Supported: "RF", "edgeR", "DESeq2"
+
+  #### RNA-seq normalization methods ####
+  deg_analysis:
+    methods: ["edgeR", "DESeq2"] ## Methods for differential expression analysis. Supported: "edgeR", "DESeq2"
+    alpha: 0.05 ## Threshold on adjusted p-value
+
+
+
+  #### Parameters for the classifiers ####
+
+  ## Note: for the number of variables, we choose a regular spacing around the total number of samples in order to detect overfitting effects
   nb.variables: [3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 300, 400, 500, 1000, 2000, 5000, 10000] ## Number of variables for variable ordering test
   trainingProportion: [0.66] # ratio of spliting the data set to training and testing sets
   identicalTrainTest: TRUE
   permute: [FALSE, TRUE]
   verbose: TRUE
-
-  deg_analysis:
-    methods: ["edgeR"] ## Methods for differential expression analysis. Supported: "edgeR", "DESeq2"
-    alpha: 0.05 ## Threshold on adjusted p-value
 
   knn:
     k: 10 ## Default value for k
@@ -91,21 +90,17 @@ global: ## Global parameters are those who are the samee across all study cases
     mtry: [500, 600, 700, 800] # number of variables randomly sampled as candidates at each split. wherein the default value is sqrt(number of variables in recount dataset) here is around ~ 235
     nodesize: [5000, 10000, 20000, 30000]  # minimum size of terminal nodes, wherein by setting it number larger causes smaller trees to be grown (and thus take less time)
 
-## Default values for study case-specific parameters
+#### Default values for study cases ####
 ## (can then be over-written by recountID-specific values as shown below)
 default:
   mergeRuns: TRUE ## Whether or not to merge runs per sample
   sampleIdColumn: "geo_accession"
 
-TCGA:
-  description: "The Cancer Genome Atlas (TCGA).	"
-  short_label: "TCGA"
-  classColumn: ["xml_breast_carcinoma_estrogen_receptor_status", "xml_breast_carcinoma_progesterone_receptor_status", "xml_lab_proc_her2_neu_immunohistochemistry_receptor_status"]
 
+#### The following part of the YAML file describes the metadata for the study cases used in the article ####
+## Recount-ID-specific parameters for the analysis of Recount RNA-seq datasets
 
-
-## Project-specific parameters for the analysis of Recount RNA-seq datasets
-SRP042620:
+SRP042620: ## Breast cancer (bulk)
   geoSeries: "GSE58135"
   description: "RNA-seq was performed on breast cancer cell lines and primary tumors Overall design: RNA-seq was performed on 28 breast cancer cell lines, 42 Triple Negative Breast Cancer (TNBC) primary tumors, and 42 Estrogen Receptor Positive (ER+) and HER2 Negative Breast Cancer primary tumors, 30 uninovlved breast tissue samples that were adjacent to ER+ primary tumors, 5 breast tissue samples from reduction mammoplasty procedures performed on patients with no known cancer, and 21 uninvolved breast tissue samples that were adjacent to TNBC primary tumors.	"
   short_label: "Breast cancer"
@@ -117,10 +112,21 @@ SRP042620:
       Uninvolved.Breast.Tissue.Adjacent.to.ER..Primary.Tumor: "green"
       Uninvolved.Breast.Tissue.Adjacent.to.TNBC.Primary.Tumor: "black"
 
-SRP057196:
+SRP056295: ## Acute myeloid leukemia (bulk)
+  description: "RNA sequencing of human leukemia Overall design: The goals of this project are to obtain a comprehensive study of mutations and gene expression in human acute myeloid leukemia (AML). Methods: AML cells were thawed. DNA and RNA (polyA) was extracted and sequences were obtained with an illumina HiSeq 2000 sequencer. Results are pending.	"
+  short_label: "Acute myeloid leukemia"
+  classColumn: "tissue"
+
+SRP035988:  ## Psoriasis (bulk)
+  description: "To increase our understanding of psoriasis, we utilized RNA-seq to assay the transcriptomes of lesional psoriatic and normal skin. We sequenced polyadenylated RNA-derived cDNAs from 92 psoriatic and 82 normal punch biopsies, generating an average of ~38 million single-end 80-bp reads per sample. Comparison of 42 samples* examined by both RNA-seq and microarray [GSE13355] revealed marked differences in sensitivity, with transcripts identified only by RNA-seq having much lower expression than those also identified by microarray. RNA-seq identified many more differentially expressed transcripts enriched in immune system processes. Weighted gene co-expression network analysis (WGCNA) revealed multiple modules of coordinately expressed epidermal differentiation genes, overlapping significantly with genes regulated by the long non-coding RNA TINCR, its target gene, staufen-1 (STAU1), the p63 target gene ZNF750, and its target KLF4. Other coordinately expressed modules were enriched for lymphoid and/or myeloid signature transcripts and genes induced by IL-17 in keratinocytes. Dermally-expressed genes were significantly down-regulated in psoriatic biopsies, most likely due to expansion of the epidermal compartment. These results demonstrate the power of WGCNA to elucidate gene regulatory circuits in psoriasis, and emphasize the influence of tissue architecture in both differential expression and co-expression analysis. *The list of 42 samples examined by both RNA-seq and microarray is provided in the 'MAoverlappedsamples.txt'. Overall design: 92 psoriatic and 82 normal skin samples	"
+  short_label: "Psoriasis"
+  classColumn: "tissue.type"
+
+
+SRP057196: ## Adult and fetal brain cells (sc)
   description: "We used single cell RNA sequencing on 466 cells to capture the cellular complexity of the adult and fetal human brain at a whole transcriptome level. Healthy adult temporal lobe tissue was obtained from epileptic patients during temporal lobectomy for medically refractory seizures. We were able to classify individual cells into all of the major neuronal, glial, and vascular cell types in the brain. Overall design: Examination of cell types in healthy human brain samples.	"
   short_label: "Brain cells (sc)"
-  classColumn: ["tissue", "cell.type"] ## MUSTAFA: IT IS IMPORTANT TO COMBINE THE TWO COLUMNS, THIS IS THE ESSENCE OF THIS DATASET !!!
+  classColumn: ["tissue", "cell.type"] ## For this dataset, it is important to combine the two column in order to capture the goal of the study
   classColors:
       cortex_fetal_quiescent: "red"
       cortex_fetal_replicating: "darkblue"
@@ -132,71 +138,14 @@ SRP057196:
       cortex_microglia: "aquamarine4"
       cortex_OPC: "burlywood4"
 
-SRP056295: ## 525 runs, human leukemia
-  description: "RNA sequencing of human leukemia Overall design: The goals of this project are to obtain a comprehensive study of mutations and gene expression in human acute myeloid leukemia (AML). Methods: AML cells were thawed. DNA and RNA (polyA) was extracted and sequences were obtained with an illumina HiSeq 2000 sequencer. Results are pending.	"
-  short_label: "Acute myeloid leukemia"
-#  classColumn: "tissue"
-  classColumn: "tissue"
-
-SRP035988:  ## Psoriasis
-  description: "To increase our understanding of psoriasis, we utilized RNA-seq to assay the transcriptomes of lesional psoriatic and normal skin. We sequenced polyadenylated RNA-derived cDNAs from 92 psoriatic and 82 normal punch biopsies, generating an average of ~38 million single-end 80-bp reads per sample. Comparison of 42 samples* examined by both RNA-seq and microarray [GSE13355] revealed marked differences in sensitivity, with transcripts identified only by RNA-seq having much lower expression than those also identified by microarray. RNA-seq identified many more differentially expressed transcripts enriched in immune system processes. Weighted gene co-expression network analysis (WGCNA) revealed multiple modules of coordinately expressed epidermal differentiation genes, overlapping significantly with genes regulated by the long non-coding RNA TINCR, its target gene, staufen-1 (STAU1), the p63 target gene ZNF750, and its target KLF4. Other coordinately expressed modules were enriched for lymphoid and/or myeloid signature transcripts and genes induced by IL-17 in keratinocytes. Dermally-expressed genes were significantly down-regulated in psoriatic biopsies, most likely due to expansion of the epidermal compartment. These results demonstrate the power of WGCNA to elucidate gene regulatory circuits in psoriasis, and emphasize the influence of tissue architecture in both differential expression and co-expression analysis. *The list of 42 samples examined by both RNA-seq and microarray is provided in the 'MAoverlappedsamples.txt'. Overall design: 92 psoriatic and 82 normal skin samples	"
-  short_label: "Psoriasis"
-  classColumn: "tissue.type"
-
-ERP003613: # Tissue samples from 95 human individuals
-  description: "RNA-seq was performed of tissue samples from 95 human individuals representing 27 different tissues in order to determine tissue-specificity of all protein-coding genes.	"
-  short_label: "tissue samples from 95 human individuals, 27 different tissues.	"
-
-SRP061240: ## Cancer disease types ("Pancreatic", " colorectal", "prostat Cancer", "Healthy control")
-  description: "Extracellular vesicles such as exosomes are selectively enriched in RNA that has potential for use as disease biomarkers. To systemically characterize circulating extracellular RNA profiles, we performed RNA sequencing analysis on plasma extracellular vesicles derived from 192 individuals including 100 colon cancer, 36 prostate cancer and 6 pancreatic cancer patients along with 50 healthy individuals. Of ~12.6 million raw reads for each of these subjects, the number of mappable reads aligned to RNA references was ~5.4 million including microRNAs(miRNAs) (~40.4%), piwi-interacting RNAs(piwiRNAs) (~40.0%), pseudo-genes (~3.7%), long noncoding RNAs (lncRNAs) (~2.4%), tRNAs (~2.1%), and mRNAs (~2.1%). To select the best candidates for potential extracellular RNA reference controls, we performed abundant level stability testing and identified a set of miRNAs showing relatively consistent expression. To estimate biological variations, we performed association analysis of expression levels with age and sex in healthy individuals. This analysis showed significant sex association with seven small noncoding RNAs (false discovery rate, or FDR<0.05), while no small noncoding RNAs were statistically associated with age. To identify disease-associated RNA transcripts, we performed analysis of covariance by including disease status, age, sex, RNA isolation and gel size selection dates. We observed a gradual increase of significantly associated RNAs (in particular, miRNAs) with disease advancement as denoted by cancer staging. We found significant association of miR-125a-5p and miR-1246-3p with all cancer types tested (FDR<0.05). Based on the disease associations, we developed cancer type-specific multivariate statistical models to predict disease status with an area under the ROC curve from 0.67 in stage I colon cancer to 0.92 in advanced prostate cancer. To date, this is the largest RNA-seq study to systematically profile extracellular RNA species, which has not only provided a baseline reference profile for circulating extracellular RNA, but also a set of RNA candidates for reference controls and disease biomarkers. Overall design: RNAs fro plasma circulating microviscles in 192 individuals were sequenced and quantified. RNA expression stability testing was performed to identify stably expressed RNAs. Distribution of RNA species and individual RNA transcripts were compared in normal and cancer patients.		"
-  short_label: "Plasma RNA in cancer"
-  classColumn: "disease.type"
-
-
-SRP062966:
-  description: "RNA-seq of systemic lupus erythematosus (SLE) whole blood and healthy controls to determine the gene expression changes in these patients. Overall design: RNA-seq of PAXgene blood from SLE and healthy donors. "
-  short_label: "Lupus (sc)"
-  classColumn: "disease.status"
-
-## PROBLEM: after run merging, there are only  a handful of samples left.
-## TO DO: Check the original publication.
-## SRP003611:
-##  description: "transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell)"
-##  classColumn: "subtype"
-
-SRP066834:
-  description: "Cerebral organoids â€“ three-dimensional cultures of human cerebral tissue derived from pluripotent stem cells â€“ have emerged as models of human cortical development. However, the extent to which in vitro organoid systems recapitulate neural progenitor cell proliferation and neuronal differentiation programs observed in vivo remains unclear. Here we use single-cell RNA sequencing (scRNA-seq) to dissect and compare cell composition and progenitor-to-neuron lineage relationships in human cerebral organoids and fetal neocortex. Covariation network analysis using the fetal neocortex data reveals known and novel interactions among genes central to neural progenitor proliferation and neuronal differentiation. In the organoid, we detect diverse progenitors and differentiated cell types of neuronal and mesenchymal lineages, and identify cells that derived from regions resembling the fetal neocortex. We find that these organoid cortical cells use gene expression programs remarkably similar to those of the fetal tissue in order to organize into cerebral cortex-like regions. Our comparison of in vivo and in vitro cortical single cell transcriptomes illuminates the genetic features underlying human cortical development that can be studied in organoid cultures. Overall design: 734 single-cell transcriptomes from human fetal neocortex or human cerebral organoids from multiple time points were analyzed in this study. All single cell samples were processed on the microfluidic Fluidigm C1 platform and contain 92 external RNA spike-ins. Fetal neocortex data were generated at 12 weeks post conception (chip 1: 81 cells; chip 2: 83 cells) and 13 weeks post conception (62 cells). Cerebral organoid data were generated from dissociated whole organoids derived from induced pluripotent stem cell line 409B2 (iPSC 409B2) at 33 days (40 cells), 35 days (68 cells), 37 days (71 cells), 41 days (74 cells), and 65 days (80 cells) after the start of embryoid body culture. Cerebral organoid data were also generated from microdissected cortical-like regions from H9 embryonic stem cell derived organoids at 53 days (region 1, 48 cells; region 2, 48 cells) or from iPSC 409B2 organoids at 58 days (region 3, 43 cells; region 4, 36 cells).	"
+SRP066834: ## Cerebral organoids and fetal neocortex (sc)
+  description: "Cerebral organoids“ three-dimensional cultures of human cerebral tissue derived from pluripotent stem cells â€“ have emerged as models of human cortical development. However, the extent to which in vitro organoid systems recapitulate neural progenitor cell proliferation and neuronal differentiation programs observed in vivo remains unclear. Here we use single-cell RNA sequencing (scRNA-seq) to dissect and compare cell composition and progenitor-to-neuron lineage relationships in human cerebral organoids and fetal neocortex. Covariation network analysis using the fetal neocortex data reveals known and novel interactions among genes central to neural progenitor proliferation and neuronal differentiation. In the organoid, we detect diverse progenitors and differentiated cell types of neuronal and mesenchymal lineages, and identify cells that derived from regions resembling the fetal neocortex. We find that these organoid cortical cells use gene expression programs remarkably similar to those of the fetal tissue in order to organize into cerebral cortex-like regions. Our comparison of in vivo and in vitro cortical single cell transcriptomes illuminates the genetic features underlying human cortical development that can be studied in organoid cultures. Overall design: 734 single-cell transcriptomes from human fetal neocortex or human cerebral organoids from multiple time points were analyzed in this study. All single cell samples were processed on the microfluidic Fluidigm C1 platform and contain 92 external RNA spike-ins. Fetal neocortex data were generated at 12 weeks post conception (chip 1: 81 cells; chip 2: 83 cells) and 13 weeks post conception (62 cells). Cerebral organoid data were generated from dissociated whole organoids derived from induced pluripotent stem cell line 409B2 (iPSC 409B2) at 33 days (40 cells), 35 days (68 cells), 37 days (71 cells), 41 days (74 cells), and 65 days (80 cells) after the start of embryoid body culture. Cerebral organoid data were also generated from microdissected cortical-like regions from H9 embryonic stem cell derived organoids at 53 days (region 1, 48 cells; region 2, 48 cells) or from iPSC 409B2 organoids at 58 days (region 3, 43 cells; region 4, 36 cells).	"
   short_label: "Cerebral organoids and fetal neocortex (sc)"
   classColumn: "tissue"
 
-SRP039694:
-  description: "Hepatocellular carcinoma (HCC) is one of the most common and lethal cancers worldwide and has a poor prognosis. Promoters represent an essential regulatory element of gene transcription in human genome. In order to understand the promoter methylation in relation with gene transcription in HCCs, We applied a liquid hybridization capture-based bisulfite sequencing (LHC-BS) approach to examine the promoter methylome of HCCs, for which we customized 150,407 capture probes and enabled coverage of 91.8% of the RefSeq gene promoters within human genome. We found the differential promoter DNA methylation between HCCs and peripheral normal tissues. Then we integrated promoter methylomic and transcriptomic profiling and described gene expression and regulation in HCCs. Lastly, We validated the key genes in larger number of samples and screened candidate genes aberrantly regulated by DNA methylation in human HCCs. Overall design: RNA-seq for 8 pairs of HCC tumor and non-tumor liver (NTL) samples.	"
-  short_label: "Hepatocellular carcinoma (HCC)"
-  classColumn: "tissue"
-
-SRP008976:
-  description: "We have determined the whole genome sequence of an individual at high accuracy and performed an integrated analysis of omics profiles over a 1.5 year period that included healthy and two virally infected states. Omics profiling of transcriptomes, proteomes, cytokines, metabolomes and autoantibodyomes from blood components have revealed extensive, dynamic and broad changes in diverse molecular components and biological pathways that occurred during healthy and disease states. Many changes were associated with allele- and edit-specific expression at the RNA and protein levels, which may contribute to personalized responses. Importantly, genomic information was also used to predict medical risks, including Type II Diabetes (T2D), whose onset was observed during the course of our study using standard clinical tests and molecular profiles, and whose disease progression was monitored and subsequently partially managed. Our study demonstrates that longitudinal personal omics profiling can relate genomic information to global functional omics activity for physiological and medical interpretation of healthy and disease states. Overall design: Examination of blood component in 20 different time points over 1.5 years which includes 2 disease state and 18 healty state Related exome studies at: SRX083314 SRX083313 SRX083312 SRX083311	"
-  short_label: "Multi-omics study of viral infection"
+SRP062966: ## Lumus (sc)
+  description: "RNA-seq of systemic lupus erythematosus (SLE) whole blood and healthy controls to determine the gene expression changes in these patients. Overall design: RNA-seq of PAXgene blood from SLE and healthy donors. "
+  short_label: "Lupus (sc)"
   classColumn: "disease.status"
-
-SRP006574:
-  description: "MicroRNA sequence and expression analysis in breast tumors by deep sequencing"
-  short_label: "MicroRNA in Breast tumors"
-  geo_accession: "GSE28884"
-  classColumn: "disease.status"
-
-SRP041736: # PROBLEM: classColumn not specfified
-  description: "Analyze the transcriptomes of 347 cells from 10 distinct populations in both of low-coverage (~0.27 million reads per cell) and high-coverage (~5 million reads per cell) to identify cell-type-specific biomarkers, and to compare gene expression across samples specifically for cells of a given type as well as to reconstruct developmental lineages of related cell types.	"
-  short_label: "Developmental cell type (sc)"
-  classColumn: NA
-  problem: "We cannot analyse this dataset because the pheno table does not contain any info about the sample classes"
-
-SRP042161: # PROBLEM
-  description: "We report transcriptomes from 430 single glioblastoma cells isolated from 5 individual tumors and 102 single cells from gliomasphere cells lines generated using SMART-seq. In addition, we report population RNA-seq from the five tumors as well as RNA-seq from cell lines derived from 3 tumors (MGH26, MGH28, MGH31) cultured under serum free (GSC) and differentiated (DGC) conditions. This dataset highlights intratumoral heterogeneity with regards to the expression of de novo derived transcriptional modules and established subtype classifiers. Overall design: Operative specimens from five glioblastoma patients (MGH26, MGH28, MGH29, MGH30, MGH31) were acutely dissociated, depleted for CD45+ inflammatory cells and then sorted as single cells (576 samples). Population controls for each tumor were isolated by sorting 2000-10000 cells and processed in parallel (5 population control samples). Single cells from two established cell lines, GBM6 and GBM8, were also sorted as single cells (192 samples). SMART-seq protocol was implemented to generate single cell full length transcriptomes (modified from Shalek, et al Nature 2013) and sequenced using 25 bp paired end reads. Single cell cDNA libraries for MGH30 were resequenced using 100 bp paired end reads to allow for isoform and splice junction reconstruction (96 samples, annotated MGH30L). Cells were also cultured in serum free conditions to generate gliomasphere cell lines for MGH26, MGH28, and MGH31 (GSC) which were then differentiated using 10% serum (DGC). Population RNA-seq was performed on these samples (3 GSC, 3 DGC, 6 total). The initial dataset included 875 RNA-seq libraries (576 single glioblastoma cells, 96 resequenced MGH30L, 192 single gliomasphere cells, 5 tumor population controls, 6 population libraries from GSC and DGC samples). Data was processed as described below using RSEM for quantification of gene expression. 5,948 genes with the highest composite expression either across all single cells combined (average log2(TPM)>4.5) or within a single tumor (average log2(TPM)>6 in at least one tumor) were included. Cells expressing less than 2,000 of these 5,948 genes were excluded. The final processed dataset then included 430 primary single cell glioblastoma transcriptomes, 102 single cell transcriptomes from cell lines(GBM6,GBM8), 5 population controls (1 for each tumor), and 6 population libraries from cell lines derived from the tumors (GSC and DGC for MGH26, MGH28 and MGH31). The final matrix (GBM_data_matrix.txt) therefore contains 5948 rows (genes) quantified in 543 samples (columns). Please note that the samples which are not included in the data processing are indicated in the sample description field.		"
-  short_label: "Glioblastoma (sc)"
-#  classColumn: ["patient id", "cell type", "subtype"]
-  classColumn: ["cell type"]
-
-# crash                "SRP042161", ##
 
 
