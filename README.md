@@ -84,6 +84,21 @@ make build_and_install
 All the parameters of an analysis can be specified in a YAML file [misc/00_project_parameters.yml](misc/00_project_parameters.yml). 
 Parameters can be changed easily by editing this file with any text editor (nano, gedit, emacs, vi, ...).
 
+By default, the configuration is setup to analyse a single study case. Alternative IDs can be selected by uncommenting another row of the proposed `selected_recount_ids`.
+
+```
+  #### Usage : uncomment the recount IDs you want to use for the analysis ####
+
+#  selected_recount_ids: ['SRP042620'] # Breast cancer
+#  selected_recount_ids: ['SRP056295'] # Acute myeloid leukemia
+#  selected_recount_ids: ['SRP035988'] # Psoriasis
+#  selected_recount_ids: ['SRP057196'] # Adult and fetal brain cells (sc)
+#  selected_recount_ids: ['SRP066834'] # Cerebral organoids and fetal neocortex (sc)
+  selected_recount_ids: ['SRP062966'] # Lupus (sc)
+```
+
+Although the code can in principle run all the analyses at once, this takes a lot of time and memory. 
+We thus recommend to select a single ID at a time. 
 
 
 
