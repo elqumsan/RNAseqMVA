@@ -28,8 +28,6 @@ StudyCase  <- function(recountID, parameters) {
   ## This will also append attributes with selected training and testing sets on the filtered table with raw counts
   ## These wil then be passed to all the derived count tables (normalised, DGE, ...).
   result$filtered <- DataTableWithTrainTestSets(result$filtered)
-  # class(result$filtered)
-
 
   ##### Normalize the counts without log2 transformation (first test) #####
   ##
@@ -40,8 +38,6 @@ StudyCase  <- function(recountID, parameters) {
   standardization.methods <- parameters$standardization$method
   quantile <- parameters$standardization$quantile
   dataNames <- vector()
-  # method <- "quantile"
-  # method <- "DESeq2"
   for (method in standardization.methods) {
 
     ###### Normalization method for the recount Table after merge and filtered it ########
@@ -56,36 +52,24 @@ StudyCase  <- function(recountID, parameters) {
       method = method,
       quantile = quantile,
       log2 = FALSE)
-    # hist(unlist(result[["filtered"]][["dataTable"]]), breaks=1000)
-    # hist(unlist(result[[method.name]][["dataTable"]]), breaks=1000)
     dataNames <- append(dataNames, method.name)
 
     ##### Normalize counts by log2 transformation #####
-#    if (method != "RLE") { ## RLE is already log2-transformed
-      message("\t\tComputing log2-transformed normalised counts")
-      log2.name <- paste(sep = "", method.name, "_log2")
-      result[[log2.name]] <- result[[method.name]]
-      result[[log2.name]][["dataType"]] <- log2.name
-      result[[log2.name]][["dataTable"]] <- log2(result[[method.name]][["dataTable"]] + epsilon)
-      dataNames <- append(dataNames, log2.name)
-      # hist(result[[log2.name]][["dataTable"]], breaks=100)
-    #}
+    message("\t\tComputing log2-transformed normalised counts")
+    log2.name <- paste(sep = "", method.name, "_log2")
+    result[[log2.name]] <- result[[method.name]]
+    result[[log2.name]][["dataType"]] <- log2.name
+    result[[log2.name]][["dataTable"]] <- log2(result[[method.name]][["dataTable"]] + epsilon)
+    dataNames <- append(dataNames, log2.name)
 
     #### Derive an object having as features the principal components of log2norm ####
     message("\t\tComputing principal components")
-      #    if (method == "RLE") {
-      #   ## RLE is already log2-transformed
-      #   pc.name <- paste(sep = "", method.name, "_PC")
-      #   result[[pc.name]] <- result[[method.name]] ## Clone the log2norm object to copy all its parameters
-      # } else {
-      pc.name <- paste(sep = "", log2.name, "_PC")
-      result[[pc.name]] <- result[[log2.name]] ## Clone the log2norm object to copy all its parameters
-      #    }
+    pc.name <- paste(sep = "", log2.name, "_PC")
+    result[[pc.name]] <- result[[log2.name]] ## Clone the log2norm object to copy all its parameters
     result[[pc.name]][["dataType"]] <- pc.name
     dataNames <- append(dataNames, pc.name)
 
     counts.for.pc <- result[[pc.name]]$dataTable # Suppress rows containing NA values
-    # dim(counts.for.pc)
 
     ## Filter out samples with Infinite values
     ## (results from null size factor -> infinite scaling factor)
@@ -99,9 +83,6 @@ StudyCase  <- function(recountID, parameters) {
 
 
     }
-    #    inf.per.feature <- apply(is.infinite(counts.for.pc), 1, sum)
-    #    dim(counts.for.pc[,inf.per.sample == 0])
-    #    dim(counts.for.pc[inf.per.feature == 0, ])
 
     ## Remove features with NA values
     features.with.NA <- apply(is.na(counts.for.pc), 1, sum) > 0
@@ -125,18 +106,6 @@ StudyCase  <- function(recountID, parameters) {
 
   }
 
-  ##### instantiate object from ged-dataSet from Differential analysis with DESeq2 and edgeR to define gene (variable) order ####
-  # message.with.time("instantiate object of Differential analysis with DESeq2 and edgeR to define gene (variable) order")
-  # result$DEGdataSets <- result$filtered
-  # #result$DEGdataSets$edgeR <- list()
-  # result$DEGdataSets$DESeq2  <- DEGordering(result$originalCounts$dataTable, result$originalCounts$classLabels,
-  #                                           method = project.parameters$global$ordering.methods[1] , randomized = TRUE )
-  # result$DEGdataSets$DESeq2$dataType <- "DESeq2orderedVariables"
-  #
-  # result$DEGdataSets$edgeR  <- DEGordering(result$originalCounts$dataTable, result$originalCounts$classLabels,
-  #                                          method = project.parameters$global$ordering.methods[2] , randomized = TRUE )
-  # result$DEGdataSets$edgeR$dataType <- "edgeRorderedVariables"
-
   ## Build a first version of the object based on passed parameters
   self <- structure(
     list(
@@ -156,65 +125,23 @@ StudyCase  <- function(recountID, parameters) {
   }
   self$normalisedDataNames <- dataNames
 
-  #### DESeq2-sorted variables ####
+  #### Define variable ordering based on DESeq2 significance ####
   if ("DESeq2" %in% project.parameters$global$ordering.methods) {
-
     self <- RunDESeq2(self)
-    # message.with.time("Defining gene order according to DESeq2 differential expression")
-    #
-    # self$log2norm_DESeq2_sorted <- self$datasetsForTest$log2norm
-    # self$log2norm_DESeq2_sorted$DESeq2  <-
-    #   DEGordering(self$datasetsForTest$filtered,
-    #               method = "DESeq2", randomized = TRUE )
-    # self$DEGdataSets$DESeq2$dataType <- "log2norm_DESeq2_ordered"
-    #
-    # ## Note: we use the log2norm as variables,
-    # ## but sort them according to DESeq2,
-    # ## which was based on the raw counts
-    # self$log2norm_DESeq2_sorted$dataTable <-
-    #   self$log2norm_DESeq2_sorted$dataTable[self$log2norm_DESeq2_sorted$DESeq2$geneOrder, ]
   }
 
-  #### edgeR-sorted variables ####
+  #### Define variable (gene) ordering according to edgeR significance ####
   if ("edgeR" %in% project.parameters$global$ordering.methods) {
     message.with.time("Defining gene order according to edgeR differential expression")
     self <- RunedgeR(self)
-    # self$log2norm_edgeR_sorted <- self$datasetsForTest$log2norm
-    # self$log2norm_edgeR_sorted$edgeR  <-
-    #   DEGordering(self$datasetsForTest$filtered,
-    #               method = "edgeR", randomized = TRUE )
-    # self$DEGdataSets$edgeR$dataType <- "log2norm_edgeR_ordered"
-    #
-    # ## Note: we use the log2norm as variables,
-    # ## but sort them according to edgeR,
-    # ## which was based on the raw counts
-    # self$log2norm_edgeR_sorted$dataTable <-
-    #   self$log2norm_edgeR_sorted$dataTable[self$log2norm_edgeR_sorted$edgeR$geneOrder, ]
   }
 
 
+  #### Define variable (gene) ordering according to the variable importanve (VI) computed by RandomForest ####
   if ("RF" %in% project.parameters$global$ordering.methods) {
-
     message.with.time("Computing variables importance by Random Forest (RF), and ordering features by decreasing importance. ")
     # ## Clone the log2norm object to copy all its parameters
     self <- RunViRf(self)
-
-    # self$log2norm_ViRf_sorted <- self$datasetsForTest$log2norm
-    # self$log2norm_ViRf_sorted$dataType <- "log2normViRf"
-    # rf.model  <- randomForest(
-    #   x = t(result$log2norm$dataTable),
-    #   y =  as.factor( result$log2norm$classLabels),
-    #   xtest = t(result$log2norm$dataTable), importance = T, keep.forest = T)
-    # variable.importance <- importance(rf.model, type = 1, scale = F)
-    # ordered.varaible.importance <-order(variable.importance[,1],decreasing = T)
-    # ordered.dataTable.by.importace <-result$log2norm$dataTable[ordered.varaible.importance, ]
-    # sig.variables <- round(nrow(ordered.dataTable.by.importace) * 0.75)
-    # ordered.dataTable.by.importance  <- ordered.dataTable.by.importace[1:sig.variables, ]
-    # self$log2norm_ViRf_sorted$viRf <- rf.model
-    # self$log2norm_ViRf_sorted$ordereviRf <- ordered.varaible.importance
-    # self$log2norm_ViRf_sorted$sigviRf <- ordered.dataTable.by.importance
-    # self$log2norm_ViRf_sorted$orderedDataTable <- ordered.dataTable.by.importace
-    # self$log2norm_ViRf_sorted$dataTable <- ordered.dataTable.by.importace
   }
 
   message("\t\tInstantiated an object of class StudyCase for recountID\t", recountID)
@@ -402,9 +329,9 @@ RunViRf.StudyCase <- function(self) {
 #' @export
 histCountsPerGeneClass <- function(self) {
   message("\tRunning Drawing an histogram with the raw count per gene for object of class ", paste(collapse=", ", class(self)))
- # self <- UseMethod("histCountsPerGeneClass", self)
+  # self <- UseMethod("histCountsPerGeneClass", self)
   UseMethod("histCountsPerGeneClass", self)
- # return(self)
+  # return(self)
 }
 
 #' @title Draw an histogram with the raw  counts per gene

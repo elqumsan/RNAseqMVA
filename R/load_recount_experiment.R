@@ -165,13 +165,6 @@ loadRecountExperiment <- function(recountID,
     message("\tLoaded counts per run: ", nrow(dataTable), " features x ", ncol(dataTable), " runs.")
   }
 
-#
-#   ## Check consistency between pheno tables in  genes and transcripts
-#   stopifnot(identical(
-#     geo_characteristics(colData(rse_gene)),
-#     geo_characteristics(colData(rse_tx))
-#   ))
-#
 
   #### Extract pheno table ####
   ## The pheno table contains information about the columns of the RangedSeummaryExperiment.
@@ -179,13 +172,6 @@ loadRecountExperiment <- function(recountID,
     message("\tBuilding pheno table")
   }
   phenoTable <- colData(rse) ## phenotype per run
-  # dim(phenoTable)
-  # class(phenoTable)
-  # names(phenoTable)
-  # View(phenoTable)
-  # class(phenoTable$characteristics)
-  # table(phenoTable$characteristics)
-  # is.character(phenoTable$characteristics)
 
   #### Fix a problem with the structure of the characteristics field in some recount records ####
   ## See here for details
@@ -257,10 +243,6 @@ loadRecountExperiment <- function(recountID,
   } else {
     result$originalCounts <- countsPerRun
   }
-  # class(result$originalCounts)
-  # summary(result$originalCounts)
-
-
 
   message.with.time("Finished loading Recount experiment ID ", parameters$recountID)
   return(result)
