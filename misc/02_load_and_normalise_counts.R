@@ -7,39 +7,33 @@ message("Loading study cases")
 
 #### Check the recountID ####
 studyCases <- list() ## a list containing all the loaded datasets + their pre-processed data
-#recountID <- "SRP057196"
-# recountID <- "SRP056295"
-# recountID <- "SRP042620" ## For quick test and debugging
-recountID <- selectedRecountIDs[1]
+
+recountID <- selectedRecountIDs[1] ## We only load one recountID at a time
 
 if (length(selectedRecountIDs) > 1) {
   stop("Multiple study case analysis is not supported, please specify a single study case")
 }
 
-#### Specify generic and recountID-specific parameters ####
+#### Init the generic and recountID-specific parameters ####
 parameters <- initRecountID(recountID, project.parameters)
-# View(parameters$dir)
+# View(parameters)
 
 message.with.time("Building StudyCase for recountID\t", recountID,
                   "\t", parameters$short_label,
                   "\n\tfeature type: ", project.parameters$global$feature)
 
-
-# Main directory should be adapted to the user's configuration
-#  dir.main <- project.parameters$global$dir$main
-
-# View(parameters)
-
-#### Load study cases ####
+#### Load study case ####
 studyCases[[recountID]] <- StudyCase(recountID = recountID, parameters = parameters)
-message("Finished loading ", length(studyCases), " study cases")
+message("Finished loading study case ", recountID,
+        "\t", parameters$short_label,
+        "\n\tfeature type: ", parameters$feature)
 
 
-#### Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files ###
+#### Export the count tables with their associated information (pheno table, class labels) in tab-separated value (.tsv) files #####
 if (project.parameters$global$export.tables) {
   exportTables(studyCases[[recountID]])
 }
-message("Finished exporting ", length(studyCases), " data tables")
+message("Finished exporting data table")
 
 
 #### Plot histograms of log2 normalized counts ####
@@ -64,7 +58,9 @@ for (datasetName in log2countNames) {
   silence <- dev.off()
 }
 
-#### Save the study case object ####
+#### Save the study case object in Rdata format ####
+## This is useful to save the study case in a memory image that can be re-loaded later
+## Reload can be done with the script misc/02b_reload_counts.R
 if (project.parameters$global$save.image) {
   studyCase <- studyCases[[recountID]]
   featureType <- studyCase$parameters$feature
