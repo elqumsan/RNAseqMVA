@@ -4,7 +4,8 @@
 targets:
 	@echo "Targets"
 	@echo "	parameters			display the general parameters"
-	@echo "	build_and_install		Build and install RNAseqMVA package for R"
+	@echo "	check				Check the R package RNAseqMVA"
+	@echo "	build_and_install		Build and install the R package RNAseqMVA"
 	@echo "	convert_pc_plots_all_study_cases	convert PC plots from pdf to ${IMG_FORMAT} for all study cases"
 	@echo "	sync_pc_plots_all_study_cases	synchronize PC plots from workspace to the manuscript folder"
 	@echo "	ws_dir_to_server		synchronize a directory (default: TO_SYNC=${TO_SYNC}) from local workspace to the shared space of a remote server"
@@ -26,6 +27,13 @@ parameters:
 	@echo "	PCS		${PCS}"
 	@echo "	MANUSCRIPT_DIR	${MANUSCRIPT_DIR}"
 	@echo "	FIGURE_ELEMENTS	${FIGURE_ELEMENTS}"
+
+################################################################
+## Check the code
+check:
+	@echo ""
+	@echo "Checking RNAseqMVA package"
+	(cd ..; R CMD check RNAseqMVA)
 
 ################################################################
 ## Build and install the RNAseqMVA package for R
