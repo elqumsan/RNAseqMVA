@@ -1,6 +1,11 @@
-^.*\.Rproj$
+^\.gitignore$
+^\.git$
+^\.github$
+^\.Rhistory$
 ^\.Rproj\.user$
-^\\.git$
-^\\.github$
-^misc$
-^\\.Rcheck$
+^.*\.Rproj$
+^\.RData$
+^\.Rdata$
+^misc/\.gitignore$
+^R/\.gitignore$
+^Rmd/\.gitignore$

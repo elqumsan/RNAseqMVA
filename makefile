@@ -28,6 +28,13 @@ parameters:
 	@echo "	MANUSCRIPT_DIR	${MANUSCRIPT_DIR}"
 	@echo "	FIGURE_ELEMENTS	${FIGURE_ELEMENTS}"
 
+## Regenerate the doc
+roxygenise:
+	@echo ""
+	@echo "Regenerating the doc of the RNAseqMVA package"
+	Rscript -e "roxygen2::roxygenise()"
+
+
 ################################################################
 ## Check the code
 check:
