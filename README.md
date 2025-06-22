@@ -168,7 +168,7 @@ Data preprocessing is managed by the `RNAseqMVA` class `StudyCase` according to 
 
 - Mustafa AbuElQumsan, Baddih Gathas and Jacques van Helden (2025). Benchmarking SVM, Random Forest, and KNN for RNA-seq Data: Revisiting Classifier Performance and the Impact of Preprocessing and Hyperparameter Tuning. *Submitted*.
 
-## License & Contribution Guidelines (if applicable).
+## License & Contribution Guidelines
 
 [![License](https://img.shields.io/github/license/elqumsan/RNAseqMVA)](LICENSE)
 
