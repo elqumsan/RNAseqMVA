@@ -1,6 +1,6 @@
 Package: RNAseqMVA
 Type: Package
-Title: Benchmarking of multivatiate analysis methods to apply supervised classification to RNA-seq data
+Title: Benchmarking of Multivatiate Analysis Methods to Apply Supervised Classification to RNA-Seq Data
 Version: 1.0.0
 Date: 2025-06-18
 Author: Mustafa AbuElQumsan and Jacques van Helden
