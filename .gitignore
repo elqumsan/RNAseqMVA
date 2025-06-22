@@ -29,3 +29,6 @@ slurm*.out
 .RData
 *.Rdata
 check_log.txt
+*_log.txt
+*_log_*.txt
+Rplots.pdf
