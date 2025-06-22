@@ -9,6 +9,11 @@ Maintainer: Jacques van Helden <jacques.van-helden@univ-amu.fr>
 Depends:
     R (>= 4.4.3)
 Imports:
+    roxygen2
+    dplyr
+    yaml  
+    broom
+    pheatmap
     BiocManager,
     SummarizedExperiment,
     recount, 
