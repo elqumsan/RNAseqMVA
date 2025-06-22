@@ -106,10 +106,13 @@ It is requested to select a single ID at a time. If several IDs are selected, th
 
 ## Running all analyses
 
+The following command will run the analysis for the stydy case selected above. 
+
 ```bash
 Rscript --vanilla misc/main_processes.R
 ```
-This command will run the `script misc/main_process.R`, which will call other scripts in the right order to lead the successive steps of the analysis. 
+The script [`script misc/main_process.R`](script misc/main_process.R), calls a series of other scripts to run the successive steps of the analysis in the right order. 
+
 
 
 ### Running selected analyses
