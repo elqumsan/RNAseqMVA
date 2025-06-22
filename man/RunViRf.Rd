@@ -2,15 +2,17 @@
 % Please edit documentation in R/study_case.R
 \name{RunViRf}
 \alias{RunViRf}
-\title{run variable importance by random Forest to on an object of class StudyCase.}
+\title{Compute variable importance with Random Forest on an object of class StudyCase, and}
 \usage{
 RunViRf(self)
 }
 \arguments{
-\item{self}{object belong to StudyCase class.}
+\item{self}{an object belonging to StudyCase class.}
 }
 \value{
-an object of the same class as the input object
+a clone of the input StudyCase object with an added
+DataTableWithTrainTestSets containing the log2-normalized counts data table
+where features have been re-ordered by decreasing the importance of the features.
 }
 \description{
 run variable importance by random Forest to test importance on each feature of a data table.

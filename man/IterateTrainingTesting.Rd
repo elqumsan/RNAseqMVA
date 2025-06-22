@@ -62,16 +62,6 @@ from the stochastic elements of some algorithms (e.g. random forests).
 #' @import doParallel
 #' @export
 #'
-IterateTrainingTesting <- function(dataset,
-classifier,
-permute = FALSE,
-file.prefix = NULL,
-verbose = 1) {
-message("\tRunning IterateTrainingTesting() with object of class\t", paste( collapse  = ",",class(dataset) ) )
-testTable <- UseMethod("IterateTrainingTesting", dataset, classifier, permute, file.prefix, verbose)
-return(testTable)
-}
-
 #' @title Iterate training/testing procedures with a given classifier and a given data type for an object belonging to the class DataTableWithClasses
 #' @author Mustafa AbuElQumsan and Jacques van Helden
 #' @description for the sake of the accuracy and due to the error rate have

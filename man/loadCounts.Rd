@@ -32,7 +32,6 @@ wrapper runs by sample.
 }
 \examples{
 
-##############################################
 ## Load an RNA-seq dataset and merge counts per sample.
 # This assumes that the required parameters have been specified
 # in the YAML configuration file.
