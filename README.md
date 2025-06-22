@@ -147,7 +147,6 @@ Commands can then be sent to cluster nodes via srun.
 srun --mem=32GB Rscript --vanilla misc/main_processes.R
 ```
 
-
 ## Methodology – Steps taken for data processing or modeling.
 
 Data preprocessing is managed by the `RNAseqMVA` class `StudyCase` according to the following steps.
@@ -165,18 +164,22 @@ Data preprocessing is managed by the `RNAseqMVA` class `StudyCase` according to 
 - **log2 transformation**. Standardized counts are normalized by log2 transformation, after having added an epsilon to avoid problems with zero counts. 
 - **Principal component computation**. The principal components are computed from the log2-normalised, library-size standardized, counts. 
 
-
-
 ## Citations
 
 - Mustafa AbuElQumsan, Baddih Gathas and Jacques van Helden (2025). Benchmarking SVM, Random Forest, and KNN for RNA-seq Data: Revisiting Classifier Performance and the Impact of Preprocessing and Hyperparameter Tuning. Submitted.
 
 ## License & Contribution Guidelines (if applicable).
 
+[![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+
+
 ## Materials & Methods
 
-Include 3rd party dataset DOI/URL in the main text: Any dataset you have used that has been curated and uploaded by an external source.
-Evaluation method: The evaluation method used to evaluate the proposed technique. Evaluation methods (e.g., ablation study, cross-validation, cross-dataset testing) refer to the APPROACH or PROCEDURE used to validate the model’s effectiveness.
-Conclusions
+- Include 3rd party dataset DOI/URL in the main text: Any dataset you have used that has been curated and uploaded by an external source.
+- Evaluation method: The evaluation method used to evaluate the proposed technique. Evaluation methods (e.g., ablation study, cross-validation, cross-dataset testing) refer to the APPROACH or PROCEDURE used to validate the model’s effectiveness.
+
+## Conclusions
+
+- Limitations: Identify limitations in your study
 
 
