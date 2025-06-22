@@ -116,16 +116,18 @@ Rscript --vanilla misc/main_processes.R
 The script [`script misc/main_process.R`](misc/main_process.R), calls a series of other scripts to run the successive steps of the analysis in the right order. 
 
 
-
 ### Running selected analyses
 
-```bash
-R --vanilla
-```
+The analyses can also be led step-by-step by opening the project in RStudio (via the project configuration file [`RNAseqMVA.Rproj`](RNAseqMVA.Rproj)). 
 
-Then open the file [misc/main_processes.R](misc/main_processes.R) and identify the scripts you need to run separately.
+Once there, you first need to 
 
-### Specific settings for the IFB cluster 
+1. Ensure that the dependencies are present in your RStudio environment. 
+2. Compile the RNAseqMVA package,
+3. Open the file [`script misc/main_process.R`](misc/main_process.R)
+4. Run the lines one by one. 
+
+### Specific settings for the core cluster of the Institut Français de Bioinformatique (IFB-core-cluster)
 
 This section is specific to the core cluster of the Institut Français de Bioinformatique (IFB-core-cluster), which was used to run comparative assessment of supervised classification methods for RNA-seq.
 
@@ -137,9 +139,9 @@ On the [IFB core cluster](https://www.france-bioinformatique.fr/cluster), conda 
 module load conda ## Load the conda module (for the IFB-core-cluster)
 ```
 
-after that, the RNAseqMVA environment can be loaded as described above. 
+after that, the RNAseqMVA environment can be built and activated in the same way as described in the previous sectins. 
 
-Commands are sent to cluster nodes via srun. 
+Commands can then be sent to cluster nodes via srun. 
 
 ```bash
 srun --mem=32GB Rscript --vanilla misc/main_processes.R
