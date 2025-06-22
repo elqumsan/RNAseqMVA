@@ -170,9 +170,7 @@ Data preprocessing is managed by the `RNAseqMVA` class `StudyCase` according to 
 
 ## License & Contribution Guidelines (if applicable).
 
-[![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![License](https://img.shields.io/github/license/elqumsan/RNAseqMVA)](LICENSE)
-
 
 ## Materials & Methods
 
