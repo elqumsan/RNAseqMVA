@@ -4,6 +4,7 @@
 targets:
 	@echo "Targets"
 	@echo "	parameters			display the general parameters"
+	@echo "	roxygenise			regenerate the doc of the RNAseqMVA package"
 	@echo "	check				Check the R package RNAseqMVA"
 	@echo "	build_and_install		Build and install the R package RNAseqMVA"
 	@echo "	convert_pc_plots_all_study_cases	convert PC plots from pdf to ${IMG_FORMAT} for all study cases"
