@@ -2,8 +2,8 @@
 
 ## Developers
 
-- Mustafa AbuElQumsan (ORCID [https://orcid.org/0000-0002-1018-1410](0000-0002-1018-1410)) 
-- Jacques van Helden (ORCID [https://orcid.org/0000-0002-8799-8584](0000-0002-8799-8584))
+- Mustafa AbuElQumsan (ORCID [0000-0002-1018-1410](https://orcid.org/0000-0002-1018-1410)) 
+- Jacques van Helden (ORCID [0000-0002-8799-8584](https://orcid.org/0000-0002-8799-8584))
 
 
 ## Description
