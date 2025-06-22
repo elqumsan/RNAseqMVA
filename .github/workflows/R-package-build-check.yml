@@ -36,4 +36,5 @@ jobs:
         run: |
           conda activate rnaseqmva-2025
           Rscript -e "devtools::install_local('.', upgrade = 'never')"
+          Rscript -e "roxygen2::roxygenise()"
           R CMD check --no-manual --as-cran .
