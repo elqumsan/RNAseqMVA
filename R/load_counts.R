@@ -20,8 +20,13 @@
 #' ## Load an RNA-seq dataset and merge counts per sample.
 #' # This assumes that the required parameters have been specified
 #' # in the YAML configuration file.
-#' x <- loadCounts( recountID = "SRP048759", parameters = parameters)
 #'
+#' library("RNAseqMVA")
+#' source('misc/01a_load_libraries.R')
+#' source('misc/01b_load_parameters.R')
+#' recountID <- selectedRecountIDs[1] ## We only load one recountID at a time
+#' parameters <- initRecountID(recountID, project.parameters)
+#' x <- loadCounts( recountID = "SRP048759", parameters = parameters)
 #'
 #' ## RCurl and XML are Required for recount but not declared in dependencies
 #' @import RCurl
