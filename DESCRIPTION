@@ -1,6 +1,7 @@
 Package: RNAseqMVA
 Type: Package
 Title: Benchmarking of Multivatiate Analysis Methods to Apply Supervised Classification to RNA-Seq Data
+Description: A package designed to run multivariate analysis (MVA) methods to evaluate the performances of supervised classification methods (SVM, Random Forest, KNN) on RNA-seq data. 
 Version: 1.0.0
 Date: 2025-06-18
 Author: Mustafa AbuElQumsan and Jacques van Helden
@@ -24,14 +25,14 @@ Imports:
     RCurl, 
     S4Vectors,
     XML
-VignetteBuilder: knitr
 Suggests:
     devtools (>= 1.6),
-    knitr, rmarkdown,
+    knitr, 
+    rmarkdown,
     S4Vectors,
     GenomeInfoDb,
     DESeq2
-Description: Utilities to run multivariate analysis (MVA) methods and evaluate the performances of supervised classification methods (SVM, Random Forest, KNN) on RNA-seq data. 
+VignetteBuilder: knitr
 License: Artistic-2.0
 Encoding: UTF-8
 LazyData: true
