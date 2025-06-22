@@ -54,7 +54,7 @@ global: ## Global parameters are those who are the samee across all study cases
   PCs.to.test: "TMM_log2_PC"
 
   variables.type: ["all"]  ## Example: variables.type: ["all", "top_ordered"]
-  ordering.methods: ["edgeR", "RF", "DESeq2"] ## Supported: "RF", "edgeR", "DESeq2"
+  ordering.methods: ["edgeR", "DESeq2", "RF"] ## Supported: "RF", "edgeR", "DESeq2"
 
   #### RNA-seq normalization methods ####
   deg_analysis:
