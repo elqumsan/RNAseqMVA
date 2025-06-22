@@ -273,11 +273,13 @@ RunDESeq2.StudyCase <- function(self) {
 
 
 
-#' @title run variable importance by random Forest to on an object of class StudyCase.
+#' @title Compute variable importance with Random Forest on an object of class StudyCase, and
 #' @description run variable importance by random Forest to test importance on each feature of a data table.
 #' @author Mustafa AbuElQumsan and Jacques van Helden
-#' @param self object belong to StudyCase class.
-#' @return an object of the same class as the input object
+#' @param self an object belonging to StudyCase class.
+#' @return a clone of the input StudyCase object with an added
+#' DataTableWithTrainTestSets containing the log2norm data table
+#' where features have been re-ordered by decreasing the importance of the features.
 #' @export
 RunViRf <- function(self) {
   message("\tRunning variable importance from Random Forest (RunViRf) for object of class ", paste(collapse=", ", class(self)))
@@ -286,10 +288,10 @@ RunViRf <- function(self) {
 }
 
 
-#' @title run variable importance by random Forest on an object of class StudyCase
-#' @description run variable importance by random Forest on an object of class StudyCase to test importance on each feature of a data table, and order variables by decreasing the importance of features in dataTable.
+#' @title Sort variables by decreasing variable importance as computed by Random Forest
+#' @description run Random Forest on an object of class StudyCase, and, and order a dataTable by decreasing order of RF variable importance.
 #' @author Mustafa AbuElQumsan and Jacques van Helden
-#' @param self object belong to StudyCase class.
+#' @param self an object belonging to StudyCase class.
 #' @return a clone of the input StudyCase object with an added
 #' DataTableWithTrainTestSets containing the log2norm data table
 #' where features have been re-ordered by decreasing the importance of the features.
