@@ -111,7 +111,9 @@ The following command will run the analysis for the stydy case selected above.
 ```bash
 Rscript --vanilla misc/main_processes.R
 ```
-The script [`script misc/main_process.R`](script misc/main_process.R), calls a series of other scripts to run the successive steps of the analysis in the right order. 
+
+
+The script [`script misc/main_process.R`](misc/main_process.R), calls a series of other scripts to run the successive steps of the analysis in the right order. 
 
 
 
