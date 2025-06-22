@@ -174,8 +174,7 @@ Data preprocessing is managed by the `RNAseqMVA` class `StudyCase` according to 
 
 ## Materials & Methods
 
-- Include 3rd party dataset DOI/URL in the main text: Any dataset you have used that has been curated and uploaded by an external source.
-- Evaluation method: The evaluation method used to evaluate the proposed technique. Evaluation methods (e.g., ablation study, cross-validation, cross-dataset testing) refer to the APPROACH or PROCEDURE used to validate the model’s effectiveness.
+All the datasets used for this evaluation were downloaded from the Recount database ([rna.recount.bio/](https://rna.recount.bio)). 
 
 This code evaluates three alternative methods for the supervised classification of RNA-seq data: 
 
