@@ -20,6 +20,10 @@ The benchmarking was performed based on 6 datasets downloaded from the Recount d
 
 The code is written in R and should run on R version >= 3.6.1. 
 
+It is distributed as an R named `RNAseqMVA`, (for Multi-Variate Analysis of RNA-seq data). 
+The core of the package is object-oriented, with classes defined in the [`R`](R/) directory, and scripts in the [`misc`](misc/) directory.
+ 
+
 ## Requirements
 
 The file [conda-rnaseqmva_2025.yml](conda-rnaseqmva_2025.yml) specifies the parameters of a conda environment enabling to install all required dependencies (R, RCRAN and Bioconductor libraries).
@@ -97,9 +101,7 @@ By default, the configuration is setup to analyse a single study case. Alternati
   selected_recount_ids: ['SRP062966'] # Lupus (sc)
 ```
 
-Although the code can in principle run all the analyses at once, this takes a lot of time and memory. 
-We thus recommend to select a single ID at a time. 
-
+It is requested to select a single ID at a time. If several IDs are selected, the analysis will run only on the first one. 
 
 
 ## Running all analyses
