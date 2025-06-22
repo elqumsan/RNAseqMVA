@@ -148,9 +148,28 @@ srun --mem=32GB Rscript --vanilla misc/main_processes.R
 ```
 
 
-## Methodology (if applicable) – Steps taken for data processing or modeling.
+## Methodology – Steps taken for data processing or modeling.
 
-## Citations (if applicable) – If this dataset was used in research, provide references.
+The following operations are managed with this code :
+
+- **Data download**. RNA-seq data (raw counts) and metadata (pheno table) is downloaded from the Recount dabase (the user-selected study case is specified by its Recount ID)
+- **Class filtering**. The classes having less than 15 samples are discarded (the min number of samples per class can by modified by editing the configuration file [`misc/00_project_parameters.yml`](misc/00_project_parameters.yml))
+- **Feature filtering**. Features (genes or transcript) having a zero variance are suppressed from the data set. 
+- **Library size standardization**. Four alternative methods are applied to standardize the library sizes: 
+
+    - upper quartile (q0.75), 
+    - weighted trimmed mean of M-values (TMM) (Robinson & Oshlack, 2010), 
+    - relative log expression (RLE) from DESeq (Anders & Huber, 2010), 
+    - the `estimateSizeFactors() function implemented in the DESeq2 package (Love, Huber & Anders, 2014).  
+
+- **log2 transformation**. Standardized counts are normalized by log2 transformation, after having added an epsilon to avoid problems with zero counts. 
+- **Principal component computation**. The principal components are computed from the log2-normalised, library-size standardized, counts. 
+
+
+
+## Citations
+
+- Mustafa AbuElQumsan, Baddih Gathas and Jacques van Helden (2025). Benchmarking SVM, Random Forest, and KNN for RNA-seq Data: Revisiting Classifier Performance and the Impact of Preprocessing and Hyperparameter Tuning. Submitted.
 
 ## License & Contribution Guidelines (if applicable).
 
