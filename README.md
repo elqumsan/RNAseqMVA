@@ -177,6 +177,17 @@ Data preprocessing is managed by the `RNAseqMVA` class `StudyCase` according to 
 - Include 3rd party dataset DOI/URL in the main text: Any dataset you have used that has been curated and uploaded by an external source.
 - Evaluation method: The evaluation method used to evaluate the proposed technique. Evaluation methods (e.g., ablation study, cross-validation, cross-dataset testing) refer to the APPROACH or PROCEDURE used to validate the model’s effectiveness.
 
+This code evaluates three alternative methods for the supervised classification of RNA-seq data: 
+
+- Random Forest (RF)
+- K nearest neighbours (KNN)
+- Support Vector Machines (SVM)
+
+**Evaluation method.** Each classifieris evaluated by measuring the Misclassification Error Rate, with iterative cross-validation (subsampling of the original data set).
+
+**Subsampling.** The evaluation was based on 50 iterations of random subsampling with 2/3 individuals for training and 1/3 for testing. Subsampling was stratified in order to ensure a fair representation of all the classes in both training and testing sets. 
+
+
 ## Conclusions
 
 - Limitations: Identify limitations in your study
