@@ -24,16 +24,17 @@ Imports:
     randomForest, 
     RCurl, 
     S4Vectors,
-    XML
+    XML,
+    IRanges,
+    tidyr
 Suggests:
     devtools (>= 1.6),
     knitr, 
     rmarkdown,
-    S4Vectors,
     GenomeInfoDb,
     DESeq2
 VignetteBuilder: knitr
-License: Artistic-2.0
+License: BSD_3_clause + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.2
