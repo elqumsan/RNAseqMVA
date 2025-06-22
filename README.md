@@ -150,7 +150,7 @@ srun --mem=32GB Rscript --vanilla misc/main_processes.R
 
 ## Methodology – Steps taken for data processing or modeling.
 
-The following operations are managed with this code :
+Data preprocessing is managed by the `RNAseqMVA` class `StudyCase` according to the following steps.
 
 - **Data download**. RNA-seq data (raw counts) and metadata (pheno table) is downloaded from the Recount dabase (the user-selected study case is specified by its Recount ID)
 - **Class filtering**. The classes having less than 15 samples are discarded (the min number of samples per class can by modified by editing the configuration file [`misc/00_project_parameters.yml`](misc/00_project_parameters.yml))
