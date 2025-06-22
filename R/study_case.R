@@ -62,10 +62,10 @@ StudyCase  <- function(recountID, parameters) {
     result[[log2.name]][["dataTable"]] <- log2(result[[method.name]][["dataTable"]] + epsilon)
     dataNames <- append(dataNames, log2.name)
 
-    #### Derive an object having as features the principal components of log2norm ####
+    #### Derive an object having as features the principal components of log2-normalized counts ####
     message("\t\tComputing principal components")
     pc.name <- paste(sep = "", log2.name, "_PC")
-    result[[pc.name]] <- result[[log2.name]] ## Clone the log2norm object to copy all its parameters
+    result[[pc.name]] <- result[[log2.name]] ## Clone the log2-normalized counts object to copy all its parameters
     result[[pc.name]][["dataType"]] <- pc.name
     dataNames <- append(dataNames, pc.name)
 
@@ -140,7 +140,7 @@ StudyCase  <- function(recountID, parameters) {
   #### Define variable (gene) ordering according to the variable importanve (VI) computed by RandomForest ####
   if ("RF" %in% project.parameters$global$ordering.methods) {
     message.with.time("Computing variables importance by Random Forest (RF), and ordering features by decreasing importance. ")
-    # ## Clone the log2norm object to copy all its parameters
+    # ## Clone the log2-normalized counts object to copy all its parameters
     self <- RunViRf(self)
   }
 
@@ -200,14 +200,14 @@ RunedgeR <- function(self) {
 #' @author Mustafa AbuElQumsan and Jacques van Helden
 #' @param self object belong to StudyCase class
 #' @return a clone of the input StudyCase object with an added
-#' DataTableWithTrainTestSets containing the log2norm data table
+#' DataTableWithTrainTestSets containing the log2-normalized counts data table
 #' where features have been re-ordered by increasing adjusted p-value.
 #' @export
 RunedgeR.StudyCase <- function(self) {
 
   message.with.time("Defining gene order according to edgeR differential expression")
 
-  self$datasetsForTest$log2norm_edgeR_sorted <- self$datasetsForTest$log2norm
+## FOR TEST 2025-06-22  self$datasetsForTest$q0.75_log2_edgeR_sorted <- self$datasetsForTest$q0.75_log2
 
   ## include the edgeR result table in the resulting data object
   self$datasetsForTest$log2norm_edgeR_sorted$edgeR  <-
@@ -216,7 +216,7 @@ RunedgeR.StudyCase <- function(self) {
   ## Specify te data type
   self$datasetsForTest$log2norm_edgeR_sorted$dataType <- "log2norm_edgeR_ordered"
 
-  ## Note: we use the log2norm as variables,
+  ## Note: we use the log2-normalized counts as variables,
   ## but sort them according to edgeR,
   ## which was based on the raw counts
   self$datasetsForTest$log2norm_edgeR_sorted$dataTable <-
@@ -245,14 +245,14 @@ RunDESeq2 <- function(self) {
 #' @author Mustafa AbuElQumsan and Jacques van Helden
 #' @param self object belong to StudyCase class.
 #' @return a clone of the input StudyCase object with an added
-#' DataTableWithTrainTestSets containing the log2norm data table
+#' DataTableWithTrainTestSets containing the log2-normalized counts data table
 #' where features have been re-ordered by increasing adjusted p-value.
 #' @export
 RunDESeq2.StudyCase <- function(self) {
 
   message.with.time("Defining gene order according to DESeq2 differential expression")
 
-  self$datasetsForTest$log2norm_DESeq2_sorted <- self$datasetsForTest$log2norm
+  ## FOR TEST 2025-06-22  self$datasetsForTest$log2norm_DESeq2_sorted <- self$datasetsForTest$q0.75_log2
 
   ## include the DESeq2 result table in the resulting data object
   self$datasetsForTest$log2norm_DESeq2_sorted$DESeq2  <-
@@ -261,7 +261,7 @@ RunDESeq2.StudyCase <- function(self) {
   ## Specify te data type
   self$datasetsForTest$log2norm_DESeq2_sorted$dataType <- "log2norm_DESeq2_ordered"
 
-  ## Note: we use the log2norm as variables,
+  ## Note: we use the log2-normalized counts as variables,
   ## but sort them according to DESeq2,
   ## which was based on the raw counts
   self$datasetsForTest$log2norm_DESeq2_sorted$dataTable <-
@@ -278,7 +278,7 @@ RunDESeq2.StudyCase <- function(self) {
 #' @author Mustafa AbuElQumsan and Jacques van Helden
 #' @param self an object belonging to StudyCase class.
 #' @return a clone of the input StudyCase object with an added
-#' DataTableWithTrainTestSets containing the log2norm data table
+#' DataTableWithTrainTestSets containing the log2-normalized counts data table
 #' where features have been re-ordered by decreasing the importance of the features.
 #' @export
 RunViRf <- function(self) {
@@ -293,23 +293,23 @@ RunViRf <- function(self) {
 #' @author Mustafa AbuElQumsan and Jacques van Helden
 #' @param self an object belonging to StudyCase class.
 #' @return a clone of the input StudyCase object with an added
-#' DataTableWithTrainTestSets containing the log2norm data table
+#' DataTableWithTrainTestSets containing the log2-normalized counts data table
 #' where features have been re-ordered by decreasing the importance of the features.
 #' @export
 RunViRf.StudyCase <- function(self) {
   message.with.time("Defining gene order according to variable importance by random Forest")
 
-  self$datasetsForTest$log2norm_ViRf_sorted <- self$datasetsForTest$log2norm
+  self$datasetsForTest$log2norm_ViRf_sorted <- self$datasetsForTest$q0.75_log2
   self$datasetsForTest$log2norm_ViRf_sorted$dataType <- "log2normViRf"
 
   rf.model  <- randomForest(
-    x = t(self$datasetsForTest$log2norm$dataTable),
-    y =  as.factor( self$datasetsForTest$log2norm$classLabels),
-    xtest = t(self$datasetsForTest$log2norm$dataTable), importance = T, keep.forest = T)
+    x = t(self$datasetsForTest$q0.75_log2$dataTable),
+    y =  as.factor( self$datasetsForTest$q0.75_log2$classLabels),
+    xtest = t(self$datasetsForTest$q0.75_log2$dataTable), importance = T, keep.forest = T)
   variable.importance <- importance(rf.model, type = 1, scale = F)
   ordered.varaible.importance <-order(variable.importance[,1],decreasing = T)
 
-  ordered.dataTable.by.importace <-self$datasetsForTest$log2norm$dataTable[ordered.varaible.importance, ]
+  ordered.dataTable.by.importace <-self$datasetsForTest$q0.75_log2$dataTable[ordered.varaible.importance, ]
   sig.variables <- round(nrow(ordered.dataTable.by.importace) * 0.75)
   ordered.dataTable.by.importance  <- ordered.dataTable.by.importace[1:sig.variables, ]
 
