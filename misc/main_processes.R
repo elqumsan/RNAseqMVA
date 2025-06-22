@@ -20,40 +20,34 @@ if (project.parameters$global$reload) {
 }
 
 
-#### Reload parameters if required  ####
-## Since we support study-case-specific parameters, the default parameters may have changed when the study case was loaded
-if (project.parameters$global$reload.parameters) {
-  message.with.time("Reloading parameters")
-  source('misc/01d_reload_parameters.R')
-}
+# #### Reload parameters if required  ####
+# ## Since we support study-case-specific parameters, the default parameters may have changed when the study case was loaded
+# if (project.parameters$global$reload.parameters) {
+#   message.with.time("Reloading parameters")
+#   source('misc/01d_reload_parameters.R')
+# }
 
 
-## Ensure consistency between iterations and those attached to the study case datasets.
-## If they differ, the training / testing sets must be regenerated.
-if (studyCase$parameters$iterations < project.parameters$global$iterations) {
-  message(studyCase$ID,  "\tResetting the number of iterations from ",
-          studyCase$parameters$iterations, " to ", project.parameters$global$iterations)
-
-  ## Set the new number of iterations to the studyCase and to each of its datasets
-  studyCase$parameters$iterations <- project.parameters$global$iterations
-  for (dataset in studyCase$datasetsForTest) {
-    dataset$parameters$iterations <- project.parameters$global$iterations
-    ## Regenerate training / testing sets
-    buildAttributes(dataset)
-  }
-}
+# ## Ensure consistency between iterations and those attached to the study case datasets.
+# ## If they differ, the training / testing sets must be regenerated.
+# if (studyCase$parameters$iterations < project.parameters$global$iterations) {
+#   message(studyCase$ID,  "\tResetting the number of iterations from ",
+#           studyCase$parameters$iterations, " to ", project.parameters$global$iterations)
+#
+#   ## Set the new number of iterations to the studyCase and to each of its datasets
+#   studyCase$parameters$iterations <- project.parameters$global$iterations
+#   for (dataset in studyCase$datasetsForTest) {
+#     dataset$parameters$iterations <- project.parameters$global$iterations
+#     ## Regenerate training / testing sets
+#     buildAttributes(dataset)
+#   }
+# }
 
 #### Start parallel computing ####
 message.with.time("Initializing parallel computing")
 source('misc/01c_init_parallel_computing.R')
 
-
 ## stop("User-requested stop at this level")
-
-
-#### Tune parameters ####
-message.with.time("Tuning parameters")
-source('misc/05_tune_parameters.R')
 
 #### Run analyses with all variables and default parameters ####
 message.with.time("Impact of normalisation on classifier performances")
