@@ -133,7 +133,7 @@ This section is specific to the core cluster of the Institut Français de Bioinf
 
 If you are working on another infrastructure, you can skip it. 
 
-On the [IFB core cluster](https://www.france-bioinformatique.fr/cluster), conda is loaded via a module, which must be loaded with the following command: 
+On the [IFB core cluster](https://www.france-bioinformatique.fr/en/ifb-core-cluster/), conda is loaded via a module, which must be loaded with the following command: 
 
 ```bash
 module load conda ## Load the conda module (for the IFB-core-cluster)
