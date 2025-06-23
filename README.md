@@ -143,7 +143,7 @@ module load conda ## Load the conda module (for the IFB-core-cluster)
 After that, the RNAseqMVA environment can be built and activated and the analyses launched in the same way as described in the previous sections, but **each task has to be send to the job scheduler slurm**, via either `sbatch` (sending a script or `srun` (submitting a single-line command).
 
 ```bash
-srun make roxigenise
+srun make roxygenise
 srun make build_and_install
 srun --mem=32GB Rscript --vanilla misc/main_processes.R
 ```
