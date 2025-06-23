@@ -80,7 +80,8 @@ home directory. If not, you just need to adapt the path below.
 
 ```bash
 cd ~/RNAseqMVA
-make build_and_install
+make roxigenise  ## compile the documentation for the RNAseqMVA package
+make build_and_install ## build the RNAseqMVA package
 ```
 
 ### Configuring the analysis
@@ -139,11 +140,11 @@ On the [IFB core cluster](https://www.france-bioinformatique.fr/en/ifb-core-clus
 module load conda ## Load the conda module (for the IFB-core-cluster)
 ```
 
-after that, the RNAseqMVA environment can be built and activated in the same way as described in the previous sectins. 
-
-Commands can then be sent to cluster nodes via srun. 
+After that, the RNAseqMVA environment can be built and activated and the analyses launched in the same way as described in the previous sections, but **each task has to be send to the job scheduler slurm**, via either `sbatch` (sending a script or `srun` (submitting a single-line command).
 
 ```bash
+srun make roxigenise
+srun make build_and_install
 srun --mem=32GB Rscript --vanilla misc/main_processes.R
 ```
 
