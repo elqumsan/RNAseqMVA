@@ -1,4 +1,4 @@
-#################### Reload previously saved and normalized counts ####################
+#### Reload previously saved and normalized counts #####
 
 ## Define the path of the memory image file
 featureType <- project.parameters$global$feature

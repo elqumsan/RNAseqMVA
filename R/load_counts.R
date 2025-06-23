@@ -17,12 +17,16 @@
 #'   }
 #' @examples
 #'
-#' ##############################################
 #' ## Load an RNA-seq dataset and merge counts per sample.
 #' # This assumes that the required parameters have been specified
 #' # in the YAML configuration file.
-#' x <- loadCounts( recountID = "SRP048759", parameters = parameters)
 #'
+#' library("RNAseqMVA")
+#' source('misc/01a_load_libraries.R')
+#' source('misc/01b_load_parameters.R')
+#' recountID <- selectedRecountIDs[1] ## We only load one recountID at a time
+#' parameters <- initRecountID(recountID, project.parameters)
+#' x <- loadCounts( recountID = "SRP048759", parameters = parameters)
 #'
 #' ## RCurl and XML are Required for recount but not declared in dependencies
 #' @import RCurl
@@ -36,7 +40,7 @@ loadCounts <- function(recountID,
 
   message.with.time("Starting loadCounts() for Recount ID ", recountID)
 
-  ## Check required parameters
+  #### Check required parameters ####
   for (p in c("classColumn", "mergeRuns", "sampleIdColumn", "feature")) {
     if (is.null(parameters[[p]])) {
       stop("Missing required parameter: '", p,
@@ -46,7 +50,7 @@ loadCounts <- function(recountID,
     }
   }
 
-  ## Check required directory
+  #### Checkthe existence of the workspace directory ####
   if (is.null(parameters$dir$workspace)) {
     stop("Missing required parameter: 'parameters$dir$workspace'.\n\tPlease check configuration file. ")
   } else {
@@ -55,16 +59,16 @@ loadCounts <- function(recountID,
   }
 
 
-  ################################################
-  # loading count Data from recount_experiment, Via our wrapper which will Automatically merge the runs by
-  # sample in order to obtain sample-wise count rather than run-wise counts.
+  #### Load count data from recount_experiment ####
+  ##
+  ## via our wrapper which will automatically merge the runs by sample
+  ## in order to obtain sample-wise count rather than run-wise counts.
   experiment <- loadRecountExperiment(recountID = recountID, parameters = parameters, ...)
 
   message("\t", "Original dataTable contains ",
           nrow(experiment$originalCounts$dataTable), " rows (", parameters$feature,") and ",
           ncol(experiment$originalCounts$dataTable), " columns (samples).")
 
-  ################################################
   #### Filter zero-variance and near-zero variance variables from the count table #####
   experiment$filtered <- filterDataTable(rawCounts = experiment$originalCounts) #, parameters)
 
@@ -76,12 +80,9 @@ loadCounts <- function(recountID,
   }
 
 
-  #### Build a list with the results of the loadCounts() function
+  #### Build a list with the results of the loadCounts() function ####
   experiment$originalCounts$geo.characteristics <- geocharFromPheno(experiment$originalCounts$phenoTable)
   experiment$filtered$geo.characteristics <- geocharFromPheno(experiment$filtered$phenoTable)
-
-
-
 
 
   message.with.time("Finished loadCounts() for Recount experiment ID ", parameters$recountID)

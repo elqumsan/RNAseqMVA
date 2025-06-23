@@ -11,7 +11,7 @@
 }
 \value{
 a clone of the input StudyCase object with an added
-DataTableWithTrainTestSets containing the log2norm data table
+DataTableWithTrainTestSets containing the log2-normalized counts data table
 where features have been re-ordered by increasing adjusted p-value.
 }
 \description{

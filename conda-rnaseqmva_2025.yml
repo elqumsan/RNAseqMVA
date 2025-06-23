@@ -26,8 +26,14 @@ dependencies:
   - r-pheatmap
   - r-scatterplot3d
   - r-biocmanager
+  - r-knitr
+  - r-tidyr
+  - r-mass
+  - r-lattice
+  - r-ggplot2
 
   # Bioconductor (current)
+  - bioconductor-iranges
   - bioconductor-deseq2
   - bioconductor-limma
   - bioconductor-edger

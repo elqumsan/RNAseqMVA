@@ -2,20 +2,20 @@
 % Please edit documentation in R/study_case.R
 \name{RunViRf.StudyCase}
 \alias{RunViRf.StudyCase}
-\title{run variable importance by random Forest on an object of class StudyCase}
+\title{Sort variables by decreasing variable importance as computed by Random Forest}
 \usage{
 \method{RunViRf}{StudyCase}(self)
 }
 \arguments{
-\item{self}{object belong to StudyCase class.}
+\item{self}{an object belonging to StudyCase class.}
 }
 \value{
 a clone of the input StudyCase object with an added
-DataTableWithTrainTestSets containing the log2norm data table
+DataTableWithTrainTestSets containing the log2-normalized counts data table
 where features have been re-ordered by decreasing the importance of the features.
 }
 \description{
-run variable importance by random Forest on an object of class StudyCase to test importance on each feature of a data table, and order variables by decreasing the importance of features in dataTable.
+run Random Forest on an object of class StudyCase, and, and order a dataTable by decreasing order of RF variable importance.
 }
 \author{
 Mustafa AbuElQumsan and Jacques van Helden

@@ -1,3 +1,7 @@
+#### Load parameters from a YAML-formatted configuration file ####
+#### This script is used to load the parameters for the RNAseqMVA project
+#### It is used in the main script (RNAseqMVA.R) and in the scripts for each recount ID
+
 require("RNAseqMVA")
 
 ##### Path of the YAML-formatted configuration file ####
@@ -49,6 +53,7 @@ for (d in names(project.parameters$global$dir)) {
   }
 }
 
+# View(project.parameters)
 
 #### END OF SCRIPT ####
 

@@ -1,19 +1,16 @@
-# RNAseqMVA
+# RNAseqMVA: Benchmarking SVM, Random Forest, and KNN for RNA-seq Data: Revisiting Classifier Performance and the Impact of Preprocessing and Hyperparameter Tuning.
 
 ## Developers
 
-- Mustafa AbuElQumsan (ORCID [https://orcid.org/0000-0002-1018-1410](0000-0002-1018-1410)) 
-- Jacques van Helden (ORCID [https://orcid.org/0000-0002-8799-8584](0000-0002-8799-8584))
+- Mustafa AbuElQumsan (ORCID [0000-0002-1018-1410](https://orcid.org/0000-0002-1018-1410)) 
+- Jacques van Helden (ORCID [0000-0002-8799-8584](https://orcid.org/0000-0002-8799-8584))
 
-## Name of the project
-
-Benchmarking SVM, Random Forest, and KNN for RNA-seq Data: Revisiting Classifier Performance and the Impact of Preprocessing and Hyperparameter Tuning.
 
 ## Description
 
-This repository contains the R code (RNAseqMVA package + analysis scripts) required to reproduce the evaluation descrived in the following manuscript:
+This repository contains the R code (RNAseqMVA package + analysis scripts) required to reproduce the evaluation described in the following manuscript:
 
-- Mustafa AbuElQumsan, Baddih Gathas and Jacques van Helden (2025). Benchmarking SVM, Random Forest, and KNN for RNA-seq Data: Revisiting Classifier Performance and the Impact of Preprocessing and Hyperparameter Tuning. _Submitted_. 
+- Mustafa AbuElQumsan, Baddih Gathas and Jacques van Helden (2025). Benchmarking SVM, Random Forest, and KNN for RNA-seq Data: Revisiting Classifier Performance and the Impact of Preprocessing and Hyperparameter Tuning. *Submitted*. 
 
 ## Dataset Information
 
@@ -22,6 +19,10 @@ The benchmarking was performed based on 6 datasets downloaded from the Recount d
 ## Code Information
 
 The code is written in R and should run on R version >= 3.6.1. 
+
+It is distributed as an R named `RNAseqMVA`, (for Multi-Variate Analysis of RNA-seq data). 
+The core of the package is object-oriented, with classes defined in the [`R`](R/) directory, and scripts in the [`misc`](misc/) directory.
+ 
 
 ## Requirements
 
@@ -85,56 +86,109 @@ make build_and_install
 ### Configuring the analysis
 
 All the parameters of an analysis can be specified in a YAML file [misc/00_project_parameters.yml](misc/00_project_parameters.yml). 
-
 Parameters can be changed easily by editing this file with any text editor (nano, gedit, emacs, vi, ...).
 
+By default, the configuration is setup to analyse a single study case. Alternative IDs can be selected by uncommenting another row of the proposed `selected_recount_ids`.
+
+```
+  #### Usage : uncomment the recount IDs you want to use for the analysis ####
+
+#  selected_recount_ids: ['SRP042620'] # Breast cancer
+#  selected_recount_ids: ['SRP056295'] # Acute myeloid leukemia
+#  selected_recount_ids: ['SRP035988'] # Psoriasis
+#  selected_recount_ids: ['SRP057196'] # Adult and fetal brain cells (sc)
+#  selected_recount_ids: ['SRP066834'] # Cerebral organoids and fetal neocortex (sc)
+  selected_recount_ids: ['SRP062966'] # Lupus (sc)
+```
+
+It is requested to select a single ID at a time. If several IDs are selected, the analysis will run only on the first one. 
+
+
 ## Running all analyses
+
+The following command will run the analysis for the stydy case selected above. 
 
 ```bash
 Rscript --vanilla misc/main_processes.R
 ```
-This command will run the `script misc/main_process.R`, which will call other scripts in the right order to lead the successive steps of the analysis. 
+
+
+The script [`script misc/main_process.R`](misc/main_process.R), calls a series of other scripts to run the successive steps of the analysis in the right order. 
 
 
 ### Running selected analyses
 
-```bash
-R --vanilla
-```
+The analyses can also be led step-by-step by opening the project in RStudio (via the project configuration file [`RNAseqMVA.Rproj`](RNAseqMVA.Rproj)). 
 
-Then open the file [misc/main_processes.R](misc/main_processes.R) and identify the scripts you need to run separately.
+Once there, you first need to 
 
-### Specific settings for the IFB cluster 
+1. Ensure that the dependencies are present in your RStudio environment. 
+2. Compile the RNAseqMVA package,
+3. Open the file [`script misc/main_process.R`](misc/main_process.R)
+4. Run the lines one by one. 
+
+### Specific settings for the core cluster of the Institut Français de Bioinformatique (IFB-core-cluster)
 
 This section is specific to the core cluster of the Institut Français de Bioinformatique (IFB-core-cluster), which was used to run comparative assessment of supervised classification methods for RNA-seq.
 
 If you are working on another infrastructure, you can skip it. 
 
-On the [IFB core cluster](https://www.france-bioinformatique.fr/cluster), conda is loaded via a module, which must be loaded with the following command: 
+On the [IFB core cluster](https://www.france-bioinformatique.fr/en/ifb-core-cluster/), conda is loaded via a module, which must be loaded with the following command: 
 
 ```bash
 module load conda ## Load the conda module (for the IFB-core-cluster)
 ```
 
-after that, the RNAseqMVA environment can be loaded as described above. 
+after that, the RNAseqMVA environment can be built and activated in the same way as described in the previous sectins. 
 
-Commands are sent to cluster nodes via srun. 
+Commands can then be sent to cluster nodes via srun. 
 
 ```bash
 srun --mem=32GB Rscript --vanilla misc/main_processes.R
 ```
 
+## Methodology – Steps taken for data processing or modeling.
 
-## Methodology (if applicable) – Steps taken for data processing or modeling.
+Data preprocessing is managed by the `RNAseqMVA` class `StudyCase` according to the following steps.
 
-## Citations (if applicable) – If this dataset was used in research, provide references.
+- **Data download**. RNA-seq data (raw counts) and metadata (pheno table) is downloaded from the Recount dabase (the user-selected study case is specified by its Recount ID)
+- **Class filtering**. The classes having less than 15 samples are discarded (the min number of samples per class can by modified by editing the configuration file [`misc/00_project_parameters.yml`](misc/00_project_parameters.yml))
+- **Feature filtering**. Features (genes or transcript) having a zero variance are suppressed from the data set. 
+- **Library size standardization**. Four alternative methods are applied to standardize the library sizes: 
 
-## License & Contribution Guidelines (if applicable).
+    - upper quartile (q0.75), 
+    - weighted trimmed mean of M-values (TMM) (Robinson & Oshlack, 2010), 
+    - relative log expression (RLE) from DESeq (Anders & Huber, 2010), 
+    - the `estimateSizeFactors() function implemented in the DESeq2 package (Love, Huber & Anders, 2014).  
+
+- **log2 transformation**. Standardized counts are normalized by log2 transformation, after having added an epsilon to avoid problems with zero counts. 
+- **Principal component computation**. The principal components are computed from the log2-normalised, library-size standardized, counts. 
+
+## Citations
+
+- Mustafa AbuElQumsan, Baddih Gathas and Jacques van Helden (2025). Benchmarking SVM, Random Forest, and KNN for RNA-seq Data: Revisiting Classifier Performance and the Impact of Preprocessing and Hyperparameter Tuning. *Submitted*.
+
+## License & Contribution Guidelines
+
+[![License](https://img.shields.io/github/license/elqumsan/RNAseqMVA)](LICENSE)
 
 ## Materials & Methods
 
-Include 3rd party dataset DOI/URL in the main text: Any dataset you have used that has been curated and uploaded by an external source.
-Evaluation method: The evaluation method used to evaluate the proposed technique. Evaluation methods (e.g., ablation study, cross-validation, cross-dataset testing) refer to the APPROACH or PROCEDURE used to validate the model’s effectiveness.
-Conclusions
+All the datasets used for this evaluation were downloaded from the Recount database ([rna.recount.bio/](https://rna.recount.bio)). 
+
+This code evaluates three alternative methods for the supervised classification of RNA-seq data: 
+
+- Random Forest (RF)
+- K nearest neighbours (KNN)
+- Support Vector Machines (SVM)
+
+**Evaluation method.** Each classifieris evaluated by measuring the Misclassification Error Rate, with iterative cross-validation (subsampling of the original data set).
+
+**Subsampling.** The evaluation was based on 50 iterations of random subsampling with 2/3 individuals for training and 1/3 for testing. Subsampling was stratified in order to ensure a fair representation of all the classes in both training and testing sets. 
+
+
+## Conclusions
+
+- Limitations: Identify limitations in your study
 
 
