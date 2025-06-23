@@ -80,7 +80,7 @@ home directory. If not, you just need to adapt the path below.
 
 ```bash
 cd ~/RNAseqMVA
-make roxigenise  ## compile the documentation for the RNAseqMVA package
+make roxygenise  ## compile the documentation for the RNAseqMVA package
 make build_and_install ## build the RNAseqMVA package
 ```
 
