@@ -6,7 +6,7 @@ Date: 2025-06-18
 Author: Mustafa AbuElQumsan and Jacques van Helden
 Maintainer: Jacques van Helden <jacques.van-helden@univ-amu.fr>
 Depends:
-    R (>= 4.4.3)
+    R (>= 4.4.1)
 Imports:
     BiocManager,
     SummarizedExperiment,
