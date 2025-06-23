@@ -2,12 +2,12 @@ global: ## Global parameters are those who are the samee across all study cases
 
   #### Usage : uncomment the recount IDs you want to use for the analysis ####
 
-#  selected_recount_ids: ['SRP042620'] # Breast cancer
+  selected_recount_ids: ['SRP042620'] # Breast cancer
 #  selected_recount_ids: ['SRP056295'] # Acute myeloid leukemia
 #  selected_recount_ids: ['SRP035988'] # Psoriasis
 #  selected_recount_ids: ['SRP057196'] # Adult and fetal brain cells (sc)
 #  selected_recount_ids: ['SRP066834'] # Cerebral organoids and fetal neocortex (sc)
-  selected_recount_ids: ['SRP062966'] # Lupus (sc)
+#  selected_recount_ids: ['SRP062966'] # Lupus (sc)
 
   #### Type of feature to download from Recount2. Supported: "gene", ranscript" ####
   feature: "gene"
