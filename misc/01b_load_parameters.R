@@ -56,7 +56,7 @@ for (d in names(project.parameters$global$dir)) {
 
 # View(project.parameters)
 
-## Read the command-line arguments passed to Rscript with the optparse package
+#### Read the command-line arguments passed to Rscript with the optparse package ####
 ## This is used to overwrite the parameters specified in the YAML file
 ## This is useful for running the script with different parameters without modifying the YAML file
 ## For example, to run the script with a different Recount ID and feature type
@@ -64,10 +64,19 @@ for (d in names(project.parameters$global$dir)) {
 
 # Define options
 option_list = list(
+  ## Recount ID option
   make_option(c("-r", "--recountID"), type="character", default=NULL,
               help="Recount ID (e.g. SRP056295)", metavar="character"),
-  make_option(c("-f", "--feature"), type="character", default="gene",
-              help="Feature type: gene or transcript [default: %default]", metavar="character")
+
+  ## Feature type option
+  make_option(c("-f", "--feature"), type="character", default=NULL,
+              help="Feature type: gene or transcript [default: %default]", metavar="character"),
+
+  ## Number of jobs option (must be integer)
+  make_option(c("-j", "--jobs"), type="integer", default=NULL,
+              help="Number of parallel jobs to run [default: %default]",
+              metavar="integer")
+
 )
 
 # Parse options
@@ -109,6 +118,15 @@ if (!is.null(opt$feature)) {
   project.parameters$global$feature <- opt$feature
 }
 
+## Handle jobs option
+## This option is used to specify the number of parallel jobs to run
+if (!is.null(opt$jobs)) {
+  if (opt$jobs < 1) {
+    stop("Invalid value for --jobs: ", opt$jobs, ". Number of jobs must be a positive integer")
+  }
+  message("\tNumber of parallel jobs specified in the command-line arguments: ", opt$jobs, "\n")
+  project.parameters$global$jobs <- opt$jobs
+}
 
 #### END OF SCRIPT ####
 
