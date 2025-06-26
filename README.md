@@ -166,14 +166,14 @@ SRP057196: ## Adult and fetal brain cells (sc)
 The following command will run the analysis for the stydy case selected above. 
 
 ```bash
-Rscript --vanilla misc/main_processes.R --recountID [ID] --feature [gene|transcript]
+Rscript --vanilla misc/main_processes.R --recountID [ID] --feature [gene|transcript] --jobs [job_nb]
 ```
 
-For example, to analyse the breast cancer data (recountID SRP042620) with genes as features, type
+For example, to analyse the breast cancer data (recountID SRP042620) with genes as features and running 11 jobs in parallel, type
 
 
 ```bash
-Rscript --vanilla misc/main_processes.R --recountID SRP042620 --feature gene
+Rscript --vanilla misc/main_processes.R --recountID SRP042620 --feature gene --jobs 11
 ```
 
 
