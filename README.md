@@ -154,7 +154,7 @@ srun make build_and_install   ## Build the RNAseqMVA package
 ## - we use the long partition (queue) because for some study cases the analysis can last for more than 24h
 ## - in the file misc/00_project_parameters.yml, we set jobs: 25
 ## - we allocate 64Gb of memory in total, which makes >2Gb per CPU, in principle sufficient
-srun --partition=long --mem-per-cpu=2G Rscript --vanilla misc/main_processes.R
+srun --partition=long --mem=64GB Rscript --vanilla misc/main_processes.R
 ```
 
 ## Methodology – Steps taken for data processing or modeling.
