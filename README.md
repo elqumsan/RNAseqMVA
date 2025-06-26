@@ -110,8 +110,16 @@ It is requested to select a single ID at a time. If several IDs are selected, th
 The following command will run the analysis for the stydy case selected above. 
 
 ```bash
-Rscript --vanilla misc/main_processes.R
+Rscript --vanilla misc/main_processes.R --recountID [ID] --feature [gene|transcript]
 ```
+
+For example, to analyse the breast cancer data (recountID SRP042620) with genes as features, type
+
+
+```bash
+Rscript --vanilla misc/main_processes.R --recountID SRP042620 --feature gene
+```
+
 
 
 The script [`script misc/main_process.R`](misc/main_process.R), calls a series of other scripts to run the successive steps of the analysis in the right order. 
