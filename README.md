@@ -110,8 +110,16 @@ It is requested to select a single ID at a time. If several IDs are selected, th
 The following command will run the analysis for the stydy case selected above. 
 
 ```bash
-Rscript --vanilla misc/main_processes.R
+Rscript --vanilla misc/main_processes.R --recountID [ID] --feature [gene|transcript]
 ```
+
+For example, to analyse the breast cancer data (recountID SRP042620) with genes as features, type
+
+
+```bash
+Rscript --vanilla misc/main_processes.R --recountID SRP042620 --feature gene
+```
+
 
 
 The script [`script misc/main_process.R`](misc/main_process.R), calls a series of other scripts to run the successive steps of the analysis in the right order. 
@@ -137,15 +145,24 @@ If you are working on another infrastructure, you can skip it.
 On the [IFB core cluster](https://www.france-bioinformatique.fr/en/ifb-core-cluster/), conda is loaded via a module, which must be loaded with the following command: 
 
 ```bash
-module load conda ## Load the conda module (for the IFB-core-cluster)
+## Load required modules for the IFB-core cluster
+module load conda ## Load the conda module 
+module load r     ## Load the R module
 ```
 
 After that, the RNAseqMVA environment can be built and activated and the analyses launched in the same way as described in the previous sections, but **each task has to be send to the job scheduler slurm**, via either `sbatch` (sending a script or `srun` (submitting a single-line command).
 
 ```bash
-srun make roxygenise
-srun make build_and_install
-srun --mem=32GB Rscript --vanilla misc/main_processes.R
+srun make roxygenise          ## Generate the user documentation for RNAseqMVA package
+srun make build_and_install   ## Build the RNAseqMVA package
+
+## Send the analysis for one study case to slurm job scheduler
+##
+## Note: the parameters below have to be adapted according to the particular cluster configuration
+## - we use the long partition (queue) because for some study cases the analysis can last for more than 24h
+## - in the file misc/00_project_parameters.yml, we set jobs: 25
+## - we allocate 64Gb of memory in total, which makes >2Gb per CPU, in principle sufficient
+srun --partition=long --mem=64GB Rscript --vanilla misc/main_processes.R
 ```
 
 ## Methodology – Steps taken for data processing or modeling.
