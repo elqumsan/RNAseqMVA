@@ -36,7 +36,7 @@ global: ## Global parameters are those who are the samee across all study cases
     epsilon: 0.1    ## For log2 transformation
 
   perm.prefix: "permLabels"
-  jobs: 25       ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
+  jobs: 5       ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
   iterations: 50 ## Number of iterations for the classifiers
 
 
