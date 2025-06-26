@@ -36,7 +36,7 @@ global: ## Global parameters are those who are the samee across all study cases
     epsilon: 0.1    ## For log2 transformation
 
   perm.prefix: "permLabels"
-  jobs: 10       ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
+  jobs: 25       ## Maximal number of jobs to run in parallel. Supported: integers > 0, "auto", or "none"
   iterations: 50 ## Number of iterations for the classifiers
 
 
@@ -54,7 +54,11 @@ global: ## Global parameters are those who are the samee across all study cases
   PCs.to.test: "TMM_log2_PC"
 
   variables.type: ["all"]  ## Example: variables.type: ["all", "top_ordered"]
-  ordering.methods: ["edgeR", "DESeq2", "RF"] ## Supported: "RF", "edgeR", "DESeq2"
+
+#  ordering.methods: ["RF", "edgeR", "DESeq2"] ## Supported: "RF", "edgeR", "DESeq2"
+  ordering.methods: [] ## Supported: "RF", "edgeR", "DESeq2"
+                       ## Inactivated by default because we finally
+                       ## did not use this approach for the article
 
   #### RNA-seq normalization methods ####
   deg_analysis:
