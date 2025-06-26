@@ -89,7 +89,8 @@ make build_and_install ## build the RNAseqMVA package
 All the parameters of an analysis can be specified in a YAML file [misc/00_project_parameters.yml](misc/00_project_parameters.yml). 
 Parameters can be changed easily by editing this file with any text editor (nano, gedit, emacs, vi, ...).
 
-By default, the configuration is setup to analyse a single study case. Alternative IDs can be selected by uncommenting another row of the proposed `selected_recount_ids`.
+By default, the configuration is setup to analyse a single study case. Alternative IDs can be selected by uncommenting another row of the proposed `selected_recount_ids`. 
+
 
 ```
   #### Usage : uncomment the recount IDs you want to use for the analysis ####
@@ -104,6 +105,25 @@ By default, the configuration is setup to analyse a single study case. Alternati
 
 It is requested to select a single ID at a time. If several IDs are selected, the analysis will run only on the first one. 
 
+
+
+### Adding study cases
+
+To add study cases, edit the configuration file and add a section following the examples used in the published article. 
+Each study case must be specified with the following fields
+
+- classColumn: the column of the metadata that contains the relevant class labels. This must be decided on a case-by-case way, based on your understanding of the study case biomedical context
+- short_label: used for the figure titles or legends
+
+```
+SRP035988:  ## Psoriasis (bulk)
+  short_label: "Psoriasis"
+  classColumn: "tissue.type"
+
+SRP057196: ## Adult and fetal brain cells (sc)
+  short_label: "Brain cells (sc)"
+  classColumn: ["tissue", "cell.type"] ## For this dataset, it is important to combine the two column in order to capture the goal of the study
+```
 
 ## Running all analyses
 
