@@ -112,8 +112,48 @@ It is requested to select a single ID at a time. If several IDs are selected, th
 To add study cases, edit the configuration file and add a section following the examples used in the published article. 
 Each study case must be specified with the following fields
 
-- classColumn: the column of the metadata that contains the relevant class labels. This must be decided on a case-by-case way, based on your understanding of the study case biomedical context
+- classColumn: the metadata field that contains the relevant class labels
 - short_label: used for the figure titles or legends
+
+The valid fields for the class labels are the sub-fields of the column "characteristics". Depending on the study, this column contains either one or several metadata fields. 
+
+For example, in the Psoriasis study case (recountID SRP035988), 
+
+```
+characteristics
+tissue type: normal skin
+tissue type: lesional psoriatic skin
+tissue type: lesional psoriatic skin
+tissue type: normal skin
+tissue type: normal skin
+...
+```
+
+In some studies, the column "characteristics" contains a combination of several fields. This is the case of the single-cell RNA-seq study on adult and fetal brain cells (recountID SRP057196): 
+
+```
+characteristics
+c("tissue: cortex", "cell type: fetal_replicating", "age: prenatal 16-18 W", "c1 chip id: nochipID10", "experiment_sample_name: FB_S1")
+c("tissue: cortex", "cell type: fetal_replicating", "age: prenatal 16-18 W", "c1 chip id: nochipID10", "experiment_sample_name: FB_S1")
+c("tissue: cortex", "cell type: fetal_replicating", "age: prenatal 16-18 W", "c1 chip id: nochipID10", "experiment_sample_name: FB_S1")
+c("tissue: cortex", "cell type: fetal_replicating", "age: prenatal 16-18 W", "c1 chip id: nochipID10", "experiment_sample_name: FB_S1")
+c("tissue: cortex", "cell type: fetal_replicating", "age: prenatal 16-18 W", "c1 chip id: nochipID10", "experiment_sample_name: FB_S1")
+c("tissue: cortex", "cell type: astrocytes", "age: postnatal 47 years", "c1 chip id: nochipID9", "experiment_sample_name: AB_S1")
+c("tissue: cortex", "cell type: astrocytes", "age: postnatal 47 years", "c1 chip id: nochipID9", "experiment_sample_name: AB_S1")
+c("tissue: cortex", "cell type: astrocytes", "age: postnatal 47 years", "c1 chip id: nochipID9", "experiment_sample_name: AB_S1")
+c("tissue: cortex", "cell type: neurons", "age: postnatal 47 years", "c1 chip id: nochipID9", "experiment_sample_name: AB_S1")
+c("tissue: cortex", "cell type: neurons", "age: postnatal 47 years", "c1 chip id: nochipID9", "experiment_sample_name: AB_S1")
+c("tissue: cortex", "cell type: microglia", "age: postnatal 47 years", "c1 chip id: nochipID9", "experiment_sample_name: AB_S1")
+c("tissue: cortex", "cell type: neurons", "age: postnatal 47 years", "c1 chip id: nochipID9", "experiment_sample_name: AB_S1")
+c("tissue: cortex", "cell type: neurons", "age: postnatal 47 years", "c1 chip id: nochipID9", "experiment_sample_name: AB_S1")
+c("tissue: cortex", "cell type: neurons", "age: postnatal 47 years", "c1 chip id: nochipID9", "experiment_sample_name: AB_S1")
+c("tissue: cortex", "cell type: astrocytes", "age: postnatal 47 years", "c1 chip id: nochipID9", "experiment_sample_name: AB_S1")
+c("tissue: cortex", "cell type: neurons", "age: postnatal 47 years", "c1 chip id: nochipID9", "experiment_sample_name: AB_S1")
+c("tissue: cortex", "cell type: astrocytes", "age: postnatal 47 years", "c1 chip id: nochipID9", "experiment_sample_name: AB_S1")![image](https://github.com/user-attachments/assets/05a925c9-3f64-4256-8ef9-0519a9601f7d)
+
+```
+
+Here is an example of the definition of the study case parameters for these two studies: 
 
 ```
 SRP035988:  ## Psoriasis (bulk)
