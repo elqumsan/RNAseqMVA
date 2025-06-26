@@ -3,6 +3,7 @@
 #### It is used in the main script (RNAseqMVA.R) and in the scripts for each recount ID
 
 require("RNAseqMVA")
+require("optparse")
 
 ##### Path of the YAML-formatted configuration file ####
 configFile <- "misc/00_project_parameters.yml"
@@ -54,6 +55,60 @@ for (d in names(project.parameters$global$dir)) {
 }
 
 # View(project.parameters)
+
+## Read the command-line arguments passed to Rscript with the optparse package
+## This is used to overwrite the parameters specified in the YAML file
+## This is useful for running the script with different parameters without modifying the YAML file
+## For example, to run the script with a different Recount ID and feature type
+##    Rscript RNAseqMVA.R --recountID SRP048759 --feature gene
+
+# Define options
+option_list = list(
+  make_option(c("-r", "--recountID"), type="character", default=NULL,
+              help="Recount ID (e.g. SRP056295)", metavar="character"),
+  make_option(c("-f", "--feature"), type="character", default="gene",
+              help="Feature type: gene or transcript [default: %default]", metavar="character")
+)
+
+# Parse options
+opt_parser = OptionParser(option_list=option_list)
+opt = parse_args(opt_parser)
+
+## Update recountID if specified on the command-line arguments
+
+if (!is.null(opt$recountID)) {
+
+  # Example use
+  message("Recount ID specified in the command-line arguments: ", opt$recountID, "\n")
+
+
+  ## Check that the yaml config file contains metadata for the command-line specified recountID
+  ## If not, stop the script with an error message
+
+  if (is.null(project.parameters[[opt$recountID]])) {
+    stop("Recount ID '", opt$recountID, "' is not specified in the YAML configuration file. ",
+         "Please check the config file or specify a valid recount ID.")
+  }
+
+  selectedRecountIDs[1] <- opt$recountID  # Update the selected recount IDs with the command-line specified recount ID
+}
+
+## Update feature type if specified on the command-line arguments
+
+if (!is.null(opt$feature)) {
+
+  # Validate feature argument
+  valid_features <- c("gene", "transcript")
+  if (!(opt$feature %in% valid_features)) {
+    stop("Invalid feature type '", opt$feature,
+         "'. Valid values are: ", paste(valid_features, collapse = ", "))
+  }
+
+  # Handle the feature type
+  message("\tFeature type specified in the command-line arguments: ", opt$feature, "\n")
+  project.parameters$global$feature <- opt$feature
+}
+
 
 #### END OF SCRIPT ####
 

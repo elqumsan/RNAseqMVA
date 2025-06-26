@@ -31,6 +31,7 @@ dependencies:
   - r-mass
   - r-lattice
   - r-ggplot2
+  - r-optparse
 
   # Bioconductor (current)
   - bioconductor-iranges
