@@ -14,29 +14,33 @@
 ## USAGE
 ##
 ## Change directory to RNAseqMVA package
-## cd /shared/projects/rnaseqmva/RNAseqMVA
+##   cd /shared/projects/rnaseqmva/RNAseqMVA
 ##
 ## ## Initiate the environment
 ## ## This is necessary for the sbatch command !
-## module load conda
-## conda init bash
-## conda activate rnaseqmva
+##   module load conda
+##   conda init bash
+##   conda activate rnaseqmva-2025
 ##
 ## ## Send the script to the job scheduler
 ## sbatch srun_jobarray.sh
 ## squeue -u ${UID}
 
 #SBATCH --array=0-13  # Define the IDs for the job array
-#SBATCH --mem=48GB # Request Gb per job
+#SBATCH --mem=48GB # Request RAM per job
 #SBATCH --cpus=25  # Request CPUs per job
 #SBATCH --partition=long  # note: the long partition (>1 day) is required for some study cases but for basic jobs the fast is sufficient
 #SBATCH -o slurm_logs/rnaseqmva_%a_%A_%j_out.txt  # file to store standard output
 #SBATCH -e slurm_logs/rnaseqmva_%a_%A_%j_err.txt  # file to store standard error
 
-## Initiate the environment
-# module load conda
-# conda init bash
-# conda activate rnaseqmva
+## ================================================================
+## Initiate the environment: the following commands are required
+## before running run_jobarray.sh
+#
+#   module load conda
+#   conda init bash
+#   conda activate rnaseqmva-2025
+## ================================================================
 
 ## Define the parameters
 RECOUNT_IDS=(SRP035988 SRP042620 SRP056295 SRP057196 SRP061240 SRP062966 SRP066834)
@@ -58,7 +62,7 @@ PREFIX=${RECOUNT_ID}_${FEATURE_TYPE}_${START_DATE}
 
 ## slurm parameters
 CPUS=25
-MEM=48GB
+MEM=64GB
 PARTITION=long
 
 ## The variable $SLURM_ARRAY_TASK_ID takes a different value for each job
@@ -70,11 +74,10 @@ echo "${START_DATE} ${SLURM_ARRAY_TASK_ID}  ${SLURM_ARRAY_JOB_ID} ${RECOUNT_ID} 
 srun --mem=${MEM} --cpus=${CPUS} --partition=${PARTITION} \
   --output ${LOG_DIR}/${PREFIX}_out.txt \
   --error ${LOG_DIR}/${PREFIX}_err.txt \
-  Rscript --vanilla misc/main_processes.R ${RECOUNT_ID} ${FEATURE_TYPE}
+  Rscript --vanilla misc/main_processes.R --recountID ${RECOUNT_ID} --feature ${FEATURE_TYPE}
 echo "PREFIX  ${PREFIX}"
 echo "  output  ${LOG_DIR}/${PREFIX}_out.txt"
 echo "  error   ${LOG_DIR}/${PREFIX}_err.txt"
-
 
 ## Command to send the script to the job scheduler
 ## sbatch --mem=${MEM} --cpus=${CPUS} --partition=${PARTITION} srun_jobarray.sh
