@@ -13,7 +13,7 @@
 ## conda activate rnaseqmva-2025
 ##
 ## ## Send the script to the job scheduler
-## sbatch --mem=48GB --cpus=25  --partition=long srun_analysis.sh
+## sbatch --mem=48GB --cpus-per-task=25  --partition=long srun_analysis.sh
 ## 
 ## Note: the loading of conda module and environment must apparently be done
 ## before ruuning sbatch to call this script, and not within the script itself
@@ -75,6 +75,6 @@ echo "  error   ${LOG_DIR}/${PREFIX}_err.txt"
 
 
 ## Command to send the script to the job scheduler
-## sbatch --mem=${MEM} --cpus=${CPUS}  --partition=${PARTITION} srun_analysis.sh
+## sbatch --mem=${MEM} --cpus-per-task=${CPUS}  --partition=${PARTITION} srun_analysis.sh
 ## squeue -u ${UID}
 

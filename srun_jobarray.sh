@@ -28,7 +28,7 @@
 
 #SBATCH --array=0-13  # Define the IDs for the job array
 #SBATCH --mem=48GB # Request RAM per job
-#SBATCH --cpus=25  # Request CPUs per job
+#SBATCH --cpus-per-task=25  # Request CPUs per job
 #SBATCH --partition=long  # note: the long partition (>1 day) is required for some study cases but for basic jobs the fast is sufficient
 #SBATCH -o slurm_logs/rnaseqmva_%a_%A_%j_out.txt  # file to store standard output
 #SBATCH -e slurm_logs/rnaseqmva_%a_%A_%j_err.txt  # file to store standard error
@@ -71,7 +71,7 @@ PARTITION=long
 echo "${START_DATE} ${SLURM_ARRAY_TASK_ID}  ${SLURM_ARRAY_JOB_ID} ${RECOUNT_ID} ${FEATURE_TYPE} ${LOG_DIR}/${PREFIX}" >> srun_jobs_sent.tsv
 
 ## Send a job for the analysis of one RECOUNT_ID and FEATURE_TYPE
-srun --mem=${MEM} --cpus=${CPUS} --partition=${PARTITION} \
+srun --mem=${MEM} --cpus-per-task=${CPUS} --partition=${PARTITION} \
   --output ${LOG_DIR}/${PREFIX}_out.txt \
   --error ${LOG_DIR}/${PREFIX}_err.txt \
   Rscript --vanilla misc/main_processes.R --recountID ${RECOUNT_ID} --feature ${FEATURE_TYPE}
@@ -80,5 +80,5 @@ echo "  output  ${LOG_DIR}/${PREFIX}_out.txt"
 echo "  error   ${LOG_DIR}/${PREFIX}_err.txt"
 
 ## Command to send the script to the job scheduler
-## sbatch --mem=${MEM} --cpus=${CPUS} --partition=${PARTITION} srun_jobarray.sh
+## sbatch --mem=${MEM} --cpus-per-task=${CPUS} --partition=${PARTITION} srun_jobarray.sh
 ## squeue -u ${UID}
