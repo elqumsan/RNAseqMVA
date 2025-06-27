@@ -13,17 +13,6 @@ configFile <- "misc/00_project_parameters.yml"
 message.with.time("Loading parameters from YAM file ", configFile)
 project.parameters <- yaml.load_file(configFile)
 
-#### Read arguments passed from the command line ####
-args = commandArgs(trailingOnly = TRUE)
-if (length(args) >= 1) {
-  project.parameters$global[["selected_recount_ids"]] <- args[1]
-  message("Overwriting selected_recount_ids parameter with command-line argument ", args[1])
-}
-if (length(args) >= 2) {
-  message("Overwriting config feature parameter with command-line argument ", args[2])
-  project.parameters$global[["feature"]] <- args[2]
-}
-
 
 #### Specify selected recount IDs ####
 selectedRecountIDs <- project.parameters$global[["selected_recount_ids"]]
