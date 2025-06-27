@@ -1,5 +1,6 @@
 #!/bin/bash
 
+## ================================================================
 ## Script: srun_analysis.sh
 ## Authors: Julien Seiler and Jacques van Helden
 ##
@@ -9,12 +10,11 @@
 ## ## This is necessary before running the sbatch command !
 ## module load conda
 ## conda init bash
-## conda activate rnaseqmva
+## conda activate rnaseqmva-2025
 ##
 ## ## Send the script to the job scheduler
 ## sbatch --mem=48GB --cpus=25  --partition=long srun_analysis.sh
-
-
+## 
 ## Note: the loading of conda module and environment must apparently be done
 ## before ruuning sbatch to call this script, and not within the script itself
 
@@ -26,10 +26,10 @@ mkdir -p ${LOG_DIR}
 START_DATE=`date +%Y-%m-%d_%H%M%S`
 
 
-## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-## Run agiven analysis
+## ================================================================
+## Run a given analysis
 ##
-## Note: to run all jobz, it is recommended to use job arrays
+## Note: to run all jobs, it is recommended to use job arrays
 ## (see script srun_jobarray.sh)
 
 
@@ -53,7 +53,7 @@ PREFIX=${RECOUNT_ID}_${FEATURE}_${START_DATE}
 
 ## slurm parameters
 CPUS=25
-MEM=48GB
+MEM=64GB
 PARTITION=long
 
 ## Report parameters
@@ -68,7 +68,7 @@ echo "PARTITION: ${PARTITION}"
 srun --mem=${MEM} --cpus=${CPUS} --partition=${PARTITION} \
   --output ${LOG_DIR}/${PREFIX}_out.txt \
   --error ${LOG_DIR}/${PREFIX}_err.txt \
-  Rscript --vanilla misc/main_processes.R ${RECOUNT_ID} ${FEATURE}
+  Rscript --vanilla misc/main_processes.R --recountID ${RECOUNT_ID} --feature ${FEATURE}
 echo "PREFIX  ${PREFIX}"
 echo "  output  ${LOG_DIR}/${PREFIX}_out.txt"
 echo "  error   ${LOG_DIR}/${PREFIX}_err.txt"
