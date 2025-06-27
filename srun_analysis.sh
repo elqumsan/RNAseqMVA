@@ -65,7 +65,7 @@ echo "MEM: ${MEM}"
 echo "PARTITION: ${PARTITION}"
 
 ## Submit the job to slurm job scheduler via srun
-srun --mem=${MEM} --cpus=${CPUS} --partition=${PARTITION} \
+srun --mem=${MEM} --cpus-per-task=${CPUS} --partition=${PARTITION} \
   --output ${LOG_DIR}/${PREFIX}_out.txt \
   --error ${LOG_DIR}/${PREFIX}_err.txt \
   Rscript --vanilla misc/main_processes.R --recountID ${RECOUNT_ID} --feature ${FEATURE}
