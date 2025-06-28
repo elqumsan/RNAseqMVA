@@ -35,6 +35,7 @@ targets:
 ## sbatch options
 ## ================================================================
 CPUS=64
+R_JOBS=23
 MEM=64GB
 PARTITION=long
 #OUT=slurm_logs/test_%a_%A_%j_out.txt
@@ -59,6 +60,7 @@ PREFIX=${RECOUNT_ID}_${FEATURE}_${START_DATE}
 list_param:
 	@echo "Parameters"
 	@echo "	CPUS		${CPUS}"
+	@echo "	R_JOBS		${R_JOBS}"
 	@echo "	MEM		${MEM}"
 	@echo "	PARTITION	${PARTITION}"
 	@echo "	SBATCH_OPT	${SBATCH_OPT}"
@@ -95,7 +97,7 @@ one_job:
 	(cd ${BASE}; srun ${SBATCH_OPT} \
 		--output ${LOG_DIR}/${PREFIX}_out.txt \
 		--error ${LOG_DIR}/${PREFIX}_err.txt \
-		Rscript --vanilla misc/main_processes.R --recountID ${RECOUNT_ID} --feature ${FEATURE} --jobs ${CPUS})
+		Rscript --vanilla misc/main_processes.R --recountID ${RECOUNT_ID} --feature ${FEATURE} --jobs ${R_JOBS})
 
 all_jobs:
 	@echo "NOT IMPLEMENTED: USE srun_jobarrays.sh to run all study cases" 
