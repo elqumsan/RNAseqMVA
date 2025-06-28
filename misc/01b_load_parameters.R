@@ -13,7 +13,6 @@ configFile <- "misc/00_project_parameters.yml"
 message.with.time("Loading parameters from YAM file ", configFile)
 project.parameters <- yaml.load_file(configFile)
 
-
 #### Specify selected recount IDs ####
 selectedRecountIDs <- project.parameters$global[["selected_recount_ids"]]
 
