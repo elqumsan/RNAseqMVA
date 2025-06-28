@@ -80,7 +80,7 @@ home directory. If not, you just need to adapt the path below.
 
 ```bash
 cd ~/RNAseqMVA
-make roxigenise  ## compile the documentation for the RNAseqMVA package
+make roxygenise  ## compile the documentation for the RNAseqMVA package
 make build_and_install ## build the RNAseqMVA package
 ```
 
@@ -89,7 +89,8 @@ make build_and_install ## build the RNAseqMVA package
 All the parameters of an analysis can be specified in a YAML file [misc/00_project_parameters.yml](misc/00_project_parameters.yml). 
 Parameters can be changed easily by editing this file with any text editor (nano, gedit, emacs, vi, ...).
 
-By default, the configuration is setup to analyse a single study case. Alternative IDs can be selected by uncommenting another row of the proposed `selected_recount_ids`.
+By default, the configuration is setup to analyse a single study case. Alternative IDs can be selected by uncommenting another row of the proposed `selected_recount_ids`. 
+
 
 ```
   #### Usage : uncomment the recount IDs you want to use for the analysis ####
@@ -105,13 +106,76 @@ By default, the configuration is setup to analyse a single study case. Alternati
 It is requested to select a single ID at a time. If several IDs are selected, the analysis will run only on the first one. 
 
 
+
+### Adding study cases
+
+To add study cases, edit the configuration file and add a section following the examples used in the published article. 
+Each study case must be specified with the following fields
+
+- classColumn: the metadata field that contains the relevant class labels
+- short_label: used for the figure titles or legends
+
+The valid fields for the class labels are the sub-fields of the column "characteristics". Depending on the study, this column contains either one or several metadata fields. 
+
+For example, in the Psoriasis study case (recountID SRP035988), 
+
+```
+characteristics
+tissue type: normal skin
+tissue type: lesional psoriatic skin
+tissue type: lesional psoriatic skin
+tissue type: normal skin
+tissue type: normal skin
+...
+```
+
+In some studies, the column "characteristics" contains a combination of several fields. This is the case of the single-cell RNA-seq study on adult and fetal brain cells (recountID SRP057196): 
+
+```
+characteristics
+c("tissue: cortex", "cell type: fetal_replicating", "age: prenatal 16-18 W", "c1 chip id: nochipID10", "experiment_sample_name: FB_S1")
+c("tissue: cortex", "cell type: fetal_replicating", "age: prenatal 16-18 W", "c1 chip id: nochipID10", "experiment_sample_name: FB_S1")
+c("tissue: cortex", "cell type: astrocytes", "age: postnatal 47 years", "c1 chip id: nochipID9", "experiment_sample_name: AB_S1")
+c("tissue: cortex", "cell type: astrocytes", "age: postnatal 47 years", "c1 chip id: nochipID9", "experiment_sample_name: AB_S1")
+c("tissue: cortex", "cell type: astrocytes", "age: postnatal 47 years", "c1 chip id: nochipID9", "experiment_sample_name: AB_S1")
+c("tissue: cortex", "cell type: neurons", "age: postnatal 47 years", "c1 chip id: nochipID9", "experiment_sample_name: AB_S1")
+c("tissue: cortex", "cell type: neurons", "age: postnatal 47 years", "c1 chip id: nochipID9", "experiment_sample_name: AB_S1")
+c("tissue: cortex", "cell type: microglia", "age: postnatal 47 years", "c1 chip id: nochipID9", "experiment_sample_name: AB_S1")
+c("tissue: cortex", "cell type: neurons", "age: postnatal 47 years", "c1 chip id: nochipID9", "experiment_sample_name: AB_S1")
+c("tissue: cortex", "cell type: neurons", "age: postnatal 47 years", "c1 chip id: nochipID9", "experiment_sample_name: AB_S1")
+c("tissue: cortex", "cell type: astrocytes", "age: postnatal 47 years", "c1 chip id: nochipID9", "experiment_sample_name: AB_S1")
+c("tissue: cortex", "cell type: neurons", "age: postnatal 47 years", "c1 chip id: nochipID9", "experiment_sample_name: AB_S1")
+c("tissue: cortex", "cell type: astrocytes", "age: postnatal 47 years", "c1 chip id: nochipID9", "experiment_sample_name: AB_S1")![image](https://github.com/user-attachments/assets/05a925c9-3f64-4256-8ef9-0519a9601f7d)
+
+```
+
+Here is an example of the definition of the study case parameters for these two studies: 
+
+```
+SRP035988:  ## Psoriasis (bulk)
+  short_label: "Psoriasis"
+  classColumn: "tissue.type"
+
+SRP057196: ## Adult and fetal brain cells (sc)
+  short_label: "Brain cells (sc)"
+  classColumn: ["tissue", "cell.type"] ## For this dataset, it is important to combine the two column in order to capture the goal of the study
+```
+
 ## Running all analyses
 
 The following command will run the analysis for the stydy case selected above. 
 
 ```bash
-Rscript --vanilla misc/main_processes.R
+Rscript --vanilla misc/main_processes.R --recountID [ID] --feature [gene|transcript] --jobs [job_nb]
 ```
+
+For example, to analyse the breast cancer data (recountID SRP042620) with genes as features and running 11 jobs in parallel, type
+
+
+```bash
+Rscript --vanilla misc/main_processes.R --recountID SRP042620 --feature gene --jobs 11
+```
+
 
 
 The script [`script misc/main_process.R`](misc/main_process.R), calls a series of other scripts to run the successive steps of the analysis in the right order. 
@@ -137,15 +201,24 @@ If you are working on another infrastructure, you can skip it.
 On the [IFB core cluster](https://www.france-bioinformatique.fr/en/ifb-core-cluster/), conda is loaded via a module, which must be loaded with the following command: 
 
 ```bash
-module load conda ## Load the conda module (for the IFB-core-cluster)
+## Load required modules for the IFB-core cluster
+module load conda ## Load the conda module 
+module load r     ## Load the R module
 ```
 
 After that, the RNAseqMVA environment can be built and activated and the analyses launched in the same way as described in the previous sections, but **each task has to be send to the job scheduler slurm**, via either `sbatch` (sending a script or `srun` (submitting a single-line command).
 
 ```bash
-srun make roxigenise
-srun make build_and_install
-srun --mem=32GB Rscript --vanilla misc/main_processes.R
+srun make roxygenise          ## Generate the user documentation for RNAseqMVA package
+srun make build_and_install   ## Build the RNAseqMVA package
+
+## Send the analysis for one study case to slurm job scheduler
+##
+## Note: the parameters below have to be adapted according to the particular cluster configuration
+## - we use the long partition (queue) because for some study cases the analysis can last for more than 24h
+## - in the file misc/00_project_parameters.yml, we set jobs: 25
+## - we allocate 64Gb of memory in total, which makes >2Gb per CPU, in principle sufficient
+srun --partition=long --mem=64GB Rscript --vanilla misc/main_processes.R
 ```
 
 ## Methodology – Steps taken for data processing or modeling.

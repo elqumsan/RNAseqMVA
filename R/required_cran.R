@@ -23,7 +23,9 @@ requiredCRAN <- c(
     "foreach",
     "doParallel",
     "pheatmap", # Heatmaps with extended control on dimensions
-    "doMC")
+    "optparse", # For command line arguments
+    "doMC"
+    )
 # RequiredCRANPackages(requiredCRAN)
 
 message("Required CRAN libraries:\n\t", paste(collapse="\n\t", requiredCRAN))
