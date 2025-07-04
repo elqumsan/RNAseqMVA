@@ -256,9 +256,11 @@ This code evaluates three alternative methods for the supervised classification 
 - K nearest neighbours (KNN)
 - Support Vector Machines (SVM)
 
-**Evaluation method.** Each classifieris evaluated by measuring the Misclassification Error Rate, with iterative cross-validation (subsampling of the original data set).
+**Evaluation method.** Each classifier is evaluated by measuring the Misclassification Error Rate, with iterative cross-validation (subsampling of the original data set).
 
 **Subsampling.** The evaluation was based on 50 iterations of random subsampling with 2/3 individuals for training and 1/3 for testing. Subsampling was stratified in order to ensure a fair representation of all the classes in both training and testing sets. 
+
+A full description of the methodology is provided in the submitted manuscript mentioned above. 
 
 
 ## Conclusions
