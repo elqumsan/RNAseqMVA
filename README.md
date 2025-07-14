@@ -16,6 +16,17 @@ This repository contains the R code (RNAseqMVA package + analysis scripts) requi
 
 The benchmarking was performed based on 6 datasets downloaded from the Recount database ([rna.recount.bio/](https://rna.recount.bio)). 
 
+
+| Nb | Name | GEO ID | Pubmed ID | RNA-seq Type | Criterion for class labels | Classes | Samples | Description |
+|--|-------------------|-----------|---------|----|---------------|----|----|----------------------------------------------|
+| 1 | Breast cancer | SRP042620 | 24929677 | B | tissue | 6 | 167 | Recurrent read-through of fusion transcripts in breast cancer |
+| 2 | Acute Myeloid Leukemia | SRP056295 | 26237430 | B | tissue | 4 | 263 | Transcriptome analysis of psoriasis in a large case-control sample |
+| 3 | Psoriasis | SRP035988 | 24441097 | B | tissue | 2 | 173 | A survey of human brain transcriptome diversity at the single-cell level |
+| 4 | Adult & fetal human brain | SRP057196 | 26060301 | SC | tissue + cell type | 15 | 461 | RNA-seq of systemic lupus erythematosus (SLE) whole blood and healthy controls |
+| 5 | Cerebral organoids and fetal neocortex | SRP066834 | 26644564 | SC | tissue | 3 | 729 | Human cerebral organoids recapitulate gene expression programs of fetal neocortex development |
+| 6 | Lupus | SRP062966 | 26382853 | SC | disease status | 3 | 117 | A comprehensive study of mutations and gene expression in human acute myeloid leukemia (AML) |
+
+
 ## Code Information
 
 The code is written in R and should run on R version >= 3.6.1. 
