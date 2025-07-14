@@ -286,6 +286,8 @@ A full description of the methodology is provided in the submitted manuscript me
 
 The benchmarking clearly shows that Support Vector Machines (SVM) outperform Random Forests (RF) and K-nearest Neighbours (KNN), as long as the right kernel is chosen. KNN gave very poor performances with almost all the study cases. RF gave intermediate results, but is much more CPU demanding than SVM. 
 
+Supervised classification of RNA-seq samples has numérous applications for fundamental as well as applied research in life sciences, medicine, agriculture, environment etc. 
+
 ### Limitations
 
 This comparative benchmarking is restricted to 3 supervised classification approaches : Random Forest (RF), Support Vector Machines (SVM) and K-nearest neighbours (KNN). These methods were chosen because they rely on different models and algorithmic approaches to the problem of supervised classification. A systematic evaluation of all existing methods was out of scope for this work, but the R code could be adapted to handle other methods as well. 
