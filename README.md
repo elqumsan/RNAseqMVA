@@ -254,9 +254,6 @@ Data preprocessing is managed by the `RNAseqMVA` class `StudyCase` according to 
 
 These steps are described in detail in the manuscript. 
 
-## Limitations
-
-This comparative benchmarking is restricted to 3 supervised classification approaches : Random Forest (RF), Support Vector Machines (SVM) and K-nearest neighbours (KNN). These methods were chosen because they rely on different models and algorithmic approaches to the problem of supervised classification. A systematic evaluation of all existing methods was out of scope for this work, but the R code could be adapted to handle other methods as well. 
 
 ## Citations
 
@@ -285,6 +282,12 @@ A full description of the methodology is provided in the submitted manuscript me
 
 ## Conclusions
 
-- Limitations: Identify limitations in your study
+### Main results
+
+The benchmarking clearly shows that Support Vector Machines (SVM) outperform Random Forests (RF) and K-nearest Neighbours (KNN), as long as the right kernel is chosen. KNN gave very poor performances with almost all the study cases. RF gave intermediate results, but is much more CPU demanding than SVM. 
+
+### Limitations
+
+This comparative benchmarking is restricted to 3 supervised classification approaches : Random Forest (RF), Support Vector Machines (SVM) and K-nearest neighbours (KNN). These methods were chosen because they rely on different models and algorithmic approaches to the problem of supervised classification. A systematic evaluation of all existing methods was out of scope for this work, but the R code could be adapted to handle other methods as well. 
 
 
