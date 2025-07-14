@@ -95,16 +95,13 @@ make roxygenise  ## compile the documentation for the RNAseqMVA package
 make build_and_install ## build the RNAseqMVA package
 ```
 
-### Configuring the analysis
+### Default configuration
 
 All the parameters of an analysis can be specified in a YAML file [misc/00_project_parameters.yml](misc/00_project_parameters.yml). 
 Parameters can be changed easily by editing this file with any text editor (nano, gedit, emacs, vi, ...).
 
-By default, the configuration is setup to analyse a single study case. Alternative IDs can be selected by uncommenting another row of the proposed `selected_recount_ids`. 
-
-
 ```
-  #### Usage : uncomment the recount IDs you want to use for the analysis ####
+  #### Usage : uncomment the recount ID you want to use for the analysis ####
 
 #  selected_recount_ids: ['SRP042620'] # Breast cancer
 #  selected_recount_ids: ['SRP056295'] # Acute myeloid leukemia
@@ -114,8 +111,14 @@ By default, the configuration is setup to analyse a single study case. Alternati
   selected_recount_ids: ['SRP062966'] # Lupus (sc)
 ```
 
-It is requested to select a single ID at a time. If several IDs are selected, the analysis will run only on the first one. 
+By default, the configuration is setup to analyse a single study case. The default ID is the one uncommented. If several IDs are uncommented, the analysis will run only on the first one. 
+An alternative default ID can be set by uncommenting another row of the proposed `selected_recount_ids`. 
 
+The default study case, feature type (gene or transcript) and number of jobs can be over-ridden with command arguments (see details below). 
+
+```
+Rscript --vanilla misc/main_processes.R --recountID [ID] --feature [gene|transcript] --jobs [job_nb]
+```
 
 
 ### Adding study cases
