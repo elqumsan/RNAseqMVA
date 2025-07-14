@@ -250,7 +250,9 @@ Data preprocessing is managed by the `RNAseqMVA` class `StudyCase` according to 
     - the `estimateSizeFactors() function implemented in the DESeq2 package (Love, Huber & Anders, 2014).  
 
 - **log2 transformation**. Standardized counts are normalized by log2 transformation, after having added an epsilon to avoid problems with zero counts. 
-- **Principal component computation**. The principal components are computed from the log2-normalised, library-size standardized, counts. 
+- **Principal component computation**. The principal components are computed from the log2-normalised, library-size standardized, counts.
+
+These steps are described in detail in the manuscript. 
 
 ## Citations
 
