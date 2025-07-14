@@ -114,7 +114,7 @@ Parameters can be changed easily by editing this file with any text editor (nano
 By default, the configuration is setup to analyse a single study case. The default ID is the one uncommented. If several IDs are uncommented, the analysis will run only on the first one. 
 An alternative default ID can be set by uncommenting another row of the proposed `selected_recount_ids`. 
 
-The default study case, feature type (gene or transcript) and number of jobs can be over-ridden with command arguments (see details below). 
+The default study case, feature type (gene or transcript) and number of jobs can be overwritten with command arguments (see details below). 
 
 ```
 Rscript --vanilla misc/main_processes.R --recountID [ID] --feature [gene|transcript] --jobs [job_nb]
