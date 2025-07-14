@@ -254,6 +254,10 @@ Data preprocessing is managed by the `RNAseqMVA` class `StudyCase` according to 
 
 These steps are described in detail in the manuscript. 
 
+## Limitations
+
+This comparative benchmarking is restricted to 3 supervised classification approaches : Random Forest (RF), Support Vector Machines (SVM) and K-nearest neighbours (KNN). These methods were chosen because they rely on different models and algorithmic approaches to the problem of supervised classification. A systematic evaluation of all existing methods was out of scope for this work, but the R code could be adapted to handle other methods as well. 
+
 ## Citations
 
 - Mustafa AbuElQumsan, Baddih Gathas and Jacques van Helden (2025). Benchmarking SVM, Random Forest, and KNN for RNA-seq Data: Revisiting Classifier Performance and the Impact of Preprocessing and Hyperparameter Tuning. *Submitted*.
